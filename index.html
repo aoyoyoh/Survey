@@ -712,7 +712,6 @@ function rResult(){
     return`<div class="leg-row"><div class="leg-dot" style="background:${c}"></div><span>${n}</span><strong style="margin-left:auto;color:var(--navy)">${v}/100</strong></div>`;
   }).join('');
   const url=encodeURIComponent(window.location.href);
-  const fbUrl=`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${encodeURIComponent(arch.caption+' → '+window.location.href)}`;
   const cbCls=S.contactOpen?'contact-body open':'contact-body';
   return`<div class="card">
     <div class="topbar">
@@ -737,7 +736,7 @@ function rResult(){
     </div>
     <div class="caption-box">${arch.caption}</div>
     <div class="divider"></div>
-    <a href="${fbUrl}" target="_blank" class="btn-full btn-fb">
+    <a href="${shareToFacebook}" target="_blank" class="btn-full btn-fb">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
       แชร์ Archetype ลง Facebook
     </a>
@@ -910,6 +909,66 @@ function downloadPDF(){
 }
 
 render();
+(function loadHtml2Canvas() {
+  const s = document.createElement('script');
+  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+  document.head.appendChild(s);
+})();
+const CARD_CSS = `
+#s41-share-card {
+  width:540px; background:#FFFFFF;
+  border:1px solid #D8D4CC; border-radius:3px;
+  display:flex; flex-direction:column;
+  font-family:'Sarabun','Noto Sans Thai',sans-serif;
+  overflow:hidden; position:relative;
+}
+#s41-share-card .sc-corner { position:absolute; width:10px; height:10px; }
+#s41-share-card .sc-corner.tl { top:12px;left:12px; border-top:1px solid #C8A94A; border-left:1px solid #C8A94A; }
+#s41-share-card .sc-corner.tr { top:12px;right:12px; border-top:1px solid #C8A94A; border-right:1px solid #C8A94A; }
+#s41-share-card .sc-corner.bl { bottom:12px;left:12px; border-bottom:1px solid #C8A94A; border-left:1px solid #C8A94A; }
+#s41-share-card .sc-corner.br { bottom:12px;right:12px; border-bottom:1px solid #C8A94A; border-right:1px solid #C8A94A; }
+#s41-share-card .sc-hdiv { height:1px; background:#E5E1D8; margin:0 22px; }
+#s41-share-card .sc-head { padding:16px 22px 12px; display:flex; justify-content:space-between; align-items:center; }
+#s41-share-card .sc-s41 { font-size:10px; font-weight:800; color:#002366; letter-spacing:4px; }
+#s41-share-card .sc-hc  { font-size:10px; color:#C8A94A; letter-spacing:2px; }
+#s41-share-card .sc-arch { padding:14px 22px 0; display:flex; flex-direction:column; align-items:center; }
+#s41-share-card .sc-lbl { font-size:10px; font-weight:700; color:#C8A94A; letter-spacing:2.5px; margin-bottom:8px; }
+#s41-share-card .sc-nm  { font-size:26px; font-weight:800; color:#002366; line-height:1.2; text-align:center; margin-bottom:2px; }
+#s41-share-card .sc-tag { font-size:12px; color:#9B9B9B; letter-spacing:.5px; text-align:center; margin-bottom:10px; }
+#s41-share-card .sc-svg { margin-bottom:10px; display:flex; justify-content:center; }
+#s41-share-card .sc-cap { padding:0 30px 10px; }
+#s41-share-card .sc-cap-div { height:1px; background:#E5E1D8; margin-bottom:10px; }
+#s41-share-card .sc-cap-txt { font-size:14px; color:#7A7A8C; line-height:1.8; font-style:italic; text-align:center; }
+#s41-share-card .sc-radar { display:flex; align-items:center; justify-content:center; padding:8px 4px 6px; }
+#s41-share-card .sc-cta-wrap { padding:8px 22px 0; display:flex; flex-direction:column; align-items:center; gap:5px; }
+#s41-share-card .sc-cta { background:none; border:1px solid #002366; border-radius:7px; padding:9px 0; font-size:14px; font-weight:700; font-family:'Sarabun',sans-serif; color:#002366; display:flex; align-items:center; justify-content:center; gap:7px; width:80%; letter-spacing:.3px; }
+#s41-share-card .sc-cta-sub { font-size:10px; color:#BBBBBB; letter-spacing:.3px; }
+#s41-share-card .sc-foot { padding:10px 22px 16px; border-top:1px solid #E5E1D8; display:flex; justify-content:space-between; align-items:center; margin-top:6px; }
+#s41-share-card .sc-foot-url { font-size:9px; color:#C8A94A; letter-spacing:1.5px; }
+#s41-share-card .sc-foot-sub { font-size:9px; color:#BBBBBB; margin-top:2px; }
+#s41-share-card .sc-stamp { width:32px; height:32px; border-radius:50%; border:1px solid rgba(0,35,102,.15); display:flex; flex-direction:column; align-items:center; justify-content:center; }
+#s41-share-card .sc-stamp span { font-size:6px; font-weight:800; color:#002366; letter-spacing:1px; line-height:1.3; text-align:center; }
+#s41-share-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:9999; align-items:center; justify-content:center; padding:20px; }
+#s41-share-overlay.show { display:flex; }
+#s41-share-modal { background:#fff; border-radius:20px; padding:28px; max-width:400px; width:100%; position:relative; }
+#s41-share-modal .sm-close { position:absolute; top:14px; right:18px; background:none; border:none; font-size:22px; cursor:pointer; color:#9B9B9B; }
+#s41-share-modal .sm-title { font-size:18px; font-weight:800; color:#002366; margin-bottom:4px; }
+#s41-share-modal .sm-sub { font-size:13px; color:#7A7A8C; margin-bottom:16px; line-height:1.6; }
+#s41-share-modal img { width:100%; border-radius:10px; border:1px solid #E5E1D8; margin-bottom:16px; }
+#s41-share-modal .sm-step { font-size:12px; color:#7A7A8C; margin-bottom:14px; line-height:1.7; background:rgba(0,35,102,.04); padding:10px 14px; border-radius:10px; border-left:3px solid #C8A94A; }
+#s41-share-modal .sm-btn-dl { width:100%; background:#002366; color:#fff; border:none; border-radius:12px; padding:13px; font-size:15px; font-weight:700; font-family:inherit; cursor:pointer; margin-bottom:8px; }
+#s41-share-modal .sm-btn-fb { width:100%; background:#1877f2; color:#fff; border:none; border-radius:12px; padding:13px; font-size:15px; font-weight:700; font-family:inherit; cursor:pointer; margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:8px; }
+#s41-share-modal .sm-btn-cancel { width:100%; background:none; border:none; color:#9B9B9B; font-size:13px; font-family:inherit; cursor:pointer; padding:6px; }
+`;
+function injectCardCSS(){if(document.getElementById('s41-share-style'))return;const style=document.createElement('style');style.id='s41-share-style';style.textContent=CARD_CSS;document.head.appendChild(style);}
+function buildRadarSVG(scores,size){const cx=size/2,cy=size/2+5,r=size*0.28,n=5;const labels=['เงินสำรอง','คุ้มครอง','กระแสเงินสด','ออม/ลงทุน','วางแผน'];const vals=[scores.emergency,scores.protection,scores.cashflow,scores.savings,scores.planning];const angle=i=>(Math.PI*2*i/n)-Math.PI/2;let grid='';for(let lv=1;lv<=5;lv++){const pts=Array.from({length:n},(_,i)=>{const a=angle(i),lr=r*lv/5;return`${cx+lr*Math.cos(a)},${cy+lr*Math.sin(a)}`;}).join(' ');grid+=`<polygon points="${pts}" fill="${lv===5?'rgba(0,35,102,.03)':'none'}" stroke="#E5E1D8" stroke-width="${lv===5?'1':'0.75'}"/>`;}let axes='';for(let i=0;i<n;i++){const a=angle(i);axes+=`<line x1="${cx}" y1="${cy}" x2="${cx+r*Math.cos(a)}" y2="${cy+r*Math.sin(a)}" stroke="#E5E1D8" stroke-width="0.75"/>`;}const pts=vals.map((v,i)=>{const a=angle(i),vr=r*(v/100);return`${cx+vr*Math.cos(a)},${cy+vr*Math.sin(a)}`;}).join(' ');const dots=vals.map((v,i)=>{const a=angle(i),vr=r*(v/100);return`<circle cx="${cx+vr*Math.cos(a)}" cy="${cy+vr*Math.sin(a)}" r="3" fill="#002366" stroke="#fff" stroke-width="1.5"/>`;}).join('');const LR=r+size*0.13;let lbls='';labels.forEach((lbl,i)=>{const a=angle(i),lx=cx+LR*Math.cos(a),ly=cy+LR*Math.sin(a);const anc=Math.cos(a)>0.15?'start':Math.cos(a)<-0.15?'end':'middle';const v=vals[i];const c=v>=70?'#2E7D32':v>=40?'#C8A94A':'#E05252';lbls+=`<text x="${lx}" y="${ly-3}" text-anchor="${anc}" font-size="11" fill="#9B9B9B" font-family="Sarabun,sans-serif">${lbl}</text>`;lbls+=`<text x="${lx}" y="${ly+13}" text-anchor="${anc}" font-size="13" fill="${c}" font-family="Sarabun,sans-serif" font-weight="700">${v}</text>`;});return`<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="overflow:visible">${grid}${axes}<polygon points="${pts}" fill="rgba(0,35,102,.08)" stroke="#002366" stroke-width="2" stroke-linejoin="round"/>${dots}${lbls}</svg>`;}
+function buildShareCardHTML(arch,radarScores){const svg=ASVG[arch.key]||'';const radar=buildRadarSVG(radarScores,280);return`<div id="s41-share-card"><div class="sc-corner tl"></div><div class="sc-corner tr"></div><div class="sc-corner bl"></div><div class="sc-corner br"></div><div class="sc-head"><span class="sc-s41">SIGNATURE 41</span><span class="sc-hc">HEALTH CHECK</span></div><div class="sc-hdiv"></div><div class="sc-arch"><div class="sc-lbl">ARCHETYPE ของฉัน</div><div class="sc-nm">${arch.name}</div><div class="sc-tag">${arch.tag}</div><div class="sc-svg">${svg}</div></div><div class="sc-cap"><div class="sc-cap-div"></div><div class="sc-cap-txt">${arch.caption}</div></div><div class="sc-hdiv"></div><div class="sc-radar">${radar}</div><div class="sc-hdiv"></div><div class="sc-cta-wrap"><div class="sc-cta"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#002366" stroke-width="2.5" stroke-linecap="round"><polyline points="5 12 19 12"/><polyline points="13 6 19 12 13 18"/></svg>ตรวจสุขภาพเงินของคุณฟรี</div><div class="sc-cta-sub">aoyoyoh.github.io/Survey · ~5 นาที · ไม่มีเงื่อนไข</div></div><div class="sc-foot"><div><div class="sc-foot-url">SIGNATURE 41 · FINANCIAL CLINIC</div><div class="sc-foot-sub">CFP® Based · Health Check v4.1</div></div><div class="sc-stamp"><span>CFP®<br>BASED</span></div></div></div>`;}
+function buildShareModal(){if(document.getElementById('s41-share-overlay'))return;const overlay=document.createElement('div');overlay.id='s41-share-overlay';overlay.innerHTML=`<div id="s41-share-modal"><button class="sm-close" onclick="closeShareModal()">×</button><div class="sm-title">แชร์ Archetype ของคุณ</div><div class="sm-sub" id="sm-sub-txt">กำลังสร้างรูปการ์ด...</div><img id="sm-card-img" src="" alt="archetype card" style="display:none"/><div class="sm-step" id="sm-step" style="display:none">📌 <strong>วิธีแชร์:</strong><br>1. กด <strong>"บันทึกรูป"</strong> เพื่อเซฟการ์ดลงเครื่อง<br>2. กด <strong>"เปิด Facebook"</strong> แล้วอัปโหลดรูปที่เซฟไว้<br>caption จะถูก copy ไว้แล้ว — วางได้เลย!</div><button class="sm-btn-dl" id="sm-btn-dl" style="display:none" onclick="downloadCard()">💾 บันทึกรูปการ์ด</button><button class="sm-btn-fb" id="sm-btn-fb" style="display:none" onclick="openFacebook()"><svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>เปิด Facebook</button><button class="sm-btn-cancel" onclick="closeShareModal()">ไม่ใช่ตอนนี้</button></div>`;document.body.appendChild(overlay);}
+let _shareCardDataURL=null,_shareCaption='',_shareCardEl=null;
+function shareToFacebook(){injectCardCSS();buildShareModal();const arch=ARCH[S.archetype];if(!arch)return;_shareCaption=arch.caption+'\n\n→ ตรวจสุขภาพเงินของคุณฟรี: https://aoyoyoh.github.io/Survey/';document.getElementById('s41-share-overlay').classList.add('show');document.getElementById('sm-sub-txt').textContent='กำลังสร้างรูปการ์ด...';document.getElementById('sm-card-img').style.display='none';document.getElementById('sm-step').style.display='none';document.getElementById('sm-btn-dl').style.display='none';document.getElementById('sm-btn-fb').style.display='none';const wrapper=document.createElement('div');wrapper.style.cssText='position:fixed;left:-9999px;top:0;z-index:-1;';wrapper.innerHTML=buildShareCardHTML(arch,S.radarScores);document.body.appendChild(wrapper);_shareCardEl=wrapper;setTimeout(()=>{html2canvas(wrapper.querySelector('#s41-share-card'),{scale:2,useCORS:true,backgroundColor:'#FFFFFF',logging:false}).then(canvas=>{_shareCardDataURL=canvas.toDataURL('image/png');const img=document.getElementById('sm-card-img');img.src=_shareCardDataURL;img.style.display='block';document.getElementById('sm-sub-txt').textContent='การ์ดพร้อมแล้ว! บันทึกรูปแล้วแชร์บน Facebook ได้เลยค่ะ';document.getElementById('sm-step').style.display='block';document.getElementById('sm-btn-dl').style.display='block';document.getElementById('sm-btn-fb').style.display='flex';navigator.clipboard.writeText(_shareCaption).catch(()=>{});document.body.removeChild(wrapper);_shareCardEl=null;}).catch(()=>{document.getElementById('sm-sub-txt').textContent='เกิดข้อผิดพลาด ลองใหม่อีกครั้งนะคะ';if(_shareCardEl)document.body.removeChild(_shareCardEl);});},800);}
+function downloadCard(){if(!_shareCardDataURL)return;const a=document.createElement('a');a.href=_shareCardDataURL;a.download='s41-archetype-'+(S.archetype||'card')+'.png';a.click();}
+function openFacebook(){window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent('https://aoyoyoh.github.io/Survey/'),'_blank');}
+function closeShareModal(){const overlay=document.getElementById('s41-share-overlay');if(overlay)overlay.classList.remove('show');if(_shareCardEl&&document.body.contains(_shareCardEl)){document.body.removeChild(_shareCardEl);_shareCardEl=null;}}  
 </script>
 </body>
 </html>
