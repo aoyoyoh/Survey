@@ -659,91 +659,101 @@ async function generateShareCard(){
   const C=document.createElement('canvas');C.width=1080;C.height=1080;
   const ctx=C.getContext('2d');
 
-  /* ── Background: dark navy (premium) ── */
+  /* ── Background: deep navy premium ── */
   const g=ctx.createLinearGradient(0,0,1080,1080);
-  g.addColorStop(0,'#001530');g.addColorStop(1,'#002455');
+  g.addColorStop(0,'#001228');g.addColorStop(0.5,'#001f48');g.addColorStop(1,'#001a3a');
   ctx.fillStyle=g;ctx.fillRect(0,0,1080,1080);
 
-  /* ── Subtle grid ── */
-  ctx.strokeStyle='rgba(200,169,74,0.06)';ctx.lineWidth=1;
-  for(let x=0;x<1080;x+=60){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,1080);ctx.stroke();}
-  for(let y=0;y<1080;y+=60){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(1080,y);ctx.stroke();}
+  /* ── Subtle gold dot grid ── */
+  ctx.fillStyle='rgba(200,169,74,0.05)';
+  for(let x=54;x<1080;x+=54)for(let y=54;y<1080;y+=54){ctx.beginPath();ctx.arc(x,y,1.5,0,Math.PI*2);ctx.fill();}
 
   /* ── Gold bars ── */
   ctx.fillStyle='#C8A94A';ctx.fillRect(0,0,1080,8);ctx.fillRect(0,1072,1080,8);
 
   /* ── Header ── */
   ctx.textAlign='center';
-  ctx.fillStyle='rgba(200,169,74,0.9)';ctx.font='700 17px Sarabun,sans-serif';
+  ctx.fillStyle='rgba(200,169,74,0.95)';ctx.font='700 17px Sarabun,sans-serif';
   ctx.fillText('✦  SIGNATURE 41 FINANCIAL CLINIC  ✦',540,48);
-  ctx.fillStyle='rgba(255,255,255,0.4)';ctx.font='400 13px Sarabun,sans-serif';
+  ctx.fillStyle='rgba(255,255,255,0.38)';ctx.font='400 13px Sarabun,sans-serif';
   ctx.fillText('Financial Health Check · CFP® Based',540,70);
-  ctx.strokeStyle='rgba(200,169,74,0.3)';ctx.lineWidth=1;
+  ctx.strokeStyle='rgba(200,169,74,0.28)';ctx.lineWidth=1;
   ctx.beginPath();ctx.moveTo(80,86);ctx.lineTo(1000,86);ctx.stroke();
 
-  /* ── LEFT: Archetype SVG ── */
+  /* ── LEFT: Archetype SVG — swap navy→white so it shows on dark bg ── */
   const svgStr=ASVG[arch.key]||'';
-  const bigSvg=svgStr.replace(/width="\d+"/, 'width="280"').replace(/height="\d+"/, 'height="245"');
+  const bigSvg=svgStr
+    .replace(/width="\d+"/,'width="310"').replace(/height="\d+"/,'height="272"')
+    .replace(/stroke="#002366"/g,'stroke="rgba(255,255,255,0.92)"')
+    .replace(/fill="#002366"/g,'fill="rgba(255,255,255,0.92)"');
   await new Promise(res=>{
     try{
       const blob=new Blob([bigSvg],{type:'image/svg+xml'});
       const url=URL.createObjectURL(blob);
       const img=new Image();
-      img.onload=()=>{ctx.drawImage(img,80,112,280,245);URL.revokeObjectURL(url);res();};
+      img.onload=()=>{ctx.drawImage(img,80,100,310,272);URL.revokeObjectURL(url);res();};
       img.onerror=()=>{URL.revokeObjectURL(url);res();};
       img.src=url;
     }catch(e){res();}
   });
 
-  /* Arch name & tag (left) */
+  /* Archetype name — auto-scale to fit left panel ── */
   ctx.textAlign='left';
-  ctx.fillStyle='#FFFFFF';ctx.font='800 46px Sarabun,sans-serif';
-  ctx.fillText(arch.name,80,400);
-  ctx.fillStyle='#C8A94A';ctx.font='600 19px Sarabun,sans-serif';
-  ctx.fillText(arch.tag,80,434);
+  let fs=48;ctx.font=`800 ${fs}px Sarabun,sans-serif`;
+  while(ctx.measureText(arch.name).width>410&&fs>30){fs-=2;ctx.font=`800 ${fs}px Sarabun,sans-serif`;}
+  ctx.fillStyle='#FFFFFF';ctx.fillText(arch.name,80,416);
+  ctx.fillStyle='#C8A94A';ctx.font='600 18px Sarabun,sans-serif';
+  ctx.fillText(arch.tag,80,452);
+
+  /* Short description (2 lines max) */
+  ctx.fillStyle='rgba(255,255,255,0.5)';ctx.font='400 15px Sarabun,sans-serif';
+  const diagWords=arch.diagnosis.split(' ');let diagLine='';let diagY=482;
+  for(const w of diagWords){
+    const test=diagLine+(diagLine?' ':'')+w;
+    if(ctx.measureText(test).width>420&&diagLine){ctx.fillText(diagLine,80,diagY);diagLine=w;diagY+=22;if(diagY>530)break;}
+    else diagLine=test;
+  }
+  if(diagY<=530)ctx.fillText(diagLine,80,diagY);
 
   /* ── CENTER vertical divider ── */
-  ctx.strokeStyle='rgba(200,169,74,0.2)';ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(510,100);ctx.lineTo(510,620);ctx.stroke();
+  ctx.strokeStyle='rgba(200,169,74,0.18)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(530,96);ctx.lineTo(530,630);ctx.stroke();
 
-  /* ── RIGHT: Radar spider web ── */
-  drawRadarCanvas(ctx,r,790,300,175);
-
-  /* Radar label */
+  /* ── RIGHT: Radar spider web — center at (800,320) r=178 ── */
+  drawRadarCanvas(ctx,r,800,318,178);
   ctx.textAlign='center';
-  ctx.fillStyle='rgba(200,169,74,0.7)';ctx.font='700 13px Sarabun,sans-serif';
-  ctx.fillText('▲ FINANCIAL RADAR ▲',790,118);
+  ctx.fillStyle='rgba(200,169,74,0.65)';ctx.font='700 12px Sarabun,sans-serif';
+  ctx.fillText('◆  FINANCIAL RADAR  ◆',800,115);
 
-  /* Legend (below radar) */
+  /* Legend */
   const dims=['เงินสำรอง','ความคุ้มครอง','กระแสเงินสด','การออม/ลงทุน','การวางแผน'];
   const vals=[r.emergency,r.protection,r.cashflow,r.savings,r.planning];
-  const sc=v=>v>=70?'#4CAF50':v>=40?'#C8A94A':'#E05252';
+  const sc=v=>v>=70?'#52C97A':v>=40?'#C8A94A':'#E05252';
   dims.forEach((d,i)=>{
-    const ly=496+i*30;
-    ctx.fillStyle=sc(vals[i]);ctx.beginPath();ctx.arc(552,ly-8,6,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle='rgba(255,255,255,0.7)';ctx.font='400 18px Sarabun,sans-serif';ctx.textAlign='left';
+    const ly=512+i*28;
+    ctx.fillStyle=sc(vals[i]);ctx.beginPath();ctx.arc(554,ly-8,5,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,0.65)';ctx.font='400 17px Sarabun,sans-serif';ctx.textAlign='left';
     ctx.fillText(d,568,ly);
-    ctx.fillStyle=sc(vals[i]);ctx.font='700 18px Sarabun,sans-serif';ctx.textAlign='right';
+    ctx.fillStyle=sc(vals[i]);ctx.font='700 17px Sarabun,sans-serif';ctx.textAlign='right';
     ctx.fillText(vals[i]+'/100',1000,ly);
   });
 
   /* ── Horizontal divider ── */
-  ctx.strokeStyle='rgba(200,169,74,0.25)';ctx.lineWidth=1;ctx.textAlign='center';
-  ctx.beginPath();ctx.moveTo(80,644);ctx.lineTo(1000,644);ctx.stroke();
+  ctx.strokeStyle='rgba(200,169,74,0.22)';ctx.lineWidth=1;ctx.textAlign='center';
+  ctx.beginPath();ctx.moveTo(80,652);ctx.lineTo(1000,652);ctx.stroke();
 
   /* ── Caption ── */
-  ctx.fillStyle='rgba(255,255,255,0.85)';ctx.font='400 23px Sarabun,sans-serif';
-  const captionEnd=wrapTextCenter(ctx,arch.caption,540,692,880,38);
+  ctx.fillStyle='rgba(255,255,255,0.88)';ctx.font='italic 400 22px Sarabun,sans-serif';
+  const captionEnd=wrapTextCenter(ctx,arch.caption,540,700,860,38);
 
   /* ── CTA box ── */
-  const ctaY=Math.max(captionEnd+24,876);
-  ctx.fillStyle='rgba(200,169,74,0.12)';
-  ctx.strokeStyle='rgba(200,169,74,0.6)';ctx.lineWidth=1.5;
-  rrect(ctx,80,ctaY,920,112,20);ctx.fill();ctx.stroke();
-  ctx.fillStyle='#C8A94A';ctx.font='700 26px Sarabun,sans-serif';
-  ctx.fillText('🔍 ลองตรวจสุขภาพการเงินของคุณได้เลย!',540,ctaY+44);
-  ctx.fillStyle='rgba(255,255,255,0.65)';ctx.font='400 19px Sarabun,sans-serif';
-  ctx.fillText(SURVEY_URL,540,ctaY+80);
+  const ctaY=Math.max(captionEnd+20,876);
+  ctx.fillStyle='rgba(200,169,74,0.1)';ctx.strokeStyle='rgba(200,169,74,0.55)';ctx.lineWidth=1.5;
+  rrect(ctx,80,ctaY,920,110,18);ctx.fill();ctx.stroke();
+  ctx.fillStyle='#C8A94A';ctx.font='700 25px Sarabun,sans-serif';
+  ctx.fillText('🔍 ลองตรวจสุขภาพการเงินของคุณได้เลย!',540,ctaY+42);
+  ctx.fillStyle='rgba(255,255,255,0.55)';ctx.font='400 18px Sarabun,sans-serif';
+  ctx.fillText(SURVEY_URL,540,ctaY+76);
 
   return C.toDataURL('image/png');
 }
@@ -1080,7 +1090,7 @@ function downloadPDF(){
   const legendRows=names.map((n,i)=>`<div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#7A7A8C;margin-bottom:4px"><div style="width:8px;height:8px;border-radius:50%;background:${sc2(vals[i])};flex-shrink:0"></div><span>${n}</span><strong style="margin-left:auto;color:#002366">${vals[i]}/100</strong></div>`).join('');
   const discRows=discItems.map(t=>`<div style="display:flex;gap:8px;margin-bottom:7px;font-size:12.5px;color:#7A7A8C;line-height:1.6"><div style="width:5px;height:5px;border-radius:50%;background:#C8A94A;flex-shrink:0;margin-top:7px"></div><div>${t}</div></div>`).join('');
   const priRows=priorities.slice(0,4).map((p,i)=>`<div style="font-size:12.5px;color:#1C1C2E;margin-bottom:5px"><span style="background:#002366;color:#fff;font-size:10px;font-weight:800;padding:1px 6px;border-radius:10px;margin-right:5px">${i+1}</span>${p.icon} ${p.label} <span style="color:#9B9B9B;font-size:11px">(${p.score}/100)</span></div>`).join('');
-  const html=`<!DOCTYPE html><html lang="th"><head><meta charset="UTF-8"><title>S41 Wealth Report — ${arch.name}</title><link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700;800&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Sarabun',sans-serif;background:#fff;color:#1C1C2E;padding:18px 26px}.hdr{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:2px solid #002366;margin-bottom:12px}.s41{font-size:10px;font-weight:800;color:#002366;letter-spacing:3px}.top-row{display:flex;gap:18px;align-items:flex-start;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid rgba(0,35,102,.08)}.arch-info{flex:0 0 240px}.aname{font-size:16px;font-weight:800;color:#002366;margin:5px 0 3px}.atag{font-size:9px;color:#C8A94A;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:6px}.adesc{font-size:11px;color:#7A7A8C;line-height:1.6}.radar-box{flex:1;display:flex;gap:12px;align-items:flex-start}.lgnd{flex:1}.lgnd-row{display:flex;align-items:center;gap:7px;font-size:11px;color:#7A7A8C;margin-bottom:5px}.lgnd-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}.lgnd-score{font-weight:700;color:#002366;margin-left:auto}.stit{font-size:8px;font-weight:800;color:#002366;letter-spacing:2px;text-transform:uppercase;margin-bottom:7px}.main-cols{display:flex;gap:14px;margin-bottom:10px}.col-l{flex:0 0 49%}.col-r{flex:1}.dbox{background:rgba(0,35,102,.04);border:1px solid rgba(0,35,102,.09);border-radius:8px;padding:10px;margin-bottom:9px}.rxbox{background:rgba(200,169,74,.08);border-left:3px solid #C8A94A;border-radius:0 8px 8px 0;padding:8px 11px;margin-bottom:9px;font-size:11px;color:#002366;line-height:1.6}.cap{background:rgba(200,169,74,.06);border-left:3px solid #C8A94A;border-radius:0 8px 8px 0;padding:8px 11px;font-size:11px;color:#002366;line-height:1.6;font-style:italic;margin-bottom:9px}.trep{background:rgba(0,35,102,.03);border:1.5px solid rgba(0,35,102,.12);border-left:4px solid #002366;border-radius:0 10px 10px 0;padding:11px 13px}.trow{display:flex;gap:6px;margin-bottom:3px;font-size:11px}.tkey{color:#7A7A8C;min-width:96px}.tval{font-weight:700;color:#002366}.sub-stit{margin:7px 0 4px;font-size:8px;font-weight:800;color:#002366;letter-spacing:1.5px;text-transform:uppercase}.ftr{border-top:1px solid #E5E1D8;padding-top:9px;display:flex;justify-content:space-between;font-size:9px;color:#7A7A8C}@media print{body{padding:8px 16px}@page{margin:7mm;size:A4 portrait}.top-row,.main-cols,.dbox,.rxbox,.cap,.trep{page-break-inside:avoid}.top-row svg{width:150px!important;height:150px!important}}</style></head><body>
+  const html=`<!DOCTYPE html><html lang="th"><head><meta charset="UTF-8"><title>S41 Wealth Report — ${arch.name}</title><link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700;800&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Sarabun',sans-serif;background:#fff;color:#1C1C2E;padding:18px 26px}.hdr{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:2px solid #002366;margin-bottom:12px}.s41{font-size:10px;font-weight:800;color:#002366;letter-spacing:3px}.top-row{display:flex;gap:18px;align-items:flex-start;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid rgba(0,35,102,.08)}.arch-info{flex:0 0 240px}.aname{font-size:16px;font-weight:800;color:#002366;margin:5px 0 3px}.atag{font-size:9px;color:#C8A94A;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:6px}.adesc{font-size:11px;color:#7A7A8C;line-height:1.6}.radar-box{flex:1;display:flex;gap:12px;align-items:flex-start}.lgnd{flex:1}.lgnd div strong{margin-left:6px!important}.lgnd-row{display:flex;align-items:center;gap:7px;font-size:11px;color:#7A7A8C;margin-bottom:5px}.lgnd-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}.lgnd-score{font-weight:700;color:#002366;margin-left:6px}.stit{font-size:8px;font-weight:800;color:#002366;letter-spacing:2px;text-transform:uppercase;margin-bottom:7px}.main-cols{display:flex;gap:14px;margin-bottom:10px}.col-l{flex:0 0 49%}.col-r{flex:1}.dbox{background:rgba(0,35,102,.04);border:1px solid rgba(0,35,102,.09);border-radius:8px;padding:10px;margin-bottom:9px}.rxbox{background:rgba(200,169,74,.08);border-left:3px solid #C8A94A;border-radius:0 8px 8px 0;padding:8px 11px;margin-bottom:9px;font-size:11px;color:#002366;line-height:1.6}.cap{background:rgba(200,169,74,.06);border-left:3px solid #C8A94A;border-radius:0 8px 8px 0;padding:8px 11px;font-size:11px;color:#002366;line-height:1.6;font-style:italic;margin-bottom:9px}.trep{background:rgba(0,35,102,.03);border:1.5px solid rgba(0,35,102,.12);border-left:4px solid #002366;border-radius:0 10px 10px 0;padding:11px 13px}.trow{display:flex;gap:6px;margin-bottom:3px;font-size:11px}.tkey{color:#7A7A8C;min-width:96px}.tval{font-weight:700;color:#002366}.sub-stit{margin:7px 0 4px;font-size:8px;font-weight:800;color:#002366;letter-spacing:1.5px;text-transform:uppercase}.ftr{border-top:1px solid #E5E1D8;padding-top:9px;display:flex;justify-content:space-between;font-size:9px;color:#7A7A8C}@media print{body{padding:8px 16px}@page{margin:7mm;size:A4 portrait}.top-row,.main-cols,.dbox,.rxbox,.cap,.trep{page-break-inside:avoid}.top-row svg{width:150px!important;height:150px!important}}</style></head><body>
   <div class="hdr"><span class="s41">✦ SIGNATURE 41 FINANCIAL CLINIC ✦</span><span style="font-size:9px;color:#C8A94A;font-weight:700">WEALTH REPORT v4.1</span></div>
   <div class="top-row">
     <div class="arch-info">${ASVG[arch.key]||''}<div class="aname">${arch.name}</div><span class="atag">${arch.tag}</span><div class="adesc">${arch.diagnosis}</div></div>
