@@ -351,7 +351,7 @@ const QS=[
 ];
 
 /* ════ STATE ════ */
-let S={screen:'welcome',currentQ:0,answers:{},archetype:null,radarScores:null,contactOpen:false,contactName:'',contactPhone:'',contactLine:''};
+let S={screen:'welcome',currentQ:0,answers:{},archetype:null,radarScores:null,contactOpen:false,contactName:'',contactPhone:'',contactLine:'',contactEmail:''};
 
 /* ════ SCORING ════ */
 const KS={A:4,B:3,C:2,D:1,E:1};
@@ -1025,6 +1025,8 @@ function rResult(){
         <input class="ti" id="inp-name" type="text" placeholder="กรุณากรอกชื่อ-นามสกุล" value="${S.contactName}" oninput="S.contactName=this.value">
         <label class="flabel">เบอร์โทรศัพท์</label>
         <input class="ti" id="inp-phone" type="tel" placeholder="0812345678" value="${S.contactPhone}" oninput="S.contactPhone=this.value">
+        <label class="flabel">อีเมล <span style="font-weight:400;color:var(--muted)">(รับ magic link เข้า dashboard วางแผนเชิงลึก)</span></label>
+        <input class="ti" id="inp-email" type="email" placeholder="email@example.com" value="${S.contactEmail}" oninput="S.contactEmail=this.value">
         <label class="flabel">Line ID <span style="font-weight:400;color:var(--muted)">(ไม่บังคับ)</span></label>
         <input class="ti" id="inp-line" type="text" placeholder="@lineid" value="${S.contactLine}" oninput="S.contactLine=this.value">
         <button class="btn-full btn-line" style="margin-bottom:8px" onclick="submitLead()">📅 ส่งข้อมูลและนัดปรึกษา S41 ฟรี</button>
@@ -1090,42 +1092,87 @@ function toggleContact(){
   if(a)a.textContent=S.contactOpen?'∨':'›';
 }
 
-function submitLead(){
-  const name=document.getElementById('inp-name')?.value||S.contactName;
-  const phone=document.getElementById('inp-phone')?.value||S.contactPhone;
-  if(!name){alert('กรุณากรอกชื่อ-นามสกุลของคุณ');return;}
-  if(!phone){alert('กรุณากรอกเบอร์โทรศัพท์');return;}
-  S.contactName=name;S.contactPhone=phone;
-  const arch=ARCH[S.archetype]||{};
+function buildCFPIntake(){
   const surp=calcSurplus();
-  const priorities=calcPriorities(S.radarScores||{});
   const ins=calcInsurance();
+  const priorities=calcPriorities(S.radarScores||{});
+  const arch=ARCH[S.archetype]||{};
   const q1Labels={A:'ไลฟ์สไตล์และประสบการณ์',B:'ครอบครัวและคนรัก',C:'อิสรภาพทางการเงิน',D:'ส่งต่อและสร้างมรดก'};
   const q2Labels={A:'ฐาน (เงินสำรอง/ประกัน)',B:'หนี้และกระแสเงินสด',C:'การเติบโตและลงทุน',D:'ตรวจเช็กและวางแผนรวม'};
-  const q12Labels={A:'🛡️ สร้างหลักประกัน',B:'💧 ลดหนี้',C:'🌱 ออมและลงทุน',D:'📊 วางแผนภาษี',E:'🎯 เป้าหมายระยะยาว'};
-  const payload={
-    timestamp:new Date().toISOString(),
-    lead:{name,phone,line:S.contactLine},
-    archetype:{key:S.archetype,name:arch.name},
-    context:{
-      lifeValues:q1Labels[S.answers['Q1']?.choice]||'-',
-      painPoint:q2Labels[S.answers['Q2']?.choice]||'-',
+  const q12Labels={A:'สร้างหลักประกัน',B:'ลดหนี้',C:'ออมและลงทุน',D:'วางแผนภาษี',E:'เป้าหมายระยะยาว'};
+  return{
+    /* contact */
+    fullName:S.contactName,
+    phone:S.contactPhone,
+    email:S.contactEmail||null,
+    lineId:S.contactLine||null,
+    /* archetype */
+    archetype:{key:S.archetype,name:arch.name,tag:arch.tag||null},
+    /* 5-dimension scores (0-100) */
+    scores:{
+      emergency:S.radarScores?.emergency||0,
+      protection:S.radarScores?.protection||0,
+      cashflow:S.radarScores?.cashflow||0,
+      savings:S.radarScores?.savings||0,
+      planning:S.radarScores?.planning||0,
     },
-    fiveForces:S.radarScores,
-    income:{range:INCOME_RANGE[surp.incQ],monthly:surp.income,annual:surp.income*12,taxBracket:TAX_BRACKET[surp.incQ]},
-    surplus:{pctRange:SURPLUS_RANGE[surp.surQ],monthly:Math.round(surp.monthly),annual:Math.round(surp.annual)},
-    priorities:priorities.slice(0,4).map((p,i)=>({rank:i+1,label:p.label,score:p.score})),
+    /* financial snapshot */
+    income:{monthly:surp.income,annual:surp.income*12,range:INCOME_RANGE?.[surp.incQ]||null,taxBracket:TAX_BRACKET?.[surp.incQ]||null},
+    surplus:{monthly:Math.round(surp.monthly),annual:Math.round(surp.annual),range:SURPLUS_RANGE?.[surp.surQ]||null},
+    /* insurance */
     insurance:{health:ins.health.status,life:ins.life.status,overall:ins.overall},
-    customerWants:q12Labels[S.answers['Q12']?.choice]||'?',
-    rawAnswers:Object.entries(S.answers).map(([q,v])=>`${q}:${v.choice}`).join(', '),
+    /* priorities */
+    priorities:priorities.slice(0,5).map((p,i)=>({rank:i+1,dimension:p.label,score:p.score})),
+    /* qualitative */
+    lifeValues:q1Labels[S.answers['Q1']?.choice]||null,
+    painPoint:q2Labels[S.answers['Q2']?.choice]||null,
+    customerWants:q12Labels[S.answers['Q12']?.choice]||null,
+    /* raw */
+    rawAnswers:Object.fromEntries(Object.entries(S.answers).map(([q,v])=>[q,v.choice])),
+    surveyVersion:'4.1',
+    completedAt:new Date().toISOString(),
   };
-  console.log('[S41 Lead v4.1]', payload);
-  // TODO: Replace with webhook/API call e.g. fetch('/api/leads', {method:'POST', body:JSON.stringify(payload)})
+}
+
+async function submitLead(){
+  const name=(document.getElementById('inp-name')?.value||S.contactName).trim();
+  const phone=(document.getElementById('inp-phone')?.value||S.contactPhone).trim();
+  const email=(document.getElementById('inp-email')?.value||S.contactEmail).trim();
+  if(!name){alert('กรุณากรอกชื่อ-นามสกุลของคุณ');return;}
+  if(!phone){alert('กรุณากรอกเบอร์โทรศัพท์');return;}
+  S.contactName=name;S.contactPhone=phone;S.contactEmail=email;
+
+  const ref=new URLSearchParams(window.location.search).get('ref')||'direct';
+  const cfpIntake=buildCFPIntake();
+
+  /* disable button to prevent double-submit */
+  const btn=document.querySelector('.btn-line[onclick="submitLead()"]');
+  if(btn){btn.disabled=true;btn.textContent='กำลังส่งข้อมูล...';}
+
+  try{
+    const res=await fetch('https://lpqcglmpkuasgjgzqdyp.supabase.co/functions/v1/survey-lead',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer sb_publishable_CL-lFLHRCuQNLqFYxaWsxA_odaH_WTa',
+      },
+      body:JSON.stringify({lead:{name,phone,email,line:S.contactLine||null},cfpIntake,ref}),
+    });
+    if(!res.ok){
+      const errText=await res.text();
+      console.error('[S41] Edge Function error',res.status,errText);
+      /* still navigate to thank-you — don't block the user */
+    }
+  }catch(err){
+    console.error('[S41] submitLead fetch error',err);
+    /* non-blocking — still show thank-you */
+  }
+
   S.screen='thankyou';render();window.scrollTo(0,0);
 }
 
 function restart(){
-  S={screen:'welcome',currentQ:0,answers:{},archetype:null,radarScores:null,contactOpen:false,contactName:'',contactPhone:'',contactLine:''};
+  S={screen:'welcome',currentQ:0,answers:{},archetype:null,radarScores:null,contactOpen:false,contactName:'',contactPhone:'',contactLine:'',contactEmail:''};
   render();window.scrollTo(0,0);
 }
 
