@@ -500,7 +500,7 @@ function buildTeamReportHTML(r){
 
   return`
   <div class="team-report">
-    <div class="team-report-title">📊 ข้อมูลสำหรับทีม S41</div>
+    <div class="team-report-title">📊 Financial Snapshot</div>
 
     <div class="tr-section">
       <div class="tr-label">0 · Context ลูกค้า</div>
@@ -1137,50 +1137,127 @@ function downloadPDF(){
   const names=['เงินสำรอง','ความคุ้มครอง','กระแสเงินสด','การออม/ลงทุน','การวางแผน'];
   const q12Labels={A:'🛡️ สร้างหลักประกัน',B:'💧 ลดหนี้',C:'🌱 ออมและลงทุน',D:'📊 วางแผนภาษี',E:'🎯 เป้าหมายระยะยาว'};
   const custWant=q12Labels[S.answers['Q12']?.choice]||'-';
+  const custWantClean={A:'สร้างหลักประกัน',B:'ลดหนี้',C:'ออมและลงทุน',D:'วางแผนภาษี',E:'เป้าหมายระยะยาว'}[S.answers['Q12']?.choice]||custWant;
+  const insOverallClean=ins.overall.replace(/[\u{1F300}-\u{1FFFF}\u{2600}-\u{27FF}]/gu,'').trim();
   const q1Labels={A:'ไลฟ์สไตล์และประสบการณ์',B:'ครอบครัวและคนรัก',C:'อิสรภาพทางการเงิน',D:'ส่งต่อและสร้างมรดก'};
   const lifeVal=q1Labels[S.answers['Q1']?.choice]||'-';
   const q2Labels={A:'ฐาน (เงินสำรอง/ประกัน)',B:'หนี้และกระแสเงินสด',C:'การเติบโตและลงทุน',D:'ตรวจเช็กและวางแผนรวม'};
   const painPoint=q2Labels[S.answers['Q2']?.choice]||'-';
   const sc2=v=>v>=70?'#2E7D32':v>=40?'#C8A94A':'#E05252';
   const fmtTHB=n=>n<0?`ติดลบ ~${Math.abs(Math.round(n)).toLocaleString()} บาท`:`~${Math.round(n).toLocaleString()} บาท`;
-  const legendRows=names.map((n,i)=>`<div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#7A7A8C;margin-bottom:4px"><div style="width:8px;height:8px;border-radius:50%;background:${sc2(vals[i])};flex-shrink:0"></div><span>${n}</span><strong style="margin-left:auto;color:#002366">${vals[i]}/100</strong></div>`).join('');
-  const discRows=discItems.map(t=>`<div style="display:flex;gap:8px;margin-bottom:7px;font-size:12.5px;color:#7A7A8C;line-height:1.6"><div style="width:5px;height:5px;border-radius:50%;background:#C8A94A;flex-shrink:0;margin-top:7px"></div><div>${t}</div></div>`).join('');
-  const priRows=priorities.slice(0,4).map((p,i)=>`<div style="font-size:12.5px;color:#1C1C2E;margin-bottom:5px"><span style="background:#002366;color:#fff;font-size:10px;font-weight:800;padding:1px 6px;border-radius:10px;margin-right:5px">${i+1}</span>${p.icon} ${p.label} <span style="color:#9B9B9B;font-size:11px">(${p.score}/100)</span></div>`).join('');
-  const html=`<!DOCTYPE html><html lang="th"><head><meta charset="UTF-8"><title>S41 Wealth Report — ${arch.name}</title><link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700;800&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Sarabun',sans-serif;background:#fff;color:#1C1C2E;padding:18px 26px}.hdr{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:2px solid #002366;margin-bottom:12px}.s41{font-size:10px;font-weight:800;color:#002366;letter-spacing:3px}.top-row{display:flex;gap:18px;align-items:flex-start;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid rgba(0,35,102,.08)}.arch-info{flex:0 0 240px}.aname{font-size:16px;font-weight:800;color:#002366;margin:5px 0 3px}.atag{font-size:9px;color:#C8A94A;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:6px}.adesc{font-size:11px;color:#7A7A8C;line-height:1.6}.radar-box{flex:1;display:flex;gap:12px;align-items:flex-start}.radar-box svg{max-width:190px;height:auto}.lgnd{flex:1}.lgnd div strong{margin-left:6px!important}.lgnd-row{display:flex;align-items:center;gap:7px;font-size:11px;color:#7A7A8C;margin-bottom:5px}.lgnd-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}.lgnd-score{font-weight:700;color:#002366;margin-left:6px}.stit{font-size:8px;font-weight:800;color:#002366;letter-spacing:2px;text-transform:uppercase;margin-bottom:7px}.main-cols{display:flex;gap:14px;margin-bottom:10px}.col-l{flex:0 0 49%}.col-r{flex:1}.dbox{background:rgba(0,35,102,.04);border:1px solid rgba(0,35,102,.09);border-radius:8px;padding:10px;margin-bottom:9px}.rxbox{background:rgba(200,169,74,.08);border-left:3px solid #C8A94A;border-radius:0 8px 8px 0;padding:8px 11px;margin-bottom:9px;font-size:11px;color:#002366;line-height:1.6}.cap{background:rgba(200,169,74,.06);border-left:3px solid #C8A94A;border-radius:0 8px 8px 0;padding:8px 11px;font-size:11px;color:#002366;line-height:1.6;font-style:italic;margin-bottom:9px}.trep{background:rgba(0,35,102,.03);border:1.5px solid rgba(0,35,102,.12);border-left:4px solid #002366;border-radius:0 10px 10px 0;padding:11px 13px}.trow{display:flex;gap:6px;margin-bottom:3px;font-size:11px}.tkey{color:#7A7A8C;min-width:96px}.tval{font-weight:700;color:#002366}.sub-stit{margin:7px 0 4px;font-size:8px;font-weight:800;color:#002366;letter-spacing:1.5px;text-transform:uppercase}.ftr{border-top:1px solid #E5E1D8;padding-top:9px;display:flex;justify-content:space-between;font-size:9px;color:#7A7A8C}@media print{body{padding:8px 16px}@page{margin:7mm;size:A4 portrait}.top-row,.main-cols,.dbox,.rxbox,.cap,.trep{page-break-inside:avoid}.top-row svg{width:150px!important;height:150px!important}}</style></head><body>
-  <div class="hdr"><span class="s41">✦ SIGNATURE 41 FINANCIAL CLINIC ✦</span><span style="font-size:9px;color:#C8A94A;font-weight:700">WEALTH REPORT v4.1</span></div>
-  <div class="top-row">
-    <div class="arch-info">${ASVG[arch.key]||''}<div class="aname">${arch.name}</div><span class="atag">${arch.tag}</span><div class="adesc">${arch.diagnosis}</div></div>
-    <div class="radar-box"><div>${drawRadar(r)}</div><div class="lgnd"><div class="stit">คะแนน 5 มิติ</div>${legendRows}</div></div>
+  const html=`<!DOCTYPE html><html lang="th"><head><meta charset="UTF-8"><title>S41 Wealth Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Sarabun',sans-serif;background:#fff;color:#1C1C2E;font-size:11.5px;line-height:1.55}
+.hdr{background:#002366;padding:9px 20px;display:flex;justify-content:space-between;align-items:center}
+.hdr-l{color:#fff;font-size:7.5px;font-weight:800;letter-spacing:3.5px}
+.hdr-r{color:#C8A94A;font-size:8px;font-weight:700;letter-spacing:2px}
+.profile{display:flex;gap:16px;align-items:flex-start;padding:12px 20px;border-bottom:1px solid rgba(0,35,102,.1);margin-bottom:11px}
+.arch-icon{flex-shrink:0;padding-top:2px}
+.arch-body{flex:1}
+.arch-name{font-size:19px;font-weight:800;color:#002366;letter-spacing:-.3px;margin-bottom:1px}
+.arch-tag{display:block;font-size:7.5px;font-weight:700;color:#C8A94A;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:7px}
+.arch-diag{font-size:11px;color:#5A5A6E;line-height:1.7;margin-bottom:7px}
+.arch-cap{font-size:10.5px;color:#002366;line-height:1.65;padding:6px 10px;border-left:2.5px solid #C8A94A;background:rgba(200,169,74,.05);border-radius:0 4px 4px 0}
+.kpi-row{display:flex;gap:8px;padding:0 20px;margin-bottom:11px}
+.kpi{flex:1;border:1px solid rgba(0,35,102,.1);border-top:2.5px solid #002366;border-radius:0 0 5px 5px;padding:7px 10px;background:#F7F9FC}
+.kpi.gold{border-top-color:#C8A94A}
+.kpi-lbl{font-size:7.5px;font-weight:700;color:#7A7A8C;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:3px}
+.kpi-val{font-size:14px;font-weight:800;color:#002366;line-height:1.2}
+.kpi-val.pos{color:#1B6B3A}
+.kpi-val.neg{color:#C0392B}
+.kpi-sub{font-size:8.5px;color:#9B9B9B;margin-top:2px}
+.stit{font-size:7.5px;font-weight:800;color:#002366;letter-spacing:2.5px;text-transform:uppercase;padding-bottom:4px;border-bottom:1.5px solid #C8A94A;margin-bottom:8px}
+.analysis{display:flex;gap:16px;padding:0 20px;margin-bottom:11px;align-items:flex-start}
+.radar-wrap{flex:1;min-width:0;overflow:hidden}
+.radar-wrap svg{width:100%!important;height:auto!important;display:block;max-height:230px}
+.scores-wrap{flex:1;min-width:0}
+.sc-row{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.sc-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.sc-name{flex:1;font-size:10.5px;color:#5A5A6E}
+.sc-bar-bg{width:58px;height:4px;background:rgba(0,35,102,.1);border-radius:2px;overflow:hidden;flex-shrink:0}
+.sc-bar{height:4px;border-radius:2px}
+.sc-num{font-size:11px;font-weight:700;color:#002366;min-width:28px;text-align:right;flex-shrink:0}
+.two-col{display:flex;gap:14px;padding:0 20px;margin-bottom:11px}
+.col60{flex:0 0 55%}
+.col40{flex:1}
+.disc-ul{list-style:none}
+.disc-li{display:flex;gap:8px;margin-bottom:6px;font-size:11px;color:#3A3A50;line-height:1.65}
+.disc-bullet{color:#C8A94A;font-size:16px;line-height:1;flex-shrink:0;margin-top:1px}
+.rx-box{margin-top:9px;padding:8px 12px;border-left:3px solid #C8A94A;background:rgba(200,169,74,.06);border-radius:0 5px 5px 0;font-size:11px;color:#002366;line-height:1.65}
+.pri-item{display:flex;gap:8px;margin-bottom:7px;align-items:flex-start}
+.pri-badge{width:18px;height:18px;border-radius:50%;background:#002366;color:#fff;font-size:8.5px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.pri-lbl{font-size:11px;color:#1C1C2E;font-weight:600;line-height:1.4}
+.pri-act{font-size:9.5px;color:#7A7A8C;line-height:1.5;margin-top:1px}
+.team-sec{padding:0 20px;margin-bottom:10px}
+.data-wrap{border:1px solid rgba(0,35,102,.12);border-left:3.5px solid #002366;border-radius:0 6px 6px 0;padding:10px 14px;background:rgba(0,35,102,.018)}
+.data-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
+.dr{display:flex;gap:6px;padding:4px 0;border-bottom:1px solid rgba(0,35,102,.07);font-size:10.5px}
+.dk{color:#7A7A8C;min-width:88px;flex-shrink:0}
+.dv{font-weight:600;color:#002366}
+.ftr{padding:7px 20px 10px;border-top:1px solid rgba(0,35,102,.1);display:flex;justify-content:space-between;align-items:center;font-size:8px;color:#9B9B9B}
+.ftr-badge{color:#C8A94A;font-weight:700;letter-spacing:1px}
+@media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  @page{margin:5mm;size:A4 portrait}
+  .kpi-row,.analysis,.two-col,.team-sec,.profile{page-break-inside:avoid}
+}
+</style></head><body>
+<div class="hdr">
+  <span class="hdr-l">SIGNATURE 41 FINANCIAL CLINIC</span>
+  <span class="hdr-r">WEALTH REPORT · CONFIDENTIAL</span>
+</div>
+<div class="profile">
+  <div class="arch-icon">${arch.key&&ASVG[arch.key]?ASVG[arch.key]:''}</div>
+  <div class="arch-body">
+    <div class="arch-name">${arch.name}</div>
+    <span class="arch-tag">${arch.tag}</span>
+    <div class="arch-diag">${arch.diagnosis}</div>
+    <div class="arch-cap"><em>แนวทางหลัก:</em> ${arch.prescription}</div>
   </div>
-  <div class="main-cols">
-    <div class="col-l">
-      <div class="cap">${arch.caption}</div>
-      <div class="dbox"><div class="stit">🔍 สิ่งที่ต้องจัดการก่อน</div>${discRows}</div>
-      <div class="rxbox">💊 <strong>คำสั่งยา:</strong> ${arch.prescription}</div>
-    </div>
-    <div class="col-r">
-      <div class="trep">
-        <div class="stit" style="margin-bottom:9px">📊 ข้อมูลสำหรับทีม S41</div>
-        <div class="trow"><span class="tkey">ชีวิตที่ดีคือ</span><span class="tval">${lifeVal}</span></div>
-        <div class="trow"><span class="tkey">Pain Point</span><span class="tval">${painPoint}</span></div>
-        <div class="trow"><span class="tkey">รายได้/เดือน</span><span class="tval">${INCOME_RANGE[surp.incQ]||'-'} (~${surp.income.toLocaleString()} บาท)</span></div>
-        <div class="trow"><span class="tkey">ฐานภาษี</span><span class="tval">${TAX_BRACKET[surp.incQ]||'-'}</span></div>
-        <div class="trow"><span class="tkey">Surplus/เดือน</span><span class="tval">${fmtTHB(surp.monthly)}</span></div>
-        <div class="trow"><span class="tkey">Surplus/ปี</span><span class="tval">${fmtTHB(surp.annual)}</span></div>
-        <div class="sub-stit">ลำดับความสำคัญ</div>
-        ${priRows}
-        <div class="trow" style="margin-top:4px"><span class="tkey">ความต้องการ</span><span class="tval">${custWant}</span></div>
-        <div class="sub-stit">สถานะประกัน</div>
-        <div class="trow"><span class="tkey">ประกันสุขภาพ</span><span class="tval">${ins.health.status}</span></div>
-        <div class="trow"><span class="tkey">ประกันชีวิต</span><span class="tval">${ins.life.status}</span></div>
-        <div class="trow"><span class="tkey">สรุป</span><span class="tval">${ins.overall}</span></div>
-      </div>
-    </div>
+</div>
+<div class="kpi-row">
+  <div class="kpi"><div class="kpi-lbl">รายได้ / เดือน</div><div class="kpi-val">${surp.income.toLocaleString()} <span style="font-size:10px;font-weight:500">บาท</span></div><div class="kpi-sub">${INCOME_RANGE[surp.incQ]||'-'} บาท/เดือน</div></div>
+  <div class="kpi"><div class="kpi-lbl">ฐานภาษี</div><div class="kpi-val">${TAX_BRACKET[surp.incQ]||'-'}</div><div class="kpi-sub">อัตราภาษีโดยประมาณ</div></div>
+  <div class="kpi gold"><div class="kpi-lbl">Surplus / เดือน</div><div class="kpi-val ${surp.monthly>=0?'pos':'neg'}">${fmtTHB(surp.monthly)}</div><div class="kpi-sub">เงินเหลือหลังค่าใช้จ่าย</div></div>
+  <div class="kpi gold"><div class="kpi-lbl">Surplus / ปี</div><div class="kpi-val ${surp.annual>=0?'pos':'neg'}">${fmtTHB(surp.annual)}</div><div class="kpi-sub">ศักยภาพการออมรายปี</div></div>
+</div>
+<div class="analysis">
+  <div class="radar-wrap"><div class="stit">การวิเคราะห์ 5 มิติ</div>${drawRadar(r)}</div>
+  <div class="scores-wrap"><div class="stit">คะแนนรายมิติ</div>${names.map((n,i)=>`<div class="sc-row"><div class="sc-dot" style="background:${sc2(vals[i])}"></div><span class="sc-name">${n}</span><div class="sc-bar-bg"><div class="sc-bar" style="width:${vals[i]}%;background:${sc2(vals[i])}"></div></div><span class="sc-num">${vals[i]}</span></div>`).join('')}</div>
+</div>
+<div class="two-col">
+  <div class="col60">
+    <div class="stit">ประเด็นที่ต้องดำเนินการ</div>
+    <ul class="disc-ul">${discItems.map(t=>`<li class="disc-li"><span class="disc-bullet">›</span><div>${t}</div></li>`).join('')}</ul>
+    <div class="rx-box"><strong>คำแนะนำจากหมอเงิน:</strong><br>${arch.prescription}</div>
   </div>
-  <div class="ftr"><span>Signature 41 Financial Clinic · CFP® Certified</span><span>วันที่: ${new Date().toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'})}</span></div>
-  <script>window.onload=()=>{window.print();}<\/script>
+  <div class="col40">
+    <div class="stit">ลำดับความสำคัญ</div>
+    ${priorities.slice(0,5).map((p,i)=>`<div class="pri-item"><div class="pri-badge">${i+1}</div><div><div class="pri-lbl">${p.label}</div><div class="pri-act">${p.action}</div></div></div>`).join('')}
+  </div>
+</div>
+<div class="team-sec">
+  <div class="stit">Financial Snapshot</div>
+  <div class="data-wrap"><div class="data-grid">
+    <div class="dr"><span class="dk">ชีวิตที่ดีสำหรับฉัน</span><span class="dv">${lifeVal}</span></div>
+    <div class="dr"><span class="dk">Pain Point หลัก</span><span class="dv">${painPoint}</span></div>
+    <div class="dr"><span class="dk">รายได้/เดือน</span><span class="dv">${surp.income.toLocaleString()} บาท</span></div>
+    <div class="dr"><span class="dk">ความต้องการหลัก</span><span class="dv">${custWantClean}</span></div>
+    <div class="dr"><span class="dk">ประกันสุขภาพ</span><span class="dv">${ins.health.status}</span></div>
+    <div class="dr"><span class="dk">ประกันชีวิต</span><span class="dv">${ins.life.status}</span></div>
+    <div class="dr"><span class="dk">Surplus/เดือน</span><span class="dv">${fmtTHB(surp.monthly)}</span></div>
+    <div class="dr"><span class="dk">สรุปสถานะประกัน</span><span class="dv">${insOverallClean}</span></div>
+  </div></div>
+</div>
+<div class="ftr">
+  <span class="ftr-badge">CONFIDENTIAL · CFP® CERTIFIED FINANCIAL PLANNER</span>
+  <span>Signature 41 Financial Clinic · ${new Date().toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'})}</span>
+</div>
+<script>window.onload=()=>{window.print();}<\/script>
 </body></html>`;
-  const win=window.open('','_blank','width=800,height=900');
+  const win=window.open('','_blank','width=820,height=960');
   if(win){win.document.write(html);win.document.close();}
   else alert('กรุณาอนุญาต Pop-up ในเบราว์เซอร์ก่อนนะคะ แล้วลองกดใหม่อีกครั้ง');
 }
