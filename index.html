@@ -59,6 +59,30 @@ body{font-family:'Sarabun','Noto Sans Thai',sans-serif;background:var(--cream);c
 .wsub{font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:24px}
 .wtags{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:28px}
 .tag{background:rgba(0,35,102,.05);color:var(--navy);border-radius:20px;padding:5px 14px;font-size:13px;font-weight:600}
+/* ── WELCOME REFINED (CFP authority + Social proof) ── */
+.cfp-badge{display:inline-flex;align-items:center;gap:9px;padding:7px 16px 7px 8px;background:linear-gradient(135deg,rgba(200,169,74,.14),rgba(200,169,74,.04));border:1.5px solid var(--gold);border-radius:30px;margin-bottom:18px;animation:up .5s cubic-bezier(.22,1,.36,1)}
+.cfp-badge-mark{width:26px;height:26px;border-radius:50%;background:var(--gold);color:#fff;font-size:9.5px;font-weight:800;letter-spacing:.3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 6px rgba(200,169,74,.3)}
+.cfp-badge-text{font-size:10px;font-weight:800;color:var(--gold);letter-spacing:2.2px;text-transform:uppercase}
+.proof-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:0;background:rgba(0,35,102,.03);border:1px solid var(--gray2);border-radius:14px;padding:13px 6px;margin-bottom:20px}
+.proof-stat{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;padding:0 8px;border-right:1px solid var(--gray2)}
+.proof-stat:last-child{border-right:none}
+.proof-icon{font-size:18px;line-height:1;margin-bottom:2px}
+.proof-num{font-size:13.5px;font-weight:800;color:var(--navy);line-height:1.2}
+.proof-lbl{font-size:10px;color:var(--muted);line-height:1.35;letter-spacing:.2px}
+.benefit-row{display:flex;align-items:center;gap:11px;padding:9px 0;font-size:13.5px;color:var(--text);line-height:1.55}
+.benefit-row:not(:last-child){border-bottom:1px dashed rgba(0,35,102,.07)}
+.benefit-icon{font-size:17px;flex-shrink:0;width:24px;text-align:center}
+.benefit-text strong{color:var(--navy);font-weight:700}
+.team-quote{position:relative;background:#fff;border:1.5px solid var(--gray2);border-radius:14px;padding:14px 18px 14px 28px;margin-bottom:22px;font-size:13px;color:var(--muted);line-height:1.7;font-style:italic;text-align:left}
+.team-quote::before{content:'"';position:absolute;top:-2px;left:10px;font-size:48px;color:var(--gold);font-family:Georgia,serif;line-height:1;opacity:.45}
+.team-quote-attr{display:block;margin-top:8px;font-size:10px;font-weight:800;color:var(--navy);font-style:normal;letter-spacing:1.8px;text-transform:uppercase}
+.cfp-disclaimer{font-size:9.5px;color:var(--muted);letter-spacing:1.6px;text-transform:uppercase;margin-top:14px}
+@media(max-width:420px){
+  .proof-bar{grid-template-columns:1fr;gap:0}
+  .proof-stat{border-right:none;border-bottom:1px solid var(--gray2);padding:8px 4px}
+  .proof-stat:last-child{border-bottom:none}
+  .cfp-badge-text{font-size:9px;letter-spacing:1.6px}
+}
 .rarch{text-align:center;margin-bottom:20px}
 .a-svg-wrap{display:flex;justify-content:center;margin-bottom:8px}
 .aname{font-size:22px;font-weight:800;color:var(--navy);margin-bottom:3px}
@@ -89,6 +113,26 @@ body{font-family:'Sarabun','Noto Sans Thai',sans-serif;background:var(--cream);c
 .flabel{display:block;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:5px}
 .ti{border:1.5px solid var(--gray2);border-radius:12px;padding:12px 16px;font-size:15px;font-family:inherit;color:var(--text);width:100%;margin-bottom:12px;transition:border-color .2s;background:#fff;}
 .ti:focus{outline:none;border-color:var(--navy)}.ti::placeholder{color:var(--muted)}
+/* ── 3-OPTION NEXT STEP PICKER ── */
+.next-pick{background:linear-gradient(180deg,rgba(0,35,102,.04),rgba(200,169,74,.05));border:1.5px solid var(--gray2);border-radius:18px;padding:20px;margin-bottom:14px}
+.next-title{font-size:11px;font-weight:800;color:var(--navy);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:6px;text-align:center}
+.next-sub{font-size:13px;color:var(--muted);text-align:center;margin-bottom:18px;line-height:1.6}
+.opt-grid{display:flex;flex-direction:column;gap:10px}
+.opt-card{background:#fff;border:1.5px solid var(--gray2);border-radius:14px;padding:14px 16px;cursor:pointer;transition:all .2s;display:flex;align-items:flex-start;gap:12px;text-align:left;font-family:inherit;width:100%}
+.opt-card:hover{border-color:var(--navy);background:rgba(0,35,102,.02);transform:translateY(-1px)}
+.opt-card.sel{border-color:var(--navy);border-width:2px;background:rgba(0,35,102,.04);box-shadow:0 4px 16px rgba(0,35,102,.08);padding:13px 15px}
+.opt-num{width:30px;height:30px;border-radius:50%;background:var(--gray2);color:var(--muted);font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;margin-top:1px}
+.opt-card.sel .opt-num{background:var(--navy);color:#fff}
+.opt-body{flex:1;min-width:0}
+.opt-name{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:3px;line-height:1.4}
+.opt-emo{margin-right:5px}
+.opt-desc{font-size:12px;color:var(--muted);line-height:1.55}
+.opt-tag{display:inline-block;font-size:9.5px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:10px;margin-top:6px}
+.opt-tag.free{background:rgba(46,125,50,.1);color:#2E7D32}
+.opt-tag.diy{background:rgba(200,169,74,.18);color:#946A0A}
+.opt-tag.team{background:rgba(0,35,102,.08);color:var(--navy)}
+.opt-form-inner{background:#fff;border:1.5px solid var(--gray2);border-radius:14px;padding:18px;margin-top:14px;animation:up .3s ease}
+.opt-hint{margin-top:14px;padding:12px 16px;background:rgba(46,125,50,.06);border-left:3px solid #2E7D32;border-radius:0 10px 10px 0;font-size:13px;color:#2E7D32;line-height:1.6;animation:up .3s ease}
 /* ── TEAM S41 REPORT ── */
 .team-report{background:rgba(0,35,102,.03);border:1.5px solid rgba(0,35,102,.12);border-left:4px solid var(--navy);border-radius:0 16px 16px 0;padding:20px 22px;margin:20px 0;}
 .team-report-title{font-size:10px;font-weight:800;color:var(--navy);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid rgba(0,35,102,.10);}
@@ -112,7 +156,7 @@ body{font-family:'Sarabun','Noto Sans Thai',sans-serif;background:var(--cream);c
 .copy-btn{background:none;border:1.5px solid rgba(0,35,102,.2);border-radius:8px;padding:8px 14px;font-size:12px;font-family:inherit;color:var(--navy);cursor:pointer;transition:all .2s;margin-top:12px;width:100%;display:flex;align-items:center;justify-content:center;gap:6px}
 .copy-btn:hover{background:rgba(0,35,102,.05)}
 .want-badge{display:inline-block;background:rgba(200,169,74,.12);color:var(--navy);border:1px solid var(--gold2);padding:2px 10px;border-radius:20px;font-size:12px;font-weight:600;margin-left:4px}
-@media print{body{background:#fff;padding:0;display:block}.wrap{max-width:100%;margin:0}.card{box-shadow:none;border-radius:12px;padding:28px;page-break-inside:avoid}.nb,.btn-full,.contact-box{display:none!important}@page{margin:16mm;size:A4}}
+@media print{body{background:#fff;padding:0;display:block}.wrap{max-width:100%;margin:0}.card{box-shadow:none;border-radius:12px;padding:28px;page-break-inside:avoid}.nb,.btn-full,.contact-box,.next-pick{display:none!important}@page{margin:16mm;size:A4}}
 @media(max-width:500px){.card{padding:24px 20px}.qt{font-size:17px}.wtitle{font-size:22px}.legend{grid-template-columns:1fr}}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
 </style>
@@ -351,7 +395,7 @@ const QS=[
 ];
 
 /* ════ STATE ════ */
-let S={screen:'welcome',currentQ:0,answers:{},archetype:null,radarScores:null,contactOpen:false,contactName:'',contactPhone:'',contactLine:'',contactEmail:''};
+let S={screen:'welcome',currentQ:0,answers:{},archetype:null,radarScores:null,contactOpen:false,contactName:'',contactPhone:'',contactLine:'',contactEmail:'',intent:null,intentStep:'pick'};
 
 /* ════ SCORING ════ */
 const KS={A:4,B:3,C:2,D:1,E:1};
@@ -849,6 +893,32 @@ function render(){
     S.screen==='calc'     ?rCalc()     :
     S.screen==='thankyou' ?rThankyou() :
     rResult();
+  /* post-render hook: fetch live lead count once when welcome shows */
+  if(S.screen==='welcome'&&!window._proofFetched){
+    window._proofFetched=true;
+    fetchLiveCount();
+  }
+}
+
+/* ── Optional live counter — calls Edge Function "lead-count" ──
+   If the Edge Function isn't deployed yet, this fails silently and the
+   placeholder "200+ คน" stays. To enable: deploy supabase/functions/lead-count
+   and ensure RLS allows service-role count on survey_leads. */
+async function fetchLiveCount(){
+  const el=document.getElementById('proof-count');
+  if(!el)return;
+  try{
+    const res=await fetch('https://lpqcglmpkuasgjgzqdyp.supabase.co/functions/v1/lead-count',{
+      headers:{'Authorization':'Bearer sb_publishable_CL-lFLHRCuQNLqFYxaWsxA_odaH_WTa'},
+    });
+    if(!res.ok)return;
+    const data=await res.json();
+    const n=data?.count;
+    if(typeof n!=='number'||n<=0)return;
+    /* round to a stable, friendly display number */
+    const display=n<10?String(n):n<50?Math.floor(n/5)*5+'+':n<200?Math.floor(n/10)*10+'+':Math.floor(n/50)*50+'+';
+    el.textContent=display+' คน';
+  }catch(e){/* keep placeholder silently */}
 }
 
 function rWelcome(){
@@ -956,7 +1026,7 @@ function rResult(){
     const v=vals[i],c=v>=70?'#2E7D32':v>=40?'#C8A94A':'#E05252';
     return`<div class="leg-row"><div class="leg-dot" style="background:${c}"></div><span>${n}</span><strong style="margin-left:auto;color:var(--navy)">${v}/100</strong></div>`;
   }).join('');
-  const cbCls=S.contactOpen?'contact-body open':'contact-body';
+  const intentSel=k=>S.intent===k?'sel':'';
   return`<div class="card">
     <div class="topbar">
       <span class="s41">Signature 41</span>
@@ -981,57 +1051,66 @@ function rResult(){
     <div class="caption-box">${arch.caption}</div>
     <div class="divider"></div>
 
-    <!-- ── SHARE SECTION ── -->
-    <div style="background:rgba(0,35,102,.03);border-radius:16px;padding:16px 18px;margin-bottom:10px;">
-      <div style="font-size:10px;font-weight:800;color:var(--navy);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">📣 แชร์ Archetype ของคุณ</div>
-
-      <!-- Step 1: Download Card -->
-      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:12px">
-        <span style="background:var(--navy);color:#fff;font-size:10px;font-weight:800;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px">1</span>
-        <div style="flex:1">
-          <div style="font-size:12px;color:var(--muted);margin-bottom:6px">สร้างรูปการ์ด Archetype สวยๆ แล้ว save ลงมือถือ/คอม</div>
-          <button id="btn-share-card" class="btn-full" onclick="downloadShareCard()" style="background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border:none;padding:12px 16px;font-size:14px;margin-bottom:0">
-            🖼️ สร้างรูปแชร์ Archetype (PNG)
-          </button>
-        </div>
-      </div>
-
-      <!-- Step 2: Share to Facebook -->
-      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:4px">
-        <span style="background:var(--navy);color:#fff;font-size:10px;font-weight:800;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px">2</span>
-        <div style="flex:1">
-          <div style="font-size:12px;color:var(--muted);margin-bottom:6px">สร้างรูป Archetype แล้วแชร์ลง Facebook — มีรูปสวยๆ พร้อม caption ให้เลย</div>
-          <button class="btn-full btn-fb" onclick="downloadShareCard()" style="margin-bottom:0">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="white" style="flex-shrink:0"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-            แชร์รูป Archetype ลง Facebook 🖼️
-          </button>
-        </div>
-      </div>
-    </div>
-
+    <!-- ── SHARE & DOWNLOAD ── -->
+    <button class="btn-full btn-fb" onclick="downloadShareCard()" style="margin-bottom:10px">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="white" style="flex-shrink:0"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+      แชร์ลง Facebook
+    </button>
     <button class="btn-full btn-ghost" onclick="downloadPDF()">💾 Download Wealth Report (PDF)</button>
     <div class="divider"></div>
-    <div class="contact-box">
-      <div class="contact-toggle" onclick="toggleContact()">
-        <div>
-          <div style="font-size:14px;font-weight:700;color:var(--navy)">✦ รับแบบแปลนการเงินเฉพาะบุคคลจาก S41</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:3px">วิเคราะห์พบจุดที่ต้องพัฒนา <strong style="color:var(--navy)">"${weakName}"</strong> — รับกลยุทธ์ Roadmap เฉพาะสำหรับคุณ ฟรี ไม่มีเงื่อนไข</div>
-        </div>
-        <span id="contact-arrow" style="font-size:20px;color:var(--muted);margin-left:12px;transition:transform .3s">${S.contactOpen?'∨':'›'}</span>
+    <!-- ── 3-OPTION NEXT STEP PICKER ── -->
+    <div class="next-pick">
+      <div class="next-title">✦ Next Step ✦</div>
+      <div class="next-sub">วิเคราะห์พบจุดที่ต้องพัฒนา <strong style="color:var(--navy)">"${weakName}"</strong><br>เลือกสิ่งที่ใช่สำหรับคุณ</div>
+      <div class="opt-grid">
+        <button type="button" class="opt-card ${intentSel('view_only')}" onclick="pickIntent('view_only')">
+          <div class="opt-num">1</div>
+          <div class="opt-body">
+            <div class="opt-name"><span class="opt-emo">✨</span>ดูผลและแชร์ Archetype</div>
+            <div class="opt-desc">ฟรี · ไม่ต้องกรอกข้อมูล · ดาวน์โหลด PDF / แชร์ลง Facebook ได้เลย</div>
+            <span class="opt-tag free">ฟรี · ไม่ต้องส่งข้อมูล</span>
+          </div>
+        </button>
+        <button type="button" class="opt-card ${intentSel('self_planning')}" onclick="pickIntent('self_planning')">
+          <div class="opt-num">2</div>
+          <div class="opt-body">
+            <div class="opt-name"><span class="opt-emo">🧭</span>เปิด Dashboard วางแผนเอง (DIY)</div>
+            <div class="opt-desc">เก็บข้อมูลจาก survey ไว้แล้ว · ตอบเพิ่มอีก 5 ข้อ → ได้ roadmap การเงินส่วนตัวทันที</div>
+            <span class="opt-tag diy">แนะนำ · ใช้เวลา 5 นาที</span>
+          </div>
+        </button>
+        <button type="button" class="opt-card ${intentSel('requested_call')}" onclick="pickIntent('requested_call')">
+          <div class="opt-num">3</div>
+          <div class="opt-body">
+            <div class="opt-name"><span class="opt-emo">💬</span>ปรึกษาทีม S41 เชิงลึก</div>
+            <div class="opt-desc">ทีม CFP® ติดต่อกลับผ่าน Line @s41clinic — วิเคราะห์เชิงลึก พร้อมแผนเฉพาะคุณ</div>
+            <span class="opt-tag team">ฟรี · CFP® Professional</span>
+          </div>
+        </button>
       </div>
-      <div id="contact-body" class="${cbCls}">
-        <div style="height:1px;background:var(--gray2);margin-bottom:16px"></div>
+      ${S.intent==='view_only'?`
+      <div class="opt-hint">
+        ✓ ดูผลและแชร์ได้เลย — ปุ่ม Download PDF / แชร์ Archetype อยู่ด้านบน
+      </div>`:''}
+      ${(S.intent==='self_planning'||S.intent==='requested_call')?`
+      <div class="opt-form-inner">
+        <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:12px">
+          ${S.intent==='self_planning'?'📝 ฝากข้อมูลเพื่อเปิด Dashboard ของคุณ':'📝 ฝากข้อมูลให้ทีม S41 ติดต่อกลับ'}
+        </div>
         <label class="flabel">ชื่อ-นามสกุล</label>
         <input class="ti" id="inp-name" type="text" placeholder="กรุณากรอกชื่อ-นามสกุล" value="${S.contactName}" oninput="S.contactName=this.value">
         <label class="flabel">เบอร์โทรศัพท์</label>
         <input class="ti" id="inp-phone" type="tel" placeholder="0812345678" value="${S.contactPhone}" oninput="S.contactPhone=this.value">
-        <label class="flabel">อีเมล <span style="font-weight:400;color:var(--muted)">(รับ magic link เข้า dashboard วางแผนเชิงลึก)</span></label>
+        ${S.intent==='self_planning'?`
+        <label class="flabel">อีเมล <span style="font-weight:400;color:var(--muted)">(รับ magic link เข้า dashboard)</span></label>
         <input class="ti" id="inp-email" type="email" placeholder="email@example.com" value="${S.contactEmail}" oninput="S.contactEmail=this.value">
+        `:''}
         <label class="flabel">Line ID <span style="font-weight:400;color:var(--muted)">(ไม่บังคับ)</span></label>
         <input class="ti" id="inp-line" type="text" placeholder="@lineid" value="${S.contactLine}" oninput="S.contactLine=this.value">
-        <button class="btn-full btn-line" style="margin-bottom:8px" onclick="submitLead()">📅 ส่งข้อมูลและนัดปรึกษา S41 ฟรี</button>
-        <button style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;font-family:inherit;display:block;width:100%;text-align:center" onclick="toggleContact()">ไม่ใช่ตอนนี้ ขอบคุณค่ะ</button>
-      </div>
+        <button class="btn-full" style="${S.intent==='self_planning'?'background:var(--navy);color:#fff':'background:#fff;color:#06C755;border:1.5px solid #06C755'};margin-bottom:0" onclick="submitLead()">
+          ${S.intent==='self_planning'?'🧭 ส่งข้อมูล + เปิด Dashboard':'💬 ส่งข้อมูล + นัดทีม S41'}
+        </button>
+      </div>`:''}
     </div>
     ${buildTeamReportHTML(r)}
     <button class="nb show" style="background:none;border:1.5px solid var(--gray2);color:var(--muted);margin-top:0" onclick="restart()">🔄 ทำ survey ใหม่อีกรอบ</button>
@@ -1039,18 +1118,89 @@ function rResult(){
 }
 
 function rThankyou(){
+  const isSelf=S.intent==='self_planning';
+  const isCall=S.intent==='requested_call';
+
+  /* hero illustration — line-art style matching archetype SVGs */
+  const TYSVG={
+    self:`<svg viewBox="0 0 100 88" width="100" height="88" fill="none" stroke="#002366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14,68 L86,68 L80,76 L20,76 Z"/><rect x="20" y="18" width="60" height="50" rx="3"/><line x1="20" y1="26" x2="80" y2="26"/><circle cx="26" cy="22" r="1.3" fill="#002366" stroke="none"/><circle cx="31" cy="22" r="1.3" fill="#002366" stroke="none"/><circle cx="36" cy="22" r="1.3" fill="#002366" stroke="none"/><line x1="30" y1="60" x2="30" y2="48" stroke="#C8A94A" stroke-width="3"/><line x1="40" y1="60" x2="40" y2="40" stroke="#C8A94A" stroke-width="3"/><line x1="50" y1="60" x2="50" y2="50" stroke="#C8A94A" stroke-width="3"/><line x1="60" y1="60" x2="60" y2="36" stroke="#C8A94A" stroke-width="3"/><line x1="70" y1="60" x2="70" y2="44" stroke="#C8A94A" stroke-width="3"/><path d="M85,9 L87,5 L89,9 L93,9 L90,11 L92,15 L87,12 L82,15 L83,11 L80,9 Z" stroke="#C8A94A" stroke-width="1.5"/></svg>`,
+    call:`<svg viewBox="0 0 100 88" width="100" height="88" fill="none" stroke="#002366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16,22 Q16,12 26,12 L74,12 Q84,12 84,22 L84,52 Q84,62 74,62 L46,62 L34,72 L34,62 L26,62 Q16,62 16,52 Z"/><path d="M50,48 Q40,42 36,32 Q34,24 42,22 Q48,22 50,30 Q52,22 58,22 Q66,24 64,32 Q60,42 50,48 Z" stroke="#C8A94A" stroke-width="1.8"/><circle cx="86" cy="76" r="2" fill="#C8A94A" stroke="none"/><circle cx="92" cy="80" r="1.5" fill="#C8A94A" stroke="none"/></svg>`,
+    done:`<svg viewBox="0 0 100 88" width="100" height="88" fill="none" stroke="#002366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M50,16 L56,32 L74,32 L60,42 L66,58 L50,48 L34,58 L40,42 L26,32 L44,32 Z" stroke="#C8A94A"/><circle cx="20" cy="20" r="2" fill="#C8A94A" stroke="none"/><circle cx="84" cy="24" r="2" fill="#C8A94A" stroke="none"/><circle cx="78" cy="68" r="2" fill="#C8A94A" stroke="none"/><circle cx="22" cy="70" r="2" fill="#C8A94A" stroke="none"/></svg>`,
+  };
+  const heroSvg=isSelf?TYSVG.self:isCall?TYSVG.call:TYSVG.done;
+  const heroTitle=isSelf?'Dashboard เปิดให้แล้ว!':isCall?'ส่งข้อมูลเรียบร้อย!':'ขอบคุณมากเลยนะคะ!';
+  const heroSub=isSelf
+    ?'เปิดแท็บใหม่ให้เรียบร้อย — ตอบเพิ่มอีกแค่ 5 ข้อ ก็เริ่มวางแผนการเงินส่วนตัวได้เลย<br><span style="font-size:13px">(ถ้าไม่เห็นแท็บใหม่ กดปุ่มด้านล่างได้)</span>'
+    :isCall
+    ?'ทีม S41 จะติดต่อคุณกลับผ่าน Line ภายใน 24 ชั่วโมง<br>พร้อมวิเคราะห์เชิงลึกและแผนเฉพาะสำหรับคุณ'
+    :'ทีม S41 จะติดต่อคุณเร็วๆ นี้ พร้อมรายงานสุขภาพเงินที่วิเคราะห์เฉพาะสำหรับคุณโดยเฉพาะ';
+
+  /* Primary card — depends on intent. Style matches survey result-page
+     pattern (subtle tint + border-left accent — like prescription/team-report) */
+  let primaryCard='';
+  if(isSelf){
+    primaryCard=`
+    <div style="background:rgba(200,169,74,.06);border:1px solid rgba(200,169,74,.25);border-left:4px solid var(--gold);border-radius:0 16px 16px 0;padding:20px;margin-bottom:14px;text-align:left">
+      <div style="font-size:10px;font-weight:800;color:var(--gold);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:8px">✦ DASHBOARD ของคุณ</div>
+      <div style="font-size:17px;font-weight:800;color:var(--navy);margin-bottom:6px;line-height:1.4">S41 Premium Dashboard</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6">หากแท็บใหม่ไม่ขึ้นมา กดปุ่มด้านล่างเพื่อเปิดอีกครั้ง</div>
+      <button class="btn-full btn-navy" style="margin-bottom:0" onclick="openDashboard()">✨ เปิด Dashboard อีกครั้ง</button>
+    </div>`;
+  }else if(isCall){
+    primaryCard=`
+    <div style="background:rgba(0,35,102,.03);border:1px solid rgba(0,35,102,.12);border-left:4px solid var(--navy);border-radius:0 16px 16px 0;padding:20px;margin-bottom:14px;text-align:left">
+      <div style="font-size:10px;font-weight:800;color:var(--navy);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:8px">✦ STAY IN TOUCH</div>
+      <div style="font-size:17px;font-weight:800;color:var(--navy);margin-bottom:6px;line-height:1.4">เพิ่มเพื่อน Line @S41Clinic</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6">เพื่อให้ทีมติดต่อได้เร็วขึ้น หรือส่งคำถามล่วงหน้าได้</div>
+      <a href="https://line.me/ti/p/~@s41clinic" target="_blank" class="btn-full" style="margin-bottom:0;background:#fff;color:#06C755;border:1.5px solid #06C755">💬 เพิ่มเพื่อน Line @S41Clinic</a>
+    </div>`;
+  }else{
+    primaryCard=`
+    <div style="background:rgba(200,169,74,.06);border:1px solid rgba(200,169,74,.25);border-left:4px solid var(--gold);border-radius:0 16px 16px 0;padding:20px;margin-bottom:14px;text-align:left">
+      <div style="font-size:10px;font-weight:800;color:var(--gold);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:8px">✦ ทดลอง DASHBOARD</div>
+      <div style="font-size:17px;font-weight:800;color:var(--navy);margin-bottom:6px;line-height:1.4">เปิด S41 Premium Dashboard</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6">เราเก็บข้อมูลพื้นฐานจาก survey ไว้แล้ว · กรอกอีกแค่ 2 จอ ก็เริ่มวางแผนได้</div>
+      <button class="btn-full btn-navy" style="margin-bottom:0" onclick="openDashboard()">✨ เปิด Dashboard ของคุณ</button>
+    </div>`;
+  }
+
   return`<div class="card" style="text-align:center">
-    <div style="font-size:60px;margin-bottom:16px">🎉</div>
-    <div class="wtitle" style="margin-bottom:8px">ขอบคุณมากเลยนะคะ!</div>
-    <div class="wsub">ทีม S41 จะติดต่อคุณเร็วๆ นี้ พร้อมรายงานสุขภาพเงินที่วิเคราะห์เฉพาะสำหรับคุณโดยเฉพาะ</div>
-    <div style="background:var(--navy);border-radius:16px;padding:24px;margin-bottom:20px;color:#fff;text-align:center">
-      <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:2px;margin-bottom:10px">✦ FREE CONSULTATION ✦</div>
-      <div style="font-size:18px;font-weight:800;margin-bottom:8px">ทำ Full X-Ray<br>วางแผนการเงินเชิงลึก</div>
-      <div style="font-size:13px;opacity:0.75;margin-bottom:18px;line-height:1.7">หมอเงิน S41 พร้อมเป็นที่ปรึกษาส่วนตัว CFP®<br>ฟรีไม่มีค่าใช้จ่าย ไม่มีเงื่อนไข</div>
-      <a href="https://line.me/ti/p/~@s41clinic" target="_blank" class="btn-full btn-line" style="margin-bottom:0">💬 เพิ่มเพื่อน Line @S41Clinic</a>
-    </div>
-    <button class="nb show" style="background:none;border:1.5px solid var(--gray2);color:var(--muted)" onclick="restart()">🔄 ทำ survey ใหม่อีกรอบ</button>
+    <div style="display:flex;justify-content:center;margin-bottom:14px">${heroSvg}</div>
+    <div class="wtitle" style="margin-bottom:8px">${heroTitle}</div>
+    <div class="wsub" style="margin-bottom:24px">${heroSub}</div>
+    ${primaryCard}
+    <button class="nb show" style="background:none;border:1.5px solid var(--gray2);color:var(--muted);margin-top:8px" onclick="restart()">🔄 ทำ survey ใหม่อีกรอบ</button>
   </div>`;
+}
+
+/* ─── Open dashboard with prefill data from survey ─── */
+function openDashboard(){
+  const intake = buildCFPIntake();
+  // Build prefill payload — only essential fields
+  const prefill = {
+    v: '1',
+    name: intake.fullName,
+    phone: intake.phone,
+    email: intake.email,
+    income: intake.income?.monthly || 0,
+    archetype: {
+      key: intake.archetype?.key,
+      name: intake.archetype?.name,
+      tag: intake.archetype?.tag
+    },
+    scores: intake.scores,
+    painPoint: intake.painPoint,
+    customerWants: intake.customerWants,
+    insurance: intake.insurance,
+    surveyVersion: intake.surveyVersion,
+    completedAt: intake.completedAt
+  };
+  // Encode (base64 of JSON)
+  const json = JSON.stringify(prefill);
+  const b64 = btoa(unescape(encodeURIComponent(json)));
+  // Open Dashboard with prefill param
+  const dashUrl = 'S41_Premium_Dashboard_v3.html?d=' + b64;
+  window.open(dashUrl, '_blank');
 }
 
 /* ════ ACTIONS ════ */
@@ -1084,12 +1234,15 @@ function next(){
   }
 }
 
-function toggleContact(){
-  S.contactOpen=!S.contactOpen;
-  const b=document.getElementById('contact-body');
-  const a=document.getElementById('contact-arrow');
-  if(b)b.className=S.contactOpen?'contact-body open':'contact-body';
-  if(a)a.textContent=S.contactOpen?'∨':'›';
+function pickIntent(k){
+  /* toggle: clicking same option de-selects */
+  S.intent=(S.intent===k)?null:k;
+  render();
+  /* smooth-scroll to form / hint when something opens */
+  setTimeout(()=>{
+    const target=document.querySelector('.opt-form-inner')||document.querySelector('.opt-hint');
+    if(target)target.scrollIntoView({behavior:'smooth',block:'center'});
+  },80);
 }
 
 function buildCFPIntake(){
@@ -1101,6 +1254,8 @@ function buildCFPIntake(){
   const q2Labels={A:'ฐาน (เงินสำรอง/ประกัน)',B:'หนี้และกระแสเงินสด',C:'การเติบโตและลงทุน',D:'ตรวจเช็กและวางแผนรวม'};
   const q12Labels={A:'สร้างหลักประกัน',B:'ลดหนี้',C:'ออมและลงทุน',D:'วางแผนภาษี',E:'เป้าหมายระยะยาว'};
   return{
+    /* intent — 3-option flow (view_only / self_planning / requested_call) */
+    intent:S.intent||'view_only',
     /* contact */
     fullName:S.contactName,
     phone:S.contactPhone,
@@ -1135,19 +1290,26 @@ function buildCFPIntake(){
 }
 
 async function submitLead(){
+  /* must have an intent (option 2 or 3); option 1 doesn't call submitLead */
+  if(S.intent!=='self_planning'&&S.intent!=='requested_call'){
+    alert('กรุณาเลือกขั้นตอนถัดไปก่อน (ข้อ 2 หรือ 3)');return;
+  }
   const name=(document.getElementById('inp-name')?.value||S.contactName).trim();
   const phone=(document.getElementById('inp-phone')?.value||S.contactPhone).trim();
   const email=(document.getElementById('inp-email')?.value||S.contactEmail).trim();
   if(!name){alert('กรุณากรอกชื่อ-นามสกุลของคุณ');return;}
   if(!phone){alert('กรุณากรอกเบอร์โทรศัพท์');return;}
+  if(S.intent==='self_planning'&&!email){alert('สำหรับเปิด Dashboard กรุณากรอกอีเมลด้วยค่ะ');return;}
   S.contactName=name;S.contactPhone=phone;S.contactEmail=email;
 
   const ref=new URLSearchParams(window.location.search).get('ref')||'direct';
   const cfpIntake=buildCFPIntake();
+  const intent=S.intent;
 
-  /* disable button to prevent double-submit */
-  const btn=document.querySelector('.btn-line[onclick="submitLead()"]');
-  if(btn){btn.disabled=true;btn.textContent='กำลังส่งข้อมูล...';}
+  /* disable submit button to prevent double-submit */
+  const btn=document.querySelector('.opt-form-inner .btn-full');
+  const origText=btn?btn.innerHTML:'';
+  if(btn){btn.disabled=true;btn.innerHTML='กำลังส่งข้อมูล...';}
 
   try{
     const res=await fetch('https://lpqcglmpkuasgjgzqdyp.supabase.co/functions/v1/survey-lead',{
@@ -1156,7 +1318,7 @@ async function submitLead(){
         'Content-Type':'application/json',
         'Authorization':'Bearer sb_publishable_CL-lFLHRCuQNLqFYxaWsxA_odaH_WTa',
       },
-      body:JSON.stringify({lead:{name,phone,email,line:S.contactLine||null},cfpIntake,ref}),
+      body:JSON.stringify({lead:{name,phone,email,line:S.contactLine||null},cfpIntake,ref,intent}),
     });
     if(!res.ok){
       const errText=await res.text();
@@ -1168,11 +1330,16 @@ async function submitLead(){
     /* non-blocking — still show thank-you */
   }
 
+  /* self_planning → also auto-open Dashboard in new tab */
+  if(intent==='self_planning'){
+    try{ openDashboard(); }catch(e){ console.error('[S41] openDashboard error',e); }
+  }
+
   S.screen='thankyou';render();window.scrollTo(0,0);
 }
 
 function restart(){
-  S={screen:'welcome',currentQ:0,answers:{},archetype:null,radarScores:null,contactOpen:false,contactName:'',contactPhone:'',contactLine:'',contactEmail:''};
+  S={screen:'welcome',currentQ:0,answers:{},archetype:null,radarScores:null,contactOpen:false,contactName:'',contactPhone:'',contactLine:'',contactEmail:'',intent:null,intentStep:'pick'};
   render();window.scrollTo(0,0);
 }
 
@@ -1182,129 +1349,38 @@ function downloadPDF(){
   const surp=calcSurplus();const priorities=calcPriorities(r);const ins=calcInsurance();
   const vals=[r.emergency,r.protection,r.cashflow,r.savings,r.planning];
   const names=['เงินสำรอง','ความคุ้มครอง','กระแสเงินสด','การออม/ลงทุน','การวางแผน'];
-  const q12Labels={A:'🛡️ สร้างหลักประกัน',B:'💧 ลดหนี้',C:'🌱 ออมและลงทุน',D:'📊 วางแผนภาษี',E:'🎯 เป้าหมายระยะยาว'};
-  const custWant=q12Labels[S.answers['Q12']?.choice]||'-';
-  const custWantClean={A:'สร้างหลักประกัน',B:'ลดหนี้',C:'ออมและลงทุน',D:'วางแผนภาษี',E:'เป้าหมายระยะยาว'}[S.answers['Q12']?.choice]||custWant;
-  const insOverallClean=ins.overall.replace(/[\u{1F300}-\u{1FFFF}\u{2600}-\u{27FF}]/gu,'').trim();
-  const q1Labels={A:'ไลฟ์สไตล์และประสบการณ์',B:'ครอบครัวและคนรัก',C:'อิสรภาพทางการเงิน',D:'ส่งต่อและสร้างมรดก'};
-  const lifeVal=q1Labels[S.answers['Q1']?.choice]||'-';
-  const q2Labels={A:'ฐาน (เงินสำรอง/ประกัน)',B:'หนี้และกระแสเงินสด',C:'การเติบโตและลงทุน',D:'ตรวจเช็กและวางแผนรวม'};
-  const painPoint=q2Labels[S.answers['Q2']?.choice]||'-';
-  const sc2=v=>v>=70?'#2E7D32':v>=40?'#C8A94A':'#E05252';
+  const q9Labels={A:'🛡️ สร้างหลักประกัน',B:'💧 ลดหนี้',C:'🌱 ออมและลงทุน',D:'📊 วางแผนภาษี',E:'🎯 เป้าหมายระยะยาว'};
+  const q9want=q9Labels[S.answers['Q9']?.choice]||'-';
+  const sc=v=>v>=70?'#2E7D32':v>=40?'#C8A94A':'#E05252';
   const fmtTHB=n=>n<0?`ติดลบ ~${Math.abs(Math.round(n)).toLocaleString()} บาท`:`~${Math.round(n).toLocaleString()} บาท`;
-  const html=`<!DOCTYPE html><html lang="th"><head><meta charset="UTF-8"><title>S41 Wealth Report</title>
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Sarabun',sans-serif;background:#fff;color:#1C1C2E;font-size:11.5px;line-height:1.55}
-.hdr{background:#002366;padding:9px 20px;display:flex;justify-content:space-between;align-items:center}
-.hdr-l{color:#fff;font-size:7.5px;font-weight:800;letter-spacing:3.5px}
-.hdr-r{color:#C8A94A;font-size:8px;font-weight:700;letter-spacing:2px}
-.profile{display:flex;gap:16px;align-items:flex-start;padding:12px 20px;border-bottom:1px solid rgba(0,35,102,.1);margin-bottom:11px}
-.arch-icon{flex-shrink:0;padding-top:2px}
-.arch-body{flex:1}
-.arch-name{font-size:19px;font-weight:800;color:#002366;letter-spacing:-.3px;margin-bottom:1px}
-.arch-tag{display:block;font-size:7.5px;font-weight:700;color:#C8A94A;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:7px}
-.arch-diag{font-size:11px;color:#5A5A6E;line-height:1.7;margin-bottom:7px}
-.arch-cap{font-size:10.5px;color:#002366;line-height:1.65;padding:6px 10px;border-left:2.5px solid #C8A94A;background:rgba(200,169,74,.05);border-radius:0 4px 4px 0}
-.kpi-row{display:flex;gap:8px;padding:0 20px;margin-bottom:11px}
-.kpi{flex:1;border:1px solid rgba(0,35,102,.1);border-top:2.5px solid #002366;border-radius:0 0 5px 5px;padding:7px 10px;background:#F7F9FC}
-.kpi.gold{border-top-color:#C8A94A}
-.kpi-lbl{font-size:7.5px;font-weight:700;color:#7A7A8C;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:3px}
-.kpi-val{font-size:14px;font-weight:800;color:#002366;line-height:1.2}
-.kpi-val.pos{color:#1B6B3A}
-.kpi-val.neg{color:#C0392B}
-.kpi-sub{font-size:8.5px;color:#9B9B9B;margin-top:2px}
-.stit{font-size:7.5px;font-weight:800;color:#002366;letter-spacing:2.5px;text-transform:uppercase;padding-bottom:4px;border-bottom:1.5px solid #C8A94A;margin-bottom:8px}
-.analysis{display:flex;gap:16px;padding:0 20px;margin-bottom:11px;align-items:flex-start}
-.radar-wrap{flex:1;min-width:0;overflow:hidden}
-.radar-wrap svg{width:100%!important;height:auto!important;display:block;max-height:230px}
-.scores-wrap{flex:1;min-width:0}
-.sc-row{display:flex;align-items:center;gap:7px;margin-bottom:6px}
-.sc-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.sc-name{flex:1;font-size:10.5px;color:#5A5A6E}
-.sc-bar-bg{width:58px;height:4px;background:rgba(0,35,102,.1);border-radius:2px;overflow:hidden;flex-shrink:0}
-.sc-bar{height:4px;border-radius:2px}
-.sc-num{font-size:11px;font-weight:700;color:#002366;min-width:28px;text-align:right;flex-shrink:0}
-.two-col{display:flex;gap:14px;padding:0 20px;margin-bottom:11px}
-.col60{flex:0 0 55%}
-.col40{flex:1}
-.disc-ul{list-style:none}
-.disc-li{display:flex;gap:8px;margin-bottom:6px;font-size:11px;color:#3A3A50;line-height:1.65}
-.disc-bullet{color:#C8A94A;font-size:16px;line-height:1;flex-shrink:0;margin-top:1px}
-.rx-box{margin-top:9px;padding:8px 12px;border-left:3px solid #C8A94A;background:rgba(200,169,74,.06);border-radius:0 5px 5px 0;font-size:11px;color:#002366;line-height:1.65}
-.pri-item{display:flex;gap:8px;margin-bottom:7px;align-items:flex-start}
-.pri-badge{width:18px;height:18px;border-radius:50%;background:#002366;color:#fff;font-size:8.5px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-.pri-lbl{font-size:11px;color:#1C1C2E;font-weight:600;line-height:1.4}
-.pri-act{font-size:9.5px;color:#7A7A8C;line-height:1.5;margin-top:1px}
-.team-sec{padding:0 20px;margin-bottom:10px}
-.data-wrap{border:1px solid rgba(0,35,102,.12);border-left:3.5px solid #002366;border-radius:0 6px 6px 0;padding:10px 14px;background:rgba(0,35,102,.018)}
-.data-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
-.dr{display:flex;gap:6px;padding:4px 0;border-bottom:1px solid rgba(0,35,102,.07);font-size:10.5px}
-.dk{color:#7A7A8C;min-width:88px;flex-shrink:0}
-.dv{font-weight:600;color:#002366}
-.ftr{padding:7px 20px 10px;border-top:1px solid rgba(0,35,102,.1);display:flex;justify-content:space-between;align-items:center;font-size:8px;color:#9B9B9B}
-.ftr-badge{color:#C8A94A;font-weight:700;letter-spacing:1px}
-@media print{
-  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
-  @page{margin:5mm;size:A4 portrait}
-  .kpi-row,.analysis,.two-col,.team-sec,.profile{page-break-inside:avoid}
-}
-</style></head><body>
-<div class="hdr">
-  <span class="hdr-l">SIGNATURE 41 FINANCIAL CLINIC</span>
-  <span class="hdr-r">WEALTH REPORT · CONFIDENTIAL</span>
-</div>
-<div class="profile">
-  <div class="arch-icon">${arch.key&&ASVG[arch.key]?ASVG[arch.key]:''}</div>
-  <div class="arch-body">
-    <div class="arch-name">${arch.name}</div>
-    <span class="arch-tag">${arch.tag}</span>
-    <div class="arch-diag">${arch.diagnosis}</div>
-    <div class="arch-cap"><em>แนวทางหลัก:</em> ${arch.prescription}</div>
+  const legendRows=names.map((n,i)=>`<div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#7A7A8C;margin-bottom:4px"><div style="width:8px;height:8px;border-radius:50%;background:${sc(vals[i])};flex-shrink:0"></div><span>${n}</span><strong style="margin-left:auto;color:#002366">${vals[i]}/100</strong></div>`).join('');
+  const discRows=discItems.map(t=>`<div style="display:flex;gap:8px;margin-bottom:7px;font-size:12.5px;color:#7A7A8C;line-height:1.6"><div style="width:5px;height:5px;border-radius:50%;background:#C8A94A;flex-shrink:0;margin-top:7px"></div><div>${t}</div></div>`).join('');
+  const priRows=priorities.slice(0,4).map((p,i)=>`<div style="font-size:12.5px;color:#1C1C2E;margin-bottom:5px"><span style="background:#002366;color:#fff;font-size:10px;font-weight:800;padding:1px 6px;border-radius:10px;margin-right:5px">${i+1}</span>${p.icon} ${p.label} <span style="color:#9B9B9B;font-size:11px">(${p.score}/100)</span></div>`).join('');
+  const html=`<!DOCTYPE html><html lang="th"><head><meta charset="UTF-8"><title>S41 Wealth Report — ${arch.name}</title><link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700;800&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Sarabun',sans-serif;background:#fff;color:#1C1C2E;padding:28px 36px}.hdr{display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;border-bottom:2px solid #002366;margin-bottom:20px}.s41{font-size:11px;font-weight:800;color:#002366;letter-spacing:4px}.arch{text-align:center;margin-bottom:20px}.aname{font-size:20px;font-weight:800;color:#002366;margin:6px 0 2px}.atag{font-size:10px;color:#C8A94A;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:8px}.adesc{font-size:12.5px;color:#7A7A8C;line-height:1.8;max-width:480px;margin:0 auto}.rsec{display:flex;gap:28px;align-items:flex-start;margin-bottom:18px}.lgnd{flex:1;min-width:160px}.stit{font-size:9px;font-weight:800;color:#002366;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}.dbox{background:rgba(0,35,102,.04);border:1px solid rgba(0,35,102,.09);border-radius:10px;padding:14px;margin-bottom:14px}.rxbox{background:rgba(200,169,74,.08);border-left:3px solid #C8A94A;border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:14px;font-size:12.5px;color:#002366;line-height:1.7}.trep{background:rgba(0,35,102,.03);border:1.5px solid rgba(0,35,102,.12);border-left:4px solid #002366;border-radius:0 12px 12px 0;padding:16px 18px;margin-bottom:14px}.trow{display:flex;gap:6px;margin-bottom:4px;font-size:12px}.tkey{color:#7A7A8C;min-width:110px}.tval{font-weight:700;color:#002366}.cap{background:rgba(200,169,74,.06);border-left:3px solid #C8A94A;border-radius:0 8px 8px 0;padding:10px 14px;font-size:12.5px;color:#002366;line-height:1.7;font-style:italic;margin-bottom:18px}.ftr{border-top:1px solid #E5E1D8;padding-top:12px;display:flex;justify-content:space-between;font-size:10px;color:#7A7A8C}@media print{body{padding:16px 24px}@page{margin:8mm;size:A4 portrait}}</style></head><body>
+  <div class="hdr"><span class="s41">✦ SIGNATURE 41 FINANCIAL CLINIC ✦</span><span style="font-size:10px;color:#C8A94A;font-weight:700">WEALTH REPORT v4</span></div>
+  <div class="arch">${ASVG[arch.key]||''}<div class="aname">${arch.name}</div><span class="atag">${arch.tag}</span><div class="adesc">${arch.diagnosis}</div></div>
+  <div class="rsec"><div>${drawRadar(r)}</div><div class="lgnd"><div class="stit">คะแนน 5 มิติ</div>${legendRows}</div></div>
+  <div class="dbox"><div class="stit">🔍 สิ่งที่ต้องจัดการก่อน</div>${discRows}</div>
+  <div class="rxbox">💊 <strong>คำสั่งยา:</strong> ${arch.prescription}</div>
+  <div class="cap">${arch.caption}</div>
+  <div class="trep">
+    <div class="stit" style="margin-bottom:12px">📊 ข้อมูลสำหรับทีม S41</div>
+    <div class="trow"><span class="tkey">รายได้/เดือน</span><span class="tval">${INCOME_RANGE[surp.incQ]||'-'} บาท (~${surp.income.toLocaleString()} บาท)</span></div>
+    <div class="trow"><span class="tkey">ฐานภาษี</span><span class="tval">${TAX_BRACKET[surp.incQ]||'-'}</span></div>
+    <div class="trow"><span class="tkey">Surplus/เดือน</span><span class="tval">${fmtTHB(surp.monthly)}</span></div>
+    <div class="trow"><span class="tkey">Surplus/ปี</span><span class="tval">${fmtTHB(surp.annual)}</span></div>
+    <div style="margin:10px 0 6px;font-size:9px;font-weight:800;color:#002366;letter-spacing:1.5px;text-transform:uppercase">ลำดับความสำคัญ</div>
+    ${priRows}
+    <div class="trow" style="margin-top:6px"><span class="tkey">ความต้องการลูกค้า</span><span class="tval">${q9want}</span></div>
+    <div style="margin:10px 0 6px;font-size:9px;font-weight:800;color:#002366;letter-spacing:1.5px;text-transform:uppercase">สถานะประกัน</div>
+    <div class="trow"><span class="tkey">ประกันสุขภาพ</span><span class="tval">${ins.health.status}</span></div>
+    <div class="trow"><span class="tkey">ประกันชีวิต</span><span class="tval">${ins.life.status}</span></div>
+    <div class="trow"><span class="tkey">สรุป</span><span class="tval">${ins.overall}</span></div>
   </div>
-</div>
-<div class="kpi-row">
-  <div class="kpi"><div class="kpi-lbl">รายได้ / เดือน</div><div class="kpi-val">${surp.income.toLocaleString()} <span style="font-size:10px;font-weight:500">บาท</span></div><div class="kpi-sub">${INCOME_RANGE[surp.incQ]||'-'} บาท/เดือน</div></div>
-  <div class="kpi"><div class="kpi-lbl">ฐานภาษี</div><div class="kpi-val">${TAX_BRACKET[surp.incQ]||'-'}</div><div class="kpi-sub">อัตราภาษีโดยประมาณ</div></div>
-  <div class="kpi gold"><div class="kpi-lbl">Surplus / เดือน</div><div class="kpi-val ${surp.monthly>=0?'pos':'neg'}">${fmtTHB(surp.monthly)}</div><div class="kpi-sub">เงินเหลือหลังค่าใช้จ่าย</div></div>
-  <div class="kpi gold"><div class="kpi-lbl">Surplus / ปี</div><div class="kpi-val ${surp.annual>=0?'pos':'neg'}">${fmtTHB(surp.annual)}</div><div class="kpi-sub">ศักยภาพการออมรายปี</div></div>
-</div>
-<div class="analysis">
-  <div class="radar-wrap"><div class="stit">การวิเคราะห์ 5 มิติ</div>${drawRadar(r)}</div>
-  <div class="scores-wrap"><div class="stit">คะแนนรายมิติ</div>${names.map((n,i)=>`<div class="sc-row"><div class="sc-dot" style="background:${sc2(vals[i])}"></div><span class="sc-name">${n}</span><div class="sc-bar-bg"><div class="sc-bar" style="width:${vals[i]}%;background:${sc2(vals[i])}"></div></div><span class="sc-num">${vals[i]}</span></div>`).join('')}</div>
-</div>
-<div class="two-col">
-  <div class="col60">
-    <div class="stit">ประเด็นที่ต้องดำเนินการ</div>
-    <ul class="disc-ul">${discItems.map(t=>`<li class="disc-li"><span class="disc-bullet">›</span><div>${t}</div></li>`).join('')}</ul>
-    <div class="rx-box"><strong>คำแนะนำจากหมอเงิน:</strong><br>${arch.prescription}</div>
-  </div>
-  <div class="col40">
-    <div class="stit">ลำดับความสำคัญ</div>
-    ${priorities.slice(0,5).map((p,i)=>`<div class="pri-item"><div class="pri-badge">${i+1}</div><div><div class="pri-lbl">${p.label}</div><div class="pri-act">${p.action}</div></div></div>`).join('')}
-  </div>
-</div>
-<div class="team-sec">
-  <div class="stit">Financial Snapshot</div>
-  <div class="data-wrap"><div class="data-grid">
-    <div class="dr"><span class="dk">ชีวิตที่ดีสำหรับฉัน</span><span class="dv">${lifeVal}</span></div>
-    <div class="dr"><span class="dk">Pain Point หลัก</span><span class="dv">${painPoint}</span></div>
-    <div class="dr"><span class="dk">รายได้/เดือน</span><span class="dv">${surp.income.toLocaleString()} บาท</span></div>
-    <div class="dr"><span class="dk">ความต้องการหลัก</span><span class="dv">${custWantClean}</span></div>
-    <div class="dr"><span class="dk">ประกันสุขภาพ</span><span class="dv">${ins.health.status}</span></div>
-    <div class="dr"><span class="dk">ประกันชีวิต</span><span class="dv">${ins.life.status}</span></div>
-    <div class="dr"><span class="dk">Surplus/เดือน</span><span class="dv">${fmtTHB(surp.monthly)}</span></div>
-    <div class="dr"><span class="dk">สรุปสถานะประกัน</span><span class="dv">${insOverallClean}</span></div>
-  </div></div>
-</div>
-<div class="ftr">
-  <span class="ftr-badge">CONFIDENTIAL · CFP® CERTIFIED FINANCIAL PLANNER</span>
-  <span>Signature 41 Financial Clinic · ${new Date().toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'})}</span>
-</div>
-<script>window.onload=()=>{window.print();}<\/script>
+  <div class="ftr"><span>Signature 41 Financial Clinic · CFP® Certified</span><span>วันที่: ${new Date().toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'})}</span></div>
+  <script>window.onload=()=>{window.print();}<\/script>
 </body></html>`;
-  const win=window.open('','_blank','width=820,height=960');
+  const win=window.open('','_blank','width=800,height=900');
   if(win){win.document.write(html);win.document.close();}
   else alert('กรุณาอนุญาต Pop-up ในเบราว์เซอร์ก่อนนะคะ แล้วลองกดใหม่อีกครั้ง');
 }
