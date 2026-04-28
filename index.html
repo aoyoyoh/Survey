@@ -6,10 +6,10 @@
 <title>S41 Financial Clinic — ตรวจสุขภาพเงินของคุณใน 5 นาที</title>
 <!-- ═══ Facebook / Open Graph ═══ -->
 <meta property="og:type"        content="website">
-<meta property="og:url"         content="https://YOUR-SURVEY-URL.com">
+<meta property="og:url"         content="https://aoyoyoh.github.io/Survey/">
 <meta property="og:title"       content="ตรวจสุขภาพเงินของคุณใน 5 นาที 💊 S41 Financial Clinic">
 <meta property="og:description" content="วิเคราะห์ 5 มิติการเงินตามหลัก CFP® ค้นพบ Archetype ประจำตัว + รับ Roadmap เฉพาะบุคคล ฟรี ไม่มีเงื่อนไข">
-<meta property="og:image"       content="https://YOUR-OG-IMAGE-URL.com/og-cover.png">
+<meta property="og:image"       content="https://aoyoyoh.github.io/Survey/og-cover.png">
 <meta property="og:locale"      content="th_TH">
 <meta name="twitter:card"       content="summary_large_image">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -211,8 +211,8 @@ const ARCH={
   lostTsuru:{key:'lostTsuru',name:'คุณนกหลงทาง',tag:'Lost Tsuru · ออมเก่งไม่มีเป้าหมาย',diagnosis:'มีวินัยออมเงินดี แต่ยังขาด "เป้าหมาย" ที่ชัดเจน ทำให้เงินออมกระจัดกระจาย ไม่รู้ว่าควรลงทุนอะไร เพื่ออะไร และมากแค่ไหน',prescription:'กำหนด "เป้าหมายการเงิน" ให้ชัดเจนและเป็นตัวเลข เช่น "เกษียณอายุ 55 ปี ใช้เงิน 50,000 บาท/เดือน" แล้วค่อยวางแผนการลงทุนให้สอดคล้อง',caption:'🦢 ออมเก่ง บินสูง แต่ GPS ชีวิตดับ ❌ ไม่รู้จะบินไปหาอะไร หมอเงิน S41 เสนอเป็น "Google Maps การเงิน" ฟรี!'},
   emptyBento:{key:'emptyBento',name:'คุณกล่องเบนโตะว่าง',tag:'Empty Bento · ผู้เริ่มต้นที่รอจัดวาง',diagnosis:'อยู่ในจุดเริ่มต้น ยังไม่ได้วางแผนการเงินอย่างจริงจัง แต่กล่องเบนโตะที่ว่างเปล่าคือโอกาสที่จะจัดวางได้อย่างสวยงามตั้งแต่ต้น',prescription:'3 ก้าวแรกทันที: (1) เงินสำรอง 3 เดือน (2) ประกันสุขภาพขั้นต้น (3) ออมอัตโนมัติ 10% ของรายได้ก่อนใช้จ่าย',caption:'🍱 กล่องเบนโตะฉันยังว่างอยู่เลย แต่หมอเงิน S41 บอกว่า "กล่องว่างคือโอกาส ไม่ใช่ความล้มเหลว" 💪 มาเริ่มจัดกล่องด้วยกัน!'},
 };
-/* ════ CONFIG — เปลี่ยน URL นี้เมื่อ host แล้ว ════ */
-const SURVEY_URL = 'https://YOUR-SURVEY-URL.com'; // ← ใส่ URL จริงของ survey
+/* ════ CONFIG — URL ของ Survey ที่ host บน GitHub Pages ════ */
+const SURVEY_URL = 'https://aoyoyoh.github.io/Survey/';
 
 /* ════ CONSTANTS ════ */
 const INCOME_MID   = {A:22000,B:45000,C:80000,D:150000,E:280000};
@@ -740,18 +740,17 @@ async function generateShareCard(){
   /* axes */
   for(let i=0;i<N;i++){const a=off+i*step;ctx.beginPath();ctx.moveTo(CX,CY);ctx.lineTo(CX+R*Math.cos(a),CY+R*Math.sin(a));ctx.strokeStyle='rgba(0,35,102,0.1)';ctx.lineWidth=1;ctx.stroke();}
 
-  /* ── SVG icon centered inside pentagon ── */
+  /* ── SVG icon centered inside pentagon (use data URL — more reliable than blob URL) ── */
   const svgStr=ASVG[arch.key]||'';
-  const svgW=170,svgH=Math.round(170*88/100); // ≈149
+  const svgW=200,svgH=Math.round(200*88/100); // ≈176 — bigger so it shows clearly
   const bigSvg=svgStr.replace(/width="\d+"/,`width="${svgW}"`).replace(/height="\d+"/,`height="${svgH}"`);
   await new Promise(res=>{
     try{
-      const blob=new Blob([bigSvg],{type:'image/svg+xml'});
-      const url=URL.createObjectURL(blob);
+      const dataUrl='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(bigSvg);
       const img=new Image();
-      img.onload=()=>{ctx.drawImage(img,CX-svgW/2,CY-svgH/2,svgW,svgH);URL.revokeObjectURL(url);res();};
-      img.onerror=()=>{URL.revokeObjectURL(url);res();};
-      img.src=url;
+      img.onload=()=>{ctx.drawImage(img,CX-svgW/2,CY-svgH/2,svgW,svgH);res();};
+      img.onerror=()=>{res();};
+      img.src=dataUrl;
     }catch(e){res();}
   });
 
@@ -782,8 +781,9 @@ async function generateShareCard(){
   }
 
   /* ── Archetype name + tag below radar ── */
-  // Bottom-most label is at CY + LR*sin(54°) ≈ 418+221=639
-  const nameY=650;
+  // Bottom-corner labels at CY + LR*sin(54°) ≈ 418+218=636, label text bottom ~648
+  // Push nameY down to clear label descenders (was 650 → overlapped)
+  const nameY=720;
   ctx.textAlign='center';
   let fs=40;ctx.font=`800 ${fs}px Sarabun,sans-serif`;
   while(ctx.measureText(arch.name).width>880&&fs>26){fs-=2;ctx.font=`800 ${fs}px Sarabun,sans-serif`;}
@@ -801,7 +801,7 @@ async function generateShareCard(){
   const captionEnd=wrapTextCenter(ctx,arch.caption,CX,divY+28,860,34);
 
   /* ── CTA box ── */
-  const ctaY=Math.max(captionEnd+14,876);
+  const ctaY=Math.max(captionEnd+14,920);
   ctx.fillStyle='#002366';rrect(ctx,80,ctaY,920,98,18);ctx.fill();
   ctx.fillStyle='#C8A94A';ctx.font='700 23px Sarabun,sans-serif';
   ctx.fillText('🔍 ลองตรวจสุขภาพการเงินของคุณได้เลย!',CX,ctaY+37);
@@ -825,8 +825,6 @@ async function downloadShareCard(){
 }
 
 function showShareModal(){
-  const arch=ARCH[S.archetype];
-  const caption=arch.caption+'\n\n🔍 ลองตรวจสุขภาพการเงินของคุณ: '+SURVEY_URL;
   document.getElementById('share-modal-el')?.remove();
   const ol=document.createElement('div');
   ol.id='share-modal-el';
@@ -835,31 +833,25 @@ function showShareModal(){
     <img src="${_shareDataUrl}" style="width:100%;display:block">
     <div style="padding:18px 16px">
       <div style="font-size:10px;font-weight:800;color:#002366;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">📤 แชร์ Archetype ของคุณ</div>
-      <button id="s41-native-btn" style="display:none;width:100%;padding:13px;background:linear-gradient(135deg,#002366,#1877F2);color:#fff;border:none;border-radius:12px;font-size:15px;font-family:inherit;font-weight:700;cursor:pointer;margin-bottom:8px">📱 Share รูปนี้ตรงเลย (Facebook / Line / ...)</button>
-      <button onclick="s41SaveImg()" style="width:100%;padding:12px;background:#C8A94A;color:#fff;border:none;border-radius:12px;font-size:14px;font-family:inherit;font-weight:700;cursor:pointer;margin-bottom:8px">💾 บันทึกรูปลงเครื่อง</button>
-      <button id="s41-copy-btn" onclick="s41CopyCaption()" style="width:100%;padding:12px;background:rgba(0,35,102,0.06);color:#002366;border:1.5px solid rgba(0,35,102,0.15);border-radius:12px;font-size:14px;font-family:inherit;font-weight:700;cursor:pointer;margin-bottom:8px">📋 Copy Caption สำหรับโพสต์</button>
-      <div style="font-size:11px;color:#888;line-height:1.65;background:#f9f9f7;border-radius:8px;padding:10px;margin-bottom:12px;border-left:3px solid #C8A94A">${arch.caption}<br><br>🔍 ${SURVEY_URL}</div>
+      <button onclick="s41SaveImg()" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px 20px;background:#002366;color:#fff;border:none;border-radius:12px;font-size:15px;font-family:inherit;font-weight:700;cursor:pointer;margin-bottom:10px">💾 บันทึกรูปลงเครื่อง</button>
+      <button onclick="s41ShareToFacebook()" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px 20px;background:#fff;color:#1877F2;border:1.5px solid #1877F2;border-radius:12px;font-size:15px;font-family:inherit;font-weight:700;cursor:pointer;margin-bottom:14px">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="#1877F2" style="flex-shrink:0"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        แชร์ลิงก์ Survey ลง Facebook
+      </button>
       <button onclick="document.getElementById('share-modal-el').remove()" style="width:100%;padding:10px;background:none;border:1.5px solid #e5e5e5;border-radius:12px;font-size:13px;font-family:inherit;cursor:pointer;color:#999">ปิด</button>
     </div>
   </div>`;
   document.body.appendChild(ol);
   ol.onclick=e=>{if(e.target===ol)ol.remove();};
-  /* Web Share API (mobile) */
-  if(navigator.share){
-    fetch(_shareDataUrl).then(r=>r.blob()).then(blob=>{
-      const file=new File([blob],'S41-Archetype.png',{type:'image/png'});
-      const nBtn=document.getElementById('s41-native-btn');
-      if(nBtn){nBtn.style.display='block';nBtn.onclick=async()=>{
-        try{
-          if(navigator.canShare&&navigator.canShare({files:[file]})){
-            await navigator.share({files:[file],text:caption});
-          } else {
-            await navigator.share({text:caption,url:SURVEY_URL});
-          }
-        }catch(e){}
-      };}
-    }).catch(()=>{});
-  }
+}
+
+/* Open Facebook share dialog with the survey URL.
+   FB will pull og:title / og:description / og:image meta tags from
+   the survey page automatically, so friends who click the post → land
+   on the survey URL and can take it themselves. */
+function s41ShareToFacebook(){
+  const fbUrl='https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(SURVEY_URL);
+  window.open(fbUrl,'_blank','noopener,width=600,height=560');
 }
 
 function s41SaveImg(){
