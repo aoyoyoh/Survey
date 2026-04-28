@@ -598,21 +598,21 @@ nav.pages a .num{font-family:var(--serif);font-style:italic;font-size:13px;color
             <a class="tl-link" onclick="goPage('p1')">รายได้ &amp; ภาระจาก Timeline</a>
           </div>
           <div class="sec-h in">รายรับ</div>
-          <div class="line"><div class="lbl">เงินเดือน (จาก Timeline)</div><div class="val">185,000</div></div>
-          <div class="line"><div class="lbl">รายได้อื่น</div><input class="y y-num md" value="0"></div>
-          <div class="line tot"><div class="lbl">รวมรายรับ</div><div class="val">185,000</div></div>
+          <div class="line"><div class="lbl">เงินเดือน (จาก Timeline)</div><div class="val" id="snap-cf-carrierIncome">0</div></div>
+          <div class="line"><div class="lbl">รายได้อื่น</div><input class="y y-num md" id="snap-cf-otherIncome" data-snap="cashflow.otherIncome" value="0"></div>
+          <div class="line tot"><div class="lbl">รวมรายรับ</div><div class="val" id="snap-cf-totalIn">0</div></div>
 
           <div class="sec-h ex">รายจ่าย</div>
-          <div class="line"><div class="lbl">ค่าใช้จ่ายในบ้าน</div><input class="y y-num md" value="45,000"></div>
-          <div class="line"><div class="lbl">อุปการะ (จาก Timeline)</div><div class="val">67,500</div></div>
-          <div class="line"><div class="lbl">ผ่อนบ้าน/รถ</div><input class="y y-num md" value="18,000"></div>
-          <div class="line"><div class="lbl">เบี้ยประกัน</div><input class="y y-num md" value="6,000"></div>
-          <div class="line"><div class="lbl">ภาษี</div><input class="y y-num md" value="6,000"></div>
-          <div class="line tot"><div class="lbl">รวมรายจ่าย</div><div class="val">142,500</div></div>
+          <div class="line"><div class="lbl">ค่าใช้จ่ายในบ้าน</div><input class="y y-num md" id="snap-cf-household" data-snap="cashflow.household" value="0"></div>
+          <div class="line"><div class="lbl">อุปการะ (จาก Timeline)</div><div class="val" id="snap-cf-depExpense">0</div></div>
+          <div class="line"><div class="lbl">ผ่อนบ้าน/รถ</div><input class="y y-num md" id="snap-cf-debtService" data-snap="cashflow.debtService" value="0"></div>
+          <div class="line"><div class="lbl">เบี้ยประกัน</div><input class="y y-num md" id="snap-cf-insurance" data-snap="cashflow.insurance" value="0"></div>
+          <div class="line"><div class="lbl">ภาษี</div><input class="y y-num md" id="snap-cf-tax" data-snap="cashflow.tax" value="0"></div>
+          <div class="line tot"><div class="lbl">รวมรายจ่าย</div><div class="val" id="snap-cf-totalEx">0</div></div>
 
           <div class="line tot" style="background:#FBF8EE;border-color:var(--gold)">
             <div class="lbl" style="color:var(--gold-2)">SURPLUS</div>
-            <div class="val" style="color:var(--gold-2)">42,500</div>
+            <div class="val" id="snap-cf-surplus" style="color:var(--gold-2)">0</div>
           </div>
         </div>
 
@@ -622,23 +622,23 @@ nav.pages a .num{font-family:var(--serif);font-style:italic;font-size:13px;color
             <div class="card-s">31 ธ.ค. 2568</div>
           </div>
           <div class="sec-h as">สินทรัพย์</div>
-          <div class="line"><div class="lbl">เงินสด/ออมทรัพย์</div><input class="y y-num md" value="850,000"></div>
-          <div class="line"><div class="lbl">กองทุนรวม/หุ้น</div><input class="y y-num md" value="2,400,000"></div>
-          <div class="line"><div class="lbl">PVD + RMF + SSF</div><input class="y y-num md" value="1,850,000"></div>
-          <div class="line"><div class="lbl">ประกัน Cash Value</div><input class="y y-num md" value="320,000"></div>
-          <div class="line"><div class="lbl">บ้าน</div><input class="y y-num md" value="6,500,000"></div>
-          <div class="line"><div class="lbl">รถ</div><input class="y y-num md" value="650,000"></div>
-          <div class="line tot"><div class="lbl">รวมสินทรัพย์</div><div class="val">12,570,000</div></div>
+          <div class="line"><div class="lbl">เงินสด/ออมทรัพย์</div><input class="y y-num md" id="snap-as-cash" data-snap="balance.assets.cash" value="0"></div>
+          <div class="line"><div class="lbl">กองทุนรวม/หุ้น</div><input class="y y-num md" id="snap-as-fund" data-snap="balance.assets.fund" value="0"></div>
+          <div class="line"><div class="lbl">PVD + RMF + SSF</div><input class="y y-num md" id="snap-as-retire" data-snap="balance.assets.retire" value="0"></div>
+          <div class="line"><div class="lbl">ประกัน Cash Value</div><input class="y y-num md" id="snap-as-insVal" data-snap="balance.assets.insVal" value="0"></div>
+          <div class="line"><div class="lbl">บ้าน</div><input class="y y-num md" id="snap-as-home" data-snap="balance.assets.home" value="0"></div>
+          <div class="line"><div class="lbl">รถ</div><input class="y y-num md" id="snap-as-car" data-snap="balance.assets.car" value="0"></div>
+          <div class="line tot"><div class="lbl">รวมสินทรัพย์</div><div class="val" id="snap-as-total">0</div></div>
 
           <div class="sec-h ex">หนี้สิน</div>
-          <div class="line"><div class="lbl">สินเชื่อบ้าน</div><input class="y y-num md" value="3,800,000"></div>
-          <div class="line"><div class="lbl">สินเชื่อรถ</div><input class="y y-num md" value="320,000"></div>
-          <div class="line"><div class="lbl">บัตรเครดิต/ส่วนตัว</div><input class="y y-num md" value="50,000"></div>
-          <div class="line tot"><div class="lbl">รวมหนี้สิน</div><div class="val">4,170,000</div></div>
+          <div class="line"><div class="lbl">สินเชื่อบ้าน</div><input class="y y-num md" id="snap-li-home" data-snap="balance.liab.home" value="0"></div>
+          <div class="line"><div class="lbl">สินเชื่อรถ</div><input class="y y-num md" id="snap-li-car" data-snap="balance.liab.car" value="0"></div>
+          <div class="line"><div class="lbl">บัตรเครดิต/ส่วนตัว</div><input class="y y-num md" id="snap-li-credit" data-snap="balance.liab.credit" value="0"></div>
+          <div class="line tot"><div class="lbl">รวมหนี้สิน</div><div class="val" id="snap-li-total">0</div></div>
 
           <div class="line tot" style="background:#F4F7FB;border-color:var(--dep-2)">
             <div class="lbl" style="color:var(--dep-2)">NET WORTH</div>
-            <div class="val" style="color:var(--dep-2)">8,400,000</div>
+            <div class="val" id="snap-nw" style="color:var(--dep-2)">0</div>
           </div>
         </div>
       </div>
@@ -646,16 +646,20 @@ nav.pages a .num{font-family:var(--serif);font-style:italic;font-size:13px;color
       <div class="card">
         <div class="card-h"><div class="card-t">อัตราส่วนการเงิน 8 ตัว</div><div class="card-s">CFP standard · auto-calculated</div></div>
         <div class="row4">
-          <div class="ratio ok"><div class="rl">สภาพคล่อง</div><div class="rv">5.2 <span class="u">เดือน</span></div><div class="rb">เกณฑ์ 3-6 · เกือบครบ</div></div>
-          <div class="ratio ok"><div class="rl">หนี้/สินทรัพย์</div><div class="rv">33 <span class="u">%</span></div><div class="rb">&lt; 50% · ปลอดภัย</div></div>
-          <div class="ratio warn"><div class="rl">ภาระชำระหนี้</div><div class="rv">38 <span class="u">%</span></div><div class="rb">&lt; 35% · เกินนิด</div></div>
-          <div class="ratio ok"><div class="rl">การออม</div><div class="rv">23 <span class="u">%</span></div><div class="rb">&gt; 10% · ดี</div></div>
-          <div class="ratio ok"><div class="rl">NW / รายได้</div><div class="rv">3.8 <span class="u">×</span></div><div class="rb">เหมาะสม</div></div>
-          <div class="ratio warn"><div class="rl">ลงทุน / NW</div><div class="rv">28 <span class="u">%</span></div><div class="rb">กระจุกในบ้าน</div></div>
-          <div class="ratio bad"><div class="rl">ประกัน / รายได้</div><div class="rv">2.1 <span class="u">×</span></div><div class="rb">เป้า 5-10× · ต่ำ</div></div>
-          <div class="ratio warn"><div class="rl">เกษียณ / รายได้</div><div class="rv">0.8 <span class="u">×</span></div><div class="rb">ควร 1× ขึ้นไป</div></div>
+          <div class="ratio bad" id="snap-r-liq"><div class="rl">สภาพคล่อง</div><div class="rv">0 <span class="u">เดือน</span></div><div class="rb">เกณฑ์ 3-6 เดือน</div></div>
+          <div class="ratio bad" id="snap-r-dta"><div class="rl">หนี้/สินทรัพย์</div><div class="rv">0 <span class="u">%</span></div><div class="rb">&lt; 50% ปลอดภัย</div></div>
+          <div class="ratio bad" id="snap-r-ds"><div class="rl">ภาระชำระหนี้</div><div class="rv">0 <span class="u">%</span></div><div class="rb">&lt; 35% เหมาะสม</div></div>
+          <div class="ratio bad" id="snap-r-sav"><div class="rl">การออม</div><div class="rv">0 <span class="u">%</span></div><div class="rb">&gt; 10% ดี</div></div>
+          <div class="ratio bad" id="snap-r-nwi"><div class="rl">NW / รายได้</div><div class="rv">0 <span class="u">×</span></div><div class="rb">เหมาะสม &gt; 2×</div></div>
+          <div class="ratio bad" id="snap-r-inv"><div class="rl">ลงทุน / NW</div><div class="rv">0 <span class="u">%</span></div><div class="rb">แนะนำ &gt; 30%</div></div>
+          <div class="ratio bad" id="snap-r-ins"><div class="rl">ประกัน / รายได้</div><div class="rv">0 <span class="u">×</span></div><div class="rb">เป้า 5-10×</div></div>
+          <div class="ratio bad" id="snap-r-ret"><div class="rl">เกษียณ / รายได้</div><div class="rv">0 <span class="u">×</span></div><div class="rb">ควร &gt; 1×</div></div>
         </div>
-        <div class="note"><b>Insight:</b> ฐานสุขภาพดี · แต่ <b>ประกัน</b> + <b>เกษียณ</b> ยังต่ำกว่ามาตรฐาน — ดู Pyramid (IV) และ Protection (V)</div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;margin:10px 0 4px;padding:8px 12px;background:#FBF8EE;border-radius:5px;border:1px solid var(--line)">
+          <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)">ทุนประกันชีวิต <input class="y y-num" id="snap-pr-lifeCov" data-snap="protection.lifeCov" value="0" style="width:120px"></label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)">เงินเกษียณสะสม <input class="y y-num" id="snap-pr-retireFund" data-snap="protection.retireFund" value="0" style="width:120px"></label>
+        </div>
+        <div class="note"><b>Insight:</b> ตัวเลขคำนวณตามที่กรอก — ปรับ Onboarding เพิ่มเพื่อให้ครบถ้วน</div>
       </div>
     </section>
 
@@ -1335,7 +1339,15 @@ nav.pages a .num{font-family:var(--serif);font-style:italic;font-size:13px;color
 <script>
 const EMPTY_STATE = {
   axisMin:35, axisMax:85, snapAge:35, inflation:3,
-  carriers:[], dependents:[], goals:[]
+  carriers:[], dependents:[], goals:[],
+  snap: {
+    cashflow:   { otherIncome:0, household:0, debtService:0, insurance:0, tax:0 },
+    balance:    {
+      assets: { cash:0, fund:0, retire:0, insVal:0, home:0, car:0 },
+      liab:   { home:0, car:0, credit:0 }
+    },
+    protection: { lifeCov:0, retireFund:0 }
+  }
 };
 
 const DEMO_STATE = {
@@ -1379,6 +1391,11 @@ function migrate(s){
       delete c.income; delete c.retire;
     }
   });
+  /* ensure STATE.snap exists with sane defaults */
+  if(!s.snap) s.snap = {};
+  if(!s.snap.cashflow)   s.snap.cashflow   = { otherIncome:0, household:0, debtService:0, insurance:0, tax:0 };
+  if(!s.snap.balance)    s.snap.balance    = { assets:{cash:0,fund:0,retire:0,insVal:0,home:0,car:0}, liab:{home:0,car:0,credit:0} };
+  if(!s.snap.protection) s.snap.protection = { lifeCov:0, retireFund:0 };
   return s;
 }
 function calcRetireAge(c){
@@ -1391,6 +1408,128 @@ function totalIncomeAtAge(c, age){
   return (c.incomes||[]).filter(i => age >= i.startAge && age <= i.endAge).reduce((s,i) => s+(i.monthly||0), 0);
 }
 
+/* ─── Phase 2.5: Derive financial snapshot from STATE ─── */
+function computeFinancials(){
+  const N = v => Number(v)||0;
+  const carriers = STATE.carriers || [];
+  const totalCarrierIncome = carriers.reduce((sum,c) => sum + totalIncomeAtAge(c, c.age||STATE.snapAge||35), 0);
+  const depExpense = (STATE.dependents||[]).reduce((s,d) => s + N(d.monthly), 0);
+
+  const cf = STATE.snap?.cashflow || {};
+  const otherIncome = N(cf.otherIncome);
+  const household   = N(cf.household);
+  const debtService = N(cf.debtService);
+  const insurance   = N(cf.insurance);
+  const tax         = N(cf.tax);
+
+  const totalIn = totalCarrierIncome + otherIncome;
+  const totalEx = household + depExpense + debtService + insurance + tax;
+  const surplus = totalIn - totalEx;
+
+  const a = STATE.snap?.balance?.assets || {};
+  const l = STATE.snap?.balance?.liab || {};
+  const totalAssets = N(a.cash) + N(a.fund) + N(a.retire) + N(a.insVal) + N(a.home) + N(a.car);
+  const totalLiab   = N(l.home) + N(l.car) + N(l.credit);
+  const netWorth    = totalAssets - totalLiab;
+
+  const p = STATE.snap?.protection || {};
+  const annualIncome = totalIn * 12;
+  const liquidity   = totalEx > 0 ? N(a.cash) / totalEx : 0;
+  const debtToAsset = totalAssets > 0 ? totalLiab / totalAssets : 0;
+  const dsRatio     = totalIn > 0 ? debtService / totalIn : 0;
+  const savingRate  = totalIn > 0 ? surplus / totalIn : 0;
+  const nwToIncome  = annualIncome > 0 ? netWorth / annualIncome : 0;
+  const investToNW  = netWorth > 0 ? (N(a.fund)+N(a.retire)) / netWorth : 0;
+  const insToIncome = annualIncome > 0 ? N(p.lifeCov) / annualIncome : 0;
+  const retToIncome = annualIncome > 0 ? N(p.retireFund) / annualIncome : 0;
+
+  return {
+    totalCarrierIncome, otherIncome, totalIn,
+    depExpense, household, debtService, insurance, tax, totalEx, surplus,
+    assets:a, liab:l, totalAssets, totalLiab, netWorth,
+    protection:p, annualIncome,
+    ratios: { liquidity, debtToAsset, dsRatio, savingRate, nwToIncome, investToNW, insToIncome, retToIncome }
+  };
+}
+
+/* ─── Phase 2.5: Render P2 Snapshot from STATE ─── */
+function renderP2Snapshot(){
+  const f = computeFinancials();
+  const fmt0 = n => Math.round(n).toLocaleString('en-US');
+  const fmt1 = (n,d=1) => n.toFixed(d);
+  const setT = (id,v) => { const el=document.getElementById(id); if(el) el.textContent = v; };
+  const setI = (id,v) => { const el=document.getElementById(id); if(el && el!==document.activeElement) el.value = v; };
+
+  /* cash flow values (calc + read from STATE) */
+  setT('snap-cf-carrierIncome', fmt0(f.totalCarrierIncome));
+  setI('snap-cf-otherIncome',   f.otherIncome);
+  setT('snap-cf-totalIn',       fmt0(f.totalIn));
+  setI('snap-cf-household',     f.household);
+  setT('snap-cf-depExpense',    fmt0(f.depExpense));
+  setI('snap-cf-debtService',   f.debtService);
+  setI('snap-cf-insurance',     f.insurance);
+  setI('snap-cf-tax',           f.tax);
+  setT('snap-cf-totalEx',       fmt0(f.totalEx));
+  setT('snap-cf-surplus',       fmt0(f.surplus));
+
+  /* balance sheet inputs */
+  setI('snap-as-cash',   f.assets.cash||0);
+  setI('snap-as-fund',   f.assets.fund||0);
+  setI('snap-as-retire', f.assets.retire||0);
+  setI('snap-as-insVal', f.assets.insVal||0);
+  setI('snap-as-home',   f.assets.home||0);
+  setI('snap-as-car',    f.assets.car||0);
+  setT('snap-as-total',  fmt0(f.totalAssets));
+  setI('snap-li-home',   f.liab.home||0);
+  setI('snap-li-car',    f.liab.car||0);
+  setI('snap-li-credit', f.liab.credit||0);
+  setT('snap-li-total',  fmt0(f.totalLiab));
+  setT('snap-nw',        fmt0(f.netWorth));
+
+  /* protection (used by ratios) — these inputs are inside ratios block */
+  setI('snap-pr-lifeCov',    f.protection.lifeCov||0);
+  setI('snap-pr-retireFund', f.protection.retireFund||0);
+
+  /* ratios with status colors (ok / warn / bad) */
+  const r = f.ratios;
+  const setR = (id, val, unit, ok, warn, bench) => {
+    const card = document.getElementById(id);
+    if(!card) return;
+    let cls='ratio bad';
+    if(typeof ok==='function'){ if(ok(val)) cls='ratio ok'; else if(warn(val)) cls='ratio warn'; }
+    card.className = cls;
+    card.querySelector('.rv').innerHTML = (typeof val==='number'?fmt1(val):val) + ' <span class="u">'+unit+'</span>';
+    if(bench){ const b=card.querySelector('.rb'); if(b) b.textContent = bench; }
+  };
+  setR('snap-r-liq',  r.liquidity,         'เดือน', v=>v>=3, v=>v>=1.5, 'เกณฑ์ 3-6 เดือน');
+  setR('snap-r-dta',  r.debtToAsset*100,   '%',     v=>v<50,  v=>v<70,   '< 50% ปลอดภัย');
+  setR('snap-r-ds',   r.dsRatio*100,       '%',     v=>v<35,  v=>v<45,   '< 35% เหมาะสม');
+  setR('snap-r-sav',  r.savingRate*100,    '%',     v=>v>=10, v=>v>=5,   '> 10% ดี');
+  setR('snap-r-nwi',  r.nwToIncome,        '×',     v=>v>=2,  v=>v>=1,   'เหมาะสม > 2×');
+  setR('snap-r-inv',  r.investToNW*100,    '%',     v=>v>=30, v=>v>=15,  'แนะนำ > 30%');
+  setR('snap-r-ins',  r.insToIncome,       '×',     v=>v>=5,  v=>v>=3,   'เป้า 5-10×');
+  setR('snap-r-ret',  r.retToIncome,       '×',     v=>v>=1,  v=>v>=0.5, 'ควร > 1×');
+}
+
+
+/* ─── Phase 2.5: Wire inputs[data-snap] → STATE.snap ─── */
+function bindSnapInputs(){
+  document.addEventListener('input', e => {
+    const t = e.target;
+    if(!t || !t.dataset || !t.dataset.snap) return;
+    const path = t.dataset.snap.split('.');
+    let obj = STATE.snap;
+    while(path.length > 1){
+      const k = path.shift();
+      if(!obj[k]) obj[k] = {};
+      obj = obj[k];
+    }
+    obj[path[0]] = Number(String(t.value||'').replace(/,/g,'')) || 0;
+    if(typeof saveState === 'function') saveState();
+    if(typeof renderP2Snapshot === 'function') renderP2Snapshot();
+  });
+}
+setTimeout(bindSnapInputs, 0);
 
 /* ─── LocalStorage persistence ─── */
 const LS_KEY = 's41_dashboard_state_v3';
@@ -1421,6 +1560,8 @@ const xPct = age => ((age - STATE.axisMin) / (STATE.axisMax - STATE.axisMin)) * 
 const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
 
 function render(){
+  /* Phase 2.5: derive P2 Snapshot from current STATE */
+  try { renderP2Snapshot(); } catch(e){ console.warn('renderP2Snapshot failed', e); }
   STATE.inflation = parseFloat($('#gInf')?.value) || 3;
   // Auto-fit axis to data: snap = today, axisMax extends to longest life
   const primary = STATE.carriers[0];
