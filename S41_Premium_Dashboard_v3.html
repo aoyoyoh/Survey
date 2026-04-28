@@ -1,0 +1,2849 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S41 Premium Dashboard · v3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,500&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FAF7EE;--paper:#FFFFFF;--ink:#2A2A2A;--ink-2:#4A4A4A;--muted:#7A7A7A;
+  --faint:#B5AFA0;--line:#EAE4D2;--line-2:#F2EEDF;
+  --yellow:#FFF4B8;--yellow-bd:#E0CD60;--yellow-hi:#FBE462;
+  --carrier:#C8635A;--carrier-2:#B05048;--dep:#7991AB;--dep-2:#5F7691;
+  --gold:#D4A961;--gold-2:#B89548;--sage:#6BA89E;--sage-2:#508B82;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --thai:'IBM Plex Sans Thai',-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--thai);background:var(--bg);color:var(--ink);font-size:13.5px;line-height:1.55;overflow:hidden;-webkit-font-smoothing:antialiased}
+.serif{font-family:var(--serif)}
+.smallcaps{text-transform:uppercase;letter-spacing:.16em;font-size:10.5px;font-weight:600;color:var(--faint)}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+
+/* Yellow inputs (the only fields user fills) */
+.y,.y-num,.y-text{background:var(--yellow);border:1px solid var(--yellow-bd);border-radius:4px;padding:3px 7px;font-family:inherit;font-size:12.5px;color:var(--ink);outline:none;font-variant-numeric:tabular-nums;transition:.15s;font-weight:500}
+.y:focus,.y-num:focus,.y-text:focus{background:var(--yellow-hi);border-color:var(--gold-2);box-shadow:0 0 0 3px rgba(212,169,97,.15)}
+.y-num{text-align:right;width:90px}
+.y-num.sm{width:54px;padding:2px 5px;font-size:11.5px}
+.y-num.md{width:110px}
+.y-text{width:120px}
+.y-sel{background:var(--yellow);border:1px solid var(--yellow-bd);border-radius:4px;padding:3px 6px;font-size:12px;color:var(--ink)}
+
+/* Layout */
+#app{display:flex;height:100vh}
+#side{width:200px;min-width:200px;background:var(--paper);border-right:1px solid var(--line);display:flex;flex-direction:column}
+.brand{padding:14px 22px 18px;text-align:center}
+.brand-mark{font-family:var(--serif);font-size:28px;font-weight:600;color:var(--ink);letter-spacing:.5px;line-height:1}
+.brand-mark span{color:var(--gold)}
+.brand-sub{font-size:9px;color:var(--faint);letter-spacing:.22em;text-transform:uppercase;margin-top:6px}
+.client{padding:16px 22px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.client-l{font-size:9px;color:var(--faint);letter-spacing:.18em;text-transform:uppercase}
+.client-n{font-family:var(--serif);font-size:18px;font-weight:600;margin-top:4px}
+.client-m{font-size:11px;color:var(--muted);font-style:italic;margin-top:2px}
+nav.pages{flex:1;padding:8px 0;overflow-y:auto}
+nav.pages .gp{padding:10px 22px 4px;font-size:9px;color:var(--faint);letter-spacing:.22em;text-transform:uppercase;font-weight:600}
+nav.pages a{display:flex;align-items:center;gap:10px;padding:8px 22px;font-size:13px;color:var(--ink-2);text-decoration:none;border-left:2px solid transparent;cursor:pointer;transition:.15s}
+nav.pages a:hover{background:var(--bg);color:var(--ink)}
+nav.pages a.on{background:var(--bg);color:var(--ink);border-left-color:var(--gold);font-weight:600}
+nav.pages a .num{font-family:var(--serif);font-style:italic;font-size:13px;color:var(--gold);min-width:18px}
+.side-base{padding:14px 22px 16px;border-top:2px solid var(--gold);background:linear-gradient(180deg,#FBF8EE 0%,var(--paper) 100%);text-align:center;flex-shrink:0;position:relative}
+.side-base::before{content:"";position:absolute;top:-2px;left:50%;transform:translateX(-50%);width:30px;height:5px;background:var(--gold);border-radius:0 0 6px 6px}
+.side-base .b-tag{font-family:var(--serif);font-style:italic;font-size:13px;color:var(--ink);letter-spacing:.04em;font-weight:500}
+.side-base .b-line{font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold-2);font-weight:600;margin-top:3px}
+.side-foot{padding:12px 22px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
+.side-logo{padding:24px 22px 18px;border-bottom:1px solid var(--line);background:var(--paper);text-align:center;flex-shrink:0}
+.side-logo img{max-width:150px;width:88%;height:auto;display:block;margin:0 auto;opacity:.97}
+.btn{padding:7px 12px;font-size:12px;border-radius:5px;border:1px solid var(--line);background:var(--paper);color:var(--ink-2);cursor:pointer;transition:.15s;font-weight:500}
+.btn:hover{border-color:var(--gold);color:var(--ink)}
+.btn-pri{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn-pri:hover{background:#000;color:#fff}
+
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{padding:12px 32px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;background:var(--bg)}
+.crumb{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+.crumb b{color:var(--ink-2);font-weight:600}
+.back-tl{font-size:11px;color:var(--gold-2);text-decoration:none;cursor:pointer;border:1px solid var(--gold);padding:4px 10px;border-radius:4px;background:#FBF8EE;transition:.15s;display:none}
+.back-tl:hover{background:var(--yellow);color:var(--ink)}
+.back-tl.show{display:inline-block}
+.content{flex:1;overflow-y:auto;padding:22px 32px 50px}
+
+/* Page header */
+.ph{margin-bottom:18px}
+.ph-eye{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-2);font-weight:600}
+.ph-t{font-family:var(--serif);font-size:30px;font-weight:600;line-height:1.15;margin-top:4px}
+.ph-s{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--muted);margin-top:2px}
+
+/* Pages */
+.page{display:none}
+.page.on{display:block}
+
+/* Cards */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:20px;margin-bottom:16px}
+.card-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--line-2);gap:10px}
+.card-t{font-family:var(--serif);font-size:17px;font-weight:600}
+.card-s{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.tl-link{font-size:10.5px;color:var(--gold-2);cursor:pointer;padding:3px 8px;border:1px solid var(--gold);border-radius:11px;background:#FBF8EE;text-decoration:none;white-space:nowrap}
+.tl-link:hover{background:var(--yellow)}
+.tl-link::before{content:"⇡ "}
+
+/* TIMELINE */
+.tl-wrap{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:22px 26px}
+.tl-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:14px}
+.tl-eye{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-2);font-weight:600}
+.tl-t{font-family:var(--serif);font-size:20px;font-weight:600;margin-top:2px}
+.tl-legend{display:flex;gap:14px;margin:8px 0 14px;font-size:11px;color:var(--muted);flex-wrap:wrap}
+.tl-legend i{width:14px;height:8px;border-radius:2px;display:inline-block;margin-right:5px;vertical-align:middle}
+.lg-c{background:var(--carrier)}.lg-d{background:var(--dep)}.lg-r{background:var(--gold)}.lg-e{background:var(--sage)}
+
+.tl-grid{position:relative}
+.tl-row{display:grid;grid-template-columns:200px 1fr;gap:16px;align-items:center;min-height:48px;border-bottom:1px dashed var(--line-2);padding:6px 0}
+.tl-row:last-child{border-bottom:none}
+.tl-row.axis{min-height:30px;padding:4px 0;border-bottom:1px solid var(--line)}
+.tl-row.axis .tl-bar{position:relative;height:24px}
+
+.tl-name{display:flex;flex-direction:column;gap:3px;padding-right:8px}
+.tl-name.nested{padding-left:18px;position:relative}
+.tl-name.nested::before{content:"";position:absolute;left:6px;top:0;bottom:0;width:1px;background:var(--line)}
+.tl-name.nested::after{content:"";position:absolute;left:6px;top:50%;width:8px;height:1px;background:var(--line)}
+.tl-mn{font-family:var(--serif);font-size:17px;font-weight:600;color:var(--ink);line-height:1.1}
+.tl-mn .badge{font-size:9.5px;color:var(--gold-2);font-weight:600;letter-spacing:.04em;margin-left:6px;font-family:var(--thai);background:#FBF8EE;border:1px solid var(--gold);padding:1px 5px;border-radius:8px;vertical-align:middle}
+.tl-mn.dep{font-family:var(--thai);font-size:13px;font-weight:500;color:var(--ink-2)}
+.tl-fields{display:flex;gap:10px;align-items:center;margin-top:6px;flex-wrap:wrap}
+.tl-fld{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
+.tl-fld .lab{font-size:9.5px;letter-spacing:.06em;color:var(--faint);text-transform:uppercase;font-weight:600}
+.tl-fld .unit{font-size:10px;color:var(--faint);margin-left:1px}
+.tl-fld input.y{padding:3px 6px;font-size:11.5px}
+
+.tl-bar{position:relative;height:42px}
+.tl-bar.dep-bar{height:30px}
+
+.b{position:absolute;border-radius:4px;top:50%;transform:translateY(-50%);cursor:pointer;transition:filter .15s,transform .15s}
+.b.car{background:var(--carrier);height:22px}
+.b.ret{background:var(--gold);opacity:.92;height:18px}
+.b.dep{background:var(--dep);height:16px;opacity:.92}
+.b.edu{height:14px;border-radius:3px;opacity:.92}
+.b:hover{filter:brightness(1.08)}
+.b.car:hover,.b.ret:hover,.b.dep:hover,.b.edu:hover{box-shadow:0 0 0 2px var(--yellow-bd),0 2px 6px rgba(0,0,0,.08)}
+
+.x-end{position:absolute;top:50%;transform:translate(-50%,-50%);width:18px;height:18px;color:var(--carrier-2);font-weight:700;line-height:1;display:flex;align-items:center;justify-content:center;z-index:2}
+.x-end::before{content:"×";font-size:22px;color:var(--carrier);font-weight:700}
+
+.b-amt{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:11px;color:#fff;font-weight:600;white-space:nowrap;pointer-events:none;text-shadow:0 1px 1px rgba(0,0,0,.18)}
+
+.pin{position:absolute;top:-22px;transform:translateX(-50%);background:var(--paper);border:1.5px solid var(--gold);border-radius:6px;padding:2px 6px;font-size:11px;display:flex;align-items:center;gap:4px;cursor:pointer;z-index:3;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.pin .ico{font-size:13px}
+.pin:hover{border-color:var(--gold-2);transform:translateX(-50%) translateY(-2px);box-shadow:0 4px 8px rgba(0,0,0,.08)}
+.pin.income{border-color:var(--sage);color:var(--sage-2);background:#F0F7F3}
+.pin.expense{border-color:var(--carrier);color:var(--carrier-2);background:#FBEEEC}
+
+.snap-line{position:absolute;top:-6px;bottom:-6px;width:1.5px;background:repeating-linear-gradient(to bottom,var(--gold) 0,var(--gold) 4px,transparent 4px,transparent 7px);z-index:2;pointer-events:none}
+.snap-dot{position:absolute;top:-12px;width:11px;height:11px;border-radius:50%;background:var(--gold);transform:translateX(-50%);z-index:3;border:2px solid var(--paper);cursor:pointer}
+.snap-lbl{position:absolute;bottom:-22px;transform:translateX(-50%);font-family:var(--serif);font-style:italic;font-size:11px;color:var(--gold-2);background:var(--paper);padding:0 6px;white-space:nowrap;cursor:pointer}
+.snap-lbl:hover{color:var(--ink)}
+
+.risk-zone{position:absolute;top:-6px;bottom:-6px;background:rgba(200,99,90,.05);z-index:0;pointer-events:none}
+
+.axis-tick{position:absolute;top:0;bottom:0;width:1px;background:var(--line-2)}
+.axis-tick.major{background:var(--line)}
+.axis-num{position:absolute;top:4px;transform:translateX(-50%);font-size:10.5px;color:var(--ink-2);font-weight:500}
+.axis-num.major{font-weight:700;color:var(--ink)}
+
+.add-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0 4px;margin-top:10px;border-top:1px solid var(--line-2)}
+.add-row .left{display:flex;gap:10px;flex-wrap:wrap}
+.add-btn{font-size:11.5px;color:var(--muted);padding:5px 10px;border:1px dashed var(--line);border-radius:5px;cursor:pointer;background:transparent;transition:.15s}
+.add-btn:hover{border-color:var(--gold);color:var(--ink);background:var(--paper)}
+.add-btn b{color:var(--gold-2);margin-right:3px;font-weight:700}
+
+.glob{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;background:#FBF8EE;border:1px solid var(--line);border-radius:8px;padding:14px 18px;margin-top:14px}
+.glob-c{display:flex;flex-direction:column;gap:4px;padding-right:14px;border-right:1px dashed var(--line)}
+.glob-c:last-child{border-right:none}
+.glob-c label{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);font-weight:600}
+.glob-c .row{display:flex;align-items:center;gap:6px}
+.glob-c .row .unit{font-size:11px;color:var(--muted)}
+
+/* Popover */
+.popover{position:absolute;background:var(--paper);border:1px solid var(--gold);border-radius:8px;padding:14px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:50;min-width:240px;display:none}
+.popover.on{display:block}
+.popover h4{font-family:var(--serif);font-size:14px;font-weight:600;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.popover .close{font-size:18px;color:var(--muted);cursor:pointer;line-height:1}
+.popover .fld{margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.popover .fld label{font-size:11px;color:var(--muted)}
+.popover .acts{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
+.popover .del{font-size:11px;color:var(--carrier);cursor:pointer;padding:4px 8px;border:1px solid transparent;border-radius:4px}
+.popover .del:hover{border-color:var(--carrier);background:rgba(200,99,90,.05)}
+
+/* Pyramid triangle */
+.pyr-wrap{display:flex;justify-content:center;padding:18px 0}
+.pyr-svg{max-width:480px;width:100%}
+.tri-band{cursor:pointer;transition:opacity .2s}
+.tri-band:hover{opacity:.85}
+
+/* Snapshot strip */
+.snap-strip{margin-top:16px;padding:16px 22px;background:#FBF8EE;border:1px solid var(--line);border-radius:8px}
+.snap-h{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-2);font-weight:600}
+.snap-t{font-family:var(--serif);font-size:18px;font-weight:600;margin:2px 0 12px;display:flex;justify-content:space-between;align-items:baseline}
+.snap-t small{font-family:var(--thai);font-size:11px;color:var(--muted);font-weight:400;font-style:italic;cursor:pointer}
+.snap-t small:hover{color:var(--ink)}
+.snap-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.snap-c{padding-right:14px;border-right:1px dashed var(--line)}
+.snap-c:last-child{border-right:none}
+.snap-c .l{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);font-weight:600}
+.snap-c .v{font-family:var(--serif);font-size:22px;font-weight:600;color:var(--ink);margin-top:3px}
+.snap-c .v.warn{color:var(--carrier-2)}
+.snap-c .v.ok{color:var(--sage-2)}
+.snap-c .s{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* Common */
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.row4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.line{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px dashed var(--line-2);gap:10px}
+.line:last-child{border-bottom:none}
+.line .lbl{flex:1;font-size:13px;color:var(--ink-2)}
+.line .val{font-variant-numeric:tabular-nums;font-size:13px;color:var(--ink)}
+.line.tot{border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);padding:9px 0;margin-top:5px}
+.line.tot .lbl{font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-size:12px}
+.line.tot .val{font-family:var(--serif);font-size:18px;font-weight:600}
+.sec-h{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-2);font-weight:600;margin:14px 0 4px;padding-bottom:3px;border-bottom:1px solid var(--line-2)}
+.sec-h:first-child{margin-top:0}
+.sec-h.in{color:var(--sage-2)}.sec-h.ex{color:var(--carrier-2)}.sec-h.as{color:var(--dep-2)}
+.ratio{padding:13px 15px;border:1px solid var(--line);background:var(--paper);border-radius:6px;border-left-width:3px}
+.ratio .rl{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);font-weight:600}
+.ratio .rv{font-family:var(--serif);font-size:22px;font-weight:600;margin-top:4px;display:flex;align-items:baseline;gap:5px}
+.ratio .rv .u{font-size:12px;color:var(--muted);font-weight:400}
+.ratio .rb{font-size:10.5px;color:var(--muted);margin-top:2px;font-style:italic}
+.ratio.ok{border-left-color:var(--sage)}.ratio.ok .rv{color:var(--sage-2)}
+.ratio.warn{border-left-color:var(--gold)}.ratio.warn .rv{color:var(--gold-2)}
+.ratio.bad{border-left-color:var(--carrier)}.ratio.bad .rv{color:var(--carrier-2)}
+
+.chip{display:inline-block;font-size:10px;font-weight:600;padding:3px 8px;border-radius:11px;letter-spacing:.04em}
+.chip-ok{background:#EAF4EE;color:#3F6B52;border:1px solid #C2DECB}
+.chip-warn{background:#FBF3DC;color:#86701E;border:1px solid #E6D7A0}
+.chip-bad{background:#F7E1DD;color:#7E2A23;border:1px solid #E5B7B0}
+.chip-navy{background:#E5ECF3;color:var(--dep-2);border:1px solid #B7C8DC}
+.chip-out{background:transparent;color:var(--muted);border:1px solid var(--line)}
+
+.note{padding:10px 14px;background:#FBF8EE;border-left:3px solid var(--gold);font-size:12px;color:var(--ink-2);margin-top:10px;border-radius:4px}
+.note b{color:var(--ink);font-weight:600}
+
+.flag-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.flag{display:flex;gap:7px;align-items:center;padding:6px 11px;background:var(--paper);border:1px solid var(--line);font-size:11.5px;color:var(--ink-2);border-radius:4px}
+.flag.crit{border-left:3px solid var(--carrier)}
+.flag.warn{border-left:3px solid var(--gold)}
+.flag.ok{border-left:3px solid var(--sage)}
+
+/* Estate / Goal lists */
+.est-row{display:grid;grid-template-columns:1.7fr 1.2fr 1.6fr 1.2fr 90px;gap:12px;align-items:center;padding:9px 0;border-bottom:1px dashed var(--line-2)}
+.est-row.h{padding:8px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.est-row.h div{font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);font-weight:600}
+.est-row .as{font-size:13px;font-weight:500}
+.est-row .as small{display:block;color:var(--faint);font-size:10.5px;margin-top:1px}
+
+.goal-row{display:grid;grid-template-columns:50px 1.6fr 80px 130px 30px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line-2)}
+.goal-row.h{padding:8px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.goal-row.h div{font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);font-weight:600}
+.goal-row .gicon{width:32px;height:32px;border-radius:50%;background:var(--bg);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:14px}
+.goal-row .gname{font-size:13px;color:var(--ink-2);font-weight:500}
+.goal-row .gname small{display:block;color:var(--faint);font-size:10.5px;font-weight:400;margin-top:1px}
+.goal-row .gdel{color:var(--faint);font-size:14px;cursor:pointer;text-align:center}
+.goal-row .gdel:hover{color:var(--carrier)}
+
+/* Slide rows for assumptions */
+.slide-row{display:grid;grid-template-columns:1.5fr 2fr 60px;gap:12px;align-items:center;margin-bottom:7px;font-size:12px}
+.slide-row label{color:var(--ink-2)}
+.slide-row input[type=range]{width:100%;accent-color:var(--gold)}
+.slide-row .v{font-variant-numeric:tabular-nums;font-weight:600;font-size:13px;color:var(--ink);text-align:right}
+.assump-grp{padding:12px 0;border-bottom:1px solid var(--line-2)}
+.assump-grp:last-child{border-bottom:none}
+.assump-grp h4{font-family:var(--serif);font-size:14px;color:var(--dep-2);font-weight:600;margin-bottom:6px}
+
+.help{font-size:11px;color:var(--muted);font-style:italic;margin-top:5px}
+
+@media (max-width:1100px){
+  .row2,.row4,.snap-grid,.glob{grid-template-columns:1fr 1fr}
+  .row3{grid-template-columns:1fr}
+  .tl-row{grid-template-columns:160px 1fr}
+  .content{padding:18px 18px 50px}
+}
+
+
+
+/* ─── Timeline interactions: hover actions + click-to-add ─── */
+.pin{position:relative}
+.pin-acts{
+  display:none;position:absolute;top:-30px;left:50%;transform:translateX(-50%);
+  background:var(--ink);color:#fff;padding:4px 6px;border-radius:5px;
+  font-size:11px;white-space:nowrap;z-index:20;gap:3px;
+  box-shadow:0 4px 10px rgba(0,0,0,.18);
+}
+.pin-acts::after{
+  content:"";position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);
+  border:4px solid transparent;border-top-color:var(--ink);border-bottom:none;
+}
+.pin:hover .pin-acts{display:flex}
+.pin-acts span{cursor:pointer;padding:2px 5px;border-radius:3px;display:flex;align-items:center}
+.pin-acts span:hover{background:rgba(255,255,255,.2)}
+
+/* Cursor for empty-area click on carrier bar */
+.car-main{cursor:crosshair}
+.car-main .b{cursor:pointer}
+.car-main .pin{cursor:default}
+.car-main:hover::after{
+  content:attr(data-hint);position:absolute;top:-26px;background:#FBF8EE;color:var(--gold-2);
+  padding:3px 9px;border-radius:11px;border:1px dashed var(--gold);
+  font-size:10.5px;letter-spacing:.04em;pointer-events:none;z-index:5;
+  font-style:italic;white-space:nowrap;opacity:0;transition:opacity .15s;
+}
+.car-main.show-hint::after{opacity:1}
+
+/* ─── Multi-income strips (below carrier bar) ─── */
+.tl-row[data-kind="carrier"] .tl-bar{min-height:42px;height:auto}
+.car-stack{position:relative}
+.i-strips{margin-top:6px;display:flex;flex-direction:column;gap:3px}
+.i-strip{position:relative;height:14px}
+.i-strip .seg{position:absolute;top:0;bottom:0;border-radius:3px;display:flex;align-items:center;padding:0 6px;font-size:10px;color:#fff;font-weight:600;text-shadow:0 1px 1px rgba(0,0,0,.18);transition:.15s;opacity:.94;overflow:hidden;white-space:nowrap;cursor:pointer}
+.i-strip .seg:hover{opacity:1;filter:brightness(1.06);box-shadow:0 0 0 2px var(--yellow-bd)}
+.i-strip .seg .ico{margin-right:4px;font-size:11px}
+.i-strip .seg .amt{margin-left:auto;font-variant-numeric:tabular-nums;opacity:.95;padding-left:4px}
+
+/* Income editor (in onboarding & popover) */
+.ie-list{display:flex;flex-direction:column;gap:8px;margin:6px 0}
+.ie-row{display:grid;grid-template-columns:50px 1.2fr 95px 56px 56px 24px;gap:6px;align-items:center;padding:8px 10px;background:#FBF8EE;border:1px solid var(--line);border-radius:5px}
+.ie-row .y,.ie-row .y-sel{padding:5px 7px;font-size:11.5px}
+.ie-row .y-sel.ico-sel{padding:4px 5px;font-size:13px;text-align:center}
+.ie-row label.ll{display:flex;align-items:center;gap:4px;font-size:9.5px;color:var(--muted);cursor:pointer;font-weight:500;letter-spacing:0;text-transform:none;grid-column:5;justify-self:start}
+.ie-row .ie-del{background:transparent;border:none;color:var(--carrier);cursor:pointer;font-size:18px;line-height:1;padding:0}
+.ie-row .ie-del:hover{color:var(--carrier-2)}
+.ie-row .arrow{text-align:center;color:var(--faint);font-size:11px}
+.ie-add{margin:6px 0 0;padding:8px;background:transparent;border:1px dashed var(--line);border-radius:5px;color:var(--muted);cursor:pointer;font-size:11.5px;width:100%;text-align:center;font-family:inherit}
+.ie-add:hover{border-color:var(--gold);color:var(--ink);background:var(--paper)}
+.ie-summary{margin-top:10px;padding:10px 14px;background:var(--paper);border-left:3px solid var(--gold);border-radius:4px;font-size:11.5px;color:var(--ink-2);line-height:1.6}
+.ie-summary b{color:var(--ink);font-weight:600}
+.ie-summary .drop{color:var(--carrier-2);display:block;font-size:11px}
+.ie-head{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-2);font-weight:600;margin-top:14px;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--line-2)}
+
+/* Income legend in carrier name column */
+.tl-fld.iSum{font-family:var(--serif);font-size:13px;color:var(--ink-2);font-weight:500}
+.tl-fld.iSum b{color:var(--ink)}
+
+
+
+/* ─── Count input pattern (income / dependents) ─── */
+.cnt-bar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#FBF8EE;border:1px solid var(--line);border-radius:6px;margin-bottom:8px;font-size:12.5px;color:var(--ink-2)}
+.cnt-bar label{font-weight:500}
+.cnt-bar input.y{width:60px;text-align:center;padding:5px 8px;font-size:14px;font-weight:600}
+.cnt-bar .hint{font-size:11px;color:var(--muted);font-style:italic;margin-left:auto}
+
+/* ─── Categorical dependent picker ─── */
+.dep-cat{margin-bottom:14px;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.cat-head{display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--paper);cursor:pointer;font-size:14px;color:var(--ink);font-weight:500;transition:.15s}
+.cat-head:hover{background:#FBF8EE}
+.cat-head input[type=checkbox]{width:18px;height:18px;accent-color:var(--gold);cursor:pointer}
+.cat-head .ico{font-size:18px}
+.cat-head .nm{flex:1}
+.cat-head .summary{font-size:11px;color:var(--gold-2);font-weight:600;font-family:var(--serif);font-style:italic}
+.cat-body{padding:14px 16px 16px;background:#FBF8EE;border-top:1px solid var(--line);display:none}
+.cat-body.on{display:block}
+.cat-body .cnt-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:12px;color:var(--ink-2)}
+.cat-body .cnt-row input.y{width:54px;text-align:center;padding:5px 7px;font-size:13px;font-weight:600}
+.cat-body .opt-row{margin-top:10px;display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--muted);cursor:pointer}
+.cat-body .opt-row input{accent-color:var(--gold)}
+
+.person-rows{display:flex;flex-direction:column;gap:6px}
+.person-row{display:grid;grid-template-columns:62px 1fr 60px 90px;gap:6px;align-items:center;padding:7px 9px;background:var(--paper);border:1px solid var(--line);border-radius:5px}
+.person-row .lbl{font-size:11px;color:var(--faint);font-weight:600;letter-spacing:.04em}
+.person-row .y{padding:5px 7px;font-size:11.5px}
+.person-row .y-num.tiny{width:100%}
+.person-row .unit{font-size:10px;color:var(--faint);margin-left:-6px}
+
+/* ─── Side-foot button grouping ─── */
+.sf-grp{display:flex;flex-direction:column;gap:5px;padding:8px 0;border-top:1px solid var(--line-2)}
+.sf-grp:first-child{border-top:none;padding-top:0}
+.sf-grp .sf-lbl{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);font-weight:600;padding:0 2px;margin-bottom:2px}
+
+/* ─── Snapshot list (P9) ─── */
+.snap-list{display:flex;flex-direction:column;gap:8px}
+.snap-item{display:grid;grid-template-columns:60px 1fr auto auto auto;gap:12px;align-items:center;padding:10px 14px;background:var(--paper);border:1px solid var(--line);border-radius:6px}
+.snap-item .yr{font-family:var(--serif);font-size:22px;font-weight:600;color:var(--gold-2)}
+.snap-item .info{font-size:11.5px;color:var(--ink-2);line-height:1.4}
+.snap-item .info b{color:var(--ink);font-family:var(--serif)}
+.snap-item .stat{font-size:10.5px;color:var(--muted);font-style:italic}
+.snap-item .act{font-size:11px;color:var(--gold-2);cursor:pointer;padding:4px 9px;border:1px solid var(--gold);border-radius:4px;background:#FBF8EE}
+.snap-item .act:hover{background:var(--yellow)}
+.snap-item .del{font-size:14px;color:var(--carrier);cursor:pointer;padding:2px 7px;border-radius:4px}
+.snap-item .del:hover{background:#FBEEEC}
+.snap-empty{padding:20px;text-align:center;color:var(--muted);font-style:italic;background:#FBF8EE;border:1px dashed var(--line);border-radius:6px}
+
+/* ─── Modal (Welcome / Add member / etc) ─── */
+.modal-bg{position:fixed;inset:0;background:rgba(26,26,26,.55);display:none;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(2px)}
+.modal-bg.on{display:flex}
+.modal{background:var(--paper);width:520px;max-width:92%;max-height:88vh;overflow-y:auto;padding:32px 36px;border-radius:10px;box-shadow:0 12px 40px rgba(0,0,0,.18)}
+.modal.wide{width:600px}
+.modal .m-eye{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-2);font-weight:600}
+.modal h2{font-family:var(--serif);font-size:26px;font-weight:600;color:var(--ink);line-height:1.15;margin:6px 0 6px}
+.modal .m-sub{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--muted);margin-bottom:18px}
+.modal .m-fld{margin-bottom:14px;display:flex;flex-direction:column;gap:5px}
+.modal .m-fld label{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);font-weight:600}
+.modal .m-fld input.y,.modal .m-fld select.y-sel{width:100%;padding:8px 12px;font-size:13.5px}
+.modal .m-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal .m-acts{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+.modal .m-acts .del-btn{margin-right:auto;color:var(--carrier);background:transparent;border:1px solid transparent}
+.modal .m-acts .del-btn:hover{border-color:var(--carrier);background:#FBEEEC}
+.modal .pick{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+.modal .pick-c{padding:18px;border:1.5px solid var(--line);border-radius:8px;cursor:pointer;text-align:left;transition:.15s;background:var(--paper)}
+.modal .pick-c:hover{border-color:var(--gold);background:#FBF8EE}
+.modal .pick-c h3{font-family:var(--serif);font-size:18px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.modal .pick-c p{font-size:11.5px;color:var(--muted);line-height:1.4}
+.modal .pick-c .ico{font-size:22px;margin-bottom:6px;display:block}
+
+/* Step indicator */
+.steps{display:flex;align-items:center;gap:6px;margin-bottom:14px}
+.step{flex:1;height:3px;background:var(--line);border-radius:2px;position:relative}
+.step.on{background:var(--gold)}
+.step.done{background:var(--sage)}
+.step-lbl{font-size:9.5px;color:var(--faint);letter-spacing:.14em;text-transform:uppercase;text-align:center;margin-top:6px;font-weight:600}
+
+/* Save indicator */
+.save-ind{display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--sage-2);font-weight:500;padding:3px 8px;background:#EAF4EE;border-radius:11px;border:1px solid #C2DECB}
+.save-ind.dirty{color:var(--carrier-2);background:#FBEEEC;border-color:#E5B7B0}
+.save-ind .dot{width:6px;height:6px;background:currentColor;border-radius:50%;animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+
+/* Onboarding hint */
+.first-hint{position:fixed;bottom:24px;right:24px;background:var(--ink);color:#fff;padding:14px 20px;border-radius:8px;font-size:13px;z-index:50;box-shadow:0 8px 24px rgba(0,0,0,.18);display:none;max-width:320px}
+.first-hint.on{display:block}
+.first-hint b{color:var(--gold);font-weight:600}
+.first-hint .x{position:absolute;top:6px;right:10px;font-size:18px;color:#999;cursor:pointer;line-height:1}
+.first-hint .x:hover{color:#fff}
+</style>
+</head>
+<body>
+
+<div id="app">
+<aside id="side">
+  <div class="side-logo" id="sideLogo">
+    <img src="data:image/png;base64,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" alt="Signature 41 — Customized for One">
+  </div>
+  <div class="brand">
+    <div class="brand-mark">S<span>·</span>41</div>
+    <div class="brand-sub">Signature 41 · Premium</div>
+  </div>
+  <div class="client">
+    <div class="client-l">Client File</div>
+    <div class="client-n" id="cl-name">— ยังไม่มีข้อมูล —</div>
+    <div class="client-m" id="cl-meta">กดเริ่มกรอก Timeline</div>
+    <div style="margin-top:10px"><span class="save-ind" id="saveInd"><span class="dot"></span><span id="saveTxt">บันทึกแล้ว</span></span></div>
+  </div>
+  <nav class="pages">
+    <div class="gp">Plan</div>
+    <a class="on" data-go="p1"><span class="num">I</span><span>Life Path</span></a>
+    <a data-go="p2"><span class="num">II</span><span>Snapshot ปัจจุบัน</span></a>
+    <a data-go="p3"><span class="num">III</span><span>Goals &amp; Timeline</span></a>
+    <a data-go="p4"><span class="num">IV</span><span>Pyramid Status</span></a>
+    <div class="gp">Protect &amp; Project</div>
+    <a data-go="p5"><span class="num">V</span><span>Protection Gap</span></a>
+    <a data-go="p6"><span class="num">VI</span><span>What-If &amp; Assumptions</span></a>
+    <a data-go="p7"><span class="num">VII</span><span>Investment Portfolio</span></a>
+    <div class="gp">Legacy</div>
+    <a data-go="p8"><span class="num">VIII</span><span>Estate &amp; Will</span></a>
+    <a data-go="p9"><span class="num">IX</span><span>Annual Review</span></a>
+  </nav>
+  <div class="side-foot">
+    <div class="sf-grp">
+      <button class="btn" onclick="loadDemo()">📋 โหลด Demo (วาราบิ)</button>
+      <button class="btn" onclick="confirmClear()">🗑 เริ่มใหม่ (Clear All)</button>
+    </div>
+    <div class="sf-grp">
+      <div class="sf-lbl">Annual</div>
+      <button class="btn btn-pri" onclick="saveAnnualSnapshot()">📸 Snapshot ปี <span id="snapYearBtn">2026</span></button>
+    </div>
+    <div class="sf-grp">
+      <div class="sf-lbl">Backup</div>
+      <button class="btn" onclick="exportJSON()">💾 Export .json</button>
+      <button class="btn" onclick="importJSON()">📂 Import .json</button>
+    </div>
+  </div>
+  <div class="side-base">
+    <div class="b-tag">Customized for One</div>
+    <div class="b-line">— Foundation —</div>
+  </div>
+</aside>
+
+<main id="main">
+  <div class="topbar">
+    <div class="crumb"><span>S41 Premium</span> · <b id="crumb">Life Path</b></div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <a class="back-tl" id="backTL" onclick="goPage('p1')">← กลับ Timeline</a>
+      <span class="smallcaps" style="color:var(--faint)">28 Apr 2026</span>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ═══════════════════════════════════════════════
+         P1 — LIFE PATH (master input · all yellow fields here)
+         ═══════════════════════════════════════════════ -->
+    <section class="page on" id="p1">
+      <div class="ph">
+        <div class="ph-eye">Section I · Master View</div>
+        <div class="ph-t">เส้นทางชีวิตบูรณาการ</div>
+        <div class="ph-s">Integrated Life Path — กรอกที่นี่ที่เดียว · ทุกหน้าใช้ค่านี้</div>
+      </div>
+
+      <div class="tl-wrap" id="tlWrap">
+        <div class="tl-top">
+          <div>
+            <div class="tl-eye">Family Timeline · 50 ปีข้างหน้า</div>
+            <div class="tl-t" id="tl-title">เริ่มต้น Timeline ของคุณ</div>
+          </div>
+          <div class="tl-legend">
+            <span><i class="lg-c"></i>ผู้วางแผน</span>
+            <span><i class="lg-d"></i>ผู้พึ่งพิง</span>
+            <span><i class="lg-r"></i>เกษียณ</span>
+            <span><i class="lg-e"></i>การศึกษา</span>
+          </div>
+        </div>
+
+        <div class="tl-grid" id="tlGrid"></div>
+
+        <div class="add-row">
+          <div class="left">
+            <button class="add-btn" onclick="addCarrier()"><b>+</b> ผู้วางแผน</button>
+            <span id="addDepBtns"></span>
+            <button class="add-btn" onclick="addGoal()"><b>+</b> เป้าหมาย</button>
+          </div>
+        </div>
+
+        <div class="glob">
+          <div class="glob-c">
+            <label>เงินเฟ้อทั่วไป</label>
+            <div class="row"><input class="y y-num sm" id="gInf" value="3.0" onchange="render()"><span class="unit">% / ปี</span></div>
+          </div>
+          <div class="glob-c">
+            <label>เงินเฟ้อค่าเรียน</label>
+            <div class="row"><input class="y y-num sm" id="gEduInf" value="5.0" onchange="render()"><span class="unit">% / ปี</span></div>
+          </div>
+          <div class="glob-c">
+            <label>ผลตอบแทนพอร์ต</label>
+            <div class="row"><input class="y y-num sm" id="gRet" value="6.0" onchange="render()"><span class="unit">% / ปี</span></div>
+          </div>
+          <div class="glob-c">
+            <label>Snapshot ปี</label>
+            <div class="row"><input class="y y-num sm" id="gYear" value="2026" onchange="render()"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Snapshot derived from timeline -->
+      <div class="snap-strip">
+        <div class="snap-h">Current Age Snapshot</div>
+        <div class="snap-t"><span>ภาพถ่าย ณ ปัจจุบัน</span><small onclick="goPage('p2')">→ ดู Snapshot ละเอียด</small></div>
+        <div class="snap-grid">
+          <div class="snap-c"><div class="l">รายได้ /เดือน</div><div class="v" id="kpi-inc">185,000</div><div class="s">วาราบิ + มัทฉะ</div></div>
+          <div class="snap-c"><div class="l">ภาระอุปการะ /เดือน</div><div class="v warn" id="kpi-burden">67,500</div><div class="s">พ่อ+แม่+ลูก</div></div>
+          <div class="snap-c"><div class="l">Surplus /เดือน</div><div class="v ok" id="kpi-surplus">42,500</div><div class="s">~510K/ปี</div></div>
+          <div class="snap-c"><div class="l">Net Worth</div><div class="v">8.4 ล้าน</div><div class="s">+12% YoY</div></div>
+        </div>
+      </div>
+
+      <!-- Quick links to other pages -->
+      <div class="card" style="margin-top:14px">
+        <div class="card-h">
+          <div class="card-t">เชื่อมไปหน้าอื่น</div>
+          <div class="card-s">Pages 2-9 · ใช้ข้อมูลจาก Timeline</div>
+        </div>
+        <div class="row4" style="grid-template-columns:repeat(4,1fr);gap:10px">
+          <div class="ratio" style="cursor:pointer" onclick="goPage('p2')"><div class="rl">II · Snapshot</div><div class="rv" style="font-size:14px">งบดุล + ratios →</div></div>
+          <div class="ratio" style="cursor:pointer" onclick="goPage('p3')"><div class="rl">III · Goals</div><div class="rv" style="font-size:14px">รายการ 4 เป้าหมาย →</div></div>
+          <div class="ratio" style="cursor:pointer" onclick="goPage('p4')"><div class="rl">IV · Pyramid</div><div class="rv" style="font-size:14px">Level 3/5 →</div></div>
+          <div class="ratio" style="cursor:pointer" onclick="goPage('p5')"><div class="rl">V · Protection</div><div class="rv" style="font-size:14px">Gap 10.4M →</div></div>
+          <div class="ratio" style="cursor:pointer" onclick="goPage('p6')"><div class="rl">VI · What-If</div><div class="rv" style="font-size:14px">Sensitivity →</div></div>
+          <div class="ratio" style="cursor:pointer" onclick="goPage('p7')"><div class="rl">VII · Portfolio</div><div class="rv" style="font-size:14px">3 strategies →</div></div>
+          <div class="ratio" style="cursor:pointer" onclick="goPage('p8')"><div class="rl">VIII · Estate</div><div class="rv" style="font-size:14px">5 ทรัพย์สิน →</div></div>
+          <div class="ratio" style="cursor:pointer" onclick="goPage('p9')"><div class="rl">IX · Annual</div><div class="rv" style="font-size:14px">YoY review →</div></div>
+        </div>
+      </div>
+
+      <!-- Risk flags -->
+      <div class="card">
+        <div class="card-h"><div class="card-t">ธงเตือน</div><div class="card-s">Auto-detected</div></div>
+        <div class="flag-row">
+          <div class="flag crit">⚠ Sandwich Gen — ภาระคู่ขนาน 10 ปี (อายุ 35-45)</div>
+          <div class="flag warn">! Genetic Risk — ประวัติโรคมารดามัทฉะ</div>
+          <div class="flag warn">! ยังไม่มีพินัยกรรม</div>
+          <div class="flag warn">! สภาพคล่อง 5.2 เดือน — ต่ำกว่าเป้า 6 เดือน</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         P2 — SNAPSHOT (Balance + Cash Flow + Ratios)
+         ═══════════════════════════════════════════════ -->
+    <section class="page" id="p2">
+      <div class="ph">
+        <div class="ph-eye">Section II · Current Frame</div>
+        <div class="ph-t">Snapshot ปัจจุบัน</div>
+        <div class="ph-s">Balance Sheet · Cash Flow · 8 Ratios — ปี 2569</div>
+      </div>
+
+      <div class="row2">
+        <div class="card">
+          <div class="card-h">
+            <div class="card-t">งบกระแสเงินสด /เดือน</div>
+            <a class="tl-link" onclick="goPage('p1')">รายได้ &amp; ภาระจาก Timeline</a>
+          </div>
+          <div class="sec-h in">รายรับ</div>
+          <div class="line"><div class="lbl">เงินเดือน (จาก Timeline)</div><div class="val">185,000</div></div>
+          <div class="line"><div class="lbl">รายได้อื่น</div><input class="y y-num md" value="0"></div>
+          <div class="line tot"><div class="lbl">รวมรายรับ</div><div class="val">185,000</div></div>
+
+          <div class="sec-h ex">รายจ่าย</div>
+          <div class="line"><div class="lbl">ค่าใช้จ่ายในบ้าน</div><input class="y y-num md" value="45,000"></div>
+          <div class="line"><div class="lbl">อุปการะ (จาก Timeline)</div><div class="val">67,500</div></div>
+          <div class="line"><div class="lbl">ผ่อนบ้าน/รถ</div><input class="y y-num md" value="18,000"></div>
+          <div class="line"><div class="lbl">เบี้ยประกัน</div><input class="y y-num md" value="6,000"></div>
+          <div class="line"><div class="lbl">ภาษี</div><input class="y y-num md" value="6,000"></div>
+          <div class="line tot"><div class="lbl">รวมรายจ่าย</div><div class="val">142,500</div></div>
+
+          <div class="line tot" style="background:#FBF8EE;border-color:var(--gold)">
+            <div class="lbl" style="color:var(--gold-2)">SURPLUS</div>
+            <div class="val" style="color:var(--gold-2)">42,500</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-h">
+            <div class="card-t">งบดุล</div>
+            <div class="card-s">31 ธ.ค. 2568</div>
+          </div>
+          <div class="sec-h as">สินทรัพย์</div>
+          <div class="line"><div class="lbl">เงินสด/ออมทรัพย์</div><input class="y y-num md" value="850,000"></div>
+          <div class="line"><div class="lbl">กองทุนรวม/หุ้น</div><input class="y y-num md" value="2,400,000"></div>
+          <div class="line"><div class="lbl">PVD + RMF + SSF</div><input class="y y-num md" value="1,850,000"></div>
+          <div class="line"><div class="lbl">ประกัน Cash Value</div><input class="y y-num md" value="320,000"></div>
+          <div class="line"><div class="lbl">บ้าน</div><input class="y y-num md" value="6,500,000"></div>
+          <div class="line"><div class="lbl">รถ</div><input class="y y-num md" value="650,000"></div>
+          <div class="line tot"><div class="lbl">รวมสินทรัพย์</div><div class="val">12,570,000</div></div>
+
+          <div class="sec-h ex">หนี้สิน</div>
+          <div class="line"><div class="lbl">สินเชื่อบ้าน</div><input class="y y-num md" value="3,800,000"></div>
+          <div class="line"><div class="lbl">สินเชื่อรถ</div><input class="y y-num md" value="320,000"></div>
+          <div class="line"><div class="lbl">บัตรเครดิต/ส่วนตัว</div><input class="y y-num md" value="50,000"></div>
+          <div class="line tot"><div class="lbl">รวมหนี้สิน</div><div class="val">4,170,000</div></div>
+
+          <div class="line tot" style="background:#F4F7FB;border-color:var(--dep-2)">
+            <div class="lbl" style="color:var(--dep-2)">NET WORTH</div>
+            <div class="val" style="color:var(--dep-2)">8,400,000</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><div class="card-t">อัตราส่วนการเงิน 8 ตัว</div><div class="card-s">CFP standard · auto-calculated</div></div>
+        <div class="row4">
+          <div class="ratio ok"><div class="rl">สภาพคล่อง</div><div class="rv">5.2 <span class="u">เดือน</span></div><div class="rb">เกณฑ์ 3-6 · เกือบครบ</div></div>
+          <div class="ratio ok"><div class="rl">หนี้/สินทรัพย์</div><div class="rv">33 <span class="u">%</span></div><div class="rb">&lt; 50% · ปลอดภัย</div></div>
+          <div class="ratio warn"><div class="rl">ภาระชำระหนี้</div><div class="rv">38 <span class="u">%</span></div><div class="rb">&lt; 35% · เกินนิด</div></div>
+          <div class="ratio ok"><div class="rl">การออม</div><div class="rv">23 <span class="u">%</span></div><div class="rb">&gt; 10% · ดี</div></div>
+          <div class="ratio ok"><div class="rl">NW / รายได้</div><div class="rv">3.8 <span class="u">×</span></div><div class="rb">เหมาะสม</div></div>
+          <div class="ratio warn"><div class="rl">ลงทุน / NW</div><div class="rv">28 <span class="u">%</span></div><div class="rb">กระจุกในบ้าน</div></div>
+          <div class="ratio bad"><div class="rl">ประกัน / รายได้</div><div class="rv">2.1 <span class="u">×</span></div><div class="rb">เป้า 5-10× · ต่ำ</div></div>
+          <div class="ratio warn"><div class="rl">เกษียณ / รายได้</div><div class="rv">0.8 <span class="u">×</span></div><div class="rb">ควร 1× ขึ้นไป</div></div>
+        </div>
+        <div class="note"><b>Insight:</b> ฐานสุขภาพดี · แต่ <b>ประกัน</b> + <b>เกษียณ</b> ยังต่ำกว่ามาตรฐาน — ดู Pyramid (IV) และ Protection (V)</div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         P3 — GOALS & TIMELINE
+         ═══════════════════════════════════════════════ -->
+    <section class="page" id="p3">
+      <div class="ph">
+        <div class="ph-eye">Section III · Future Frame</div>
+        <div class="ph-t">เป้าหมายชีวิต</div>
+        <div class="ph-s">Goal Pins — sync กับ Timeline · เพิ่ม/แก้ที่ไหนก็ได้</div>
+      </div>
+
+      <div class="card">
+        <div class="card-h">
+          <div class="card-t">รายการเป้าหมาย</div>
+          <a class="tl-link" onclick="goPage('p1')">เพิ่ม/แก้บน Timeline</a>
+        </div>
+        <div class="goal-row h">
+          <div></div><div>เป้าหมาย</div><div style="text-align:right">อายุ</div><div style="text-align:right">งบ (บาท)</div><div></div>
+        </div>
+        <div id="goalList"></div>
+        <button class="add-btn" style="margin-top:10px;display:block;width:100%;text-align:center" onclick="addGoal()"><b>+</b> เพิ่มเป้าหมายใหม่</button>
+      </div>
+
+      <div class="row2">
+        <div class="card">
+          <div class="card-h"><div class="card-t">การจัดสรร Surplus</div><div class="card-s">ตาม Pyramid Logic</div></div>
+          <div class="line"><div class="lbl">Surplus /เดือน</div><div class="val">42,500</div></div>
+          <div class="line"><div class="lbl">L1 · เติม Emergency</div><div class="val" style="color:var(--carrier)">−5,000</div></div>
+          <div class="line"><div class="lbl">L2 · เบี้ยประกัน Gap</div><div class="val" style="color:var(--carrier)">−4,500</div></div>
+          <div class="line"><div class="lbl">L3A · Retirement PMT</div><div class="val" style="color:var(--carrier)">−18,000</div></div>
+          <div class="line"><div class="lbl">L3B · Education PMT</div><div class="val" style="color:var(--carrier)">−12,000</div></div>
+          <div class="line"><div class="lbl">L4 · Free invest</div><div class="val" style="color:var(--sage-2)">+3,000</div></div>
+          <div class="line tot"><div class="lbl">เหลือ Free Cash</div><div class="val" style="color:var(--gold-2)">3,000</div></div>
+        </div>
+
+        <div class="card">
+          <div class="card-h"><div class="card-t">Conflict Detector</div><div class="card-s">เป้าหมายที่ชนกัน</div></div>
+          <div class="flag-row" style="flex-direction:column">
+            <div class="flag warn" style="align-items:flex-start">
+              <span style="color:var(--gold-2);font-weight:700">!</span>
+              <div><b>เกษียณ 55 vs UK ของลูก (อายุ 53)</b><div style="color:var(--muted);font-size:11px">2 PMT overlap 5 ปี — แนะนำ Conservative glide ตั้งแต่ 50</div></div>
+            </div>
+            <div class="flag crit" style="align-items:flex-start">
+              <span style="color:var(--carrier);font-weight:700">⚠</span>
+              <div><b>ทริปรอบโลก 3M (อายุ 50)</b><div style="color:var(--muted);font-size:11px">ต้องเก็บ 12,500/เดือน · 12 ปี · หรือเลื่อนไป 56</div></div>
+            </div>
+            <div class="flag ok" style="align-items:flex-start">
+              <span style="color:var(--sage);font-weight:700">✓</span>
+              <div><b>อุปการะพ่อแม่</b><div style="color:var(--muted);font-size:11px">ครอบคลุมในกระแสเงินสด</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         P4 — PYRAMID (real triangle)
+         ═══════════════════════════════════════════════ -->
+    <section class="page" id="p4">
+      <div class="ph">
+        <div class="ph-eye">Section IV · Logic Engine</div>
+        <div class="ph-t">พีระมิดวางแผนการเงิน</div>
+        <div class="ph-s">Financial Pyramid — สร้างจากฐานสู่ยอด</div>
+      </div>
+
+      <div class="row2" style="grid-template-columns:1.2fr 1fr">
+        <div class="card">
+          <div class="card-h"><div class="card-t">สถานะปัจจุบัน</div><a class="tl-link" onclick="goPage('p1')">Surplus จาก Timeline</a></div>
+          <div class="pyr-wrap">
+            <svg class="pyr-svg" viewBox="0 0 520 460" xmlns="http://www.w3.org/2000/svg">
+              <g class="tri-band">
+                <polygon points="260,30 280,70 240,70" fill="#F0EDE3" stroke="#EAE4D2"/>
+                <text x="490" y="55" text-anchor="end" font-family="Cormorant Garamond" font-weight="600" font-size="14" fill="#7A7A7A">L5 · Legacy</text>
+                <text x="490" y="71" text-anchor="end" font-family="IBM Plex Sans Thai" font-size="10.5" fill="#B5AFA0">พินัยกรรม / Beneficiary</text>
+              </g>
+              <g class="tri-band">
+                <polygon points="240,70 280,70 320,150 200,150" fill="#F0EDE3" stroke="#EAE4D2"/>
+                <text x="490" y="105" text-anchor="end" font-family="Cormorant Garamond" font-weight="600" font-size="14" fill="#7A7A7A">L4 · Wealth</text>
+                <text x="490" y="121" text-anchor="end" font-family="IBM Plex Sans Thai" font-size="10.5" fill="#B5AFA0">ลงทุนต่อยอด</text>
+              </g>
+              <g class="tri-band">
+                <polygon points="200,150 320,150 360,230 160,230" fill="#FBF0D0" stroke="#D4A961" stroke-width="1.5"/>
+                <text x="260" y="180" text-anchor="middle" font-family="Cormorant Garamond" font-weight="700" font-size="18" fill="#B89548">L3 · Goals</text>
+                <text x="260" y="200" text-anchor="middle" font-family="IBM Plex Sans Thai" font-size="11" fill="#86701E">เกษียณก่อน · การศึกษาตาม</text>
+                <text x="260" y="218" text-anchor="middle" font-family="IBM Plex Sans Thai" font-weight="700" font-size="11" fill="#B89548">กำลังสร้าง</text>
+                <text x="490" y="190" text-anchor="end" font-family="Cormorant Garamond" font-weight="600" font-size="14" fill="#86701E">→ Now</text>
+              </g>
+              <g class="tri-band">
+                <polygon points="160,230 360,230 400,310 120,310" fill="#FBF0D0" stroke="#D4A961" stroke-width="1.5"/>
+                <text x="260" y="260" text-anchor="middle" font-family="Cormorant Garamond" font-weight="700" font-size="18" fill="#B89548">L2 · Protection</text>
+                <text x="260" y="280" text-anchor="middle" font-family="IBM Plex Sans Thai" font-size="11" fill="#86701E">CI · Term · Health</text>
+                <text x="260" y="298" text-anchor="middle" font-family="IBM Plex Sans Thai" font-weight="700" font-size="11" fill="#86701E">Gap 10.4M</text>
+              </g>
+              <g class="tri-band">
+                <polygon points="120,310 400,310 460,430 60,430" fill="#EAF4EE" stroke="#6BA89E" stroke-width="1.5"/>
+                <text x="260" y="350" text-anchor="middle" font-family="Cormorant Garamond" font-weight="700" font-size="20" fill="#508B82">L1 · Foundation</text>
+                <text x="260" y="372" text-anchor="middle" font-family="IBM Plex Sans Thai" font-size="11.5" fill="#3F6B52">สภาพคล่อง 5.2 / 6 เดือน</text>
+                <text x="260" y="392" text-anchor="middle" font-family="IBM Plex Sans Thai" font-weight="700" font-size="14" fill="#508B82">87% Done</text>
+                <text x="260" y="416" text-anchor="middle" font-family="IBM Plex Sans Thai" font-size="10" fill="#7A7A7A">— Foundation —</text>
+              </g>
+              <polygon points="260,30 460,430 60,430" fill="none" stroke="#2A2A2A" stroke-width="1.2" opacity=".4"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-h"><div class="card-t">Allocation Logic</div><div class="card-s">เงิน 42,500 ไปไหน · why</div></div>
+          <div style="font-family:var(--serif);font-style:italic;color:var(--muted);font-size:13px;line-height:1.6;padding:6px 0 10px;border-bottom:1px solid var(--line-2)">
+            "กู้เรียนได้ · กู้เกษียณไม่ได้" — กฎ 3A
+          </div>
+          <div class="line"><div class="lbl">Step 1 · L1 Emergency</div><span class="chip chip-warn">−5,000</span></div>
+          <div class="line"><div class="lbl">Step 2 · L2 Protection</div><span class="chip chip-warn">−4,500</span></div>
+          <div class="line"><div class="lbl">Step 3 · L3A Retirement</div><span class="chip chip-warn">−18,000</span></div>
+          <div class="line"><div class="lbl">Step 4 · L3B Education</div><span class="chip chip-warn">−12,000</span></div>
+          <div class="line"><div class="lbl">Step 5 · L4 Wealth</div><span class="chip chip-ok">+3,000</span></div>
+          <div class="line"><div class="lbl">L5 · พินัยกรรม คู่ขนาน</div><span class="chip chip-bad">ยังไม่ทำ</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         P5 — PROTECTION GAP
+         ═══════════════════════════════════════════════ -->
+    <section class="page" id="p5">
+      <div class="ph">
+        <div class="ph-eye">Section V · Protect</div>
+        <div class="ph-t">การคุ้มครอง · Protection Gap</div>
+        <div class="ph-s">Capital Need Analysis — ใช้จำนวนปีอุปการะจาก Timeline</div>
+      </div>
+
+      <div class="card">
+        <div class="card-h">
+          <div class="card-t">Capital Need · วาราบิ</div>
+          <a class="tl-link" onclick="goPage('p1')">ปีอุปการะจาก Timeline</a>
+        </div>
+        <div class="line"><div class="lbl">หนี้สินคงเหลือ</div><div class="val">4,170,000</div></div>
+        <div class="line"><div class="lbl">NPV ค่าเรียนคินาโกะ (50%)</div><div class="val">3,800,000</div></div>
+        <div class="line"><div class="lbl">NPV อุปการะพ่อ 10 ปี</div><div class="val">2,500,000</div></div>
+        <div class="line"><div class="lbl">NPV อุปการะแม่ 18 ปี</div><div class="val">3,900,000</div></div>
+        <div class="line"><div class="lbl">เงินสำรอง 1 ปี + ค่าใช้จ่ายสุดท้าย</div><div class="val">1,500,000</div></div>
+        <div class="line tot"><div class="lbl">ทุนชีวิตที่ต้องการ</div><div class="val">15,870,000</div></div>
+        <div class="line"><div class="lbl">หัก: สินทรัพย์สภาพคล่อง + ประกันเดิม</div><div class="val" style="color:var(--sage-2)">−5,500,000</div></div>
+        <div class="line tot" style="background:#F7E1DD;border-color:var(--carrier)"><div class="lbl" style="color:var(--carrier-2)">Protection Gap</div><div class="val" style="color:var(--carrier-2)">10,370,000</div></div>
+        <div class="note"><b>คำแนะนำ:</b> Term Life 10M + CI 3M · เบี้ยรวม ~40K/ปี · คุ้มครองถึงอายุ 60</div>
+      </div>
+
+      <div class="row3">
+        <div class="ratio warn"><div class="rl">Life</div><div class="rv">2.1 <span class="u">×รายได้</span></div><div class="rb">เป้า 5-10× · ต่ำ</div></div>
+        <div class="ratio bad"><div class="rl">CI</div><div class="rv">0.5 <span class="u">×รายได้</span></div><div class="rb">เป้า 2-3× · ต่ำมาก</div></div>
+        <div class="ratio ok"><div class="rl">Health</div><div class="rv">5M <span class="u">วงเงิน</span></div><div class="rb">เพียงพอ</div></div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         P6 — WHAT-IF & ASSUMPTIONS
+         ═══════════════════════════════════════════════ -->
+    <section class="page" id="p6">
+      <div class="ph">
+        <div class="ph-eye">Section VI · Sensitivity</div>
+        <div class="ph-t">สมมติฐาน &amp; What-If</div>
+        <div class="ph-s">Master Assumptions — เปลี่ยนที่นี่ หรือบน Timeline ก็ได้</div>
+      </div>
+
+      <div class="row2">
+        <div class="card">
+          <div class="card-h"><div class="card-t">สมมติฐานหลัก</div><a class="tl-link" onclick="goPage('p1')">Sync กับ Timeline</a></div>
+          <div class="assump-grp">
+            <h4>การเติบโต</h4>
+            <div class="slide-row"><label>เงินเดือน +%/ปี</label><input type="range" min="0" max="10" step="0.5" value="5" oninput="setS(this,'wInc')"><div class="v" id="wInc">5.0%</div></div>
+            <div class="slide-row"><label>เงินเฟ้อค่าใช้จ่าย</label><input type="range" min="0" max="8" step="0.5" value="3" oninput="setS(this,'inf')"><div class="v" id="inf">3.0%</div></div>
+            <div class="slide-row"><label>เงินเฟ้อค่าเรียน</label><input type="range" min="0" max="10" step="0.5" value="5" oninput="setS(this,'edInf')"><div class="v" id="edInf">5.0%</div></div>
+            <div class="slide-row"><label>เงินเฟ้อค่ารักษา</label><input type="range" min="0" max="12" step="0.5" value="7" oninput="setS(this,'medInf')"><div class="v" id="medInf">7.0%</div></div>
+          </div>
+          <div class="assump-grp">
+            <h4>ผลตอบแทน</h4>
+            <div class="slide-row"><label>Conservative</label><input type="range" min="1" max="6" step="0.25" value="3" oninput="setS(this,'rCon')"><div class="v" id="rCon">3.0%</div></div>
+            <div class="slide-row"><label>Moderate (60/40)</label><input type="range" min="3" max="9" step="0.25" value="6" oninput="setS(this,'rMod')"><div class="v" id="rMod">6.0%</div></div>
+            <div class="slide-row"><label>Aggressive</label><input type="range" min="5" max="14" step="0.25" value="8.5" oninput="setS(this,'rAgg')"><div class="v" id="rAgg">8.5%</div></div>
+          </div>
+          <div class="assump-grp">
+            <h4>เกษียณ &amp; อายุขัย</h4>
+            <div class="slide-row"><label>เกษียณวาราบิ</label><input type="range" min="50" max="65" step="1" value="55" oninput="setS(this,'rW',1)"><div class="v" id="rW">55</div></div>
+            <div class="slide-row"><label>เกษียณมัทฉะ</label><input type="range" min="50" max="65" step="1" value="55" oninput="setS(this,'rM',1)"><div class="v" id="rM">55</div></div>
+            <div class="slide-row"><label>อายุขัยสมมติ</label><input type="range" min="75" max="95" step="1" value="85" oninput="setS(this,'lifeE',1)"><div class="v" id="lifeE">85</div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-h"><div class="card-t">Tornado Sensitivity</div><div class="card-s">ผลกระทบ Net Worth ณ เกษียณ</div></div>
+          <div class="slide-row"><label>เงินเฟ้อ +1%</label><div style="background:linear-gradient(to right,var(--carrier) 78%,#F2EEDF 78%);height:14px;border-radius:3px"></div><div class="v" style="color:var(--carrier)">−2.4M</div></div>
+          <div class="slide-row"><label>Return −1%</label><div style="background:linear-gradient(to right,var(--carrier) 65%,#F2EEDF 65%);height:14px;border-radius:3px"></div><div class="v" style="color:var(--carrier)">−2.0M</div></div>
+          <div class="slide-row"><label>เงินเดือน −2%</label><div style="background:linear-gradient(to right,var(--carrier) 50%,#F2EEDF 50%);height:14px;border-radius:3px"></div><div class="v" style="color:var(--carrier)">−1.5M</div></div>
+          <div class="slide-row"><label>เลื่อนเกษียณ +5</label><div style="background:linear-gradient(to right,var(--sage) 90%,#F2EEDF 90%);height:14px;border-radius:3px"></div><div class="v" style="color:var(--sage-2)">+3.2M</div></div>
+          <div class="slide-row"><label>UK +20%</label><div style="background:linear-gradient(to right,var(--carrier) 40%,#F2EEDF 40%);height:14px;border-radius:3px"></div><div class="v" style="color:var(--carrier)">−1.2M</div></div>
+          <div class="slide-row"><label>ค่ารักษา +1%</label><div style="background:linear-gradient(to right,var(--carrier) 32%,#F2EEDF 32%);height:14px;border-radius:3px"></div><div class="v" style="color:var(--carrier)">−1.0M</div></div>
+          <div class="note"><b>impact สูงสุด:</b> เงินเฟ้อ — ลด vulnerability ด้วย equity ช่วงต้น &amp; cap ค่าใช้จ่ายช่วงเกษียณ</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         P7 — PORTFOLIO
+         ═══════════════════════════════════════════════ -->
+    <section class="page" id="p7">
+      <div class="ph">
+        <div class="ph-eye">Section VII · Allocate</div>
+        <div class="ph-t">พอร์ตการลงทุน</div>
+        <div class="ph-s">Single source ของ Expected Return — ทุกหน้าใช้ค่านี้</div>
+      </div>
+
+      <div class="row3">
+        <div class="card">
+          <div class="card-h"><div class="card-t">Conservative</div><div class="card-s">L1-L2</div></div>
+          <div style="font-family:var(--serif);font-size:30px;font-weight:600;color:var(--gold-2)">3.0%</div>
+          <div class="help">Cash 50% · Bond 50% · SD 2.5%</div>
+          <div class="line"><div class="lbl">Sharpe</div><div class="val">0.40</div></div>
+          <div class="line"><div class="lbl">Use</div><div class="val">เงินสำรอง · &lt; 3 ปี</div></div>
+        </div>
+        <div class="card">
+          <div class="card-h"><div class="card-t">Moderate</div><div class="card-s">L3 · Goals</div></div>
+          <div style="font-family:var(--serif);font-size:30px;font-weight:600;color:var(--dep-2)">6.0%</div>
+          <div class="help">หุ้น 50% · ตราสารหนี้ 40% · REIT 10% · SD 8%</div>
+          <div class="line"><div class="lbl">Sharpe</div><div class="val">0.50</div></div>
+          <div class="line"><div class="lbl">Use</div><div class="val">เกษียณ · เรียน · 5-15 ปี</div></div>
+        </div>
+        <div class="card">
+          <div class="card-h"><div class="card-t">Aggressive</div><div class="card-s">L4 · Wealth</div></div>
+          <div style="font-family:var(--serif);font-size:30px;font-weight:600;color:var(--carrier-2)">8.5%</div>
+          <div class="help">หุ้น 80% · ALT 15% · SD 14%</div>
+          <div class="line"><div class="lbl">Sharpe</div><div class="val">0.46</div></div>
+          <div class="line"><div class="lbl">Use</div><div class="val">Long-horizon &gt; 15 ปี</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><div class="card-t">Glide Path</div><a class="tl-link" onclick="goPage('p1')">5 ปีก่อน goal บน Timeline</a></div>
+        <div class="line"><div class="lbl">5 ปีก่อนเกษียณ → ลด equity 1 ระดับ</div><span class="chip chip-warn">auto warn</span></div>
+        <div class="line"><div class="lbl">2 ปีก่อนใช้เงิน → Conservative</div><span class="chip chip-warn">auto warn</span></div>
+        <div class="line"><div class="lbl">Rebalance ปีละครั้ง · มกราคม</div><span class="chip chip-navy">scheduled</span></div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         P8 — ESTATE & WILL
+         ═══════════════════════════════════════════════ -->
+    <section class="page" id="p8">
+      <div class="ph">
+        <div class="ph-eye">Section VIII · Legacy</div>
+        <div class="ph-t">มรดก &amp; พินัยกรรม</div>
+        <div class="ph-s">Asset Registry — ทุกชิ้นมีผู้รับ</div>
+      </div>
+
+      <div class="card">
+        <div class="card-h">
+          <div class="card-t">ทะเบียนทรัพย์สิน</div>
+          <a class="tl-link" onclick="goPage('p2')">ดึงจากงบดุล (P2)</a>
+        </div>
+        <div class="est-row h">
+          <div>ทรัพย์สิน</div><div style="text-align:right">มูลค่า</div><div>ผู้รับหลัก</div><div>วิธีส่งต่อ</div><div style="text-align:center">สถานะ</div>
+        </div>
+        <div class="est-row">
+          <div class="as">บ้าน<small>โฉนดร่วมกับมัทฉะ</small></div>
+          <div style="text-align:right">6,500,000</div>
+          <div><input class="y y-text" style="width:100%" value="มัทฉะ 100%"></div>
+          <div><select class="y-sel" style="width:100%"><option>กรรมสิทธิ์ร่วม</option><option>พินัยกรรม</option></select></div>
+          <div style="text-align:center"><span class="chip chip-ok">OK</span></div>
+        </div>
+        <div class="est-row">
+          <div class="as">กองทุน + หุ้น</div>
+          <div style="text-align:right">2,400,000</div>
+          <div><input class="y y-text" style="width:100%" value="คินาโกะ (อายุ 25)"></div>
+          <div><select class="y-sel" style="width:100%"><option>พินัยกรรม</option></select></div>
+          <div style="text-align:center"><span class="chip chip-warn">รอ Trustee</span></div>
+        </div>
+        <div class="est-row">
+          <div class="as">PVD + RMF + SSF</div>
+          <div style="text-align:right">1,850,000</div>
+          <div><input class="y y-text" style="width:100%" value="มัทฉะ 50% · คินาโกะ 50%"></div>
+          <div><select class="y-sel" style="width:100%"><option>ตั้งผู้รับโดยตรง</option></select></div>
+          <div style="text-align:center"><span class="chip chip-ok">OK</span></div>
+        </div>
+        <div class="est-row">
+          <div class="as">ประกันชีวิตสะสม</div>
+          <div style="text-align:right">320,000</div>
+          <div><input class="y y-text" style="width:100%" value=""></div>
+          <div><select class="y-sel" style="width:100%"><option>ตั้งผู้รับโดยตรง</option></select></div>
+          <div style="text-align:center"><span class="chip chip-bad">ยังไม่ระบุ</span></div>
+        </div>
+        <div class="est-row">
+          <div class="as">รถยนต์</div>
+          <div style="text-align:right">650,000</div>
+          <div><input class="y y-text" style="width:100%" value="มัทฉะ"></div>
+          <div><select class="y-sel" style="width:100%"><option>พินัยกรรม</option></select></div>
+          <div style="text-align:center"><span class="chip chip-ok">OK</span></div>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="card">
+          <div class="card-h"><div class="card-t">Will Checklist</div><div class="card-s">พร้อมส่งทนาย</div></div>
+          <div class="line"><div class="lbl">ผู้จัดการมรดก (Executor)</div><input class="y y-text" value=""></div>
+          <div class="line"><div class="lbl">ผู้ปกครองทรัพย์ (คินาโกะ)</div><input class="y y-text" value=""></div>
+          <div class="line"><div class="lbl">Beneficiary ทุกกรมธรรม์</div><span class="chip chip-warn">บางตัวยังไม่ครบ</span></div>
+          <div class="line"><div class="lbl">Contingent beneficiary</div><span class="chip chip-warn">ยังไม่ครบ</span></div>
+          <button class="btn btn-pri" style="margin-top:12px;width:100%">สร้าง Will Draft (.docx)</button>
+        </div>
+        <div class="card">
+          <div class="card-h"><div class="card-t">ภาษีมรดก Preview</div><div class="card-s">หากเกิดเหตุวันนี้</div></div>
+          <div class="line"><div class="lbl">มูลค่ามรดกสุทธิ</div><div class="val">8,400,000</div></div>
+          <div class="line"><div class="lbl">ยกเว้น (เบื้องต้น 100M)</div><div class="val" style="color:var(--sage-2)">−100,000,000</div></div>
+          <div class="line tot"><div class="lbl">ภาษีต้องเสีย</div><div class="val" style="color:var(--sage-2)">0</div></div>
+          <div class="note"><b>ตอนนี้:</b> ยังต่ำกว่าเกณฑ์ ไม่มีภาระ · หาก NW &gt; 100M ในอนาคต ควรวางแผน <b>ตั้งแต่ตอนนี้</b></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         P9 — ANNUAL REVIEW
+         ═══════════════════════════════════════════════ -->
+    <section class="page" id="p9">
+      <div class="ph">
+        <div class="ph-eye">Section IX · Monitor</div>
+        <div class="ph-t">ทบทวนประจำปี</div>
+        <div class="ph-s">Year-on-Year — กรอกเฉพาะที่เปลี่ยน · เปรียบเทียบ Snapshot</div>
+      </div>
+
+      <div class="card">
+        <div class="card-h">
+          <div class="card-t">Saved Snapshots</div>
+          <div class="card-s">📸 บันทึกจากแถบซ้าย · เก็บประวัติเปลี่ยนแปลง</div>
+        </div>
+        <div class="snap-list" id="snapList">
+          <div class="snap-empty">ยังไม่มี Snapshot · กดปุ่ม <b>📸 Snapshot ปี</b> ที่แถบซ้ายเพื่อบันทึก</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><div class="card-t">Net Worth · 3 ปี + เป้า</div><a class="tl-link" onclick="goPage('p1')">งบดุลจาก Snapshot</a></div>
+        <svg viewBox="0 0 700 200" style="width:100%;height:200px">
+          <line x1="60" y1="170" x2="680" y2="170" stroke="#EAE4D2"/>
+          <rect x="120" y="115" width="80" height="55" fill="#7991AB" opacity=".5" rx="3"/>
+          <text x="160" y="190" text-anchor="middle" font-family="IBM Plex Sans Thai" font-size="11" fill="#7A7A7A">2024</text>
+          <text x="160" y="108" text-anchor="middle" font-family="IBM Plex Sans Thai" font-weight="700" font-size="12" fill="#2A2A2A">5.8M</text>
+          <rect x="280" y="86" width="80" height="84" fill="#7991AB" opacity=".75" rx="3"/>
+          <text x="320" y="190" text-anchor="middle" font-family="IBM Plex Sans Thai" font-size="11" fill="#7A7A7A">2025</text>
+          <text x="320" y="78" text-anchor="middle" font-family="IBM Plex Sans Thai" font-weight="700" font-size="12" fill="#2A2A2A">7.5M</text>
+          <rect x="440" y="50" width="80" height="120" fill="#7991AB" rx="3"/>
+          <text x="480" y="190" text-anchor="middle" font-family="IBM Plex Sans Thai" font-weight="600" font-size="12" fill="#2A2A2A">2026</text>
+          <text x="480" y="42" text-anchor="middle" font-family="IBM Plex Sans Thai" font-weight="700" font-size="12" fill="#5F7691">8.4M</text>
+          <rect x="600" y="20" width="60" height="150" fill="none" stroke="#D4A961" stroke-dasharray="4 3" rx="3"/>
+          <text x="630" y="190" text-anchor="middle" font-family="IBM Plex Sans Thai" font-size="11" fill="#B89548">เป้า</text>
+          <text x="630" y="14" text-anchor="middle" font-family="IBM Plex Sans Thai" font-weight="700" font-size="12" fill="#B89548">10M</text>
+        </svg>
+      </div>
+
+      <div class="row2">
+        <div class="card">
+          <div class="card-h"><div class="card-t">Action ปีที่แล้ว</div><div class="card-s">2025 → 2026</div></div>
+          <div class="line"><div class="lbl">เติม Emergency 100K</div><span class="chip chip-ok">✓ done</span></div>
+          <div class="line"><div class="lbl">เปิด RMF เพิ่ม 50K</div><span class="chip chip-ok">✓ done</span></div>
+          <div class="line"><div class="lbl">ซื้อ Term Life 5M</div><span class="chip chip-bad">✗ missed</span></div>
+          <div class="line"><div class="lbl">ทำพินัยกรรม</div><span class="chip chip-bad">✗ missed</span></div>
+          <div class="line"><div class="lbl">Rebalance พอร์ต</div><span class="chip chip-ok">✓ done</span></div>
+        </div>
+        <div class="card">
+          <div class="card-h"><div class="card-t">Action ปีหน้า</div><div class="card-s">2026 → 2027</div></div>
+          <div class="line"><div class="lbl">Term Life 10M + CI 3M</div><span class="chip chip-warn">P1</span></div>
+          <div class="line"><div class="lbl">พินัยกรรม + Executor</div><span class="chip chip-warn">P2</span></div>
+          <div class="line"><div class="lbl">เพิ่ม Retirement PMT 3K</div><span class="chip chip-warn">P3</span></div>
+          <div class="line"><div class="lbl">เริ่ม Education Port C</div><span class="chip chip-warn">P4</span></div>
+          <div class="line"><div class="lbl">Annual Review · เม.ย. 2027</div><span class="chip chip-out">scheduled</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><div class="card-t">Snapshot Diff vs ปีก่อน</div><a class="tl-link" onclick="goPage('p1')">ค่าจาก Timeline</a></div>
+        <div class="row4">
+          <div class="snap-c"><div class="l">Net Worth</div><div class="v" style="color:var(--dep-2)">+0.9M</div><div class="s">+12% YoY</div></div>
+          <div class="snap-c"><div class="l">Surplus</div><div class="v" style="color:var(--gold-2)">+5,500</div><div class="s">เงินเดือนขึ้น</div></div>
+          <div class="snap-c"><div class="l">Pyramid</div><div class="v">2 → 3</div><div class="s">ขึ้นชั้น</div></div>
+          <div class="snap-c"><div class="l">Protection Gap</div><div class="v warn">−0.3M</div><div class="s">ยังต้องลด 10M</div></div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+</div>
+
+<!-- ═══════ Welcome modal (first-time) ═══════ -->
+<div class="modal-bg" id="mWelcome">
+  <div class="modal">
+    <div class="m-eye">Welcome · ยินดีต้อนรับ</div>
+    <h2>S41 Premium Dashboard</h2>
+    <div class="m-sub">เครื่องมือวางแผนการเงินครอบครัวแบบบูรณาการ — ใช้ Timeline เป็นศูนย์กลาง</div>
+
+    <div class="pick">
+      <div class="pick-c" onclick="startFresh()">
+        <span class="ico">✨</span>
+        <h3>เริ่มจากศูนย์</h3>
+        <p>กรอกข้อมูลของคุณเองทีละขั้น · ใช้เวลา ~5 นาที</p>
+      </div>
+      <div class="pick-c" onclick="loadDemo();closeModal('mWelcome')">
+        <span class="ico">📋</span>
+        <h3>ดู Demo ก่อน</h3>
+        <p>โหลดเคสตัวอย่าง "วาราบิ-มัทฉะ" Sandwich Generation</p>
+      </div>
+    </div>
+
+    <div class="m-acts" style="border:none;justify-content:center;margin-top:20px">
+      <span style="font-size:11px;color:var(--faint);font-style:italic">ข้อมูลของคุณบันทึกในเครื่องเท่านั้น (localStorage) · ไม่ถูกส่งไปไหน</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ Onboarding Step 1 — ผู้วางแผน ═══════ -->
+<div class="modal-bg" id="mOnboard">
+  <div class="modal">
+    <div class="steps">
+      <div class="step on"></div><div class="step"></div><div class="step"></div>
+    </div>
+    <div class="m-eye">Step 1 / 3 · ผู้วางแผน</div>
+    <h2>เริ่มจากตัวคุณก่อน</h2>
+    <div class="m-sub">ข้อมูลของคุณเอง · 5 ช่อง · ใช้เวลา ~1 นาที</div>
+
+    <div class="m-fld"><label>ชื่อ / ชื่อเล่น</label><input class="y" id="ob-name" placeholder="ชื่อของคุณ"></div>
+    <div class="m-row">
+      <div class="m-fld"><label>อายุปัจจุบัน</label><input class="y y-num" id="ob-age" value="35"></div>
+      <div class="m-fld"><label>อายุขัยที่คาดหวัง</label><input class="y y-num" id="ob-life" value="85"></div>
+    </div>
+
+    <div class="ie-head">รายได้ (แต่ละช่องจบไม่พร้อมกันก็ได้)</div>
+    <div class="cnt-bar">
+      <label>มีรายได้กี่ช่องทาง?</label>
+      <input class="y y-num" id="ob-iCount" value="1" min="1" max="20" oninput="syncIncomeCount('ob-iList','ob-iCount',parseInt(document.getElementById('ob-age').value)||35,parseInt(document.getElementById('ob-life').value)||85)">
+      <span class="hint">เช่น เงินเดือน · ค่าเช่า · commission · รายได้ passive</span>
+    </div>
+    <div class="ie-list" id="ob-iList"></div>
+    <div class="ie-summary" id="ob-iSum"></div>
+
+    <div class="m-fld" style="background:#FBF8EE;padding:12px 14px;border-radius:6px;border:1px solid var(--line);margin-top:14px">
+      <label>มีคู่สมรส / partner ที่วางแผนการเงินร่วมกันมั้ย?</label>
+      <div style="display:flex;gap:14px;margin-top:6px">
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;font-size:13px;text-transform:none;letter-spacing:0;color:var(--ink-2);cursor:pointer"><input type="radio" name="ob-spouse" value="no" checked> ไม่มี / ข้าม</label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;font-size:13px;text-transform:none;letter-spacing:0;color:var(--ink-2);cursor:pointer"><input type="radio" name="ob-spouse" value="yes"> มี · กรอกข้อมูลคู่</label>
+      </div>
+    </div>
+
+    <div class="m-acts">
+      <button class="btn" onclick="closeModal('mOnboard');showWelcome()">← กลับ</button>
+      <button class="btn btn-pri" onclick="onboardStep1Next()">ถัดไป →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ Onboarding Step 2 — คู่สมรส ═══════ -->
+<div class="modal-bg" id="mOnboard2">
+  <div class="modal">
+    <div class="steps">
+      <div class="step done"></div><div class="step on"></div><div class="step"></div>
+    </div>
+    <div class="m-eye">Step 2 / 3 · คู่สมรส</div>
+    <h2>กรอกข้อมูลคู่สมรส</h2>
+    <div class="m-sub">วางแผนการเงินร่วมกัน — รายได้/ภาระจะรวมเข้าด้วยกัน</div>
+
+    <div class="m-fld"><label>ชื่อ / ชื่อเล่น</label><input class="y" id="ob2-name" placeholder="ชื่อคู่สมรส"></div>
+    <div class="m-row">
+      <div class="m-fld"><label>อายุปัจจุบัน</label><input class="y y-num" id="ob2-age" value="33"></div>
+      <div class="m-fld"><label>อายุขัยที่คาดหวัง</label><input class="y y-num" id="ob2-life" value="85"></div>
+    </div>
+
+    <div class="ie-head">รายได้</div>
+    <div class="cnt-bar">
+      <label>มีรายได้กี่ช่องทาง?</label>
+      <input class="y y-num" id="ob2-iCount" value="1" min="1" max="20" oninput="syncIncomeCount('ob2-iList','ob2-iCount',parseInt(document.getElementById('ob2-age').value)||33,parseInt(document.getElementById('ob2-life').value)||85)">
+    </div>
+    <div class="ie-list" id="ob2-iList"></div>
+    <div class="ie-summary" id="ob2-iSum"></div>
+
+    <div class="m-acts">
+      <button class="btn" onclick="closeModal('mOnboard2');openModal('mOnboard')">← กลับ</button>
+      <button class="btn btn-pri" onclick="onboardStep2Next()">ถัดไป →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ Onboarding Step 3 — ผู้พึ่งพิง (categorical) ═══════ -->
+<div class="modal-bg" id="mOnboard3">
+  <div class="modal wide">
+    <div class="steps">
+      <div class="step done"></div><div class="step done"></div><div class="step on"></div>
+    </div>
+    <div class="m-eye">Step 3 / 3 · ผู้พึ่งพิง</div>
+    <h2>มีคนที่ต้องอุปการะมั้ย?</h2>
+    <div class="m-sub">เลือกประเภท · ระบุจำนวน · ระบบสร้างช่องกรอกให้อัตโนมัติ</div>
+
+    <div class="dep-cat">
+      <label class="cat-head">
+        <input type="checkbox" id="cat-child" onchange="toggleCat('child')">
+        <span class="ico">👶</span>
+        <span class="nm">ลูก / เด็กในความดูแล</span>
+        <span class="summary" id="cat-child-sum"></span>
+      </label>
+      <div class="cat-body" id="cat-child-body">
+        <div class="cnt-row">
+          <span>มีกี่คน?</span>
+          <input class="y y-num" id="child-count" value="1" min="1" max="20" oninput="renderPersonRows('child')">
+          <span class="hint" style="font-size:10.5px;color:var(--muted)">กรอกอายุของแต่ละคน · ค่าเลี้ยงดู+เรียน/เดือน</span>
+        </div>
+        <div class="person-rows" id="child-rows"></div>
+        <label class="opt-row" id="child-share-wrap" style="display:none">
+          <input type="checkbox" id="child-share">
+          <span>แชร์ภาระ 50/50 กับคู่สมรส (ใช้ได้เมื่อมีคู่)</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="dep-cat">
+      <label class="cat-head">
+        <input type="checkbox" id="cat-parent" onchange="toggleCat('parent')">
+        <span class="ico">🏡</span>
+        <span class="nm">พ่อ-แม่ / ผู้สูงอายุที่อุปการะ</span>
+        <span class="summary" id="cat-parent-sum"></span>
+      </label>
+      <div class="cat-body" id="cat-parent-body">
+        <div class="cnt-row">
+          <span>มีกี่คน?</span>
+          <input class="y y-num" id="parent-count" value="1" min="1" max="10" oninput="renderPersonRows('parent')">
+        </div>
+        <div class="person-rows" id="parent-rows"></div>
+      </div>
+    </div>
+
+    <div class="dep-cat">
+      <label class="cat-head">
+        <input type="checkbox" id="cat-other" onchange="toggleCat('other')">
+        <span class="ico">🌟</span>
+        <span class="nm">ญาติอื่น / คนในความดูแล</span>
+        <span class="summary" id="cat-other-sum"></span>
+      </label>
+      <div class="cat-body" id="cat-other-body">
+        <div class="cnt-row">
+          <span>มีกี่คน?</span>
+          <input class="y y-num" id="other-count" value="1" min="1" max="10" oninput="renderPersonRows('other')">
+        </div>
+        <div class="person-rows" id="other-rows"></div>
+      </div>
+    </div>
+
+    <div class="m-acts">
+      <button class="btn" onclick="closeModal('mOnboard3');openModal(STATE.carriers.length>1?'mOnboard2':'mOnboard')">← กลับ</button>
+      <button class="btn" onclick="finishOnboarding()">ไม่มี / ข้าม</button>
+      <button class="btn btn-pri" onclick="saveOnboardDeps()">บันทึก + เปิด Dashboard</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ Quick add dependent (after onboarding "มี") ═══════ -->
+<div class="modal-bg" id="mQuickDep">
+  <div class="modal">
+    <div class="m-eye">เพิ่มผู้พึ่งพิง <span id="qd-count" style="color:var(--gold-2)"></span></div>
+    <h2>คนที่ต้องอุปการะ</h2>
+    <div class="m-sub">กรอกชื่อ + อายุ — ระบบเดาให้ว่าเป็น "ลูก" (อายุ &lt; 22) หรือ "พ่อ-แม่/ญาติ"</div>
+
+    <div class="m-fld"><label>ชื่อ</label><input class="y" id="qd-name" placeholder="ชื่อ"></div>
+    <div class="m-row">
+      <div class="m-fld"><label>อายุปัจจุบัน</label><input class="y y-num" id="qd-age" value="65"></div>
+      <div class="m-fld"><label id="qd-endLbl">อุปการะถึงอายุ</label><input class="y y-num" id="qd-end" value="80"></div>
+    </div>
+    <div class="m-fld"><label>อุปการะ / เดือน (บาท)</label><input class="y y-num" id="qd-amt" value="20000"></div>
+    <div class="m-fld" id="qd-shareWrap" style="display:none;background:#FBF8EE;padding:10px 12px;border-radius:6px;border:1px solid var(--line)">
+      <label>แชร์ภาระระหว่างคู่สมรสมั้ย?</label>
+      <div style="display:flex;gap:14px;margin-top:6px">
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;font-size:13px;text-transform:none;letter-spacing:0;color:var(--ink-2);cursor:pointer"><input type="radio" name="qd-share" value="100" checked> เฉพาะคนเดียว</label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;font-size:13px;text-transform:none;letter-spacing:0;color:var(--ink-2);cursor:pointer"><input type="radio" name="qd-share" value="50"> 50/50 (แชร์เท่ากัน)</label>
+      </div>
+    </div>
+
+    <div class="m-acts">
+      <button class="btn" onclick="finishOnboarding()">เสร็จแล้ว · ไป Timeline</button>
+      <button class="btn btn-pri" onclick="addQuickDep(true)">บันทึก + เพิ่มอีกคน →</button>
+      <button class="btn btn-pri" onclick="addQuickDep(false)">บันทึก + เสร็จ ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ Add/Edit Member modal (universal) ═══════ -->
+<div class="modal-bg" id="mMember">
+  <div class="modal">
+    <div class="m-eye" id="mm-eye">เพิ่มสมาชิก</div>
+    <h2 id="mm-title">เพิ่มผู้พึ่งพิง</h2>
+    <div class="m-sub" id="mm-sub">กรอกข้อมูลแล้วบันทึก · จะแสดงใน Timeline ทันที</div>
+
+    <div class="m-fld" id="mm-typeWrap">
+      <label>ประเภท</label>
+      <select class="y-sel" id="mm-type" onchange="updMemberFields()">
+        <option value="parent">พ่อ / แม่</option>
+        <option value="spouse">คู่สมรส</option>
+        <option value="child">ลูก</option>
+      </select>
+    </div>
+    <div class="m-fld"><label>ชื่อ</label><input class="y" id="mm-name" placeholder="ชื่อ"></div>
+    <div class="m-row">
+      <div class="m-fld"><label>อายุปัจจุบัน</label><input class="y y-num" id="mm-age" value="65"></div>
+      <div class="m-fld"><label id="mm-endLbl">อายุขัย</label><input class="y y-num" id="mm-end" value="80"></div>
+    </div>
+    <div class="m-fld"><label id="mm-amtLbl">อุปการะ / เดือน (บาท)</label><input class="y y-num" id="mm-amt" value="20000"></div>
+    <div class="m-fld" id="mm-shareWrap" style="display:none">
+      <label>แชร์ภาระระหว่างผู้วางแผนอย่างไร</label>
+      <select class="y-sel" id="mm-share">
+        <option value="100">100% เฉพาะคนนี้</option>
+        <option value="50">50/50 (แชร์เท่ากัน)</option>
+      </select>
+    </div>
+
+    <div class="m-acts">
+      <button class="btn del-btn" id="mm-del" onclick="delMember()" style="display:none">ลบรายการ</button>
+      <button class="btn" onclick="closeModal('mMember')">ยกเลิก</button>
+      <button class="btn btn-pri" onclick="saveMember()">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ Add/Edit Goal modal ═══════ -->
+<div class="modal-bg" id="mGoal">
+  <div class="modal">
+    <div class="m-eye">เป้าหมาย</div>
+    <h2 id="mg-title">เพิ่มเป้าหมาย</h2>
+    <div class="m-sub">เพิ่มแล้วจะแสดงเป็น pin บน Timeline</div>
+
+    <div class="m-row">
+      <div class="m-fld"><label>icon</label><select class="y-sel" id="mg-ico">
+        <option>🏠</option><option>🚗</option><option>🎓</option><option>💍</option><option>👶</option><option>🌍</option><option>🏥</option><option>💎</option><option>🏖️</option><option>🎁</option><option>🎯</option>
+      </select></div>
+      <div class="m-fld"><label>ของใคร</label><select class="y-sel" id="mg-owner"></select></div>
+    </div>
+    <div class="m-fld"><label>ชื่อเป้าหมาย</label><input class="y" id="mg-name" placeholder="เช่น ทริปรอบโลก"></div>
+    <div class="m-row">
+      <div class="m-fld"><label>เกิดที่อายุ</label><input class="y y-num" id="mg-age" value="50"></div>
+      <div class="m-fld"><label>งบ (บาท · ลบ = จ่ายออก)</label><input class="y y-num" id="mg-amt" value="-1000000"></div>
+    </div>
+
+    <div class="m-acts">
+      <button class="btn del-btn" id="mg-del" onclick="delGoal()" style="display:none">ลบ</button>
+      <button class="btn" onclick="closeModal('mGoal')">ยกเลิก</button>
+      <button class="btn btn-pri" onclick="saveGoal()">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ Confirm clear ═══════ -->
+<div class="modal-bg" id="mClear">
+  <div class="modal">
+    <h2 style="color:var(--carrier-2)">เริ่มใหม่ทั้งหมด?</h2>
+    <div class="m-sub">ข้อมูลปัจจุบันทั้งหมดจะถูกลบ — รวมถึงสมาชิก เป้าหมาย และค่า assumption</div>
+    <div class="m-acts">
+      <button class="btn" onclick="closeModal('mClear')">ยกเลิก</button>
+      <button class="btn" style="background:var(--carrier);color:#fff;border-color:var(--carrier)" onclick="clearAll()">ใช่ ลบทั้งหมด</button>
+    </div>
+  </div>
+</div>
+
+<!-- First-time hint -->
+<div class="first-hint" id="hint">
+  <span class="x" onclick="document.getElementById('hint').classList.remove('on')">×</span>
+  💡 <b>ลองคลิก!</b><br>
+  • ฟิลด์เหลือง = กรอก/แก้ได้<br>
+  • คลิก <b>เส้น</b> Timeline → แก้ช่วงอายุ<br>
+  • คลิก <b>pin</b> เป้าหมาย → แก้รายละเอียด<br>
+  • ปุ่ม <b>+ ผู้วางแผน / + ผู้พึ่งพิง / + เป้าหมาย</b> ใต้ Timeline
+</div>
+
+<div class="popover" id="pop"></div>
+
+<script>
+const EMPTY_STATE = {
+  axisMin:35, axisMax:85, snapAge:35, inflation:3,
+  carriers:[], dependents:[], goals:[]
+};
+
+const DEMO_STATE = {
+  axisMin:35, axisMax:85, snapAge:35, inflation:3,
+  carriers:[
+    {id:'warabi', name:'วาราบิ', age:35, life:85, incomes:[
+      {id:'iw1', ico:'💼', name:'เงินเดือนประจำ', monthly:80000, startAge:35, endAge:50, color:'#C8635A'},
+      {id:'iw2', ico:'💎', name:'commission AIA', monthly:25000, startAge:35, endAge:70, color:'#D4A961'},
+      {id:'iw3', ico:'🏠', name:'ค่าเช่าหอพัก',   monthly:15000, startAge:35, endAge:85, color:'#6BA89E', lifelong:true}
+    ]},
+    {id:'matcha', name:'มัทฉะ',  age:33, life:85, incomes:[
+      {id:'im1', ico:'💼', name:'เงินเดือน', monthly:75000, startAge:33, endAge:55, color:'#7991AB'}
+    ]}
+  ],
+  dependents:[
+    {id:'father',   parent:'warabi', name:'พ่อวาราบิ', age:70, life:80, monthly:25000, kind:'parent'},
+    {id:'mother',   parent:'warabi', name:'แม่วาราบิ', age:62, life:80, monthly:25000, kind:'parent'},
+    {id:'kinako-w', parent:'warabi', name:'คินาโกะ',   age:8,  endAge:25, monthly:11250, kind:'child', share:50, link:'kinako'},
+    {id:'kinako-m', parent:'matcha', name:'คินาโกะ',   age:8,  endAge:25, monthly:11250, kind:'child', share:50, link:'kinako'}
+  ],
+  goals:[
+    {id:1, ico:'🏠', name:'รีโนเวทบ้าน', age:42, amt:-1500000, parent:'warabi'},
+    {id:2, ico:'🌍', name:'ทริปรอบโลก',  age:50, amt:-3000000, parent:'warabi'},
+    {id:3, ico:'🎓', name:'ค่าเรียน UK', age:53, amt:-4500000, parent:'warabi'},
+    {id:4, ico:'💎', name:'ขายบ้านมรดก', age:55, amt:7500000,  parent:'warabi'}
+  ]
+};
+
+let STATE = JSON.parse(JSON.stringify(EMPTY_STATE));
+/* ─── Migrate old single-income → incomes array ─── */
+function migrate(s){
+  if(!s || !s.carriers) return s;
+  const COLORS = ['#C8635A','#D4A961','#6BA89E','#7991AB','#5F7691','#B5453E'];
+  s.carriers.forEach(c => {
+    if(!Array.isArray(c.incomes)){
+      const monthly = (typeof c.income === 'number') ? c.income : 0;
+      const endAge = c.retire || 55;
+      c.incomes = monthly > 0
+        ? [{id:'i'+Date.now()+Math.random().toString(36).slice(2,6), ico:'💼', name:'รายได้', monthly, startAge:c.age, endAge, color:COLORS[0]}]
+        : [];
+      delete c.income; delete c.retire;
+    }
+  });
+  return s;
+}
+function calcRetireAge(c){
+  if(!c.incomes || c.incomes.length === 0) return c.life;
+  const nonLifelong = c.incomes.filter(i => !i.lifelong && i.endAge < c.life);
+  if(nonLifelong.length === 0) return c.life;
+  return Math.max(...nonLifelong.map(i => i.endAge));
+}
+function totalIncomeAtAge(c, age){
+  return (c.incomes||[]).filter(i => age >= i.startAge && age <= i.endAge).reduce((s,i) => s+(i.monthly||0), 0);
+}
+
+
+/* ─── LocalStorage persistence ─── */
+const LS_KEY = 's41_dashboard_state_v3';
+function saveState(){
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify(STATE));
+    setSaveInd('saved');
+  } catch(e){ console.warn('Save failed', e); }
+}
+function loadState(){
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if(raw){ STATE = migrate(JSON.parse(raw)); return true; }
+  } catch(e){}
+  return false;
+}
+function setSaveInd(status){
+  const el = document.getElementById('saveTxt');
+  const wrap = document.getElementById('saveInd');
+  if(!el || !wrap) return;
+  if(status === 'saved'){ el.textContent = 'บันทึกแล้ว'; wrap.classList.remove('dirty'); }
+  else { el.textContent = 'กำลังบันทึก...'; wrap.classList.add('dirty'); }
+}
+
+const $ = s => document.querySelector(s);
+const fmt = n => Math.round(n).toLocaleString('en-US');
+const xPct = age => ((age - STATE.axisMin) / (STATE.axisMax - STATE.axisMin)) * 100;
+const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+
+function render(){
+  STATE.inflation = parseFloat($('#gInf')?.value) || 3;
+  // Auto-fit axis to data: snap = today, axisMax extends to longest life
+  const primary = STATE.carriers[0];
+  if(primary){
+    STATE.snapAge = primary.age;
+    STATE.axisMin = primary.age;
+    let maxYears = 50;
+    STATE.carriers.forEach(c => { const y = c.life - c.age; if(y > maxYears) maxYears = y; });
+    STATE.dependents.forEach(d => { const y = (d.life||d.endAge) - d.age; if(y > maxYears) maxYears = y; });
+    STATE.axisMax = primary.age + Math.ceil(maxYears/5)*5;
+  }
+  const grid = $('#tlGrid');
+  grid.innerHTML = '';
+
+  // axis row
+  const axisRow = document.createElement('div');
+  axisRow.className = 'tl-row axis';
+  axisRow.innerHTML = `<div class="tl-name"><span class="smallcaps">อายุ (วาราบิ)</span></div><div class="tl-bar" id="axisBar"></div>`;
+  grid.appendChild(axisRow);
+  const ab = axisRow.querySelector('#axisBar');
+  for(let a=STATE.axisMin; a<=STATE.axisMax; a+=5){
+    const pct = xPct(a), major = a%10===0;
+    const t = document.createElement('div');
+    t.className='axis-tick'+(major?' major':''); t.style.left=pct+'%'; ab.appendChild(t);
+    const n = document.createElement('div');
+    n.className='axis-num'+(major?' major':''); n.style.left=pct+'%'; n.textContent=a; ab.appendChild(n);
+  }
+
+  // carriers + nested deps
+  STATE.carriers.forEach(c => {
+    grid.appendChild(carrierRow(c));
+    STATE.dependents.filter(d => d.parent === c.id).forEach(d => grid.appendChild(depRow(d, c)));
+  });
+
+  addOverlays();
+  renderGoals();
+  updateKPIs();
+}
+
+function carrierRow(c){
+  const row = document.createElement('div');
+  row.className = 'tl-row';
+  row.dataset.kind = 'carrier';
+  row.dataset.id = c.id;
+
+  // Auto-derive retire age from incomes (override if c.retire set explicitly)
+  const retireAge = c.retire || calcRetireAge(c);
+  const incNow = totalIncomeAtAge(c, c.age);
+
+  row.innerHTML = `
+    <div class="tl-name">
+      <div class="tl-mn">${c.name}<span class="badge">ผู้วางแผน</span></div>
+      <div class="tl-fields">
+        <div class="tl-fld"><span class="lab">อายุ</span><input class="y y-num sm" value="${c.age}" data-k="age" data-id="${c.id}"></div>
+        <div class="tl-fld iSum">รวม <b>${fmt(incNow)}</b>/m</div>
+      </div>
+    </div>
+    <div class="tl-bar"></div>
+  `;
+  const bar = row.querySelector('.tl-bar');
+
+  // Carrier main bar — split active/retired by retireAge
+  const stack = document.createElement('div');
+  stack.className = 'car-stack';
+  bar.appendChild(stack);
+
+  const main = document.createElement('div');
+  main.className = 'car-main';
+  main.style.cssText = 'position:relative;height:42px';
+  // Click on empty area → add goal at clicked age
+  main.addEventListener('mousemove', e => {
+    if(e.target === main){
+      const rect = main.getBoundingClientRect();
+      const pct = (e.clientX - rect.left) / rect.width;
+      const axisAge = STATE.axisMin + pct * (STATE.axisMax - STATE.axisMin);
+      const cAge = Math.round(c.age + (axisAge - STATE.snapAge));
+      main.setAttribute('data-hint', '+ เพิ่มเป้าหมายที่อายุ ' + cAge);
+      main.classList.add('show-hint');
+      // Position the hint near cursor
+      main.style.setProperty('--hint-x', (e.clientX - rect.left) + 'px');
+    } else {
+      main.classList.remove('show-hint');
+    }
+  });
+  main.addEventListener('mouseleave', () => main.classList.remove('show-hint'));
+  main.addEventListener('click', e => {
+    if(e.target !== main) return; // only when clicked on truly empty area
+    const rect = main.getBoundingClientRect();
+    const pct = (e.clientX - rect.left) / rect.width;
+    const axisAge = STATE.axisMin + pct * (STATE.axisMax - STATE.axisMin);
+    const cAge = Math.round(c.age + (axisAge - STATE.snapAge));
+    addGoalAtAge(c.id, cAge);
+  });
+  stack.appendChild(main);
+
+  const x0 = xPct(STATE.snapAge);
+  const xR = xPct(STATE.snapAge + (retireAge - c.age));
+  const xE = xPct(STATE.snapAge + (c.life - c.age));
+
+  const work = document.createElement('div');
+  work.className = 'b car';
+  work.style.left = Math.max(0,x0)+'%';
+  work.style.width = (xR-Math.max(0,x0))+'%';
+  work.title = 'ช่วงทำงาน · คลิกแก้';
+  work.onclick = e => { e.stopPropagation(); openCarrierPop(c, 'work', work); };
+  main.appendChild(work);
+
+  if(xE > xR){
+    const ret = document.createElement('div');
+    ret.className = 'b ret';
+    ret.style.left = xR+'%';
+    ret.style.width = (xE-xR)+'%';
+    ret.title = 'ช่วงเกษียณ · คลิกแก้';
+    ret.onclick = e => { e.stopPropagation(); openCarrierPop(c, 'retire', ret); };
+    main.appendChild(ret);
+  }
+
+  // Goal pins (anchored to main bar)
+  STATE.goals.filter(g => g.parent === c.id).forEach(g => {
+    const yearsFromNow = g.age - c.age;
+    const pinAxis = STATE.snapAge + yearsFromNow;
+    if(pinAxis < STATE.axisMin || pinAxis > STATE.axisMax) return;
+    const pin = document.createElement('div');
+    pin.className = 'pin ' + (g.amt > 0 ? 'income' : 'expense');
+    pin.style.left = xPct(pinAxis) + '%';
+    pin.innerHTML = `
+      <span class="ico">${g.ico}</span><span>${g.name}</span>
+      <span class="pin-acts">
+        <span title="ทำซ้ำที่อายุ +1" onclick="event.stopPropagation();duplicateGoal(${g.id})">📋</span>
+        <span title="ลบเป้าหมายนี้" onclick="event.stopPropagation();delGoalQuick(${g.id})">🗑</span>
+      </span>`;
+    pin.title = `อายุ ${g.age} · ${g.amt > 0 ? '+' : '−'}${fmt(Math.abs(g.amt))} ฿ · คลิกเพื่อแก้`;
+    pin.onclick = e => { e.stopPropagation(); openPin(g, pin); };
+    main.appendChild(pin);
+  });
+
+  // Income strips below main bar (mini-strip option 1)
+  if(c.incomes && c.incomes.length > 0){
+    const strips = document.createElement('div');
+    strips.className = 'i-strips';
+    c.incomes.forEach(inc => {
+      const ix0 = xPct(STATE.snapAge + (Math.max(inc.startAge, c.age) - c.age));
+      const ix1 = xPct(STATE.snapAge + (Math.min(inc.endAge, c.life) - c.age));
+      if(ix1 <= ix0) return;
+      const strip = document.createElement('div');
+      strip.className = 'i-strip';
+      const seg = document.createElement('div');
+      seg.className = 'seg';
+      seg.style.left = ix0+'%';
+      seg.style.width = (ix1-ix0)+'%';
+      seg.style.background = inc.color || '#7991AB';
+      seg.innerHTML = `<span class="ico">${inc.ico||'💼'}</span><span class="name">${inc.name||''}</span><span class="amt">${fmt(inc.monthly)}</span>`;
+      seg.title = `${inc.ico||''} ${inc.name}: ${fmt(inc.monthly)}/ด · อายุ ${inc.startAge}→${inc.lifelong?'ตลอดชีพ':inc.endAge}`;
+      seg.onclick = e => { e.stopPropagation(); openCarrierPop(c, 'income', seg); };
+      strip.appendChild(seg);
+      strips.appendChild(strip);
+    });
+    stack.appendChild(strips);
+  }
+
+  bindInputs(row);
+  return row;
+}
+
+function depRow(d, parent){
+  const row = document.createElement('div');
+  row.className = 'tl-row';
+  row.dataset.kind = 'dep';
+  row.dataset.id = d.id;
+  // All members align to snap line (today). yearsLeft = how many years of caring from now
+  const yearsLeft = (d.life || d.endAge) - d.age;
+  const x0 = xPct(STATE.snapAge);
+  const x1 = xPct(STATE.snapAge + yearsLeft);
+
+  const shareTag = d.share && d.share < 100 ? ` <span style="font-size:10px;color:var(--gold-2);font-weight:600;background:#FBF8EE;border:1px solid var(--gold);padding:1px 5px;border-radius:8px;margin-left:4px">${d.share}%</span>` : '';
+  const fields = `
+    <div class="tl-fld"><span class="lab">อายุ</span><input class="y y-num sm" value="${d.age}" data-k="age" data-id="${d.id}"></div>
+    <div class="tl-fld"><span class="lab">฿/m</span><input class="y y-num sm" value="${fmt(d.monthly)}" data-k="monthly" data-id="${d.id}" style="width:72px"></div>
+  `;
+  row.innerHTML = `
+    <div class="tl-name nested">
+      <div class="tl-mn dep">↳ ${d.name}${shareTag}</div>
+      <div class="tl-fields">${fields}</div>
+    </div>
+    <div class="tl-bar dep-bar"></div>
+  `;
+  const bar = row.querySelector('.tl-bar');
+
+  if(d.kind === 'child'){
+    const segs = [
+      {s:8,e:12,c:'#D4A961'},{s:13,e:15,c:'#6BA89E'},{s:16,e:18,c:'#7991AB'},
+      {s:19,e:22,c:'#5F7691'},{s:23,e:24,c:'#C8635A'},{s:25,e:60,c:'#B5AFA0'}
+    ];
+    segs.forEach(s => {
+      const ka0 = clamp(s.s, d.age, d.endAge);
+      const ka1 = clamp(s.e, d.age, d.endAge);
+      if(ka1 <= ka0) return;
+      const ax0 = xPct(STATE.snapAge + (ka0 - d.age));
+      const ax1 = xPct(STATE.snapAge + (ka1 - d.age));
+      if(ax1 <= ax0) return;
+      const seg = document.createElement('div');
+      seg.className = 'b edu';
+      seg.style.left = ax0+'%'; seg.style.width = (ax1-ax0)+'%';
+      seg.style.background = s.c;
+      seg.title = 'คลิกเพื่อแก้';
+      seg.onclick = e => { e.stopPropagation(); openDepPop(d, seg); };
+      bar.appendChild(seg);
+    });
+  } else {
+    const seg = document.createElement('div');
+    seg.className = 'b dep';
+    seg.style.left = x0+'%'; seg.style.width = (x1-x0)+'%';
+    seg.title = 'คลิกเพื่อแก้';
+    seg.onclick = e => { e.stopPropagation(); openDepPop(d, seg); };
+    bar.appendChild(seg);
+  }
+
+  bindInputs(row);
+  return row;
+}
+
+function addOverlays(){
+  document.querySelectorAll('.tl-row').forEach(r => {
+    if(r.classList.contains('axis')) return;
+    const bar = r.querySelector('.tl-bar');
+    if(!bar) return;
+    const snap = document.createElement('div');
+    snap.className = 'snap-line';
+    snap.style.left = xPct(STATE.snapAge)+'%';
+    bar.appendChild(snap);
+  });
+  const ab = $('#axisBar');
+  if(ab){
+    const dot = document.createElement('div');
+    dot.className = 'snap-dot';
+    dot.style.left = xPct(STATE.snapAge)+'%'; dot.style.top = '-2px';
+    dot.title = 'Snapshot ปี '+($('#gYear')?.value || '2026')+' → คลิกไป Section II';
+    dot.onclick = () => goPage('p2');
+    ab.appendChild(dot);
+    const lbl = document.createElement('div');
+    lbl.className = 'snap-lbl';
+    lbl.style.left = xPct(STATE.snapAge)+'%'; lbl.style.bottom = '-22px';
+    lbl.textContent = 'Snapshot ' + ($('#gYear')?.value || '2026');
+    lbl.onclick = () => goPage('p2');
+    ab.appendChild(lbl);
+  }
+  document.querySelectorAll('.tl-row[data-kind="carrier"][data-id="warabi"]').forEach(r => {
+    const bar = r.querySelector('.tl-bar');
+    const z = document.createElement('div');
+    z.className = 'risk-zone';
+    z.style.left = xPct(35)+'%'; z.style.width = (xPct(45)-xPct(35))+'%';
+    z.title = 'Sandwich Generation Zone';
+    bar.appendChild(z);
+  });
+}
+
+function bindInputs(row){
+  row.querySelectorAll('input[data-k]').forEach(inp => {
+    inp.addEventListener('change', e => {
+      const id = e.target.dataset.id, k = e.target.dataset.k;
+      let v = e.target.value.toString().replace(/,/g, '');
+      v = parseFloat(v) || 0;
+      const c = STATE.carriers.find(x => x.id === id);
+      const d = STATE.dependents.find(x => x.id === id);
+      if(c) c[k] = v;
+      if(d){
+        d[k] = v;
+        if(d.link && (k === 'age' || k === 'endAge')){
+          STATE.dependents.filter(x => x.link === d.link && x.id !== d.id).forEach(x => x[k] = v);
+        }
+      }
+      render();
+      saveState();
+    });
+  });
+}
+
+/* ─── Modals: open/close ─── */
+function openModal(id){ document.getElementById(id).classList.add('on'); }
+function closeModal(id){ document.getElementById(id).classList.remove('on'); }
+
+/* ─── Welcome flow ─── */
+function showWelcome(){ openModal('mWelcome'); }
+function startFresh(){
+  closeModal('mWelcome');
+  openModal('mOnboard');
+  setTimeout(() => {
+    document.getElementById('ob-name').focus();
+    // Pre-populate Step 1 income list with one default row
+    const list = document.getElementById('ob-iList');
+    if(list && list.children.length === 0){
+      addIncomeRow('ob-iList', parseInt(document.getElementById('ob-age').value)||35, parseInt(document.getElementById('ob-life').value)||85);
+      // Pre-fill with example
+      const row = list.firstElementChild;
+      if(row){
+        row.querySelector('[data-f="ico"]').value = '💼';
+        row.querySelector('[data-f="name"]').value = '';
+        row.querySelector('[data-f="name"]').placeholder = 'เช่น เงินเดือน';
+        row.querySelector('[data-f="monthly"]').value = '';
+        row.querySelector('[data-f="monthly"]').placeholder = '50,000';
+        const startEl = row.querySelector('[data-f="startAge"]');
+        if(startEl) startEl.value = parseInt(document.getElementById('ob-age').value)||35;
+        const endEl = row.querySelector('[data-f="endAge"]');
+        if(endEl) endEl.value = '55';
+      }
+    }
+    // Bind income summary to Step 1
+    const list2 = document.getElementById('ob-iList');
+    if(list2){
+      const upd = () => updateIncomeSummary('ob-iList', 'ob-iSum', parseInt(document.getElementById('ob-age').value)||35);
+      list2.addEventListener('input', upd);
+      document.getElementById('ob-age').addEventListener('input', upd);
+      upd();
+    }
+  }, 80);
+}
+function onboardStep1Next(){
+  const name = document.getElementById('ob-name').value.trim();
+  if(!name){ alert('กรุณากรอกชื่อ'); return; }
+  const c = {
+    id: 'c-primary',
+    name,
+    age:  parseInt(document.getElementById('ob-age').value) || 35,
+    life: parseInt(document.getElementById('ob-life').value) || 85,
+    incomes: readIncomesFromList('ob-iList')
+  };
+  STATE.carriers = STATE.carriers.filter(x => x.id !== 'c-primary');
+  STATE.carriers.unshift(c);
+
+  const spouse = document.querySelector('input[name="ob-spouse"]:checked').value;
+  closeModal('mOnboard');
+  if(spouse === 'yes'){
+    openModal('mOnboard2');
+    setTimeout(() => {
+      document.getElementById('ob2-name').focus();
+      const list = document.getElementById('ob2-iList');
+      if(list && list.children.length === 0){
+        addIncomeRow('ob2-iList', parseInt(document.getElementById('ob2-age').value)||33, parseInt(document.getElementById('ob2-life').value)||85);
+        const row = list.firstElementChild;
+        if(row){
+          row.querySelector('[data-f="ico"]').value = '💼';
+          row.querySelector('[data-f="name"]').value = '';
+          row.querySelector('[data-f="name"]').placeholder = 'เช่น เงินเดือน';
+          row.querySelector('[data-f="monthly"]').value = '';
+          row.querySelector('[data-f="monthly"]').placeholder = '50,000';
+          const e = row.querySelector('[data-f="endAge"]');
+          if(e) e.value = '55';
+        }
+      }
+      const upd = () => updateIncomeSummary('ob2-iList', 'ob2-iSum', parseInt(document.getElementById('ob2-age').value)||33);
+      list.addEventListener('input', upd);
+      document.getElementById('ob2-age').addEventListener('input', upd);
+      upd();
+    }, 80);
+  } else {
+    // Skip step 2, go to step 3
+    STATE.carriers = STATE.carriers.filter(x => x.id !== 'c-spouse');
+    openModal('mOnboard3');
+  }
+}
+
+function onboardStep2Next(){
+  const name = document.getElementById('ob2-name').value.trim();
+  if(!name){ alert('กรุณากรอกชื่อคู่สมรส'); return; }
+  STATE.carriers = STATE.carriers.filter(x => x.id !== 'c-spouse');
+  STATE.carriers.push({
+    id: 'c-spouse',
+    name,
+    age:  parseInt(document.getElementById('ob2-age').value) || 33,
+    life: parseInt(document.getElementById('ob2-life').value) || 85,
+    incomes: readIncomesFromList('ob2-iList')
+  });
+  closeModal('mOnboard2');
+  openModal('mOnboard3');
+}
+
+function toggleCat(cat){
+  const cb = document.getElementById('cat-' + cat);
+  const body = document.getElementById('cat-' + cat + '-body');
+  if(cb.checked){
+    body.classList.add('on');
+    renderPersonRows(cat);
+  } else {
+    body.classList.remove('on');
+    document.getElementById(cat + '-rows').innerHTML = '';
+  }
+  // Show share option only if children + spouse exists
+  if(cat === 'child'){
+    const sharable = STATE.carriers.length > 1;
+    const wrap = document.getElementById('child-share-wrap');
+    if(wrap) wrap.style.display = sharable && cb.checked ? '' : 'none';
+  }
+  updateCatSummary(cat);
+}
+function renderPersonRows(cat){
+  const rows = document.getElementById(cat + '-rows');
+  const cnt = parseInt(document.getElementById(cat + '-count').value) || 0;
+  if(!rows) return;
+  // Save current values
+  const existing = Array.from(rows.querySelectorAll('.person-row')).map(r => ({
+    name: r.querySelector('[data-pf="name"]')?.value || '',
+    age:  r.querySelector('[data-pf="age"]')?.value || '',
+    amt:  r.querySelector('[data-pf="amt"]')?.value || ''
+  }));
+  rows.innerHTML = '';
+  for(let i = 0; i < cnt; i++){
+    const v = existing[i] || {};
+    const isChild = cat === 'child';
+    const ageDef = isChild ? 8 : (cat === 'parent' ? 65 : 30);
+    const amtDef = isChild ? 15000 : (cat === 'parent' ? 20000 : 10000);
+    const div = document.createElement('div');
+    div.className = 'person-row';
+    div.innerHTML = `
+      <span class="lbl">คนที่ ${i+1}</span>
+      <input class="y" placeholder="ชื่อ" data-pf="name" value="${v.name||''}">
+      <input class="y y-num tiny" placeholder="อายุ" data-pf="age" value="${v.age || ageDef}">
+      <input class="y y-num tiny" placeholder="${isChild?'ค่าเลี้ยงดู':'อุปการะ'}" data-pf="amt" value="${v.amt || amtDef}">
+    `;
+    rows.appendChild(div);
+  }
+  updateCatSummary(cat);
+}
+function updateCatSummary(cat){
+  const cb = document.getElementById('cat-' + cat);
+  const sum = document.getElementById('cat-' + cat + '-sum');
+  if(!sum) return;
+  if(!cb || !cb.checked){ sum.textContent = ''; return; }
+  const cnt = parseInt(document.getElementById(cat + '-count')?.value) || 0;
+  const rows = document.querySelectorAll('#' + cat + '-rows .person-row');
+  let total = 0;
+  rows.forEach(r => total += parseInt((r.querySelector('[data-pf="amt"]')?.value||'0').replace(/,/g,''))||0);
+  sum.textContent = `${cnt} คน · ${fmt(total)}/m`;
+}
+
+function saveOnboardDeps(){
+  const primary = STATE.carriers[0];
+  const spouse = STATE.carriers[1];
+  if(!primary){ finishOnboarding(); return; }
+  // Process children
+  const childCb = document.getElementById('cat-child');
+  if(childCb && childCb.checked){
+    const share = document.getElementById('child-share')?.checked && spouse;
+    document.querySelectorAll('#child-rows .person-row').forEach((r, i) => {
+      const name = r.querySelector('[data-pf="name"]').value.trim() || `ลูก ${i+1}`;
+      const age = parseInt(r.querySelector('[data-pf="age"]').value) || 8;
+      const amt = parseInt(r.querySelector('[data-pf="amt"]').value) || 15000;
+      const linkId = share ? 'L' + Date.now() + '-' + i : null;
+      const baseDep = {
+        id: 'd' + Date.now() + '-c' + i, parent: primary.id,
+        name, age, kind: 'child', endAge: 25,
+        monthly: share ? Math.round(amt/2) : amt
+      };
+      if(share){ baseDep.share = 50; baseDep.link = linkId; }
+      STATE.dependents.push(baseDep);
+      if(share && spouse){
+        STATE.dependents.push({...baseDep, id:'d'+Date.now()+'-cs'+i, parent: spouse.id});
+      }
+    });
+  }
+  // Process parents
+  const parentCb = document.getElementById('cat-parent');
+  if(parentCb && parentCb.checked){
+    document.querySelectorAll('#parent-rows .person-row').forEach((r, i) => {
+      const name = r.querySelector('[data-pf="name"]').value.trim() || `พ่อ-แม่ ${i+1}`;
+      const age = parseInt(r.querySelector('[data-pf="age"]').value) || 65;
+      const amt = parseInt(r.querySelector('[data-pf="amt"]').value) || 20000;
+      STATE.dependents.push({
+        id: 'd' + Date.now() + '-p' + i, parent: primary.id,
+        name, age, kind: 'parent', life: 85, monthly: amt
+      });
+    });
+  }
+  // Process other
+  const otherCb = document.getElementById('cat-other');
+  if(otherCb && otherCb.checked){
+    document.querySelectorAll('#other-rows .person-row').forEach((r, i) => {
+      const name = r.querySelector('[data-pf="name"]').value.trim() || `ญาติ ${i+1}`;
+      const age = parseInt(r.querySelector('[data-pf="age"]').value) || 30;
+      const amt = parseInt(r.querySelector('[data-pf="amt"]').value) || 10000;
+      STATE.dependents.push({
+        id: 'd' + Date.now() + '-o' + i, parent: primary.id,
+        name, age, kind: 'parent', life: 80, monthly: amt
+      });
+    });
+  }
+  finishOnboarding();
+}
+
+// Legacy compatibility — keep simple proxy
+function onboardFinish(hasDeps){
+  if(!hasDeps){ closeModal('mOnboard3'); finishOnboarding(); return; }
+  // Now we just stay on mOnboard3 — user uses the new categorical UI
+}
+function openQuickDep(){
+  document.getElementById('qd-count').textContent = QD_COUNT > 0 ? `(เพิ่มแล้ว ${QD_COUNT})` : '';
+  document.getElementById('qd-name').value = '';
+  document.getElementById('qd-age').value = 65;
+  document.getElementById('qd-end').value = 80;
+  document.getElementById('qd-amt').value = 20000;
+  document.getElementById('qd-endLbl').textContent = 'อุปการะถึงอายุ';
+  // Show share option only if 2 carriers
+  document.getElementById('qd-shareWrap').style.display = STATE.carriers.length > 1 ? '' : 'none';
+  // Auto-detect type by age (when user types)
+  setTimeout(() => {
+    const ageEl = document.getElementById('qd-age');
+    ageEl.oninput = () => {
+      const a = parseInt(ageEl.value) || 0;
+      const isChild = a < 22;
+      document.getElementById('qd-endLbl').textContent = isChild ? 'จบการศึกษาที่อายุ' : 'อุปการะถึงอายุ';
+      document.getElementById('qd-end').value = isChild ? 25 : 80;
+      document.getElementById('qd-amt').value = isChild ? 15000 : 20000;
+    };
+    document.getElementById('qd-name').focus();
+  }, 50);
+  openModal('mQuickDep');
+}
+function addQuickDep(addAnother){
+  const name = document.getElementById('qd-name').value.trim();
+  if(!name){ alert('กรุณากรอกชื่อ'); return; }
+  const age = parseInt(document.getElementById('qd-age').value) || 0;
+  const end = parseInt(document.getElementById('qd-end').value) || 0;
+  const amt = parseInt(document.getElementById('qd-amt').value) || 0;
+  const isChild = age < 22;
+  const share = STATE.carriers.length > 1 ? parseInt(document.querySelector('input[name="qd-share"]:checked').value) : 100;
+  // Always assign first dep to the first carrier; share=50 mirrors to second
+  const primary = STATE.carriers[0];
+  const dep = {id:'d'+Date.now(), parent:primary.id, name, age, monthly:amt, kind:isChild?'child':'parent'};
+  if(isChild){ dep.endAge = end; if(share === 50){ dep.share = 50; dep.link = 'L'+Date.now(); } }
+  else { dep.life = end; }
+  STATE.dependents.push(dep);
+  if(isChild && share === 50 && STATE.carriers.length > 1){
+    STATE.dependents.push({...dep, id:'d'+(Date.now()+1), parent:STATE.carriers[1].id});
+  }
+  QD_COUNT++;
+  closeModal('mQuickDep');
+  if(addAnother){ setTimeout(openQuickDep, 100); }
+  else { finishOnboarding(); }
+}
+function finishOnboarding(){
+  // Close ALL onboarding modals (legacy + new categorical flow)
+  closeModal('mWelcome');
+  closeModal('mOnboard');
+  closeModal('mOnboard2');
+  closeModal('mOnboard3');
+  closeModal('mQuickDep');
+  render();
+  saveState();
+  setTimeout(() => document.getElementById('hint').classList.add('on'), 500);
+  setTimeout(() => document.getElementById('hint').classList.remove('on'), 12000);
+}
+
+/* ─── Demo / Clear ─── */
+function loadDemo(){
+  STATE = migrate(JSON.parse(JSON.stringify(DEMO_STATE)));
+  closeModal('mWelcome');
+  render();
+  saveState();
+}
+function confirmClear(){ openModal('mClear'); }
+function clearAll(){
+  STATE = JSON.parse(JSON.stringify(EMPTY_STATE));
+  closeModal('mClear');
+  try { localStorage.removeItem(LS_KEY); } catch(e){}
+  render();
+  showWelcome();
+}
+
+/* ─── Add/Edit Member modal ─── */
+let MM_CTX = null; // {mode:'add'|'edit', kind:'carrier'|'dep', parentId?, id?}
+
+function addCarrier(){
+  MM_CTX = {mode:'add', kind:'carrier'};
+  document.getElementById('mm-eye').textContent = 'เพิ่มผู้วางแผน';
+  document.getElementById('mm-title').textContent = 'เพิ่มผู้วางแผน (Carrier)';
+  document.getElementById('mm-sub').textContent = 'เช่น คู่สมรส · พี่น้องที่ช่วยรับภาระ';
+  document.getElementById('mm-typeWrap').style.display = 'none';
+  document.getElementById('mm-name').value = '';
+  document.getElementById('mm-age').value = 35;
+  document.getElementById('mm-end').value = 85;
+  document.getElementById('mm-amt').value = 50000;
+  document.getElementById('mm-endLbl').textContent = 'อายุขัย';
+  document.getElementById('mm-amtLbl').textContent = 'รายได้ / เดือน (บาท)';
+  document.getElementById('mm-shareWrap').style.display = 'none';
+  document.getElementById('mm-del').style.display = 'none';
+  openModal('mMember');
+  setTimeout(() => document.getElementById('mm-name').focus(), 50);
+}
+
+function addDependent(parentId){
+  MM_CTX = {mode:'add', kind:'dep', parentId};
+  document.getElementById('mm-eye').textContent = 'เพิ่มผู้พึ่งพิง';
+  const carrier = STATE.carriers.find(c => c.id === parentId);
+  document.getElementById('mm-title').textContent = 'เพิ่มผู้พึ่งพิงใต้ ' + (carrier ? carrier.name : '');
+  document.getElementById('mm-sub').textContent = 'พ่อ-แม่ · คู่สมรส · ลูก';
+  document.getElementById('mm-typeWrap').style.display = '';
+  document.getElementById('mm-type').value = 'parent';
+  document.getElementById('mm-name').value = '';
+  document.getElementById('mm-age').value = 65;
+  document.getElementById('mm-end').value = 80;
+  document.getElementById('mm-amt').value = 20000;
+  document.getElementById('mm-del').style.display = 'none';
+  updMemberFields();
+  openModal('mMember');
+  setTimeout(() => document.getElementById('mm-name').focus(), 50);
+}
+
+function editCarrierModal(c){
+  MM_CTX = {mode:'edit', kind:'carrier', id:c.id};
+  document.getElementById('mm-eye').textContent = 'แก้ไข';
+  document.getElementById('mm-title').textContent = c.name;
+  document.getElementById('mm-sub').textContent = 'ผู้วางแผน · แก้ไขข้อมูล';
+  document.getElementById('mm-typeWrap').style.display = 'none';
+  document.getElementById('mm-name').value = c.name;
+  document.getElementById('mm-age').value = c.age;
+  document.getElementById('mm-end').value = c.life;
+  document.getElementById('mm-amt').value = c.income;
+  document.getElementById('mm-endLbl').textContent = 'อายุขัย';
+  document.getElementById('mm-amtLbl').textContent = 'รายได้ / เดือน (บาท)';
+  document.getElementById('mm-shareWrap').style.display = 'none';
+  document.getElementById('mm-del').style.display = STATE.carriers.length > 1 ? '' : 'none';
+  openModal('mMember');
+}
+
+function editDepModal(d){
+  MM_CTX = {mode:'edit', kind:'dep', id:d.id, parentId:d.parent};
+  document.getElementById('mm-eye').textContent = 'แก้ไข';
+  document.getElementById('mm-title').textContent = d.name;
+  document.getElementById('mm-sub').textContent = 'ผู้พึ่งพิง · แก้ไขข้อมูล';
+  document.getElementById('mm-typeWrap').style.display = '';
+  document.getElementById('mm-type').value = d.kind;
+  document.getElementById('mm-type').disabled = true;
+  document.getElementById('mm-name').value = d.name;
+  document.getElementById('mm-age').value = d.age;
+  document.getElementById('mm-end').value = d.kind === 'child' ? d.endAge : d.life;
+  document.getElementById('mm-amt').value = d.monthly;
+  document.getElementById('mm-share').value = d.share || 100;
+  document.getElementById('mm-del').style.display = '';
+  updMemberFields();
+  openModal('mMember');
+}
+
+function updMemberFields(){
+  const t = document.getElementById('mm-type').value;
+  document.getElementById('mm-endLbl').textContent = t === 'child' ? 'จบการศึกษาที่อายุ' : 'อายุขัย';
+  document.getElementById('mm-amtLbl').textContent = t === 'child' ? 'ค่าเลี้ยงดู+เรียน / เดือน (บาท)' : 'อุปการะ / เดือน (บาท)';
+  document.getElementById('mm-shareWrap').style.display = (t === 'child' && STATE.carriers.length > 1) ? '' : 'none';
+}
+
+function saveMember(){
+  const name = document.getElementById('mm-name').value.trim();
+  if(!name){ alert('กรุณากรอกชื่อ'); return; }
+  const age = parseInt(document.getElementById('mm-age').value) || 0;
+  const endAge = parseInt(document.getElementById('mm-end').value) || 0;
+  const amt = parseInt(document.getElementById('mm-amt').value) || 0;
+
+  if(MM_CTX.kind === 'carrier'){
+    if(MM_CTX.mode === 'add'){
+      STATE.carriers.push({id:'c'+Date.now(), name, age, retire:Math.min(55, endAge-1), life:endAge, income:amt});
+    } else {
+      const c = STATE.carriers.find(x => x.id === MM_CTX.id);
+      if(c){ c.name = name; c.age = age; c.life = endAge; c.income = amt; if(c.retire >= c.life) c.retire = c.life - 1; }
+    }
+  } else {
+    const kind = document.getElementById('mm-type').value;
+    const share = parseInt(document.getElementById('mm-share').value) || 100;
+    if(MM_CTX.mode === 'add'){
+      const dep = {id:'d'+Date.now(), parent:MM_CTX.parentId, name, age, monthly:amt, kind};
+      if(kind === 'child'){ dep.endAge = endAge; if(share === 50){ dep.share = 50; dep.link = 'L' + Date.now(); } }
+      else { dep.life = endAge; }
+      STATE.dependents.push(dep);
+      if(kind === 'child' && share === 50){
+        const others = STATE.carriers.filter(c => c.id !== MM_CTX.parentId);
+        if(others.length){
+          STATE.dependents.push({...dep, id:'d'+(Date.now()+1), parent:others[0].id, monthly:amt});
+        }
+      }
+    } else {
+      const d = STATE.dependents.find(x => x.id === MM_CTX.id);
+      if(d){
+        d.name = name; d.age = age; d.monthly = amt;
+        if(kind === 'child') d.endAge = endAge; else d.life = endAge;
+        if(d.link){
+          STATE.dependents.filter(x => x.link === d.link && x.id !== d.id).forEach(x => {
+            x.name = name; x.age = age; x.monthly = amt;
+            if(kind === 'child') x.endAge = endAge; else x.life = endAge;
+          });
+        }
+      }
+    }
+  }
+  document.getElementById('mm-type').disabled = false;
+  closeModal('mMember');
+  render(); saveState();
+}
+
+function delMember(){
+  if(!confirm('ลบรายการนี้?')) return;
+  if(MM_CTX.kind === 'carrier'){
+    STATE.carriers = STATE.carriers.filter(c => c.id !== MM_CTX.id);
+    STATE.dependents = STATE.dependents.filter(d => d.parent !== MM_CTX.id);
+    STATE.goals = STATE.goals.filter(g => g.parent !== MM_CTX.id);
+  } else {
+    const d = STATE.dependents.find(x => x.id === MM_CTX.id);
+    if(d && d.link) STATE.dependents = STATE.dependents.filter(x => x.link !== d.link);
+    else STATE.dependents = STATE.dependents.filter(x => x.id !== MM_CTX.id);
+  }
+  document.getElementById('mm-type').disabled = false;
+  closeModal('mMember');
+  render(); saveState();
+}
+
+/* ─── Goal modal ─── */
+let MG_CTX = null;
+function addGoal(){
+  if(STATE.carriers.length === 0){ alert('กรุณาเพิ่มผู้วางแผนก่อน'); return; }
+  MG_CTX = {mode:'add'};
+  document.getElementById('mg-title').textContent = 'เพิ่มเป้าหมาย';
+  document.getElementById('mg-name').value = '';
+  document.getElementById('mg-age').value = 50;
+  document.getElementById('mg-amt').value = -1000000;
+  document.getElementById('mg-ico').value = '🎯';
+  fillOwnerSelect();
+  document.getElementById('mg-del').style.display = 'none';
+  openModal('mGoal');
+  setTimeout(() => document.getElementById('mg-name').focus(), 50);
+}
+function fillOwnerSelect(selected){
+  const sel = document.getElementById('mg-owner');
+  sel.innerHTML = STATE.carriers.map(c => `<option value="${c.id}" ${c.id===selected?'selected':''}>${c.name}</option>`).join('');
+}
+function saveGoal(){
+  const name = document.getElementById('mg-name').value.trim();
+  if(!name){ alert('กรุณากรอกชื่อ'); return; }
+  const data = {
+    name,
+    age: parseInt(document.getElementById('mg-age').value) || 50,
+    amt: parseInt(document.getElementById('mg-amt').value) || 0,
+    ico: document.getElementById('mg-ico').value,
+    parent: document.getElementById('mg-owner').value
+  };
+  if(MG_CTX.mode === 'add') STATE.goals.push({id:Date.now(), ...data});
+  else { const g = STATE.goals.find(x => x.id === MG_CTX.id); if(g) Object.assign(g, data); }
+  closeModal('mGoal'); render(); saveState();
+}
+function delGoal(){
+  STATE.goals = STATE.goals.filter(g => g.id !== MG_CTX.id);
+  closeModal('mGoal'); render(); saveState();
+}
+
+/* ─── Popovers ─── */
+function placePop(anchor){
+  const pop = $('#pop');
+  const r = anchor.getBoundingClientRect();
+  pop.classList.add('on');
+  const pw = pop.offsetWidth;
+  let left = r.left + window.scrollX + r.width/2 - pw/2;
+  let top  = r.bottom + window.scrollY + 8;
+  left = Math.max(8, Math.min(left, window.innerWidth - pw - 8));
+  pop.style.left = left + 'px';
+  pop.style.top = top + 'px';
+}
+function closePop(){ $('#pop').classList.remove('on'); }
+
+function openCarrierPop(c, focus, anchor){
+  const pop = $('#pop');
+  const incomeRowsHTML = (c.incomes||[]).map(inc => incomeRowHTML(inc)).join('');
+  pop.innerHTML = `
+    <h4>${c.name} <span style="font-size:10px;color:var(--gold-2);font-weight:600;background:#FBF8EE;border:1px solid var(--gold);padding:1px 6px;border-radius:8px;margin-left:6px">ผู้วางแผน</span><span class="close" onclick="closePop()">×</span></h4>
+    <div class="fld"><label>ชื่อ</label><div><input class="y y-text" id="cc-name" value="${c.name}" style="width:140px"></div></div>
+    <div class="fld"><label>อายุปัจจุบัน</label><div><input class="y y-num sm" id="cc-age" value="${c.age}"> ปี</div></div>
+    <div class="fld"><label>อายุขัย</label><div><input class="y y-num sm" id="cc-life" value="${c.life}"> ปี</div></div>
+    <div class="ie-head">รายได้</div>
+    <div class="cnt-bar">
+      <label>มีรายได้กี่ช่องทาง?</label>
+      <input class="y y-num" id="cc-iCount" value="${(c.incomes||[]).length||1}" min="1" max="20" oninput="syncIncomeCount('cc-iList','cc-iCount',${c.age},${c.life})">
+    </div>
+    <div class="ie-list" id="cc-iList">${incomeRowsHTML}</div>
+    <div class="ie-summary" id="cc-iSum"></div>
+    <div class="acts">
+      ${STATE.carriers.length > 1 ? `<span class="del" onclick="delCarrier('${c.id}')">ลบ</span>` : ''}
+      <button class="btn btn-pri" onclick="saveCarrier('${c.id}')">บันทึก</button>
+    </div>
+  `;
+  // Recompute summary on input
+  setTimeout(() => updateIncomeSummary('cc-iList','cc-iSum', parseInt($('#cc-age').value)||c.age), 30);
+  document.getElementById('cc-iList').addEventListener('input', () => updateIncomeSummary('cc-iList','cc-iSum', parseInt($('#cc-age').value)||c.age));
+  $('#cc-age').addEventListener('input', () => updateIncomeSummary('cc-iList','cc-iSum', parseInt($('#cc-age').value)||c.age));
+
+  placePop(anchor);
+  setTimeout(() => {
+    const f = (focus==='work'||focus==='retire') ? 'cc-life' : 'cc-name';
+    const el = document.getElementById(f);
+    if(el){ el.focus(); el.select(); }
+  }, 30);
+}
+
+const INC_COLORS = ['#C8635A','#D4A961','#6BA89E','#7991AB','#5F7691','#B5453E','#8B2635','#508B82'];
+const INC_ICONS = ['💼','💎','🏠','🏢','💰','📈','💵','🎓','🌟','🔧'];
+function nextIncomeColor(){
+  return INC_COLORS[Math.floor(Math.random()*INC_COLORS.length)];
+}
+function incomeRowHTML(inc){
+  const opts = INC_ICONS.map(i => `<option value="${i}" ${i===inc.ico?'selected':''}>${i}</option>`).join('');
+  return `<div class="ie-row" data-iid="${inc.id}" data-color="${inc.color||'#7991AB'}">
+    <select class="y-sel ico-sel" data-f="ico"><option ${!inc.ico?'selected':''}>—</option>${opts}</select>
+    <input class="y" data-f="name" value="${inc.name||''}" placeholder="ชื่อรายได้">
+    <input class="y y-num" data-f="monthly" value="${inc.monthly||0}" placeholder="50000">
+    <input class="y y-num" data-f="startAge" value="${inc.startAge||35}" title="เริ่มอายุ">
+    ${inc.lifelong
+      ? `<label class="ll" title="ตลอดชีพ"><input type="checkbox" data-f="lifelong" checked> ∞</label>`
+      : `<input class="y y-num" data-f="endAge" value="${inc.endAge||60}" title="ถึงอายุ">`}
+    <button class="ie-del" onclick="this.closest('.ie-row').remove();this.closest('.modal,.popover')?.querySelector('[id$=iList]')?.dispatchEvent(new Event('input',{bubbles:true}))" title="ลบ">×</button>
+  </div>`;
+}
+
+/* ─── Income count → auto-render N rows ─── */
+function syncIncomeCount(listId, countId, startAge, life){
+  const list = document.getElementById(listId);
+  const cnt = parseInt(document.getElementById(countId).value) || 1;
+  if(!list) return;
+  // Add rows if needed
+  while(list.children.length < cnt){
+    addIncomeRow(listId, startAge, life);
+  }
+  // Remove rows from end if too many
+  while(list.children.length > cnt){
+    list.lastElementChild.remove();
+  }
+  list.dispatchEvent(new Event('input', {bubbles:true}));
+}
+function addIncomeRow(listId, startAge, life){
+  const list = document.getElementById(listId);
+  if(!list) return;
+  const inc = {
+    id: 'i'+Date.now()+Math.random().toString(36).slice(2,5),
+    ico: INC_ICONS[Math.min(list.children.length, INC_ICONS.length-1)],
+    name: '',
+    monthly: 0,
+    startAge: startAge || 35,
+    endAge: life || 60,
+    color: INC_COLORS[list.children.length % INC_COLORS.length]
+  };
+  const wrap = document.createElement('div');
+  wrap.innerHTML = incomeRowHTML(inc);
+  list.appendChild(wrap.firstElementChild);
+  list.dispatchEvent(new Event('input', {bubbles:true}));
+}
+function readIncomesFromList(listId){
+  const list = document.getElementById(listId);
+  if(!list) return [];
+  const out = [];
+  list.querySelectorAll('.ie-row').forEach(row => {
+    const id = row.dataset.iid;
+    const get = f => {
+      const el = row.querySelector(`[data-f="${f}"]`);
+      if(!el) return null;
+      if(el.type === 'checkbox') return el.checked;
+      const v = el.value.toString().replace(/,/g,'').trim();
+      return v;
+    };
+    const monthly = parseInt(get('monthly')) || 0;
+    if(monthly === 0 && !get('name')) return; // skip empty rows
+    const lifelong = get('lifelong') === true;
+    const startAge = parseInt(get('startAge')) || 35;
+    const endAge = lifelong ? 999 : (parseInt(get('endAge')) || 60);
+    out.push({
+      id, ico: get('ico')||'💼', name: get('name')||'รายได้', monthly,
+      startAge, endAge, lifelong, color: row.dataset.color || INC_COLORS[out.length%INC_COLORS.length]
+    });
+  });
+  return out;
+}
+function updateIncomeSummary(listId, sumId, currentAge){
+  const incomes = readIncomesFromList(listId);
+  const sumEl = document.getElementById(sumId);
+  if(!sumEl) return;
+  if(incomes.length === 0){ sumEl.innerHTML = '<i style="color:var(--faint)">ยังไม่มีรายได้</i>'; return; }
+  const now = incomes.filter(i => currentAge >= i.startAge && currentAge <= i.endAge).reduce((s,i)=>s+i.monthly, 0);
+  // Find drop points
+  const ends = [...new Set(incomes.filter(i=>!i.lifelong && i.endAge < 999).map(i=>i.endAge))].sort((a,b)=>a-b);
+  let html = `📊 <b>รวมตอนนี้:</b> ${fmt(now)} /เดือน`;
+  ends.forEach(age => {
+    const after = incomes.filter(i => age < i.endAge || i.lifelong).reduce((s,i)=>s+i.monthly, 0);
+    html += `<span class="drop">⚠ จะลดเหลือ ${fmt(after)} /เดือน ตอนอายุ ${age+1}</span>`;
+  });
+  sumEl.innerHTML = html;
+}
+
+function delCarrier(id){
+  if(!confirm('ลบผู้วางแผนคนนี้ทั้งหมด (รวมผู้พึ่งพิงและเป้าหมาย)?')) return;
+  STATE.carriers = STATE.carriers.filter(c => c.id !== id);
+  STATE.dependents = STATE.dependents.filter(d => d.parent !== id);
+  STATE.goals = STATE.goals.filter(g => g.parent !== id);
+  closePop(); render(); saveState();
+}
+function saveCarrier(id){
+  const c = STATE.carriers.find(x => x.id === id);
+  if(!c) return closePop();
+  c.name = ($('#cc-name').value||'').trim() || c.name;
+  c.age  = parseInt($('#cc-age').value) || c.age;
+  c.life = parseInt($('#cc-life').value) || c.life;
+  c.incomes = readIncomesFromList('cc-iList');
+  // Sanity for income age range
+  c.incomes.forEach(i => {
+    if(i.startAge < c.age) i.startAge = c.age;
+    if(i.endAge > c.life) i.endAge = c.life;
+    if(i.endAge >= c.life - 1) i.lifelong = true;
+  });
+  delete c.retire; delete c.income; // ensure migration is final
+  closePop(); render(); saveState();
+}
+
+function openDepPop(d, anchor){
+  const pop = $('#pop');
+  const isChild = d.kind === 'child';
+  const endLabel = isChild ? 'จบการศึกษาที่' : 'อายุขัย';
+  const endVal = isChild ? d.endAge : d.life;
+  const endKey = isChild ? 'endAge' : 'life';
+  pop.innerHTML = `
+    <h4>${d.name}${d.share && d.share<100 ? ` <span style="font-size:10px;color:var(--gold-2);font-weight:600;background:#FBF8EE;border:1px solid var(--gold);padding:1px 6px;border-radius:8px;margin-left:6px">${d.share}%</span>`:''} <span class="close" onclick="closePop()">×</span></h4>
+    <div class="fld"><label>ชื่อ</label><input class="y y-text" id="dd-name" value="${d.name}" style="width:140px"></div>
+    <div class="fld"><label>อายุปัจจุบัน</label><div><input class="y y-num sm" id="dd-age" value="${d.age}"> ปี</div></div>
+    <div class="fld"><label>${endLabel}</label><div><input class="y y-num sm" id="dd-end" value="${endVal}"> ปี</div></div>
+    <div class="fld"><label>${isChild?'ค่าเลี้ยงดู+เรียน':'อุปการะ'} / เดือน</label><div><input class="y y-num md" id="dd-monthly" value="${fmt(d.monthly)}"> ฿</div></div>
+    <div class="acts">
+      <span class="del" onclick="delDep('${d.id}')">ลบรายการนี้</span>
+      <button class="btn btn-pri" onclick="saveDep('${d.id}','${endKey}')">บันทึก</button>
+    </div>
+  `;
+  placePop(anchor);
+  setTimeout(() => { const el = document.getElementById('dd-end'); if(el){ el.focus(); el.select(); } }, 30);
+}
+function saveDep(id, endKey){
+  const d = STATE.dependents.find(x => x.id === id);
+  if(!d) return closePop();
+  d.name = ($('#dd-name').value||'').trim() || d.name;
+  d.age = parseInt($('#dd-age').value) || d.age;
+  d[endKey] = parseInt($('#dd-end').value) || d[endKey];
+  d.monthly = parseInt($('#dd-monthly').value.toString().replace(/,/g,'')) || d.monthly;
+  if(d.link){
+    STATE.dependents.filter(x => x.link === d.link && x.id !== d.id).forEach(x => {
+      x.name = d.name; x.age = d.age; x[endKey] = d[endKey];
+    });
+  }
+  closePop(); render(); saveState();
+}
+function delDep(id){
+  if(!confirm('ลบรายการนี้?')) return;
+  const d = STATE.dependents.find(x => x.id === id);
+  if(d && d.link) STATE.dependents = STATE.dependents.filter(x => x.link !== d.link);
+  else STATE.dependents = STATE.dependents.filter(x => x.id !== id);
+  closePop(); render(); saveState();
+}
+
+
+/* ─── Timeline quick interactions: add at age, duplicate, delete ─── */
+function addGoalAtAge(carrierId, age){
+  if(STATE.carriers.length === 0) return;
+  MG_CTX = {mode:'add'};
+  const c = STATE.carriers.find(x => x.id === carrierId) || STATE.carriers[0];
+  // Clamp age within reasonable range
+  if(age < c.age) age = c.age;
+  if(age > c.life) age = c.life;
+  document.getElementById('mg-title').textContent = `เพิ่มเป้าหมาย ที่อายุ ${age} (${c.name})`;
+  document.getElementById('mg-name').value = '';
+  document.getElementById('mg-age').value = age;
+  document.getElementById('mg-amt').value = -1000000;
+  document.getElementById('mg-ico').value = '🎯';
+  fillOwnerSelect(carrierId);
+  document.getElementById('mg-del').style.display = 'none';
+  openModal('mGoal');
+  setTimeout(() => document.getElementById('mg-name').focus(), 50);
+}
+
+function duplicateGoal(id){
+  const orig = STATE.goals.find(g => g.id === id);
+  if(!orig) return;
+  const copy = {
+    ...orig,
+    id: Date.now(),
+    age: orig.age + 1
+  };
+  STATE.goals.push(copy);
+  render();
+  saveState();
+}
+
+function delGoalQuick(id){
+  if(!confirm('ลบเป้าหมายนี้?')) return;
+  STATE.goals = STATE.goals.filter(g => g.id !== id);
+  render();
+  saveState();
+}
+
+function openPin(g, anchor){
+  const pop = $('#pop');
+  pop.innerHTML = `
+    <h4>${g.ico} ${g.name} <span class="close" onclick="closePop()">×</span></h4>
+    <div class="fld"><label>ชื่อ</label><input class="y y-text" id="pp-name" value="${g.name}" style="width:140px"></div>
+    <div class="fld"><label>icon</label><input class="y y-text" id="pp-ico" value="${g.ico}" style="width:60px"></div>
+    <div class="fld"><label>อายุ</label><div><input class="y y-num sm" id="pp-age" value="${g.age}"> ปี</div></div>
+    <div class="fld"><label>งบ (บาท · บวก=รับเข้า · ลบ=จ่ายออก)</label><div><input class="y y-num md" id="pp-amt" value="${g.amt}"> ฿</div></div>
+    <div class="acts">
+      <span class="del" onclick="delPin(${g.id})">ลบ</span>
+      <button class="btn btn-pri" onclick="savePin(${g.id})">บันทึก</button>
+    </div>
+  `;
+  placePop(anchor);
+}
+function savePin(id){
+  const g = STATE.goals.find(x => x.id === id);
+  if(!g) return closePop();
+  g.age  = parseInt($('#pp-age').value) || g.age;
+  g.amt  = parseInt($('#pp-amt').value) || g.amt;
+  g.ico  = $('#pp-ico').value || g.ico;
+  g.name = ($('#pp-name').value||'').trim() || g.name;
+  closePop(); render(); saveState();
+}
+function delPin(id){
+  STATE.goals = STATE.goals.filter(x => x.id !== id);
+  closePop(); render(); saveState();
+}
+document.addEventListener('click', e => {
+  if(!e.target.closest('.popover') && !e.target.closest('.pin') && !e.target.closest('.b')) closePop();
+});
+
+/* ─── Goal list (P3) ─── */
+function renderGoals(){
+  const list = $('#goalList');
+  if(!list) return;
+  list.innerHTML = '';
+  STATE.goals.forEach(g => {
+    const row = document.createElement('div');
+    row.className = 'goal-row';
+    row.innerHTML = `
+      <div class="gicon">${g.ico}</div>
+      <div class="gname" style="color:${g.amt > 0 ? 'var(--sage-2)' : 'var(--carrier-2)'}">${g.amt > 0 ? '+' : '−'} ${g.name}<small style="color:var(--faint)">${g.amt > 0 ? 'รับเข้า' : 'จ่ายออก'}</small></div>
+      <div><input class="y y-num sm" value="${g.age}" data-gk="age" data-gid="${g.id}"></div>
+      <div><input class="y y-num md" value="${fmt(Math.abs(g.amt))}" data-gk="amt" data-gid="${g.id}"></div>
+      <div class="gdel" onclick="delPin(${g.id})">×</div>
+    `;
+    list.appendChild(row);
+  });
+  list.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('change', e => {
+      const id = +e.target.dataset.gid, k = e.target.dataset.gk;
+      const g = STATE.goals.find(x => x.id === id);
+      if(!g) return;
+      let v = parseFloat(e.target.value.toString().replace(/,/g,'')) || 0;
+      if(k === 'amt') v = g.amt < 0 ? -v : v;
+      g[k] = v;
+      render(); saveState();
+    });
+  });
+}
+
+/* ─── KPI + sidebar update ─── */
+function updateKPIs(){
+  // Sum income currently active across all carriers
+  const inc = STATE.carriers.reduce((s,c) => s + totalIncomeAtAge(c, c.age), 0);
+  const burden = STATE.dependents.reduce((s,d) => s+(d.monthly||0), 0);
+  const surplus = inc - burden - 70000;
+  if($('#kpi-inc')) $('#kpi-inc').textContent = fmt(inc);
+  if($('#kpi-burden')) $('#kpi-burden').textContent = fmt(burden);
+  if($('#kpi-surplus')) $('#kpi-surplus').textContent = fmt(Math.max(0, surplus));
+  const clName = $('#cl-name'), clMeta = $('#cl-meta');
+  if(clName){
+    if(STATE.carriers.length === 0){
+      clName.textContent = '— ยังไม่มีข้อมูล —';
+      if(clMeta) clMeta.textContent = 'กดเริ่มกรอก Timeline';
+    } else {
+      clName.textContent = STATE.carriers.map(c => c.name).join(' & ');
+      if(clMeta) clMeta.textContent = `${STATE.carriers.length} ผู้วางแผน · ${STATE.dependents.length} ผู้พึ่งพิง · ${STATE.goals.length} เป้าหมาย`;
+    }
+  }
+  // Timeline title
+  const tlT = $('#tl-title');
+  if(tlT){
+    if(STATE.carriers.length === 0) tlT.textContent = 'เริ่มต้น Timeline ของคุณ';
+    else if(STATE.carriers.length === 1) tlT.textContent = `${STATE.carriers[0].name} + ${STATE.dependents.length} ผู้พึ่งพิง`;
+    else tlT.textContent = `${STATE.carriers.map(c=>c.name).join(' · ')} + ${STATE.dependents.length} ผู้พึ่งพิง`;
+  }
+  // +Add Dependent buttons (one per carrier)
+  const addDepWrap = $('#addDepBtns');
+  if(addDepWrap){
+    addDepWrap.innerHTML = STATE.carriers.map(c =>
+      `<button class="add-btn" onclick="addDependent('${c.id}')"><b>+</b> ผู้พึ่งพิง (${c.name})</button>`
+    ).join(' ');
+  }
+}
+
+
+/* ═══════════════════════════════════════════════
+   ANNUAL SNAPSHOTS + BACKUP (Export/Import JSON)
+   ═══════════════════════════════════════════════ */
+const SNAP_KEY = 's41_snapshots_v3';
+
+function getSnapshots(){
+  try { return JSON.parse(localStorage.getItem(SNAP_KEY) || '{}'); }
+  catch(e){ return {}; }
+}
+function setSnapshots(snaps){
+  try { localStorage.setItem(SNAP_KEY, JSON.stringify(snaps)); } catch(e){}
+}
+
+function saveAnnualSnapshot(){
+  const year = parseInt(document.getElementById('gYear')?.value) || new Date().getFullYear();
+  const snaps = getSnapshots();
+  if(snaps[year]){
+    if(!confirm(`มี Snapshot ปี ${year} อยู่แล้ว · เขียนทับ?`)) return;
+  }
+  // Compute summary for quick display
+  const inc = STATE.carriers.reduce((s,c) => s + totalIncomeAtAge(c, c.age), 0);
+  const burden = STATE.dependents.reduce((s,d) => s+(d.monthly||0), 0);
+  snaps[year] = {
+    year,
+    savedAt: new Date().toISOString(),
+    summary: {
+      carriers: STATE.carriers.length,
+      dependents: STATE.dependents.length,
+      goals: STATE.goals.length,
+      monthlyIncome: inc,
+      monthlyBurden: burden
+    },
+    state: JSON.parse(JSON.stringify(STATE))
+  };
+  setSnapshots(snaps);
+  renderSnapshotList();
+  // Toast
+  const ind = document.getElementById('saveInd');
+  if(ind){
+    const original = document.getElementById('saveTxt').textContent;
+    document.getElementById('saveTxt').textContent = `Snapshot ${year} ✓`;
+    setTimeout(() => { document.getElementById('saveTxt').textContent = original; }, 2200);
+  }
+}
+
+function deleteSnapshot(year){
+  if(!confirm(`ลบ Snapshot ปี ${year}?`)) return;
+  const snaps = getSnapshots();
+  delete snaps[year];
+  setSnapshots(snaps);
+  renderSnapshotList();
+}
+
+function restoreSnapshot(year){
+  if(!confirm(`Restore ข้อมูลกลับไปเป็น Snapshot ปี ${year}? (ข้อมูลปัจจุบันจะถูกเขียนทับ — แนะนำ Export ก่อน)`)) return;
+  const snaps = getSnapshots();
+  if(!snaps[year]) return alert('ไม่พบ Snapshot ปีนั้น');
+  STATE = migrate(JSON.parse(JSON.stringify(snaps[year].state)));
+  saveState();
+  render();
+  alert(`Restore เป็น Snapshot ปี ${year} แล้ว`);
+}
+
+function renderSnapshotList(){
+  const wrap = document.getElementById('snapList');
+  if(!wrap) return;
+  const snaps = getSnapshots();
+  const years = Object.keys(snaps).sort((a,b)=>+b-+a);
+  if(years.length === 0){
+    wrap.innerHTML = '<div class="snap-empty">ยังไม่มี Snapshot · กดปุ่ม <b>📸 Snapshot ปี</b> ที่แถบซ้ายเพื่อบันทึก</div>';
+    return;
+  }
+  wrap.innerHTML = years.map(y => {
+    const s = snaps[y];
+    const sum = s.summary || {};
+    const date = new Date(s.savedAt).toLocaleDateString('th-TH', {year:'numeric',month:'short',day:'numeric'});
+    return `<div class="snap-item">
+      <div class="yr">${y}</div>
+      <div class="info">
+        <b>รายได้ ${fmt(sum.monthlyIncome||0)} /m · ภาระ ${fmt(sum.monthlyBurden||0)} /m</b>
+        <div class="stat">${sum.carriers||0} ผู้วางแผน · ${sum.dependents||0} ผู้พึ่งพิง · ${sum.goals||0} เป้าหมาย · บันทึก ${date}</div>
+      </div>
+      <span class="act" onclick="restoreSnapshot(${y})">⟲ Restore</span>
+      <span class="del" onclick="deleteSnapshot(${y})">🗑</span>
+    </div>`;
+  }).join('');
+}
+
+/* ─── Backup: Export / Import JSON ─── */
+function exportJSON(){
+  const data = {
+    version: 'v3',
+    exportedAt: new Date().toISOString(),
+    state: STATE,
+    snapshots: getSnapshots()
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const date = new Date().toISOString().slice(0,10);
+  const carriers = STATE.carriers.map(c => c.name).join('-') || 'empty';
+  a.download = `S41_${carriers}_${date}.json`;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
+}
+
+function importJSON(){
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'application/json,.json';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        if(!data.state){ throw new Error('ไม่พบ state ในไฟล์'); }
+        if(!confirm(`Import ข้อมูลจาก ${file.name}?\nข้อมูลปัจจุบันจะถูกเขียนทับ\n\nผู้วางแผน: ${(data.state.carriers||[]).map(c=>c.name).join(', ')||'(empty)'}\nSnapshots: ${Object.keys(data.snapshots||{}).length} ปี`)) return;
+        STATE = migrate(data.state);
+        if(data.snapshots) setSnapshots(data.snapshots);
+        saveState();
+        render();
+        renderSnapshotList();
+        alert('Import สำเร็จ');
+      } catch(err){
+        alert('ไฟล์ไม่ถูกต้อง: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+/* Sync the Snapshot button label with current gYear value */
+function syncSnapBtn(){
+  const yEl = document.getElementById('gYear');
+  const btn = document.getElementById('snapYearBtn');
+  if(yEl && btn) btn.textContent = yEl.value || new Date().getFullYear();
+}
+
+
+/* ═══════════════════════════════════════════════
+   SURVEY PREFILL — Phase 2: ?leadId= via Supabase fetch
+                    Fallback: ?d=base64 (legacy)
+   ═══════════════════════════════════════════════ */
+const S41_GET_LEAD_URL = 'https://lpqcglmpkuasgjgzqdyp.supabase.co/functions/v1/get-lead';
+const S41_PUBLISHABLE_KEY = 'sb_publishable_CL-lFLHRCuQNLqFYxaWsxA_odaH_WTa';
+
+async function parseSurveyPrefill(){
+  const params = new URLSearchParams(window.location.search);
+
+  /* Phase 2 path — leadId via Supabase */
+  const leadId = params.get('leadId');
+  if(leadId){
+    try {
+      const res = await fetch(`${S41_GET_LEAD_URL}?id=${encodeURIComponent(leadId)}`,{
+        headers:{'Authorization':'Bearer '+S41_PUBLISHABLE_KEY},
+      });
+      if(!res.ok){
+        console.warn('[S41] get-lead returned',res.status);
+        return null;
+      }
+      const prefill = await res.json();
+      if(prefill && prefill.v) return prefill;
+    } catch(e){
+      console.warn('[S41] get-lead fetch failed:', e);
+    }
+    return null;
+  }
+
+  /* Legacy path — base64 prefill */
+  const d = params.get('d');
+  if(!d) return null;
+  try {
+    const json = decodeURIComponent(escape(atob(d)));
+    const prefill = JSON.parse(json);
+    if(prefill && prefill.v) return prefill;
+  } catch(e){
+    console.warn('[S41] Bad prefill data:', e);
+  }
+  return null;
+}
+
+function applySurveyPrefill(p){
+  if(!p) return false;
+  // Pre-fill onboarding Step 1 fields (after modal opens)
+  setTimeout(() => {
+    const nameEl = document.getElementById('ob-name');
+    if(nameEl){
+      const firstName = (p.name || '').split(' ')[0];
+      nameEl.value = firstName;
+    }
+    // Pre-fill income editor with one row using survey-reported income
+    const list = document.getElementById('ob-iList');
+    if(list && list.children.length === 0 && p.income > 0){
+      addIncomeRow('ob-iList', parseInt(document.getElementById('ob-age').value)||35, parseInt(document.getElementById('ob-life').value)||85);
+      const row = list.firstElementChild;
+      if(row){
+        row.querySelector('[data-f="ico"]').value = '💼';
+        row.querySelector('[data-f="name"]').value = 'เงินเดือนหลัก';
+        row.querySelector('[data-f="monthly"]').value = p.income;
+      }
+    }
+    // Update count input
+    const cntEl = document.getElementById('ob-iCount');
+    if(cntEl) cntEl.value = 1;
+    // Bind summary
+    const upd = () => updateIncomeSummary('ob-iList', 'ob-iSum', parseInt(document.getElementById('ob-age').value)||35);
+    list?.addEventListener('input', upd);
+    document.getElementById('ob-age')?.addEventListener('input', upd);
+    upd();
+  }, 100);
+  return true;
+}
+
+function showSurveyWelcome(p){
+  // Custom welcome modal showing user came from survey
+  const modal = document.getElementById('mWelcome');
+  if(!modal) return showWelcome();
+  const inner = modal.querySelector('.modal');
+  const archTag = p.archetype?.tag ? `<div style="font-style:italic;color:var(--gold-2);margin-top:6px">"${p.archetype.tag}"</div>` : '';
+  const archName = p.archetype?.name || 'Friend';
+  inner.innerHTML = `
+    <div class="m-eye">Welcome from Survey · ยินดีต้อนรับ</div>
+    <h2>สวัสดีค่ะ คุณ${(p.name||'').split(' ')[0]}!</h2>
+    <div class="m-sub">เราเตรียมข้อมูลของคุณจาก Survey ไว้แล้ว</div>
+
+    <div style="background:#FBF8EE;border:1px solid var(--gold);border-radius:8px;padding:16px;margin:14px 0">
+      <div style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-2);font-weight:600;margin-bottom:6px">Archetype ของคุณ</div>
+      <div style="font-family:var(--serif);font-size:18px;font-weight:600;color:var(--ink)">${archName}</div>
+      ${archTag}
+    </div>
+
+    <div style="background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:14px;margin-bottom:14px;font-size:12px;color:var(--ink-2)">
+      <b>ข้อมูลที่เตรียมไว้ให้</b>
+      <ul style="margin:8px 0 0 18px;line-height:1.8;color:var(--muted);font-size:11.5px">
+        <li>ชื่อ: ${p.name||'-'}</li>
+        <li>รายได้รวม/เดือน: ${(p.income||0).toLocaleString()} ฿</li>
+        ${p.painPoint ? `<li>Pain Point: ${p.painPoint}</li>` : ''}
+      </ul>
+    </div>
+
+    <div class="m-sub" style="margin-top:14px">ตอบเพิ่มอีก 2-3 จอ — กรอก อายุ · ครอบครัว · เป้าหมาย เริ่มใช้งานได้เลย</div>
+
+    <div class="pick" style="grid-template-columns:1fr;margin-top:14px">
+      <div class="pick-c" onclick="startFreshFromSurvey()" style="border-color:var(--gold);background:#FBF8EE">
+        <span class="ico">✨</span>
+        <h3>ตอบเพิ่ม + เริ่มวางแผน</h3>
+        <p>ใช้เวลา ~2 นาที · ทุกอย่าง pre-filled ให้แล้ว</p>
+      </div>
+    </div>
+    <div class="m-acts" style="border:none;justify-content:center;margin-top:12px">
+      <button class="btn skip" style="background:transparent;border:none;color:var(--muted);font-size:11px" onclick="closeModal('mWelcome');loadDemo()">หรือดู Demo "วาราบิ" ก่อน</button>
+    </div>
+  `;
+  openModal('mWelcome');
+}
+
+function startFreshFromSurvey(){
+  closeModal('mWelcome');
+  openModal('mOnboard');
+  setTimeout(() => {
+    document.getElementById('ob-name').focus();
+    applySurveyPrefill(window._S41_PREFILL);
+  }, 80);
+}
+
+/* ─── Navigation ─── */
+const TITLES = {p1:'Life Path',p2:'Snapshot ปัจจุบัน',p3:'Goals & Timeline',p4:'Pyramid Status',p5:'Protection Gap',p6:'What-If & Assumptions',p7:'Investment Portfolio',p8:'Estate & Will',p9:'Annual Review'};
+function goPage(id){
+  document.querySelectorAll('nav.pages a').forEach(x => x.classList.remove('on'));
+  const link = document.querySelector(`nav.pages a[data-go="${id}"]`);
+  if(link) link.classList.add('on');
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  $('#crumb').textContent = TITLES[id];
+  $('#main .content').scrollTop = 0;
+  $('#backTL').classList.toggle('show', id !== 'p1');
+  if(id === 'p9') renderSnapshotList();
+}
+document.querySelectorAll('nav.pages a').forEach(a => {
+  a.addEventListener('click', () => goPage(a.dataset.go));
+});
+
+/* ─── Sliders ─── */
+function setS(el, key, dec){
+  const e = document.getElementById(key);
+  if(!e) return;
+  const v = parseFloat(el.value);
+  e.textContent = dec === 1 ? v.toFixed(0) : v.toFixed(1) + '%';
+}
+
+/* ─── Init ─── */
+document.addEventListener('DOMContentLoaded', () => {
+  const yEl = document.getElementById('gYear');
+  if(yEl){ yEl.addEventListener('input', syncSnapBtn); syncSnapBtn(); }
+});
+
+async function init(){
+  /* If URL has leadId or d param → show loading screen while we fetch */
+  const params = new URLSearchParams(window.location.search);
+  const hasPrefillParam = params.has('leadId') || params.has('d');
+  if(hasPrefillParam){
+    document.body.insertAdjacentHTML('afterbegin',`<div id="s41-loading" style="position:fixed;inset:0;background:#FAF7EE;z-index:99999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;font-family:'IBM Plex Sans Thai',sans-serif"><div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#D4A961;font-weight:700">S41 Premium Dashboard</div><div style="font-size:16px;color:#1C1C2E;font-weight:600">กำลังโหลดข้อมูลจาก Survey…</div><div style="width:40px;height:40px;border:3px solid #E5E1D8;border-top-color:#002366;border-radius:50%;animation:s41-spin 0.8s linear infinite"></div><style>@keyframes s41-spin{to{transform:rotate(360deg)}}</style></div>`);
+  }
+
+  /* Check for survey prefill (async — may fetch from Supabase) */
+  const prefill = await parseSurveyPrefill();
+
+  /* Remove loading overlay */
+  document.getElementById('s41-loading')?.remove();
+
+  if(prefill){
+    window._S41_PREFILL = prefill;
+    render();
+    showSurveyWelcome(prefill);
+    return;
+  }
+
+  /* If had prefill param but failed → show error */
+  if(hasPrefillParam){
+    alert('ไม่พบข้อมูลจาก Survey หรือ link หมดอายุแล้ว — เริ่มใหม่ได้จากหน้า Welcome');
+  }
+
+  const hadData = loadState();
+  if(hadData && STATE.carriers && STATE.carriers.length > 0){ render(); }
+  else { render(); showWelcome(); }
+}
+init();
+</script>
+</body>
+</html>
