@@ -35,7 +35,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 
 /* Layout */
 #app{display:flex;height:100vh}
-#side{width:200px;min-width:200px;background:var(--paper);border-right:1px solid var(--line);display:flex;flex-direction:column}
+#side{width:240px;min-width:240px;background:var(--paper);border-right:1px solid var(--line);display:flex;flex-direction:column;overflow:visible}
 .brand{padding:14px 22px 18px;text-align:center}
 .brand-mark{font-family:var(--serif);font-size:28px;font-weight:600;color:var(--ink);letter-spacing:.5px;line-height:1}
 .brand-mark span{color:var(--gold)}
@@ -46,7 +46,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .client-m{font-size:11px;color:var(--muted);font-style:italic;margin-top:2px}
 nav.pages{flex:1;padding:8px 0;overflow-y:auto}
 nav.pages .gp{padding:10px 22px 4px;font-size:9px;color:var(--faint);letter-spacing:.22em;text-transform:uppercase;font-weight:600}
-nav.pages a{display:flex;align-items:center;gap:10px;padding:8px 22px;font-size:13px;color:var(--ink-2);text-decoration:none;border-left:2px solid transparent;cursor:pointer;transition:.15s}
+nav.pages a{display:flex;align-items:center;gap:10px;padding:8px 22px;font-size:13px;color:var(--ink-2);text-decoration:none;border-left:2px solid transparent;cursor:pointer;transition:.15s;white-space:nowrap}
 nav.pages a:hover{background:var(--bg);color:var(--ink)}
 nav.pages a.on{background:var(--bg);color:var(--ink);border-left-color:var(--gold);font-weight:600}
 nav.pages a .num{font-family:var(--serif);font-style:italic;font-size:13px;color:var(--gold);min-width:18px}
