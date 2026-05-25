@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S41 Financial Clinic — ตรวจสุขภาพเงินของคุณใน 5 นาที</title>
+<!-- ═══ Facebook / Open Graph ═══ -->
+<meta property="og:type"        content="website">
+<meta property="og:url"         content="https://aoyoyoh.github.io/Survey/">
+<meta property="og:title"       content="ตรวจสุขภาพเงินของคุณใน 5 นาที 💊 S41 Financial Clinic">
+<meta property="og:description" content="วิเคราะห์ 5 มิติการเงินตามหลัก CFP® ค้นพบ Archetype ประจำตัว + รับ Roadmap เฉพาะบุคคล ฟรี ไม่มีเงื่อนไข">
+<meta property="og:image"       content="https://aoyoyoh.github.io/Survey/og-cover.png">
+<meta property="og:locale"      content="th_TH">
+<meta name="twitter:card"       content="summary_large_image">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#F5F2EC;--white:#FFFFFF;
+  --navy:#002366;--navy2:#1a3a6e;
+  --gold:#C8A94A;--gold2:#E8D08A;
+  --gray:#9B9B9B;--gray2:#E5E1D8;
+  --text:#1C1C2E;--muted:#7A7A8C;--red:#E05252;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Sarabun','Noto Sans Thai',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:20px;}
+.wrap{max-width:660px;width:100%;margin:0 auto;}
+.card{background:#fff;border:1px solid var(--gray2);border-radius:20px;padding:40px 44px;box-shadow:0 4px 48px rgba(0,35,102,.07);animation:up .4s cubic-bezier(.22,1,.36,1);}
+@keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--gray2)}
+.s41{font-size:11px;font-weight:800;color:var(--navy);letter-spacing:4px;text-transform:uppercase}
+.qnum{font-size:12px;color:var(--muted)}
+.steps{display:flex;gap:4px;margin-bottom:22px}
+.step{flex:1;height:3px;border-radius:2px;background:var(--gray2);transition:all .5s}
+.step.done{background:var(--navy)}.step.active{background:var(--gold)}
+.pline{height:2px;background:var(--gray2);border-radius:1px;margin-bottom:26px;overflow:hidden}
+.pfill{height:100%;background:linear-gradient(90deg,var(--navy),var(--gold));border-radius:1px;transition:width .6s ease}
+.phase{font-size:10px;font-weight:700;color:var(--gold);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:10px}
+.qt{font-size:20px;font-weight:700;color:var(--navy);line-height:1.55;margin-bottom:6px}
+.qstory{font-size:13px;color:var(--muted);font-style:italic;margin-bottom:10px;line-height:1.6}
+.qh{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.7;background:rgba(200,169,74,.08);border-left:3px solid var(--gold2);border-radius:0 10px 10px 0;padding:8px 12px}
+.choices{display:flex;flex-direction:column;gap:8px}
+.ch{border:1.5px solid var(--gray2);border-radius:12px;padding:12px 16px;background:#fff;color:var(--text);font-size:14px;font-family:inherit;cursor:pointer;text-align:left;display:flex;align-items:flex-start;gap:11px;transition:all .18s;}
+.ch:hover{border-color:var(--navy);background:rgba(0,35,102,.03)}
+.ch.sel{border-color:var(--navy);background:rgba(0,35,102,.05);font-weight:600}
+.ck{width:26px;height:26px;border-radius:7px;background:var(--gray2);color:var(--muted);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .18s;margin-top:2px}
+.ch.sel .ck{background:var(--navy);color:#fff}
+.ch-emoji{font-size:17px;flex-shrink:0;margin-top:3px}
+.ch-body{flex:1}
+.ch-tag{font-size:10px;font-weight:800;color:var(--gold);letter-spacing:.5px;margin-bottom:2px}
+.ch-text{font-size:13.5px;line-height:1.5;color:var(--text)}
+.rx{background:rgba(200,169,74,.08);border-left:3px solid var(--gold);border-radius:0 12px 12px 0;padding:11px 15px;margin-top:10px;font-size:13.5px;color:var(--navy);line-height:1.7;display:none;}
+.rx.show{display:block;animation:up .3s ease}
+.nb{background:var(--navy);color:#fff;border:none;border-radius:12px;padding:14px 28px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:18px;width:100%;transition:all .2s;display:none;}
+.nb:hover{background:var(--navy2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,35,102,.2)}
+.nb.show{display:block;animation:up .25s ease}
+.wbadge{display:inline-block;border:1px solid var(--gold);color:var(--gold);font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:4px 14px;border-radius:20px;margin-bottom:20px;}
+.wtitle{font-size:26px;font-weight:800;color:var(--navy);line-height:1.35;margin-bottom:8px}
+.wtitle span{color:var(--gold)}
+.wsub{font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:24px}
+.wtags{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.tag{background:rgba(0,35,102,.05);color:var(--navy);border-radius:20px;padding:5px 14px;font-size:13px;font-weight:600}
+/* ── WELCOME REFINED (CFP authority + Social proof) ── */
+.cfp-badge{display:inline-flex;align-items:center;gap:9px;padding:7px 16px 7px 8px;background:linear-gradient(135deg,rgba(200,169,74,.14),rgba(200,169,74,.04));border:1.5px solid var(--gold);border-radius:30px;margin-bottom:18px;animation:up .5s cubic-bezier(.22,1,.36,1)}
+.cfp-badge-mark{width:26px;height:26px;border-radius:50%;background:var(--gold);color:#fff;font-size:9.5px;font-weight:800;letter-spacing:.3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 6px rgba(200,169,74,.3)}
+.cfp-badge-text{font-size:10px;font-weight:800;color:var(--gold);letter-spacing:2.2px;text-transform:uppercase}
+.proof-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:0;background:rgba(0,35,102,.03);border:1px solid var(--gray2);border-radius:14px;padding:13px 6px;margin-bottom:20px}
+.proof-stat{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;padding:0 8px;border-right:1px solid var(--gray2)}
+.proof-stat:last-child{border-right:none}
+.proof-icon{font-size:18px;line-height:1;margin-bottom:2px}
+.proof-num{font-size:13.5px;font-weight:800;color:var(--navy);line-height:1.2}
+.proof-lbl{font-size:10px;color:var(--muted);line-height:1.35;letter-spacing:.2px}
+.benefit-row{display:flex;align-items:center;gap:11px;padding:9px 0;font-size:13.5px;color:var(--text);line-height:1.55}
+.benefit-row:not(:last-child){border-bottom:1px dashed rgba(0,35,102,.07)}
+.benefit-icon{font-size:17px;flex-shrink:0;width:24px;text-align:center}
+.benefit-text strong{color:var(--navy);font-weight:700}
+.team-quote{position:relative;background:#fff;border:1.5px solid var(--gray2);border-radius:14px;padding:14px 18px 14px 28px;margin-bottom:22px;font-size:13px;color:var(--muted);line-height:1.7;font-style:italic;text-align:left}
+.team-quote::before{content:'"';position:absolute;top:-2px;left:10px;font-size:48px;color:var(--gold);font-family:Georgia,serif;line-height:1;opacity:.45}
+.team-quote-attr{display:block;margin-top:8px;font-size:10px;font-weight:800;color:var(--navy);font-style:normal;letter-spacing:1.8px;text-transform:uppercase}
+.cfp-disclaimer{font-size:9.5px;color:var(--muted);letter-spacing:1.6px;text-transform:uppercase;margin-top:14px}
+@media(max-width:420px){
+  .proof-bar{grid-template-columns:1fr;gap:0}
+  .proof-stat{border-right:none;border-bottom:1px solid var(--gray2);padding:8px 4px}
+  .proof-stat:last-child{border-bottom:none}
+  .cfp-badge-text{font-size:9px;letter-spacing:1.6px}
+}
+.rarch{text-align:center;margin-bottom:20px}
+.a-svg-wrap{display:flex;justify-content:center;margin-bottom:8px}
+.aname{font-size:22px;font-weight:800;color:var(--navy);margin-bottom:3px}
+.atag{font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;display:block}
+.adesc{font-size:14px;color:var(--muted);line-height:1.8}
+.radar-wrap{display:flex;justify-content:center;margin:18px 0;overflow:visible}
+.legend{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:18px}
+.leg-row{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.leg-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.disc{background:rgba(0,35,102,.04);border:1px solid rgba(0,35,102,.09);border-radius:14px;padding:18px;margin-bottom:16px}
+.disc-title{font-size:10px;font-weight:800;color:var(--navy);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
+.di{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;font-size:13.5px;color:var(--muted);line-height:1.6}
+.di:last-child{margin-bottom:0}
+.dd{width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:8px}
+.di strong{color:var(--navy)}
+.caption-box{background:rgba(200,169,74,.06);border-left:3px solid var(--gold);border-radius:0 12px 12px 0;padding:12px 16px;margin-bottom:18px;font-size:13.5px;color:var(--navy);line-height:1.7;font-style:italic}
+.divider{height:1px;background:var(--gray2);margin:20px 0}
+.btn-full{border:none;border-radius:12px;padding:14px 20px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;width:100%;margin-bottom:10px;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-navy{background:var(--navy);color:#fff}.btn-navy:hover{background:var(--navy2);transform:translateY(-2px)}
+.btn-fb{background:#1877f2;color:#fff}.btn-fb:hover{background:#1560CC}
+.btn-line{background:#06C755;color:#fff}.btn-line:hover{background:#05A847}
+.btn-ghost{background:none;border:1.5px solid var(--gray2);color:var(--muted)}.btn-ghost:hover{border-color:var(--navy);color:var(--navy)}
+.contact-box{border:1.5px solid var(--gray2);border-radius:16px;overflow:hidden;margin-bottom:14px}
+.contact-toggle{padding:18px 20px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.contact-toggle:hover{background:rgba(0,35,102,.02)}
+.contact-body{display:none;padding:0 20px 20px}
+.contact-body.open{display:block}
+.flabel{display:block;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:5px}
+.ti{border:1.5px solid var(--gray2);border-radius:12px;padding:12px 16px;font-size:15px;font-family:inherit;color:var(--text);width:100%;margin-bottom:12px;transition:border-color .2s;background:#fff;}
+.ti:focus{outline:none;border-color:var(--navy)}.ti::placeholder{color:var(--muted)}
+/* ── 3-OPTION NEXT STEP PICKER ── */
+.next-pick{background:linear-gradient(180deg,rgba(0,35,102,.04),rgba(200,169,74,.05));border:1.5px solid var(--gray2);border-radius:18px;padding:20px;margin-bottom:14px}
+.next-title{font-size:11px;font-weight:800;color:var(--navy);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:6px;text-align:center}
+.next-sub{font-size:13px;color:var(--muted);text-align:center;margin-bottom:18px;line-height:1.6}
+.opt-grid{display:flex;flex-direction:column;gap:10px}
+.opt-card{background:#fff;border:1.5px solid var(--gray2);border-radius:14px;padding:14px 16px;cursor:pointer;transition:all .2s;display:flex;align-items:flex-start;gap:12px;text-align:left;font-family:inherit;width:100%}
+.opt-card:hover{border-color:var(--navy);background:rgba(0,35,102,.02);transform:translateY(-1px)}
+.opt-card.sel{border-color:var(--navy);border-width:2px;background:rgba(0,35,102,.04);box-shadow:0 4px 16px rgba(0,35,102,.08);padding:13px 15px}
+.opt-num{width:30px;height:30px;border-radius:50%;background:var(--gray2);color:var(--muted);font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;margin-top:1px}
+.opt-card.sel .opt-num{background:var(--navy);color:#fff}
+.opt-body{flex:1;min-width:0}
+.opt-name{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:3px;line-height:1.4}
+.opt-emo{margin-right:5px}
+.opt-desc{font-size:12px;color:var(--muted);line-height:1.55}
+.opt-tag{display:inline-block;font-size:9.5px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:10px;margin-top:6px}
+.opt-tag.free{background:rgba(46,125,50,.1);color:#2E7D32}
+.opt-tag.diy{background:rgba(200,169,74,.18);color:#946A0A}
+.opt-tag.team{background:rgba(0,35,102,.08);color:var(--navy)}
+.opt-form-inner{background:#fff;border:1.5px solid var(--gray2);border-radius:14px;padding:18px;margin-top:14px;animation:up .3s ease}
+.opt-hint{margin-top:14px;padding:12px 16px;background:rgba(46,125,50,.06);border-left:3px solid #2E7D32;border-radius:0 10px 10px 0;font-size:13px;color:#2E7D32;line-height:1.6;animation:up .3s ease}
+/* ── TEAM S41 REPORT ── */
+.team-report{background:rgba(0,35,102,.03);border:1.5px solid rgba(0,35,102,.12);border-left:4px solid var(--navy);border-radius:0 16px 16px 0;padding:20px 22px;margin:20px 0;}
+.team-report-title{font-size:10px;font-weight:800;color:var(--navy);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid rgba(0,35,102,.10);}
+.tr-section{margin-bottom:14px}
+.tr-section:last-child{margin-bottom:0}
+.tr-label{font-size:10px;font-weight:800;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:7px}
+.tr-row{display:flex;align-items:center;gap:8px;margin-bottom:4px;font-size:12.5px;color:var(--text);line-height:1.5}
+.tr-key{color:var(--muted);font-size:12px;min-width:115px;flex-shrink:0}
+.tr-val{font-weight:700;color:var(--navy)}
+.tr-bar-wrap{flex:1;height:4px;background:var(--gray2);border-radius:2px;overflow:hidden;min-width:50px}
+.tr-bar-fill{height:100%;border-radius:2px}
+.pri-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;font-size:13px;line-height:1.5}
+.pri-badge{display:inline-flex;align-items:center;justify-content:center;background:var(--navy);color:#fff;font-size:10px;font-weight:800;width:20px;height:20px;border-radius:50%;flex-shrink:0;margin-top:1px}
+.pri-text{color:var(--text)}
+.pri-score{font-size:11px;color:var(--muted);margin-left:4px}
+.ins-badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;margin-left:6px}
+.ins-ok{background:rgba(46,125,50,.1);color:#2E7D32}
+.ins-warn{background:rgba(200,169,74,.15);color:#946A0A}
+.ins-bad{background:rgba(224,82,82,.1);color:#E05252}
+.emo-badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11.5px;font-weight:600;background:rgba(0,35,102,.07);color:var(--navy)}
+.copy-btn{background:none;border:1.5px solid rgba(0,35,102,.2);border-radius:8px;padding:8px 14px;font-size:12px;font-family:inherit;color:var(--navy);cursor:pointer;transition:all .2s;margin-top:12px;width:100%;display:flex;align-items:center;justify-content:center;gap:6px}
+.copy-btn:hover{background:rgba(0,35,102,.05)}
+.want-badge{display:inline-block;background:rgba(200,169,74,.12);color:var(--navy);border:1px solid var(--gold2);padding:2px 10px;border-radius:20px;font-size:12px;font-weight:600;margin-left:4px}
+@media print{body{background:#fff;padding:0;display:block}.wrap{max-width:100%;margin:0}.card{box-shadow:none;border-radius:12px;padding:28px;page-break-inside:avoid}.nb,.btn-full,.contact-box,.next-pick{display:none!important}@page{margin:16mm;size:A4}}
+@media(max-width:500px){.card{padding:24px 20px}.qt{font-size:17px}.wtitle{font-size:22px}.legend{grid-template-columns:1fr}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+/* ── v4.2 Back button + Multi-select + Resume banner + Team collapse ── */
+.back-btn{background:none;border:none;color:var(--navy);font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;padding:4px 10px 4px 0;letter-spacing:.5px;transition:opacity .2s;display:flex;align-items:center;gap:4px}
+.back-btn:hover{opacity:.65}
+.multi-hint{display:inline-block;font-size:10.5px;font-weight:800;color:var(--gold);letter-spacing:1.2px;text-transform:uppercase;background:rgba(200,169,74,.12);padding:3px 10px;border-radius:20px;margin-bottom:10px}
+.ch[data-multi="1"] .ck{border-radius:50%}
+.resume-banner{background:linear-gradient(135deg,rgba(200,169,74,.12),rgba(0,35,102,.04));border:1.5px solid var(--gold);border-radius:14px;padding:16px 18px;margin-bottom:20px;text-align:left;animation:up .35s ease}
+.resume-banner-title{font-size:11px;font-weight:800;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+.resume-banner-body{font-size:14px;color:var(--text);margin-bottom:12px;line-height:1.5}
+.resume-banner-btns{display:flex;gap:8px;flex-wrap:wrap}
+.resume-banner-btns button{flex:1;min-width:140px;border:1.5px solid var(--gray2);background:#fff;color:var(--navy);border-radius:10px;padding:10px 14px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .2s}
+.resume-banner-btns .primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+.resume-banner-btns .primary:hover{background:var(--navy2)}
+.resume-banner-btns button:not(.primary):hover{border-color:var(--navy);color:var(--navy);background:rgba(0,35,102,.02)}
+.team-collapse{margin:20px 0}
+.team-collapse summary{cursor:pointer;font-size:11px;font-weight:800;color:var(--navy);letter-spacing:2px;text-transform:uppercase;padding:12px 16px;background:rgba(0,35,102,.04);border:1px solid var(--gray2);border-radius:10px;list-style:none;display:flex;align-items:center;justify-content:space-between;transition:all .2s}
+.team-collapse summary:hover{background:rgba(0,35,102,.07)}
+.team-collapse summary::-webkit-details-marker{display:none}
+.team-collapse summary::after{content:'\25BC';font-size:9px;transition:transform .2s;color:var(--muted)}
+.team-collapse[open] summary::after{transform:rotate(180deg)}
+.team-collapse-hint{font-size:11px;color:var(--muted);font-weight:400;margin-left:8px;letter-spacing:0;text-transform:none}
+</style>
+</head>
+<body>
+<div class="wrap"><div id="app"></div></div>
+<script>
+/* ════ RADAR ════ */
+function drawRadar(scores){
+  const cx=150,cy=155,r=90,n=5;
+  const labels=['เงินสำรอง','ความคุ้มครอง','กระแสเงินสด','การออม/ลงทุน','การวางแผน'];
+  const vals=[scores.emergency,scores.protection,scores.cashflow,scores.savings,scores.planning];
+  const angle=i=>(Math.PI*2*i/n)-Math.PI/2;
+  let grid='';
+  for(let lv=1;lv<=5;lv++){
+    const pts=Array.from({length:n},(_,i)=>{const a=angle(i),lr=r*lv/5;return`${cx+lr*Math.cos(a)},${cy+lr*Math.sin(a)}`;}).join(' ');
+    grid+=`<polygon points="${pts}" fill="${lv===5?'rgba(0,35,102,.03)':'none'}" stroke="#E5E1D8" stroke-width="${lv===5?'1.5':'1'}"/>`;
+  }
+  let axes='';
+  for(let i=0;i<n;i++){const a=angle(i);axes+=`<line x1="${cx}" y1="${cy}" x2="${cx+r*Math.cos(a)}" y2="${cy+r*Math.sin(a)}" stroke="#E5E1D8" stroke-width="1"/>`;}
+  const pts=vals.map((v,i)=>{const a=angle(i),vr=r*(v/100);return`${cx+vr*Math.cos(a)},${cy+vr*Math.sin(a)}`;}).join(' ');
+  const dots=vals.map((v,i)=>{const a=angle(i),vr=r*(v/100);return`<circle cx="${cx+vr*Math.cos(a)}" cy="${cy+vr*Math.sin(a)}" r="4" fill="#002366" stroke="#fff" stroke-width="2"/>`;}).join('');
+  const LR=r+36;let lbls='';
+  labels.forEach((lbl,i)=>{
+    const a=angle(i),lx=cx+LR*Math.cos(a),ly=cy+LR*Math.sin(a);
+    const anc=Math.cos(a)>0.15?'start':Math.cos(a)<-0.15?'end':'middle';
+    const v=vals[i];const c=v>=70?'#2E7D32':v>=40?'#C8A94A':'#E05252';
+    lbls+=`<text x="${lx}" y="${ly-5}" text-anchor="${anc}" font-size="10.5" fill="#7A7A8C" font-family="Sarabun,sans-serif" font-weight="600">${lbl}</text>`;
+    lbls+=`<text x="${lx}" y="${ly+10}" text-anchor="${anc}" font-size="12" fill="${c}" font-family="Sarabun,sans-serif" font-weight="800">${v}</text>`;
+  });
+  return`<svg width="320" height="320" viewBox="-10 0 320 320" style="overflow:visible;display:block">${grid}${axes}<polygon points="${pts}" fill="rgba(0,35,102,.09)" stroke="#002366" stroke-width="2.5" stroke-linejoin="round"/>${dots}${lbls}</svg>`;
+}
+
+/* ════ SVGs & ARCHETYPES (same as v4) ════ */
+const ASVG={
+  toppingHeavy:`<svg viewBox="0 0 100 88" width="90" height="78" fill="none" stroke="#002366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="18" y="60" width="64" height="22" rx="6"/><line x1="18" y1="72" x2="82" y2="72" stroke="#002366" stroke-width="3"/><ellipse cx="50" cy="57" rx="28" ry="8" stroke="#C8A94A"/><ellipse cx="50" cy="48" rx="20" ry="7" stroke="#C8A94A"/><ellipse cx="50" cy="40" rx="13" ry="6" stroke="#C8A94A"/><circle cx="50" cy="30" r="8" stroke="#C8A94A"/><path d="M45,22 L47,17 L49,22 L54,22 L50,25 L52,30 L47,27 L42,30 L44,25 L40,22 Z" stroke="#C8A94A" stroke-width="1.5"/><circle cx="42" cy="66" r="1.5" fill="#002366"/><circle cx="52" cy="66" r="1.5" fill="#002366"/><path d="M40,72 Q46,70 54,72" stroke="#002366" stroke-width="1.5"/></svg>`,
+  zenStone:`<svg viewBox="0 0 100 88" width="90" height="78" fill="none" stroke="#C8A94A" stroke-width="2" stroke-linecap="round"><ellipse cx="50" cy="76" rx="33" ry="11"/><ellipse cx="50" cy="61" rx="24" ry="10"/><ellipse cx="50" cy="47" rx="16" ry="9"/><ellipse cx="50" cy="35" rx="10" ry="7"/><ellipse cx="50" cy="26" rx="6" ry="5"/><text x="74" y="50" font-size="11" fill="#C8A94A" font-family="sans-serif">z</text><text x="80" y="42" font-size="9" fill="#C8A94A" font-family="sans-serif">z</text><text x="85" y="35" font-size="7" fill="#C8A94A" font-family="sans-serif">z</text></svg>`,
+  tightDenim:`<svg viewBox="0 0 100 88" width="90" height="78" fill="none" stroke="#002366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="24" y="14" width="52" height="13" rx="3"/><path d="M24,27 L18,84 L46,84 L50,52 L54,84 L82,84 L76,27 Z"/><line x1="50" y1="27" x2="50" y2="84"/><circle cx="50" cy="18" r="2.5" stroke="#C8A94A" stroke-width="1.5"/><circle cx="10" cy="22" r="6" stroke="#C8A94A" stroke-width="1.5"/><circle cx="5" cy="36" r="5" stroke="#C8A94A" stroke-width="1.5"/><circle cx="3" cy="48" r="4" stroke="#C8A94A" stroke-width="1.5"/></svg>`,
+  cozyMinka:`<svg viewBox="0 0 100 88" width="90" height="78" fill="none" stroke="#002366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M50,10 L80,38 L20,38 Z"/><rect x="20" y="38" width="60" height="42" rx="2"/><rect x="38" y="58" width="24" height="22" rx="2"/><line x1="50" y1="58" x2="50" y2="80"/><rect x="25" y="44" width="14" height="12" rx="2" stroke="#C8A94A"/><rect x="61" y="44" width="14" height="12" rx="2" stroke="#C8A94A"/><line x1="88" y1="80" x2="88" y2="56"/><ellipse cx="88" cy="49" rx="8" ry="7" stroke="#C8A94A"/></svg>`,
+  tinyWagasa:`<svg viewBox="0 0 100 88" width="90" height="78" fill="none" stroke="#C8A94A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M34,50 Q50,16 66,50 Z"/><line x1="50" y1="50" x2="50" y2="80"/><path d="M50,80 Q50,86 43,86"/><circle cx="78" cy="68" r="5" stroke="#002366" stroke-width="1.8"/><line x1="78" y1="63" x2="78" y2="50"/><path d="M73,74 Q78,78 83,74" stroke="#002366" stroke-width="1.5"/></svg>`,
+  starvingManeki:`<svg viewBox="0 0 100 88" width="90" height="78" fill="none" stroke="#002366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="42" cy="44" r="26"/><path d="M22,26 L14,8 L30,22"/><path d="M62,26 L70,8 L54,22"/><circle cx="33" cy="40" r="3.5"/><circle cx="51" cy="40" r="3.5"/><path d="M36,54 Q42,59 48,54"/><path d="M56,43 Q66,34 68,46 Q70,54 60,52" stroke="#C8A94A"/></svg>`,
+  lostTsuru:`<svg viewBox="0 0 100 88" width="90" height="78" fill="none" stroke="#C8A94A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="52" cy="52" rx="20" ry="12"/><path d="M34,50 Q20,38 6,46 Q14,58 34,54"/><path d="M70,50 Q84,38 98,46 Q90,58 70,54"/><text x="4" y="26" font-size="16" fill="#C8A94A" font-family="sans-serif" stroke="none">?</text><text x="76" y="20" font-size="14" fill="#C8A94A" font-family="sans-serif" stroke="none">?</text></svg>`,
+  emptyBento:`<svg viewBox="0 0 100 88" width="90" height="78" fill="none" stroke="#002366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="38" width="84" height="46" rx="5"/><rect x="6" y="26" width="88" height="17" rx="5"/><line x1="8" y1="62" x2="92" y2="62"/><line x1="50" y1="38" x2="50" y2="84"/><text x="25" y="58" font-size="9" fill="#C8A94A" font-family="sans-serif" stroke="none">空</text><text x="64" y="58" font-size="9" fill="#C8A94A" font-family="sans-serif" stroke="none">空</text></svg>`,
+};
+const ARCH={
+  toppingHeavy:{key:'toppingHeavy',name:'คุณซูชิหน้าแน่น',tag:'Topping-Heavy · นักลงทุนฐานโหว่',diagnosis:'มีการลงทุนสูง แต่ฐานการป้องกันความเสี่ยงยังไม่แข็งแกร่ง ทรัพย์สินโตเร็ว แต่ถ้าเกิดเหตุฉุกเฉิน อาจต้องขายสินทรัพย์ในราคาไม่ดี',prescription:'เติมเต็ม "ฐาน" ก่อน: เงินสำรอง 6 เดือน + ประกันสุขภาพจริงจัง + ทุนประกันชีวิต ≥ 10x รายได้ต่อปี แล้วค่อยลงทุนเพิ่ม',caption:'🍣 ลงทุนจนหน้าแน่น แต่หมอเงิน S41 บอกว่าฐานยังโหว่แบบข้าวซูชิไม่มีรส 😅 ได้ยินแล้วต้องจัดการก่อนเลย! เพื่อนล่ะเป็น Archetype ไหน?'},
+  zenStone:{key:'zenStone',name:'คุณก้อนหินนิ่งสนิท',tag:'Zen Stone · ออมเก่งแต่ไม่ลงทุน',diagnosis:'มีวินัยออมเงินดีมาก แต่เงินนอนนิ่งอยู่ในบัญชีออมทรัพย์ เงินเฟ้อกัดกินมูลค่าทีละนิดโดยที่ไม่รู้ตัว',prescription:'เริ่มกระจายเงินออมส่วนหนึ่งไปลงทุน เช่น กองทุนผสม SSF/RMF หรือ DCA ในหุ้นดัชนี เป้าหมาย: เงินลงทุน ≥ 50% ของพอร์ตออม',caption:'🪨 เงินฉันอยู่แต่บ้าน ไม่ยอมออกไปไหน introvert สุดๆ แต่หมอเงิน S41 บอกว่าเงินเฟ้อมันไม่ได้ introvert แบบฉัน! 😂'},
+  tightDenim:{key:'tightDenim',name:'คุณยีนส์รัดติ้ว',tag:'Tight Denim · หนี้เยอะเงินแน่น',diagnosis:'มีภาระหนี้สูง กระแสเงินสดตึงตัว ทำให้ไม่มีพื้นที่สำหรับการออมหรือลงทุน ชีวิตรู้สึก "อึดอัด" ทางการเงินทุกเดือน',prescription:'วางแผนชำระหนี้อย่างมีระบบ — Debt Snowball หรือ Debt Avalanche พร้อมตัดรายจ่ายไม่จำเป็น',caption:'👖 ชีวิตการเงินตึงแบบยีนส์หลังกินบุฟเฟ่ต์ครบ 3 รอบ 😭 หมอเงิน S41 บอกว่า "ถึงเวลาเปลี่ยนไซส์แล้ว!" (ทางการเงินนะ)'},
+  cozyMinka:{key:'cozyMinka',name:'คุณบ้านไม้กลางป่า',tag:'Cozy Minka · สมดุลดี (Ideal Type)',diagnosis:'วางแผนการเงินได้อย่างสมดุล มีฐานป้องกันที่แข็งแกร่ง กระแสเงินสดดี มีวินัยออมและเริ่มสะสมทรัพย์สินได้แล้ว เหมือนบ้านไม้กลางป่าที่อบอุ่น มั่นคง ยั่งยืน',prescription:'ต่อยอดด้วยการวางแผนภาษีให้ครบสิทธิ์ เริ่มวางแผนมรดก และทบทวน Asset Allocation ตาม Life Stage',caption:'🏡 หมอเงิน S41 บอกว่าฉันวางแผนการเงินดีมาก กำลังจะพรินต์ผลนี้ติดผนังบ้านเลย 😎 เพื่อนล่ะเป็น Archetype ไหน?'},
+  tinyWagasa:{key:'tinyWagasa',name:'คุณร่มกันแดดจิ๋ว',tag:'Tiny Wagasa · รวยแต่ประกันน้อย',diagnosis:'มีทรัพย์สินดีและลงทุนเป็น แต่ทุนประกันชีวิตยังน้อยกว่าที่ควร เหมือนร่มที่สวยงามแต่ตัวเล็กไป ป้องกันได้ไม่ครอบคลุม',prescription:'ทบทวนความคุ้มครองชีวิตอย่างเร่งด่วน คำนวณทุนประกันที่เหมาะสม (อย่างน้อย 10x รายได้ต่อปี) และพิจารณา Income Protection เพิ่มเติม',caption:'☂️ รวยมาก ลงทุนเก่ง แต่ประกันน้อยกว่าร่มของเด็กอนุบาล ☔ หมอเงิน S41 บอกว่าต้อง "อัพไซส์ร่ม" ด่วน ก่อนฝนจะตก!'},
+  starvingManeki:{key:'starvingManeki',name:'คุณแมวกวักหิวโซ',tag:'Starving Maneki · ทรัพย์เยอะเงินสดน้อย',diagnosis:'มีทรัพย์สินดีและลงทุนดี แต่ขาด "สภาพคล่อง" เงินสำรองฉุกเฉินน้อย ถ้าต้องการเงินด่วน อาจต้องขายสินทรัพย์ในราคาไม่ดี',prescription:'จัดสรรสินทรัพย์สภาพคล่องสูง เช่น กองทุนตลาดเงิน หรือบัญชีออมทรัพย์ดอกเบี้ยสูง ให้เพียงพอสำหรับฉุกเฉินอย่างน้อย 6–12 เดือน',caption:'🐱 ทรัพย์สินเพียบ แต่หิวเงินสดทุกวัน เหมือนแมวกวักที่ยังต้องรอข้าวกิน 😹 หมอเงิน S41 บอกว่าแมวกวักต้องมีถาดข้าวด้วย!'},
+  lostTsuru:{key:'lostTsuru',name:'คุณนกหลงทาง',tag:'Lost Tsuru · ออมเก่งไม่มีเป้าหมาย',diagnosis:'มีวินัยออมเงินดี แต่ยังขาด "เป้าหมาย" ที่ชัดเจน ทำให้เงินออมกระจัดกระจาย ไม่รู้ว่าควรลงทุนอะไร เพื่ออะไร และมากแค่ไหน',prescription:'กำหนด "เป้าหมายการเงิน" ให้ชัดเจนและเป็นตัวเลข เช่น "เกษียณอายุ 55 ปี ใช้เงิน 50,000 บาท/เดือน" แล้วค่อยวางแผนการลงทุนให้สอดคล้อง',caption:'🦢 ออมเก่ง บินสูง แต่ GPS ชีวิตดับ ❌ ไม่รู้จะบินไปหาอะไร หมอเงิน S41 เสนอเป็น "Google Maps การเงิน" ฟรี!'},
+  emptyBento:{key:'emptyBento',name:'คุณกล่องเบนโตะว่าง',tag:'Empty Bento · ผู้เริ่มต้นที่รอจัดวาง',diagnosis:'อยู่ในจุดเริ่มต้น ยังไม่ได้วางแผนการเงินอย่างจริงจัง แต่กล่องเบนโตะที่ว่างเปล่าคือโอกาสที่จะจัดวางได้อย่างสวยงามตั้งแต่ต้น',prescription:'3 ก้าวแรกทันที: (1) เงินสำรอง 3 เดือน (2) ประกันสุขภาพขั้นต้น (3) ออมอัตโนมัติ 10% ของรายได้ก่อนใช้จ่าย',caption:'🍱 กล่องเบนโตะฉันยังว่างอยู่เลย แต่หมอเงิน S41 บอกว่า "กล่องว่างคือโอกาส ไม่ใช่ความล้มเหลว" 💪 มาเริ่มจัดกล่องด้วยกัน!'},
+};
+/* ════ CONFIG — URL ของ Survey ที่ host บน GitHub Pages ════ */
+const SURVEY_URL = 'https://aoyoyoh.github.io/Survey/';
+
+/* ════ CONSTANTS ════ */
+const INCOME_MID   = {A:22000,B:45000,C:80000,D:150000,E:280000};
+const INCOME_RANGE = {A:'น้อยกว่า 30,000',B:'30,001–60,000',C:'60,001–100,000',D:'100,001–200,000',E:'มากกว่า 200,000'};
+const TAX_BRACKET  = {A:'0%',B:'5–10%',C:'15–20%',D:'20–25%',E:'25–30%'};
+const SURPLUS_MID  = {A:0.35,B:0.225,C:0.10,D:0.025,E:-0.05};
+const SURPLUS_RANGE= {A:'มากกว่า 30%',B:'20–30%',C:'10–20%',D:'น้อยกว่า 10%',E:'ติดลบ'};
+
+/* ════ QUESTIONS — 12 ข้อ, 5 Phase ════ */
+const QS=[
+
+  /* ── PHASE 1: ❤️ เข้าใจหัวใจก่อน ── */
+
+  {id:'Q1',phase:'❤️ เข้าใจหัวใจก่อน',multi:true,
+   q:'ชีวิตที่ดีสำหรับคุณ คืออะไร?',
+   story:'ก่อนเราจะเริ่มตรวจ... ขอถามหัวใจสักข้อนะ',
+   h:'ไม่มีคำตอบผิด — เข็มทิศชีวิตของคุณจะช่วยให้เราแนะนำได้ตรงจุดกว่า · เลือกได้หลายข้อ',
+   cs:[{k:'A',e:'🌿',tag:'Lifestyle First',t:'ได้ท่องเที่ยว ใช้ชีวิตอิสระ ทำในสิ่งที่รักโดยไม่ต้องเป็นห่วงเรื่องเงิน'},
+       {k:'B',e:'🏠',tag:'Family Centered',t:'ครอบครัวมั่นคง ลูกหลานมีอนาคตที่ดี คนที่รักไม่ต้องเป็นห่วง'},
+       {k:'C',e:'📈',tag:'Wealth Builder',t:'สร้างความมั่งคั่ง เห็นสินทรัพย์เติบโต มีอิสระทางการเงินที่แท้จริง'},
+       {k:'D',e:'🌟',tag:'Legacy Maker',t:'สร้างสิ่งที่มีคุณค่า ทิ้งไว้ให้คนรุ่นหลัง สร้างผลกระทบที่ยิ่งใหญ่กว่าตัวเอง'}],
+   rx:'รสนิยมดีมากเลย! "เข็มทิศ" นี้จะเป็นหัวใจของแผนการเงินที่เราจะสร้างให้คุณ ✨'},
+
+  {id:'Q2',phase:'❤️ เข้าใจหัวใจก่อน',multi:true,
+   q:'เรื่องการเงินอะไรที่อยู่ในใจคุณมากที่สุดตอนนี้?',
+   story:'ไม่ว่าจะอยู่ตรงไหน — ทีม S41 พร้อมรับฟังและช่วยวางแผน',
+   h:'คำตอบนี้ช่วยให้เราเตรียมแผนที่ตรงกับสถานการณ์ของคุณได้ทันที · เลือกได้หลายข้อ',
+   cs:[{k:'A',e:'😰',tag:'',t:'กังวลเรื่องความไม่มั่นคง — กลัวเรื่องฉุกเฉิน ยังรู้สึกว่าไม่มีตัวช่วยถ้าเกิดอะไรขึ้น'},
+       {k:'B',e:'😓',tag:'',t:'เครียดเรื่องหนี้หรือกระแสเงินสด — รายรับรายจ่ายยังตึง ทุกเดือนรู้สึกอึดอัด'},
+       {k:'C',e:'🤔',tag:'',t:'อยากเติบโตกว่านี้ — มีพื้นฐานแล้ว แต่อยากให้เงินทำงานแทนเราได้มากขึ้น'},
+       {k:'D',e:'💡',tag:'',t:'ไม่ได้กังวลพิเศษ — แค่อยากรู้ว่าตัวเองอยู่ "ตรงไหน" เทียบกับมาตรฐาน และมีอะไรต้องปรับ'}],
+   rxMap:{A:'เข้าใจมากเลย — ความกังวลนี้มีทางออกเสมอ เราจะช่วยสร้างเกราะป้องกันให้คุณ 🛡️',
+          B:'ได้ยินแล้ว — ความรู้สึกนี้พบบ่อยมาก หมอเงิน S41 มีแผนช่วยปลดล็อคทีละขั้น 💪',
+          C:'ดีมาก! นั่นคือ "Growth Mindset" — เราจะช่วยออกแบบพอร์ตให้เงินทำงานแทนคุณ 24 ชั่วโมง 🌱',
+          D:'สุขภาพการเงินดีอยู่แล้ว — เราจะช่วย Fine-tune ให้สมบูรณ์แบบยิ่งขึ้น ✨'}},
+
+  {id:'Q3',phase:'❤️ เข้าใจหัวใจก่อน',
+   q:'คุณมองเห็น "วันเกษียณ" ของตัวเองชัดแค่ไหน?',
+   story:'จินตนาการว่าคุณอายุ 60 ปี… กำลังทำอะไรอยู่?',
+   h:'ความชัดเจนของเป้าหมายเป็นปัจจัยสำคัญที่สุดในการวางแผนการเงิน',
+   cs:[{k:'A',e:'🗺️',tag:'',t:'เห็นชัดมาก! รู้ว่าอยากเกษียณอายุเท่าไหร่ ต้องใช้เงินเดือนละเท่าไหร่ และมีแผนรองรับแล้ว'},
+       {k:'B',e:'🧭',tag:'',t:'พอมองเห็นบ้าง แต่ยังไม่ได้คำนวณจริงจัง แค่รู้สึกว่าต้องออมเงินเยอะๆ'},
+       {k:'C',e:'🌫️',tag:'',t:'ยังไม่ค่อยชัด รู้แค่ว่า "ต้องวางแผน" แต่ยังไม่รู้จะเริ่มจากตรงไหน'},
+       {k:'D',e:'😅',tag:'',t:'ยังไม่ได้คิดถึงเลย ตอนนี้ใช้ชีวิตไปก่อน'}],
+   rxMap:{A:'เป้าหมายชัดคือจุดเริ่มต้นที่ดีที่สุด! ขั้นต่อไปคือแปลงตัวเลขให้เป็นแผนลงทุนจริงๆ 💪',
+          B:'ดีมาก! แค่ต้องแปลง "ความรู้สึก" ให้เป็นตัวเลขจริงๆ เพื่อให้แผนเดินได้',
+          C:'ไม่ต้องกังวล — นั่นคือเหตุผลที่เราต้องทำ survey นี้! เราจะช่วยวาดแผนที่ให้ 🗺️',
+          D:'เริ่มคิดได้เลยตั้งแต่วันนี้ เวลาคือทรัพย์สินที่มีค่าที่สุดในการลงทุน'}},
+
+  /* ── PHASE 2: 🛡️ ตรวจฐานรากและความปลอดภัย ── */
+
+  {id:'Q4',phase:'🛡️ ตรวจฐานรากและความปลอดภัย',
+   q:'ถ้าวันนี้หยุดทำงาน คุณจะอยู่ได้นานแค่ไหน?',
+   story:'ลองนึกภาพ: พรุ่งนี้เช้าคุณไม่ต้องไปทำงานแล้ว (แค่สมมุตินะ!)',
+   h:'เกณฑ์มาตรฐาน CFP®: ควรมีเงินสำรองฉุกเฉิน 3–6 เท่าของรายจ่ายต่อเดือน',
+   cs:[{k:'A',e:'🧯',tag:'',t:'สบายมาก! มีเงินสำรองฉุกเฉินเกิน 6 เดือน แยกบัญชีไว้ต่างหาก'},
+       {k:'B',e:'💧',tag:'',t:'พอได้บ้าง มีเงินสำรองประมาณ 3–6 เดือน'},
+       {k:'C',e:'⚠️',tag:'',t:'มีนิดหน่อย ถ้าหยุดทำงานได้แค่ 1–3 เดือน ก็เริ่มลำบาก'},
+       {k:'D',e:'🚨',tag:'',t:'แทบไม่มี ถ้าหยุดทำงานเดือนหน้าก็มีปัญหาเลย'}],
+   rxMap:{A:'ยอดเยี่ยม! ฐานรากแข็งแกร่ง ถังออกซิเจนสำรองพร้อมแล้ว ✅',
+          B:'ดีแต่ยังต้องพัฒนา — ลองแยกบัญชีเงินสำรองออกมาต่างหาก',
+          C:'สัญญาณเตือน! ควรสะสมเงินสำรองให้ครบ 3 เดือนก่อนเรื่องอื่น',
+          D:'เร่งสะสมเงินสำรองทันที ลองลดรายจ่ายผันแปรที่สามารถลดได้ เพื่อเพิ่มเงินออม'}},
+
+  {id:'Q5',phase:'🛡️ ตรวจฐานรากและความปลอดภัย',
+   q:'ถ้าต้องนอนโรงพยาบาลวันนี้ คุณกังวลเรื่องค่าใช้จ่ายไหม?',
+   story:'สุขภาพดีคือทรัพย์สมบัติที่ดีที่สุด แต่ถ้าวันที่ร่างกายไม่ดี…',
+   h:'การโอนย้ายความเสี่ยงสุขภาพคือรากฐานของความมั่นคงทางการเงิน',
+   cs:[{k:'A',e:'🛡️',tag:'',t:'ไม่กังวลเลย มีประกันสุขภาพคุ้มครองเต็มที่ ทั้งผู้ป่วยในและนอก รวมโรคร้ายแรง'},
+       {k:'B',e:'🏥',tag:'',t:'มีสวัสดิการบริษัทหรือประกันสังคม แต่ยังไม่แน่ใจว่าคุ้มครองพอไหม'},
+       {k:'C',e:'📋',tag:'',t:'มีแค่ประกันสังคม/บัตรทอง ถ้าเจ็บหนักๆ ต้องควักกระเป๋าเอง'},
+       {k:'D',e:'😰',tag:'',t:'แทบไม่มีการคุ้มครองอะไรเลย ถ้าป่วยหนักก็ต้องกู้เงิน'}],
+   rxMap:{A:'เกราะป้องกันสุขภาพแข็งแกร่ง! ทบทวนว่าวงเงินคุ้มครองยังเพียงพอกับค่ารักษาปัจจุบันหรือเปล่า',
+          B:'สวัสดิการบริษัทจะหมดทันทีที่เปลี่ยนงาน ควรตรวจสอบและเสริมด้วยประกันส่วนตัว',
+          C:'ช่องว่างนี้อันตราย — ค่าห้อง ICU คืนละ 10,000–50,000 บาท ประกันสุขภาพคือ must have',
+          D:'ความเสี่ยงสูงมาก — โรคร้ายแรงหนึ่งครั้งอาจทำให้เงินออมทั้งชีวิตหายไปในพริบตา'}},
+
+  {id:'Q6',phase:'🛡️ ตรวจฐานรากและความปลอดภัย',
+   q:'มีคนที่พึ่งพิงรายได้ของคุณอยู่ไหม? และคุณวางระบบไว้แล้วหรือยัง?',
+   story:'ถามตรงๆ — ถ้าวันหนึ่งคุณไม่อยู่ คนข้างหลังจะยังโอเคหรือเปล่า?',
+   h:'เกณฑ์ CFP®: หากมีคนพึ่งพิง ทุนประกันชีวิตควรมากกว่า 10 เท่าของรายได้ต่อปี',
+   cs:[{k:'A',e:'🏛️',tag:'',t:'วางไว้แล้ว มีประกันชีวิตทุนเพียงพอ ครอบครัวอยู่ได้อย่างน้อย 5–10 ปีโดยไม่ลำบาก'},
+       {k:'B',e:'🧱',tag:'',t:'มีบ้าง แต่ยังไม่แน่ใจว่าทุนประกันเพียงพอจริงๆ ไหม'},
+       {k:'C',e:'🪵',tag:'',t:'มีประกันนิดหน่อย แต่ถ้าเกิดอะไรขึ้น ครอบครัวก็คงต้องปรับตัวเยอะมาก'},
+       {k:'D',e:'🌱',tag:'',t:'ยังไม่มีเลย ยังคิดว่าตัวเองยังอายุน้อยอยู่ ยังไม่จำเป็น'},
+       {k:'E',e:'🍃',tag:'',t:'ยังไม่มีคนที่พึ่งพิงรายได้ของฉัน (โสด / ไม่มีคนต้องดูแล)'}],
+   rxMap:{A:'เสาหลักแข็งแกร่ง! ทบทวนทุนประกันทุก 3 ปีเพราะรายได้และภาระเปลี่ยนได้',
+          B:'ควรคำนวณทุนประกันที่แท้จริง = รายได้ต่อปี × 10 เป็นขั้นต่ำ',
+          C:'ครอบครัวยังมีความเสี่ยงสูง — ทุนประกันที่มีอาจไม่เพียงพอรองรับภาระระยะยาว',
+          D:'อายุน้อยยิ่งทำประกันได้เบี้ยถูกกว่า — นี่คือเวลาที่ดีที่สุดในการเริ่มต้น ⏰',
+          E:'รับทราบ — ขั้นนี้ยังไม่ใช่ priority ของคุณ แต่ควรพิจารณาประกันโรคร้ายแรงเพื่อป้องกันตนเอง 💪'}},
+
+  /* ── PHASE 3: 💧 กระแสชีวิตประจำวัน ── */
+
+  {id:'Q7',phase:'💧 กระแสชีวิตประจำวัน',
+   q:'โดยเฉลี่ย ปลายเดือนคุณเหลือเงินออมได้ประมาณเท่าไหร่?',
+   story:'บอกเล่าเรื่องราวของเงินในมือคุณแต่ละเดือน…',
+   h:'เกณฑ์ดี: ควรเหลือออมได้ > 20% ของรายได้/เดือน (เช่น รายได้ 50,000 บาท ควรเหลือ > 10,000 บาท)',
+   cs:[{k:'A',e:'🌊',tag:'',t:'มากกว่า 30% ของรายได้ — เยี่ยมมาก มีพื้นที่ลงทุนสูง'},
+       {k:'B',e:'💧',tag:'',t:'20–30% ของรายได้ — อยู่ในเกณฑ์ดี'},
+       {k:'C',e:'🪣',tag:'',t:'10–20% ของรายได้ — พอทำได้ แต่ยังตึง'},
+       {k:'D',e:'😰',tag:'',t:'น้อยกว่า 10% ของรายได้ — แทบไม่เหลือออม'},
+       {k:'E',e:'🕳️',tag:'',t:'ติดลบ — รายจ่ายเกินรายรับ ต้องพึ่งบัตรเครดิตหรือกู้ยืม'}],
+   rxMap:{A:'กระแสเงินสดแข็งแกร่ง! Surplus นี้คือ "เชื้อเพลิง" สำหรับการลงทุนและสร้างความมั่งคั่ง 🔥',
+          B:'ดีมาก! ลองตั้งระบบ "ออมก่อนใช้" เพื่อให้มีแผนที่ชัดเจนยิ่งขึ้น',
+          C:'พอไหว แต่ต้องหาทางเพิ่ม Surplus — ทบทวนรายจ่ายหาจุดรั่ว',
+          D:'สัญญาณเตือน — ต้องวิเคราะห์รายจ่ายและตัดสิ่งที่ไม่จำเป็นออก',
+          E:'วิกฤตกระแสเงินสด — ต้องแก้ไขด่วนก่อนที่หนี้จะสะสมจนควบคุมไม่ได้'}},
+
+  {id:'Q8',phase:'💧 กระแสชีวิตประจำวัน',
+   q:'ภาระผ่อนทั้งหมดต่อเดือนคิดเป็นกี่ % ของรายได้?',
+   story:'หนี้ดีคือบันไดสู่ทรัพย์สิน หนี้ร้ายคือโซ่ตรวนที่ดึงหลัง…',
+   h:'เกณฑ์ปลอดภัย CFP®: ภาระผ่อนรวมทั้งหมด < 35% ของรายได้',
+   cs:[{k:'A',e:'🎒',tag:'',t:'เบาสบาย ภาระผ่อนทั้งหมดน้อยกว่า 35% ของรายได้ต่อเดือน'},
+       {k:'B',e:'🧳',tag:'',t:'พอไหว ภาระผ่อนอยู่ที่ 35–45% ยังโอเคแต่เริ่มรู้สึกหนักบ้าง'},
+       {k:'C',e:'🏋️',tag:'',t:'หนักมาก ภาระผ่อนเกิน 45% รู้สึกว่าทำงานเพื่อจ่ายหนี้เป็นหลัก'},
+       {k:'D',e:'⛓️',tag:'',t:'หนักสุดๆ ไม่รู้กี่ % เพราะมีหนี้หลายก้อนหลายเจ้าหนี้'}],
+   rxMap:{A:'ภาระหนี้อยู่ในเกณฑ์ดีเยี่ยม มีพื้นที่เพียงพอสำหรับการออมและลงทุน 👍',
+          B:'ยังอยู่ในเกณฑ์ที่รับได้ แต่ควรระวังไม่ให้เพิ่มภาระหนี้ใหม่',
+          C:'เข้าโซนอันตราย — ต้องวางแผนลดภาระหนี้อย่างเร่งด่วน',
+          D:'ต้องรีบวางแผนรวมหนี้และจัดการอย่างเป็นระบบ ดอกเบี้ยทบต้นทำลายอนาคตได้เร็วมาก'}},
+
+  /* ── PHASE 4: 🌱 เงินงอก ── */
+
+  {id:'Q9',phase:'🌱 เงินงอก — การออมและลงทุน',
+   q:'คุณออมและลงทุนเงินอย่างไรในตอนนี้?',
+   story:'"Pay Yourself First" คือกฎทองของคนมีเงิน',
+   h:'เกณฑ์ดี: ออมอัตโนมัติ > 20% ของรายได้ก่อนใช้จ่าย และกระจายลงทุนในสินทรัพย์ที่เติบโต',
+   cs:[{k:'A',e:'💊',tag:'',t:'ออมอัตโนมัติ > 20% และกระจายลงทุนหลายประเภท (หุ้น/กองทุน/อสังหาฯ)'},
+       {k:'B',e:'🌺',tag:'',t:'มีลงทุนบ้าง เช่น กองทุนรวม SSF/RMF หรือหุ้น แต่ยังไม่เป็นระบบ'},
+       {k:'C',e:'🌿',tag:'',t:'ออมสม่ำเสมอ แต่เงินส่วนใหญ่นอนอยู่ในบัญชีออมทรัพย์ ยังไม่ลงทุน'},
+       {k:'D',e:'🪨',tag:'',t:'แทบไม่ได้ออมหรือลงทุน เพราะรายรับไม่พอหรือยังไม่รู้จะเริ่มอย่างไร'}],
+   rxMap:{A:'วินัยระดับนี้คือหัวใจของ Compound Effect ออม 20% ทุกเดือน 20 ปีที่ 7%/ปี = เงิน 10+ เท่า! ⭐',
+          B:'เริ่มดีแล้ว! ลองวางแผน Asset Allocation อย่างเป็นระบบ ให้เงินทำงานมีประสิทธิภาพสูงสุด',
+          C:'กลัวขาดทุนเป็นเรื่องปกติ — เริ่มจาก DCA กองทุนผสมที่ความเสี่ยงต่ำก่อนก็ได้',
+          D:'ต้องแก้กระแสเงินสดก่อน เมื่อมี Surplus แล้วค่อยเริ่มลงทุน ทำทีละขั้น'}},
+
+  /* ── PHASE 5: 🎯 วางแผนเฉพาะตัว (Q11 ก่อน Q10 — ถาม income ก่อนถามใช้สิทธิ์) ── */
+
+  {id:'Q11',phase:'🎯 วางแผนเฉพาะตัวสำหรับคุณ',
+   q:'ฐานภาษีเงินได้ของคุณอยู่ที่ช่วงไหน?',
+   story:'ระบบจะเลือกเครื่องมือลดหย่อนที่เหมาะกับคุณมากที่สุด',
+   h:'🔒 ไม่ต้องแน่ใจ 100% — เลือกที่ใกล้เคียงก็ได้ ข้อมูลนี้เป็นความลับและใช้เพื่อวางแผนภาษีเท่านั้น',
+   cs:[{k:'A',e:'🌱',tag:'',t:'ยังไม่ถึงเกณฑ์เสียภาษี หรืออยู่ฐาน 0–5% (รายได้สุทธิ ≤ 150,000 บาท/ปี)'},
+       {k:'B',e:'🌿',tag:'',t:'ฐาน 5–10% — เริ่มต้องวางแผนลดหย่อน (รายได้ ~30,000–60,000 บาท/เดือน)'},
+       {k:'C',e:'🌳',tag:'',t:'ฐาน 15–20% — วางแผนภาษีคุ้มมากขึ้นชัดเจน (รายได้ ~60,000–100,000 บาท/เดือน)'},
+       {k:'D',e:'🏛️',tag:'',t:'ฐาน 20–25% — ทุกบาทที่ลดหย่อนได้มีผลสูงมาก (รายได้ ~100,000–200,000 บาท/เดือน)'},
+       {k:'E',e:'💎',tag:'',t:'ฐาน 25–30%+ — Tax Planning คือเรื่องด่วนที่สุด (รายได้ 200,000+ บาท/เดือน)'}],
+   rxMap:{A:'ระดับนี้เน้นสร้างฐานและเพิ่มรายได้ก่อน ประกันสุขภาพคือ priority อันดับ 1 💪',
+          B:'ฐาน 5–10% ประกันชีวิต + สุขภาพ + RMF ช่วยลดภาษีได้หลักพันถึงหมื่นบาท/ปี ✨',
+          C:'ฐาน 15–20% SSF/RMF + ประกัน = คืนภาษีได้สูงสุด 50,000–100,000 บาท/ปี! 🎁',
+          D:'ฐาน 20–25% ใช้สิทธิลดหย่อนครบทุกประเภท = ประหยัดภาษีได้ถึง 200,000 บาท/ปี 💰',
+          E:'ฐาน 25–30% วางแผนภาษีคือเรื่องด่วนที่สุด! อาจประหยัดได้ 300,000+ บาท/ปี 🏆'}},
+
+  {id:'Q10',phase:'🎯 วางแผนเฉพาะตัวสำหรับคุณ',
+   q:'คุณใช้สิทธิ์ลดหย่อนภาษีครบหรือเปล่า?',
+   story:'รัฐบาลให้ "บัตรกำนัล" ลดหย่อนภาษีไว้เยอะมาก แต่คนส่วนใหญ่ไม่รู้…',
+   h:'SSF / RMF / ประกันชีวิต / ประกันสุขภาพ / กองทุนสำรองเลี้ยงชีพ — คืนภาษีได้สูงสุดหลายหมื่นบาท/ปี',
+   cs:[{k:'A',e:'🎁',tag:'',t:'ใช้ครบทุกสิทธิ์! SSF/RMF ประกันชีวิต ประกันสุขภาพ กองทุนสำรองเลี้ยงชีพ และอื่นๆ'},
+       {k:'B',e:'🎀',tag:'',t:'ใช้บางส่วน รู้ว่ามีสิทธิ์อะไรบ้าง แต่ยังไม่ได้ใช้ครบ'},
+       {k:'C',e:'🎟️',tag:'',t:'รู้จักแค่ไม่กี่อย่าง เช่น แค่ประกันชีวิตหรือ RMF อย่างเดียว'},
+       {k:'D',e:'❓',tag:'',t:'ไม่รู้เลยว่ามีสิทธิ์อะไรบ้าง ยื่นภาษีตามที่บริษัทคำนวณให้แล้วก็จบ'},
+       {k:'E',e:'🌱',tag:'',t:'ยังไม่เข้าข่ายเสียภาษี / รายได้ยังไม่ถึงเกณฑ์'}],
+   rxMap:{A:'วางแผนภาษีครบถ้วน — คุณกำลังใช้ "ผลตอบแทนทันที" จากรัฐบาลได้สูงสุดแล้ว 👑',
+          B:'ยังมีช่องว่างที่ทิ้งเงินไว้บนโต๊ะ — ทุก 1 บาทที่ลดหย่อนได้ คืนภาษีกลับมาตามอัตราฐาน',
+          C:'มีสิทธิ์อีกมากที่รอคุณใช้ — ขอรับคำแนะนำจาก S41 เพื่อวางแผนให้ครบ',
+          D:'ทุกปีที่ผ่านไปโดยไม่วางแผนภาษี = เงินที่จ่ายเกินไปโดยไม่จำเป็น 💸',
+          E:'ไม่เป็นไร — ตอนนี้โฟกัสที่การสร้างฐานเงินสำรองและประกันสุขภาพก่อนดีกว่า 💪'}},
+
+  {id:'Q12',phase:'🎯 วางแผนเฉพาะตัวสำหรับคุณ',isLast:true,multi:true,
+   q:'ตอนนี้คุณอยากวางแผนการเงินเรื่องอะไรมากที่สุด?',
+   story:'คำถามสุดท้าย — ช่วยให้ทีม S41 เตรียมแผนเฉพาะสำหรับคุณได้ทันที',
+   h:'เลือกได้หลายข้อ — เราจะดูแลทุกเรื่องที่คุณใส่ใจ',
+   cs:[{k:'A',e:'🛡️',tag:'',t:'อยากมีหลักประกันที่แน่นอน — มีเงินสำรองและประกันที่ครอบคลุม ไม่กังวลเรื่องฉุกเฉิน'},
+       {k:'B',e:'💧',tag:'',t:'อยากหมดหนี้ให้ได้ — ไม่ต้องเครียดทุกปลายเดือน มีกระแสเงินสดที่หายใจได้'},
+       {k:'C',e:'🌱',tag:'',t:'อยากออมและลงทุนให้เงินทำงานแทนเรา — สร้าง Passive Income'},
+       {k:'D',e:'📊',tag:'',t:'อยากวางแผนภาษีให้ครบสิทธิ์ — ไม่อยากจ่ายภาษีเกินโดยไม่จำเป็น'},
+       {k:'E',e:'🎯',tag:'',t:'อยากวางแผนเป้าหมายใหญ่ให้ชัดเจน — เกษียณ ซื้อบ้าน ส่งลูกเรียน'}],
+   rxMap:{A:'เห็นด้วย! ฐานที่แข็งแกร่งคือรากของทุกอย่าง — เราจะช่วยสร้างเกราะให้คุณ ✨',
+          B:'ใช่เลย! หมดหนี้ก็เหมือนได้เงินเพิ่มทันที — เราจะช่วยออกแบบแผนชำระหนี้ 💪',
+          C:'ถูกต้อง! เงินที่ลงทุนอย่างถูกวิธีทำงาน 24 ชั่วโมง — เราจะช่วยเลือกเครื่องมือที่เหมาะสม 🌺',
+          D:'ฉลาดมาก! ภาษีที่ประหยัดได้คือเงินที่ไม่ต้องหาเพิ่ม — เราจะดูสิทธิ์ที่คุณยังไม่ได้ใช้ 🎁',
+          E:'วิสัยทัศน์ยอดเยี่ยม! เป้าหมายชัดคือจุดเริ่มต้นของแผนที่ดี — เราจะช่วยแปลงฝันเป็นตัวเลข 🗺️'}},
+];
+
+/* ════ STATE ════ */
+let S={screen:'welcome',currentQ:0,answers:{},archetype:null,radarScores:null,contactOpen:false,contactName:'',contactPhone:'',contactLine:'',contactEmail:'',intent:null,intentStep:'pick',leadId:null,hasDraft:false,draftSummary:null,_draftRaw:null};
+
+/* ════ DRAFT (localStorage auto-save) ════ */
+const DRAFT_KEY='s41_survey_draft_v4_2';
+function loadDraft(){
+  try{const raw=localStorage.getItem(DRAFT_KEY);if(!raw)return null;
+    const d=JSON.parse(raw);
+    if(!d||!d.answers||Object.keys(d.answers).length===0)return null;
+    return d;
+  }catch(e){return null;}
+}
+function saveDraft(){
+  try{const snap={currentQ:S.currentQ,answers:S.answers,contactName:S.contactName,contactPhone:S.contactPhone,contactLine:S.contactLine,contactEmail:S.contactEmail,savedAt:Date.now()};
+    localStorage.setItem(DRAFT_KEY,JSON.stringify(snap));
+  }catch(e){}
+}
+function clearDraft(){try{localStorage.removeItem(DRAFT_KEY);}catch(e){}}
+function resumeDraft(){
+  if(!S._draftRaw)return;
+  const d=S._draftRaw;
+  S.screen='question';S.currentQ=Math.min(d.currentQ||0,11);
+  S.answers=d.answers||{};
+  S.contactName=d.contactName||'';S.contactPhone=d.contactPhone||'';
+  S.contactLine=d.contactLine||'';S.contactEmail=d.contactEmail||'';
+  S.hasDraft=false;S.draftSummary=null;S._draftRaw=null;
+  render();window.scrollTo(0,0);
+}
+function discardDraft(){clearDraft();S.hasDraft=false;S.draftSummary=null;S._draftRaw=null;render();}
+function back(){
+  if(S.currentQ<=0){S.screen='welcome';render();window.scrollTo(0,0);return;}
+  S.currentQ--;render();window.scrollTo(0,0);saveDraft();
+}
+function getChoiceArr(qid){const a=S.answers[qid];if(!a)return[];return a.choices||(a.choice?[a.choice]:[]);}
+function getChoiceFirst(qid){const arr=getChoiceArr(qid);return arr[0]||null;}
+/* check draft on page load */
+(function(){const d=loadDraft();if(d){S.hasDraft=true;S.draftSummary={currentQ:d.currentQ||0,answered:Object.keys(d.answers||{}).length,savedAt:d.savedAt};S._draftRaw=d;}})();
+
+/* ════ SCORING ════ */
+const KS={A:4,B:3,C:2,D:1,E:1};
+function sc(qid){
+  const ch=S.answers[qid]?.choice;
+  if(!ch)return 2;
+  /* Q6 E (ยังไม่มีคนพึ่งพา) = neutral protection */
+  if(qid==='Q6'&&ch==='E')return 3;
+  /* Q10 E (ไม่เข้าข่ายเสียภาษี) = neutral planning */
+  if(qid==='Q10'&&ch==='E')return 3;
+  return KS[ch]||2;
+}
+function pct(avg){return Math.round(15+(avg-1)/3*77);}
+
+/* v4.1: Q4=emergency, Q5+Q6=protection, Q7+Q8=cashflow, Q9=savings, Q3+Q10=planning */
+function calcRadar(){
+  return{
+    emergency: pct(sc('Q4')),
+    protection:pct((sc('Q5')+sc('Q6'))/2),
+    cashflow:  pct((sc('Q7')+sc('Q8'))/2),
+    savings:   pct(sc('Q9')),
+    planning:  pct((sc('Q3')+sc('Q10'))/2),
+  };
+}
+
+function calcArchetype(){
+  const prot=sc('Q5')+sc('Q6');
+  const cf  =sc('Q7')+sc('Q8');
+  const gr  =sc('Q9')+sc('Q10');
+  if(prot<=4&&cf<=4&&gr<=4&&sc('Q4')<=2) return'emptyBento';
+  if(cf<=4)                               return'tightDenim';
+  if(gr>=7&&prot<=5)                      return'toppingHeavy';
+  if(gr>=7&&sc('Q4')<=2)                  return'starvingManeki';
+  if(gr>=7&&sc('Q6')<=2)                  return'tinyWagasa';
+  if(sc('Q9')===2&&cf>=6)                 return'zenStone';
+  if(sc('Q9')>=3&&sc('Q10')<=2)           return'lostTsuru';
+  /* ── Fallback: ถ้าคะแนน radar เฉลี่ยต่ำกว่า 48 ไม่ควรได้ cozyMinka ── */
+  const r=S.radarScores||{};
+  const avgR=(r.emergency+r.protection+r.cashflow+r.savings+r.planning)/5;
+  if(avgR<48) return'emptyBento';
+  return'cozyMinka';
+}
+
+/* ════ PRIORITY CALCULATION ════ */
+function calcPriorities(r){
+  const dims=[
+    {order:1,key:'cashflow',  icon:'💧',label:'จัดการกระแสเงินสดและลดหนี้',       action:'วิเคราะห์รายรับ-รายจ่าย วางแผนชำระหนี้อย่างเป็นระบบ'},
+    {order:2,key:'emergency', icon:'🧯',label:'สร้างเงินสำรองฉุกเฉิน 3–6 เดือน', action:'แยกบัญชีออมทรัพย์ดอกเบี้ยสูง ตั้งโอนอัตโนมัติทุกเดือน'},
+    {order:3,key:'protection',icon:'🛡️',label:'เสริมความคุ้มครองประกันสุขภาพ-ชีวิต',action:'ทบทวนวงเงินประกัน เป้าหมายทุนประกันชีวิต ≥ 10x รายได้/ปี'},
+    {order:4,key:'savings',   icon:'🌱',label:'ออมอัตโนมัติและลงทุนอย่างเป็นระบบ',action:'Pay Yourself First ≥ 20% กระจายลงทุน SSF/RMF/กองทุน'},
+    {order:5,key:'planning',  icon:'🎯',label:'วางแผนภาษีและเกษียณให้ครบสิทธิ์',  action:'ใช้สิทธิลดหย่อนครบทุกประเภท วางแผน RMF+กองทุนสำรองเลี้ยงชีพ'},
+  ];
+  return dims
+    .map(d=>({...d,score:r[d.key]}))
+    .sort((a,b)=>{
+      const diff=a.score-b.score;
+      if(Math.abs(diff)<10) return a.order-b.order;
+      return diff;
+    });
+}
+
+/* ════ INSURANCE CHECK ════ */
+/* v4.1: health=Q5, life=Q6 */
+function calcInsurance(){
+  const h=S.answers['Q5']?.choice||'D';
+  const l=S.answers['Q6']?.choice||'D';
+  const healthMap={
+    A:{status:'✅ ครบ',detail:'ประกันสุขภาพครอบคลุมดี',cls:'ins-ok'},
+    B:{status:'⚠️ ต้องเสริม',detail:'มีสวัสดิการแต่ยังไม่เพียงพอ ควรเพิ่มประกันส่วนตัว',cls:'ins-warn'},
+    C:{status:'❌ ไม่เพียงพอ',detail:'มีแค่ประกันสังคม/บัตรทอง ต้องเพิ่มความคุ้มครอง',cls:'ins-bad'},
+    D:{status:'🚨 ไม่มี',detail:'ความเสี่ยงสูงมาก ต้องดำเนินการด่วน',cls:'ins-bad'},
+  };
+  const lifeMap={
+    A:{status:'✅ ครบ',detail:'ทุนประกันชีวิตเพียงพอ ครอบครัวได้รับการคุ้มครอง',cls:'ins-ok'},
+    B:{status:'⚠️ ต้องตรวจสอบ',detail:'มีประกันแต่ยังไม่แน่ใจว่าพอ ควรคำนวณทุนที่เหมาะสม',cls:'ins-warn'},
+    C:{status:'❌ ไม่เพียงพอ',detail:'ทุนประกันน้อยกว่าที่ควร ครอบครัวยังมีความเสี่ยง',cls:'ins-bad'},
+    D:{status:'🚨 ไม่มี',detail:'ยังไม่มีประกันชีวิต ต้องเริ่มทันที',cls:'ins-bad'},
+    E:{status:'— ไม่จำเป็น',detail:'ยังไม่มีคนพึ่งพิง — โฟกัสประกันสุขภาพและโรคร้ายแรงแทน',cls:'ins-ok'},
+  };
+  const hd=healthMap[h]||healthMap['D'];
+  const ld=lifeMap[l]||lifeMap['D'];
+  /* Treat Q6=E (no dependents) as life-A equivalent for overall */
+  const lEff=(l==='E')?'A':l;
+  let overall='';
+  if(h==='A'&&lEff==='A') overall='ความคุ้มครองครบแล้ว ✅';
+  else if(h==='D'||lEff==='D') overall='ต้องดำเนินการด่วน 🚨';
+  else if(h==='C'||lEff==='C') overall='ต้องเสริมความคุ้มครองด่วน ❌';
+  else overall='ต้องตรวจสอบและเสริมบางส่วน ⚠️';
+  return{health:hd,life:ld,overall};
+}
+
+/* ════ SURPLUS CALCULATION ════ */
+/* v4.1: income=Q11, surplus%=Q7 */
+function calcSurplus(){
+  const incQ=S.answers['Q11']?.choice||'B';
+  const surQ=S.answers['Q7']?.choice||'C';
+  const income=INCOME_MID[incQ]||45000;
+  const surpPct=SURPLUS_MID[surQ]||0.10;
+  const monthly=income*surpPct;
+  const annual=monthly*12;
+  return{monthly,annual,income,pct:surpPct,incQ,surQ};
+}
+
+/* ════ DISC ITEMS (customer-facing weakness list) ════ */
+function buildDisc(r){
+  const items=[];
+  if(r.emergency<50) items.push('<strong>เงินสำรองฉุกเฉินไม่เพียงพอ</strong> — ควรเร่งสะสมให้ได้ 3–6 เดือนของค่าใช้จ่าย นี่คือ "ถังออกซิเจน" ที่ขาดไม่ได้');
+  if(r.protection<50) items.push('<strong>ช่องว่างด้านความคุ้มครอง</strong> — ความคุ้มครองสุขภาพหรือชีวิตยังไม่เพียงพอ ความเสี่ยงจากโรคร้ายแรงหรือการสูญเสียรายได้ยังสูง');
+  if(r.cashflow<50) items.push('<strong>กระแสเงินสดตึงตัว</strong> — ภาระหนี้หรือรายจ่ายสูงกว่าเกณฑ์ ต้องวางแผนลดหนี้และจัดการรายจ่ายก่อนเป้าหมายอื่น');
+  if(r.savings<50) items.push('<strong>การออม/ลงทุนยังน้อย</strong> — เงินยังไม่ได้ "ทำงาน" แทนคุณ ควรตั้งระบบออมอัตโนมัติและเริ่มกระจายลงทุน');
+  if(r.planning<50) items.push('<strong>การวางแผนระยะยาวยังขาด</strong> — สิทธิ์ภาษีและการวางแผนเกษียณยังไม่ชัดเจน ยังมีโอกาสประหยัดเงินได้อีกมาก');
+  if(items.length===0) items.push('<strong>ภาพรวมสุขภาพการเงินของคุณดีมาก!</strong> — ขั้นตอนถัดไปคือ Fine-tune ให้เข้าสู่ระดับ "สมดุลสมบูรณ์" และวางแผนส่งต่อมรดก');
+  return items;
+}
+
+/* ════ TEAM REPORT BUILDER ════ */
+function buildTeamReportHTML(r){
+  const surp=calcSurplus();
+  const priorities=calcPriorities(r);
+  const ins=calcInsurance();
+  /* v4.1 customer-want label from Q12 */
+  const q12Labels={A:'🛡️ สร้างหลักประกัน',B:'💧 ลดหนี้',C:'🌱 ออมและลงทุน',D:'📊 วางแผนภาษี',E:'🎯 เป้าหมายระยะยาว'};
+  const custWant=getChoiceArr('Q12').map(k=>q12Labels[k]).filter(Boolean).join(' · ')||'ไม่ระบุ';
+  /* v4.1 Q1 life-values context */
+  const q1Labels={A:'ไลฟ์สไตล์และประสบการณ์',B:'ครอบครัวและคนรัก',C:'อิสรภาพทางการเงิน',D:'ส่งต่อและสร้างมรดก'};
+  const lifeVal=getChoiceArr('Q1').map(k=>q1Labels[k]).filter(Boolean).join(' · ')||'-';
+  /* v4.1 Q2 pain-point context */
+  const q2Labels={A:'ฐาน (เงินสำรอง/ประกัน)',B:'หนี้และกระแสเงินสด',C:'การเติบโตและลงทุน',D:'ตรวจเช็กและวางแผนรวม'};
+  const painPoint=getChoiceArr('Q2').map(k=>q2Labels[k]).filter(Boolean).join(' · ')||'-';
+  const scoreColor=v=>v>=70?'#2E7D32':v>=40?'#C8A94A':'#E05252';
+  const scoreEmoji=v=>v>=70?'🟢':v>=40?'🟡':'🔴';
+
+  const forceRows=[
+    ['เงินสำรอง',r.emergency],
+    ['ความคุ้มครอง',r.protection],
+    ['กระแสเงินสด',r.cashflow],
+    ['การออม/ลงทุน',r.savings],
+    ['การวางแผน',r.planning],
+  ].map(([lbl,v])=>`
+    <div class="tr-row">
+      <span class="tr-key">${lbl}</span>
+      <div class="tr-bar-wrap"><div class="tr-bar-fill" style="width:${v}%;background:${scoreColor(v)}"></div></div>
+      <span class="tr-val" style="color:${scoreColor(v)};min-width:60px;text-align:right">${v}/100 ${scoreEmoji(v)}</span>
+    </div>`).join('');
+
+  const priHTML=priorities.slice(0,4).map((p,i)=>`
+    <div class="pri-row">
+      <span class="pri-badge">${i+1}</span>
+      <span class="pri-text">${p.icon} ${p.label}</span>
+      <span class="pri-score">(${p.score}/100)</span>
+    </div>`).join('');
+
+  const fmtTHB=n=>{
+    if(n<0) return`ติดลบ ~${Math.abs(Math.round(n)).toLocaleString()} บาท`;
+    return`~${Math.round(n).toLocaleString()} บาท`;
+  };
+
+  return`
+  <div class="team-report">
+    <div class="team-report-title">📊 Financial Snapshot</div>
+    <div style="background:rgba(0,35,102,.04);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:9px 13px;margin-bottom:14px;font-size:11.5px;color:var(--muted);line-height:1.6">
+      💡 ข้อมูลนี้ใช้ภายในเพื่อให้ทีม S41 เตรียมแผนเฉพาะคุณก่อน call · จะไม่เปิดเผยต่อบุคคลที่สาม · คุณยกเลิก/ลบข้อมูลได้ทุกเมื่อ
+    </div>
+
+    <div class="tr-section">
+      <div class="tr-label">0 · Context ลูกค้า</div>
+      <div class="tr-row"><span class="tr-key">ชีวิตที่ดีคือ</span><span class="tr-val">${lifeVal}</span></div>
+      <div class="tr-row"><span class="tr-key">Pain Point หลัก</span><span class="tr-val">${painPoint}</span></div>
+    </div>
+
+    <div class="tr-section">
+      <div class="tr-label">1 · Five Force Analysis</div>
+      ${forceRows}
+    </div>
+
+    <div class="tr-section">
+      <div class="tr-label">2 · รายได้ประมาณการ</div>
+      <div class="tr-row"><span class="tr-key">ช่วงรายได้</span><span class="tr-val">${INCOME_RANGE[surp.incQ]||'-'} บาท/เดือน</span></div>
+      <div class="tr-row"><span class="tr-key">ประมาณการ/เดือน</span><span class="tr-val">~${(surp.income).toLocaleString()} บาท</span></div>
+      <div class="tr-row"><span class="tr-key">ประมาณการ/ปี</span><span class="tr-val">~${(surp.income*12).toLocaleString()} บาท</span></div>
+      <div class="tr-row"><span class="tr-key">ฐานภาษีโดยประมาณ</span><span class="tr-val">${TAX_BRACKET[surp.incQ]||'-'}</span></div>
+    </div>
+
+    <div class="tr-section">
+      <div class="tr-label">3 · Surplus ประมาณการ</div>
+      <div class="tr-row"><span class="tr-key">สัดส่วน Surplus</span><span class="tr-val">${SURPLUS_RANGE[surp.surQ]||'-'} ของรายได้</span></div>
+      <div class="tr-row"><span class="tr-key">Surplus/เดือน</span><span class="tr-val" style="color:${surp.monthly>=0?'var(--navy)':'var(--red)'}">${fmtTHB(surp.monthly)}</span></div>
+      <div class="tr-row"><span class="tr-key">Surplus/ปี</span><span class="tr-val" style="color:${surp.annual>=0?'var(--navy)':'var(--red)'}">${fmtTHB(surp.annual)}</span></div>
+    </div>
+
+    <div class="tr-section">
+      <div class="tr-label">4 · ลำดับความสำคัญที่แนะนำ</div>
+      ${priHTML}
+      <div class="tr-row" style="margin-top:6px"><span class="tr-key">ความต้องการลูกค้า</span><span class="want-badge">${custWant}</span></div>
+    </div>
+
+    <div class="tr-section">
+      <div class="tr-label">5 · สถานะความคุ้มครองประกัน</div>
+      <div class="tr-row"><span class="tr-key">ประกันสุขภาพ</span><span class="ins-badge ${ins.health.cls}">${ins.health.status}</span><span style="font-size:11.5px;color:var(--muted);margin-left:6px;flex:1">${ins.health.detail}</span></div>
+      <div class="tr-row" style="margin-top:4px"><span class="tr-key">ประกันชีวิต</span><span class="ins-badge ${ins.life.cls}">${ins.life.status}</span><span style="font-size:11.5px;color:var(--muted);margin-left:6px;flex:1">${ins.life.detail}</span></div>
+      <div class="tr-row" style="margin-top:6px"><span class="tr-key">สรุปภาพรวม</span><span class="tr-val">${ins.overall}</span></div>
+    </div>
+
+    <button class="copy-btn" onclick="copyTeamReport()">📋 Copy สรุปข้อมูลลูกค้า</button>
+  </div>`;
+}
+
+/* ════ COPY TEAM REPORT ════ */
+function copyTeamReport(){
+  const r=S.radarScores||{};
+  const surp=calcSurplus();
+  const priorities=calcPriorities(r);
+  const ins=calcInsurance();
+  const arch=ARCH[S.archetype]||{};
+  const q12Labels={A:'🛡️ สร้างหลักประกัน',B:'💧 ลดหนี้',C:'🌱 ออมและลงทุน',D:'📊 วางแผนภาษี',E:'🎯 เป้าหมายระยะยาว'};
+  const custWant=getChoiceArr('Q12').map(k=>q12Labels[k]).filter(Boolean).join(' · ')||'ไม่ระบุ';
+  const q1Labels={A:'ไลฟ์สไตล์และประสบการณ์',B:'ครอบครัวและคนรัก',C:'อิสรภาพทางการเงิน',D:'ส่งต่อและสร้างมรดก'};
+  const lifeVal=getChoiceArr('Q1').map(k=>q1Labels[k]).filter(Boolean).join(' · ')||'-';
+  const q2Labels={A:'ฐาน (เงินสำรอง/ประกัน)',B:'หนี้และกระแสเงินสด',C:'การเติบโตและลงทุน',D:'ตรวจเช็กและวางแผนรวม'};
+  const painPoint=getChoiceArr('Q2').map(k=>q2Labels[k]).filter(Boolean).join(' · ')||'-';
+  const se=v=>v>=70?'🟢':v>=40?'🟡':'🔴';
+  const pad=s=>String(s).padEnd(18,' ');
+  const fmtTHB=n=>n<0?`ติดลบ ~${Math.abs(Math.round(n)).toLocaleString()} บาท`:`~${Math.round(n).toLocaleString()} บาท`;
+  const date=new Date().toLocaleDateString('th-TH',{year:'numeric',month:'short',day:'numeric'});
+
+  const txt=`📊 S41 Financial Health Check v4.1
+วันที่: ${date}  |  Archetype: ${arch.name||'-'}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+0️⃣  CONTEXT ลูกค้า
+  ชีวิตที่ดีคือ:  ${lifeVal}
+  Pain Point:     ${painPoint}
+
+1️⃣  FIVE FORCE ANALYSIS
+  ${pad('เงินสำรอง')}${r.emergency}/100 ${se(r.emergency)}
+  ${pad('ความคุ้มครอง')}${r.protection}/100 ${se(r.protection)}
+  ${pad('กระแสเงินสด')}${r.cashflow}/100 ${se(r.cashflow)}
+  ${pad('การออม/ลงทุน')}${r.savings}/100 ${se(r.savings)}
+  ${pad('การวางแผน')}${r.planning}/100 ${se(r.planning)}
+
+2️⃣  รายได้ประมาณการ
+  ช่วง: ${INCOME_RANGE[surp.incQ]||'-'} บาท/เดือน
+  ปีละ: ~${(surp.income*12).toLocaleString()} บาท
+  ฐานภาษี: ${TAX_BRACKET[surp.incQ]||'-'}
+
+3️⃣  SURPLUS ประมาณการ
+  สัดส่วน: ${SURPLUS_RANGE[surp.surQ]||'-'} ของรายได้
+  เดือนละ: ${fmtTHB(surp.monthly)}
+  ปีละ: ${fmtTHB(surp.annual)}
+
+4️⃣  ลำดับความสำคัญ (SYSTEM PRIORITY)
+${priorities.slice(0,4).map((p,i)=>`  #${i+1}: ${p.icon} ${p.label} (${p.score}/100)`).join('\n')}
+  ✦ ความต้องการลูกค้า: ${custWant}
+
+5️⃣  สถานะประกัน
+  ประกันสุขภาพ: ${ins.health.status} — ${ins.health.detail}
+  ประกันชีวิต:  ${ins.life.status} — ${ins.life.detail}
+  สรุป: ${ins.overall}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ชื่อ: ${S.contactName||'(ยังไม่ได้กรอก)'}
+โทร: ${S.contactPhone||'(ยังไม่ได้กรอก)'}
+Line: ${S.contactLine||'-'}`;
+
+  navigator.clipboard.writeText(txt).then(()=>{
+    const btn=document.querySelector('.copy-btn');
+    if(btn){btn.textContent='✅ Copy แล้ว!';setTimeout(()=>{btn.innerHTML='📋 Copy สรุปข้อมูลลูกค้า';},2000);}
+  }).catch(()=>alert('กรุณา copy ด้วยตนเองนะคะ:\n\n'+txt));
+}
+
+/* ════ SHARE CARD GENERATOR ════ */
+const ARCH_EMOJI={
+  toppingHeavy:'🍣',zenStone:'🪨',tightDenim:'👖',cozyMinka:'🏡',
+  tinyWagasa:'☂️',starvingManeki:'🐱',lostTsuru:'🦢',emptyBento:'🍱'
+};
+
+/* draw radar on canvas */
+function drawRadarCanvas(ctx,scores,cx,cy,R){
+  const vals=[scores.emergency,scores.protection,scores.cashflow,scores.savings,scores.planning];
+  const N=5;const step=2*Math.PI/N;const off=-Math.PI/2;
+  [0.2,0.4,0.6,0.8,1].forEach(pct=>{
+    ctx.beginPath();
+    for(let i=0;i<N;i++){const a=off+i*step;const r=R*pct;i===0?ctx.moveTo(cx+r*Math.cos(a),cy+r*Math.sin(a)):ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a));}
+    ctx.closePath();ctx.strokeStyle=pct===1?'rgba(200,169,74,0.5)':'rgba(200,169,74,0.2)';ctx.lineWidth=1.5;ctx.stroke();
+  });
+  for(let i=0;i<N;i++){const a=off+i*step;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+R*Math.cos(a),cy+R*Math.sin(a));ctx.strokeStyle='rgba(200,169,74,0.25)';ctx.lineWidth=1;ctx.stroke();}
+  ctx.beginPath();
+  vals.forEach((v,i)=>{const r=R*(v/100);const a=off+i*step;i===0?ctx.moveTo(cx+r*Math.cos(a),cy+r*Math.sin(a)):ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a));});
+  ctx.closePath();ctx.fillStyle='rgba(255,255,255,0.15)';ctx.fill();ctx.strokeStyle='#C8A94A';ctx.lineWidth=2.5;ctx.stroke();
+  vals.forEach((v,i)=>{const r=R*(v/100);const a=off+i*step;ctx.beginPath();ctx.arc(cx+r*Math.cos(a),cy+r*Math.sin(a),7,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();ctx.strokeStyle='#C8A94A';ctx.lineWidth=2;ctx.stroke();});
+}
+
+/* rrect helper — canvas rounded rectangle */
+function rrect(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);
+  ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);
+  ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);
+  ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
+}
+
+/* wrap Thai/EN centered text — returns next y */
+function wrapTextCenter(ctx,text,cx,y,maxW,lineH){
+  const words=text.split(' ');
+  let line='';
+  words.forEach((word,n)=>{
+    const test=line+(line?' ':'')+word;
+    if(ctx.measureText(test).width>maxW&&line!==''){
+      ctx.fillText(line,cx,y);line=word;y+=lineH;
+    } else {line=test;}
+    if(n===words.length-1&&line) ctx.fillText(line,cx,y);
+  });
+  return y+lineH;
+}
+
+let _shareDataUrl=null;
+
+async function generateShareCard(){
+  try{await document.fonts.load('800 42px Sarabun');await document.fonts.load('400 18px Sarabun');}catch(e){}
+  const arch=ARCH[S.archetype];const r=S.radarScores;
+  const C=document.createElement('canvas');C.width=1080;C.height=1080;
+  const ctx=C.getContext('2d');
+
+  /* ── White background ── */
+  ctx.fillStyle='#FAFAF5';ctx.fillRect(0,0,1080,1080);
+  ctx.fillStyle='rgba(0,35,102,0.025)';
+  for(let x=54;x<1080;x+=54)for(let y=54;y<1080;y+=54){ctx.beginPath();ctx.arc(x,y,1.5,0,Math.PI*2);ctx.fill();}
+  ctx.fillStyle='#C8A94A';ctx.fillRect(0,0,1080,8);ctx.fillRect(0,1072,1080,8);
+
+  /* ── Header ── */
+  ctx.textAlign='center';
+  ctx.fillStyle='#002366';ctx.font='700 16px Sarabun,sans-serif';
+  ctx.fillText('✦  SIGNATURE 41 FINANCIAL CLINIC  ✦',540,44);
+  ctx.fillStyle='rgba(0,35,102,0.4)';ctx.font='400 12px Sarabun,sans-serif';
+  ctx.fillText('Financial Health Check · CFP® Based',540,64);
+  ctx.strokeStyle='rgba(200,169,74,0.5)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(80,78);ctx.lineTo(1000,78);ctx.stroke();
+
+  /* ══════════════════════════════════════════
+     MAIN: Pentagon radar with SVG icon inside
+     CX=540, CY=418, R=220
+  ══════════════════════════════════════════ */
+  const CX=540,CY=418,R=220;
+  const dims=['เงินสำรอง','ความคุ้มครอง','กระแสเงินสด','การออม/ลงทุน','การวางแผน'];
+  const vals=[r.emergency,r.protection,r.cashflow,r.savings,r.planning];
+  const sc=v=>v>=70?'#2E9E52':v>=40?'#C8A94A':'#E05252';
+  const N=5,step=2*Math.PI/N,off=-Math.PI/2;
+
+  /* grid rings */
+  [0.25,0.5,0.75,1].forEach(pct=>{
+    ctx.beginPath();
+    for(let i=0;i<N;i++){const a=off+i*step;const rr=R*pct;i===0?ctx.moveTo(CX+rr*Math.cos(a),CY+rr*Math.sin(a)):ctx.lineTo(CX+rr*Math.cos(a),CY+rr*Math.sin(a));}
+    ctx.closePath();
+    ctx.strokeStyle=pct===1?'rgba(0,35,102,0.18)':'rgba(0,35,102,0.07)';ctx.lineWidth=pct===1?1.5:1;ctx.stroke();
+  });
+  /* axes */
+  for(let i=0;i<N;i++){const a=off+i*step;ctx.beginPath();ctx.moveTo(CX,CY);ctx.lineTo(CX+R*Math.cos(a),CY+R*Math.sin(a));ctx.strokeStyle='rgba(0,35,102,0.1)';ctx.lineWidth=1;ctx.stroke();}
+
+  /* ── SVG icon centered inside pentagon (use data URL — more reliable than blob URL) ── */
+  const svgStr=ASVG[arch.key]||'';
+  const svgW=200,svgH=Math.round(200*88/100); // ≈176 — bigger so it shows clearly
+  const bigSvg=svgStr.replace(/width="\d+"/,`width="${svgW}"`).replace(/height="\d+"/,`height="${svgH}"`);
+  await new Promise(res=>{
+    try{
+      const dataUrl='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(bigSvg);
+      const img=new Image();
+      img.onload=()=>{ctx.drawImage(img,CX-svgW/2,CY-svgH/2,svgW,svgH);res();};
+      img.onerror=()=>{res();};
+      img.src=dataUrl;
+    }catch(e){res();}
+  });
+
+  /* ── Data polygon drawn over SVG (transparent gold fill) ── */
+  ctx.beginPath();
+  vals.forEach((v,i)=>{const rr=R*(v/100);const a=off+i*step;i===0?ctx.moveTo(CX+rr*Math.cos(a),CY+rr*Math.sin(a)):ctx.lineTo(CX+rr*Math.cos(a),CY+rr*Math.sin(a));});
+  ctx.closePath();
+  ctx.fillStyle='rgba(200,169,74,0.10)';ctx.fill();
+  ctx.strokeStyle='#C8A94A';ctx.lineWidth=2.5;ctx.stroke();
+
+  /* ── Data dots + score ── */
+  vals.forEach((v,i)=>{
+    const rr=R*(v/100);const a=off+i*step;
+    const px=CX+rr*Math.cos(a),py=CY+rr*Math.sin(a);
+    ctx.beginPath();ctx.arc(px,py,9,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();ctx.strokeStyle=sc(v);ctx.lineWidth=2.5;ctx.stroke();
+    ctx.fillStyle=sc(v);ctx.font='700 13px Sarabun,sans-serif';ctx.textAlign='center';
+    ctx.fillText(v,px,py-13);
+  });
+
+  /* ── Dimension labels around pentagon vertices ── */
+  const LR=R+50;
+  for(let i=0;i<N;i++){
+    const a=off+i*step;
+    const lx=CX+LR*Math.cos(a),ly=CY+LR*Math.sin(a);
+    const align=Math.abs(Math.cos(a))<0.25?'center':Math.cos(a)>0?'left':'right';
+    ctx.textAlign=align;ctx.fillStyle='#002366';ctx.font='700 18px Sarabun,sans-serif';
+    ctx.fillText(dims[i],lx,ly+6);
+  }
+
+  /* ── Archetype name + tag below radar ── */
+  // Bottom-corner labels at CY + LR*sin(54°) ≈ 418+218=636, label text bottom ~648
+  // Push nameY down to clear label descenders (was 650 → overlapped)
+  const nameY=720;
+  ctx.textAlign='center';
+  let fs=40;ctx.font=`800 ${fs}px Sarabun,sans-serif`;
+  while(ctx.measureText(arch.name).width>880&&fs>26){fs-=2;ctx.font=`800 ${fs}px Sarabun,sans-serif`;}
+  ctx.fillStyle='#002366';ctx.fillText(arch.name,CX,nameY);
+  ctx.fillStyle='#C8A94A';ctx.font='600 17px Sarabun,sans-serif';
+  ctx.fillText(arch.tag,CX,nameY+28);
+
+  /* ── Divider ── */
+  const divY=nameY+48;
+  ctx.strokeStyle='rgba(200,169,74,0.45)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(80,divY);ctx.lineTo(1000,divY);ctx.stroke();
+
+  /* ── Caption ── */
+  ctx.fillStyle='#444';ctx.font='italic 400 20px Sarabun,sans-serif';
+  const captionEnd=wrapTextCenter(ctx,arch.caption,CX,divY+28,860,34);
+
+  /* ── CTA box ── */
+  const ctaY=Math.max(captionEnd+14,920);
+  ctx.fillStyle='#002366';rrect(ctx,80,ctaY,920,98,18);ctx.fill();
+  ctx.fillStyle='#C8A94A';ctx.font='700 23px Sarabun,sans-serif';
+  ctx.fillText('🔍 ลองตรวจสุขภาพการเงินของคุณได้เลย!',CX,ctaY+37);
+  ctx.fillStyle='rgba(255,255,255,0.65)';ctx.font='400 16px Sarabun,sans-serif';
+  ctx.fillText(SURVEY_URL,CX,ctaY+67);
+
+  return C.toDataURL('image/png');
+}
+
+async function downloadShareCard(){
+  const btn=document.getElementById('btn-share-card');
+  if(btn){btn.textContent='⏳ กำลังสร้างรูป...';btn.disabled=true;}
+  try{
+    const dataUrl=await generateShareCard();
+    _shareDataUrl=dataUrl;
+    showShareModal();
+    if(btn){btn.textContent='🖼️ สร้างรูปแชร์ Archetype (PNG)';btn.disabled=false;}
+  }catch(e){
+    if(btn){btn.textContent='❌ เกิดข้อผิดพลาด ลองใหม่อีกครั้ง';btn.disabled=false;}
+  }
+}
+
+function showShareModal(){
+  document.getElementById('share-modal-el')?.remove();
+  const ol=document.createElement('div');
+  ol.id='share-modal-el';
+  ol.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.78);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto';
+  ol.innerHTML=`<div style="max-width:400px;width:100%;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.4)">
+    <img src="${_shareDataUrl}" style="width:100%;display:block">
+    <div style="padding:18px 16px">
+      <div style="font-size:10px;font-weight:800;color:#002366;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">📤 แชร์ Archetype ของคุณ</div>
+      <button onclick="s41SaveImg()" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px 20px;background:#002366;color:#fff;border:none;border-radius:12px;font-size:15px;font-family:inherit;font-weight:700;cursor:pointer;margin-bottom:10px">💾 บันทึกรูปลงเครื่อง</button>
+      <button onclick="s41ShareToFacebook()" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px 20px;background:#fff;color:#1877F2;border:1.5px solid #1877F2;border-radius:12px;font-size:15px;font-family:inherit;font-weight:700;cursor:pointer;margin-bottom:14px">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="#1877F2" style="flex-shrink:0"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        แชร์ลิงก์ Survey ลง Facebook
+      </button>
+      <button onclick="document.getElementById('share-modal-el').remove()" style="width:100%;padding:10px;background:none;border:1.5px solid #e5e5e5;border-radius:12px;font-size:13px;font-family:inherit;cursor:pointer;color:#999">ปิด</button>
+    </div>
+  </div>`;
+  document.body.appendChild(ol);
+  ol.onclick=e=>{if(e.target===ol)ol.remove();};
+}
+
+/* Open Facebook share dialog with the survey URL.
+   FB will pull og:title / og:description / og:image meta tags from
+   the survey page automatically, so friends who click the post → land
+   on the survey URL and can take it themselves. */
+function s41ShareToFacebook(){
+  /* Use archetype-specific stub URL so FB pulls per-archetype OG image */
+  const shareUrl=S.archetype?(SURVEY_URL+'og/'+S.archetype+'.html'):SURVEY_URL;
+  const fbUrl='https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(shareUrl);
+  window.open(fbUrl,'_blank','noopener,width=600,height=560');
+}
+
+function s41SaveImg(){
+  const arch=ARCH[S.archetype];
+  const a=document.createElement('a');a.href=_shareDataUrl;
+  a.download=`S41-${arch.name}.png`;a.click();
+}
+
+function s41CopyCaption(){
+  const arch=ARCH[S.archetype];
+  const shareUrl=S.archetype?(SURVEY_URL+'og/'+S.archetype+'.html'):SURVEY_URL;
+  const caption=arch.caption+'\n\n🔍 ลองตรวจสุขภาพการเงินของคุณ: '+shareUrl;
+  navigator.clipboard.writeText(caption).then(()=>{
+    const btn=document.getElementById('s41-copy-btn');
+    if(btn){const orig=btn.textContent;btn.textContent='✅ Copy แล้ว!';btn.style.background='rgba(46,158,82,0.1)';btn.style.color='#2E9E52';btn.style.borderColor='rgba(46,158,82,0.3)';
+    setTimeout(()=>{if(btn){btn.textContent=orig;btn.style.cssText='width:100%;padding:12px;background:rgba(0,35,102,0.06);color:#002366;border:1.5px solid rgba(0,35,102,0.15);border-radius:12px;font-size:14px;font-family:inherit;font-weight:700;cursor:pointer;margin-bottom:8px';}},2200);}
+  }).catch(()=>{});
+}
+
+async function shareToFacebook(){
+  const arch=ARCH[S.archetype];
+  const shareText=arch.caption+'\n\n🔍 ลองทำ Survey ได้เลยที่ → '+SURVEY_URL;
+  try{await navigator.clipboard.writeText(shareText);}catch(e){}
+  /* Use archetype-specific stub URL so FB pulls per-archetype OG image */
+  const shareUrl=S.archetype?(SURVEY_URL+'og/'+S.archetype+'.html'):SURVEY_URL;
+  window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(shareUrl),'_blank','noopener,noreferrer,width=600,height=500');
+}
+
+/* ════ RENDER ════ */
+function render(){
+  document.getElementById('app').innerHTML=
+    S.screen==='welcome'  ?rWelcome()  :
+    S.screen==='question' ?rQuestion() :
+    S.screen==='calc'     ?rCalc()     :
+    S.screen==='thankyou' ?rThankyou() :
+    rResult();
+  /* post-render hook: fetch live lead count once when welcome shows */
+  if(S.screen==='welcome'&&!window._proofFetched){
+    window._proofFetched=true;
+    fetchLiveCount();
+  }
+}
+
+/* ── Optional live counter — calls Edge Function "lead-count" ──
+   If the Edge Function isn't deployed yet, this fails silently and the
+   placeholder "200+ คน" stays. To enable: deploy supabase/functions/lead-count
+   and ensure RLS allows service-role count on survey_leads. */
+async function fetchLiveCount(){
+  const el=document.getElementById('proof-count');
+  if(!el)return;
+  try{
+    const res=await fetch('https://lpqcglmpkuasgjgzqdyp.supabase.co/functions/v1/lead-count',{
+      headers:{'Authorization':'Bearer sb_publishable_CL-lFLHRCuQNLqFYxaWsxA_odaH_WTa'},
+    });
+    if(!res.ok)return;
+    const data=await res.json();
+    const n=data?.count;
+    if(typeof n!=='number'||n<=0)return;
+    /* round to a stable, friendly display number */
+    const display=n<10?String(n):n<50?Math.floor(n/5)*5+'+':n<200?Math.floor(n/10)*10+'+':Math.floor(n/50)*50+'+';
+    el.textContent=display+' คน';
+  }catch(e){/* keep placeholder silently */}
+}
+
+function rWelcome(){
+  const resumeBlock=S.hasDraft&&S.draftSummary?`
+    <div class="resume-banner">
+      <div class="resume-banner-title">✦ ทำต่อจากเดิม</div>
+      <div class="resume-banner-body">คุณตอบไปแล้ว <strong>${S.draftSummary.answered}/12 ข้อ</strong> · ทำต่อเลยไหม?</div>
+      <div class="resume-banner-btns">
+        <button class="primary" onclick="resumeDraft()">▶ ทำต่อ</button>
+        <button onclick="discardDraft()">🔄 เริ่มใหม่ตั้งแต่ต้น</button>
+      </div>
+    </div>`:'';
+  return`<div class="card" style="text-align:center">
+    <div class="s41" style="margin-bottom:24px">✦ Signature 41 ✦</div>
+    <div class="wbadge">S41 Financial Clinic — Health Check v4.2</div>
+    <div class="wtitle">ตรวจสุขภาพเงินของคุณ<br><span style="font-size:18px;font-weight:600">สำรวจแผนชีวิตและการเงินใน 5 นาที</span></div>
+    <div class="wsub">เริ่มจาก <strong>ความฝันและหัวใจ</strong> ของคุณ<br>เพื่อค้นพบ <strong>ตัวตนทางการเงิน</strong> และ <strong>จุดที่ต้องดูแลก่อน</strong><br>ด้วย 12 คำถามจากหลักการวางแผนการเงินมาตรฐาน CFP®</div>
+    ${resumeBlock}
+    <div class="wtags">
+      <span class="tag">⏱️ ~5 นาที</span>
+      <span class="tag">📊 12 คำถาม</span>
+      <span class="tag">🕸️ กราฟ 5 มิติ</span>
+      <span class="tag">🎴 8 ตัวตนการเงิน</span>
+    </div>
+    <div style="background:rgba(0,35,102,.04);border-radius:14px;padding:16px 20px;margin-bottom:24px;text-align:left">
+      <div style="font-size:11px;font-weight:800;color:var(--navy);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px">คุณจะได้รับทันทีที่ทำจบ</div>
+      <div style="font-size:14px;color:var(--muted);line-height:2.1">
+        🕸️ กราฟใยแมงมุมวิเคราะห์ 5 มิติทางการเงิน<br>
+        🎴 ตัวตนทางการเงิน (Archetype) + คำวินิจฉัยจากหมอเงิน<br>
+        💊 Prescription (คำสั่งยา) เฉพาะบุคคล<br>
+        📋 Caption สำหรับแชร์ Facebook + ผล PDF
+      </div>
+    </div>
+    <div style="font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:18px">CFP® · มาตรฐานนักวางแผนการเงินสากล · ฟรี · ไม่ต้องสมัครสมาชิก</div>
+    <button class="nb show" onclick="startQ()">${S.hasDraft?'เริ่มใหม่ →':'เริ่มตรวจสุขภาพการเงินของคุณ →'}</button>
+  </div>`;
+}
+
+function rQuestion(){
+  const q=QS[S.currentQ];
+  const tot=QS.length;
+  const pctFill=Math.round((S.currentQ/tot)*100);
+  const selArr=getChoiceArr(q.id);
+  const hasAnswer=selArr.length>0;
+  const stepsHtml=QS.map((_,i)=>{
+    const cls=i<S.currentQ?'done':i===S.currentQ?'active':'';
+    return`<div class="step ${cls}"></div>`;
+  }).join('');
+  let rxTxt='';
+  if(hasAnswer){
+    if(q.multi){
+      rxTxt=selArr.length===1?(q.rxMap?q.rxMap[selArr[0]]:q.rx||''):'รับทราบ! เลือกหลายข้อได้ — เราจะดูแลทุกมิติที่คุณใส่ใจ ✨';
+    }else{
+      rxTxt=q.rxMap?q.rxMap[selArr[0]]:(q.rx||'');
+    }
+  }
+  const btnLabel=q.isLast?'🔍 ดูผลวิเคราะห์ของฉัน →':'ถัดไป →';
+  const hText=q.h||'';
+  const choicesHtml=q.cs.map(c=>{
+    const isSel=selArr.includes(c.k);
+    return`
+    <button class="ch${isSel?' sel':''}" data-multi="${q.multi?1:0}" onclick="pick('${q.id}','${c.k}')">
+      <span class="ck">${c.k}</span>
+      <span class="ch-emoji">${c.e||''}</span>
+      <span class="ch-body">
+        ${c.tag?`<div class="ch-tag">${c.tag}</div>`:''}
+        <div class="ch-text">${c.t}</div>
+      </span>
+    </button>`;}).join('');
+  return`<div class="card">
+    <div class="topbar">
+      <button class="back-btn" onclick="back()">← ${S.currentQ===0?'กลับหน้าแรก':'ย้อนกลับ'}</button>
+      <span class="qnum">${S.currentQ+1} / ${tot}</span>
+    </div>
+    <div class="steps">${stepsHtml}</div>
+    <div class="pline"><div class="pfill" style="width:${pctFill}%"></div></div>
+    <div class="phase">${q.phase}</div>
+    ${q.story?`<div class="qstory">✦ ${q.story}</div>`:''}
+    <div class="qt">${q.q}</div>
+    ${q.multi?`<div class="multi-hint">✓ เลือกได้หลายข้อ</div>`:''}
+    ${hText?`<div class="qh">${hText}</div>`:''}
+    <div class="choices">${choicesHtml}</div>
+    <div class="rx${hasAnswer?' show':''}" id="rx">${rxTxt}</div>
+    <button class="nb${hasAnswer?' show':''}" id="nb" onclick="next()">${btnLabel}</button>
+  </div>`;
+}
+
+function rCalc(){
+  return`<div class="card" style="text-align:center;padding:80px 44px">
+    <div style="display:flex;justify-content:center;margin-bottom:24px;animation:pulse 1.6s ease-in-out infinite">
+      <svg viewBox="0 0 80 110" width="76" height="104" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- ear tips -->
+        <circle cx="16" cy="8" r="3.5" fill="#002366"/>
+        <circle cx="64" cy="8" r="3.5" fill="#002366"/>
+        <!-- ear canal segments -->
+        <line x1="16" y1="11.5" x2="19.5" y2="21" stroke="#002366" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="64" y1="11.5" x2="60.5" y2="21" stroke="#002366" stroke-width="2.2" stroke-linecap="round"/>
+        <!-- left tube to Y-junction -->
+        <path d="M19.5 21 C19.5 38 38 43 40 51" stroke="#002366" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <!-- right tube to Y-junction -->
+        <path d="M60.5 21 C60.5 38 42 43 40 51" stroke="#002366" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <!-- main tube, gentle S-curve -->
+        <path d="M40 51 C42 64 51 70 53 82" stroke="#002366" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <!-- chest piece outer ring -->
+        <circle cx="53" cy="94" r="13" stroke="#002366" stroke-width="1.8" fill="white"/>
+        <!-- chest piece inner ring (subtle) -->
+        <circle cx="53" cy="94" r="7.5" stroke="#002366" stroke-width="0.9" stroke-opacity="0.25" fill="none"/>
+        <!-- heart inside — gold -->
+        <path d="M53 91 C53 88,48 88,48 91 C48 94,53 98,53 98 C53 98,58 94,58 91 C58 88,53 88,53 91 Z" fill="#C8A94A"/>
+      </svg>
+    </div>
+    <div style="font-size:20px;font-weight:700;color:var(--navy);margin-bottom:8px">หมอเงิน S41 กำลังอ่านผล…</div>
+    <div style="font-size:14px;color:var(--muted)">วิเคราะห์สุขภาพเงินของคุณโดยเฉพาะ</div>
+  </div>`;
+}
+
+function rResult(){
+  const arch=ARCH[S.archetype];
+  const r=S.radarScores;
+  const discItems=buildDisc(r);
+  const dimNames={emergency:'เงินสำรอง',protection:'ความคุ้มครอง',cashflow:'กระแสเงินสด',savings:'การออม/ลงทุน',planning:'การวางแผน'};
+  const weakKey=Object.entries(r).sort((a,b)=>a[1]-b[1])[0][0];
+  const weakName=dimNames[weakKey]||'การวางแผนการเงิน';
+  const vals=[r.emergency,r.protection,r.cashflow,r.savings,r.planning];
+  const names=['เงินสำรอง','ความคุ้มครอง','กระแสเงินสด','การออม/ลงทุน','การวางแผน'];
+  const legendHtml=names.map((n,i)=>{
+    const v=vals[i],c=v>=70?'#2E7D32':v>=40?'#C8A94A':'#E05252';
+    return`<div class="leg-row"><div class="leg-dot" style="background:${c}"></div><span>${n}</span><strong style="margin-left:auto;color:var(--navy)">${v}/100</strong></div>`;
+  }).join('');
+  const intentSel=k=>S.intent===k?'sel':'';
+  return`<div class="card">
+    <div class="topbar">
+      <span class="s41">Signature 41</span>
+      <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">Financial Report v4.1</span>
+    </div>
+    <div class="rarch">
+      <div class="a-svg-wrap">${ASVG[arch.key]||''}</div>
+      <div class="aname">${arch.name}</div>
+      <span class="atag">${arch.tag}</span>
+      <div class="adesc">${arch.diagnosis}</div>
+    </div>
+    <div class="radar-wrap">${drawRadar(r)}</div>
+    <div class="legend">${legendHtml}</div>
+    <div class="divider"></div>
+    <div class="disc">
+      <div class="disc-title">🔍 สิ่งที่ต้องจัดการก่อน</div>
+      ${discItems.map(t=>`<div class="di"><div class="dd"></div><div>${t}</div></div>`).join('')}
+    </div>
+    <div style="background:rgba(200,169,74,.08);border-left:3px solid var(--gold);border-radius:0 12px 12px 0;padding:12px 16px;margin-bottom:16px;font-size:14px;color:var(--navy);line-height:1.75">
+      💊 <strong>คำสั่งยาจากหมอเงิน:</strong> ${arch.prescription}
+    </div>
+    <div class="caption-box">${arch.caption}</div>
+    <div class="divider"></div>
+
+    <!-- ── 3-OPTION NEXT STEP PICKER (moved up — primary CTA) ── -->
+    <div class="next-pick">
+      <div class="next-title">✦ Next Step ✦</div>
+      <div class="next-sub">วิเคราะห์พบจุดที่ต้องพัฒนา <strong style="color:var(--navy)">"${weakName}"</strong><br>อยากดูผลและแชร์ หรือปรึกษาทีม S41 ฟรี?</div>
+      <div class="opt-grid">
+        <button type="button" class="opt-card ${intentSel('view_only')}" onclick="pickIntent('view_only')">
+          <div class="opt-num">1</div>
+          <div class="opt-body">
+            <div class="opt-name"><span class="opt-emo">✨</span>ดูผลและแชร์ Archetype</div>
+            <div class="opt-desc">ฟรี · ไม่ต้องกรอกข้อมูล · ดาวน์โหลด PDF / แชร์ลง Facebook ได้เลย</div>
+            <span class="opt-tag free">ฟรี · ไม่ต้องส่งข้อมูล</span>
+          </div>
+        </button>
+        <button type="button" class="opt-card ${intentSel('requested_call')}" onclick="pickIntent('requested_call')">
+          <div class="opt-num">2</div>
+          <div class="opt-body">
+            <div class="opt-name"><span class="opt-emo">💬</span>ปรึกษาทีม S41 เชิงลึก</div>
+            <div class="opt-desc">ทีมที่ปรึกษาการเงินติดต่อกลับผ่าน Line @s41clinic — วิเคราะห์เชิงลึก พร้อมแผนเฉพาะคุณ</div>
+            <span class="opt-tag team">ไม่มีค่าใช้จ่ายหรือข้อผูกมัด</span>
+          </div>
+        </button>
+      </div>
+      ${S.intent==='view_only'?`
+      <div class="opt-hint">
+        <div style="margin-bottom:10px;font-weight:600;color:#2E7D32">✓ ดูผลฟรี! แชร์ให้เพื่อน หรือ ดาวน์โหลด PDF</div>
+        <button class="btn-full btn-fb" onclick="downloadShareCard()" style="margin-bottom:8px;margin-top:0">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="white" style="flex-shrink:0"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          แชร์ Archetype ลง Facebook
+        </button>
+        <button class="btn-full btn-ghost" onclick="downloadPDF()" style="margin-bottom:0">💾 ดาวน์โหลด Wealth Report (PDF)</button>
+      </div>`:''}
+      ${(S.intent==='self_planning'||S.intent==='requested_call')?`
+      <div class="opt-form-inner">
+        <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:12px">
+          ${S.intent==='self_planning'?'📝 ฝากข้อมูลเพื่อเปิด Dashboard ของคุณ':'📝 ฝากข้อมูลให้ทีม S41 ติดต่อกลับ'}
+        </div>
+        <label class="flabel">ชื่อ-นามสกุล</label>
+        <input class="ti" id="inp-name" type="text" placeholder="กรุณากรอกชื่อ-นามสกุล" value="${S.contactName}" oninput="S.contactName=this.value">
+        <div style="font-size:11px;color:var(--muted);margin:6px 0 8px;letter-spacing:.3px">📞 กรอกเบอร์โทรศัพท์ <strong>หรือ</strong> Line ID อย่างใดอย่างหนึ่งก็ได้ (ตามที่คุณสะดวกให้ทีมติดต่อกลับ)</div>
+        <label class="flabel">เบอร์โทรศัพท์ <span style="font-weight:400;color:var(--muted)">(ไม่บังคับ)</span></label>
+        <input class="ti" id="inp-phone" type="tel" placeholder="0812345678" value="${S.contactPhone}" oninput="S.contactPhone=this.value">
+        ${S.intent==='self_planning'?`
+        <label class="flabel">อีเมล <span style="font-weight:400;color:var(--muted)">(สำหรับรับลิงก์เข้าระบบ Dashboard)</span></label>
+        <input class="ti" id="inp-email" type="email" placeholder="email@example.com" value="${S.contactEmail}" oninput="S.contactEmail=this.value">
+        `:''}
+        <label class="flabel">Line ID <span style="font-weight:400;color:var(--muted)">(ไม่บังคับ)</span></label>
+        <input class="ti" id="inp-line" type="text" placeholder="@lineid หรือ ID Line" value="${S.contactLine}" oninput="S.contactLine=this.value">
+        <button class="btn-full" style="${S.intent==='self_planning'?'background:var(--navy);color:#fff':'background:#fff;color:#06C755;border:1.5px solid #06C755'};margin-bottom:0" onclick="submitLead()">
+          ${S.intent==='self_planning'?'🧭 ส่งข้อมูล + เปิด Dashboard':'💬 ส่งข้อมูล + นัดทีม S41'}
+        </button>
+      </div>`:''}
+    </div>
+
+    <!-- ── TEAM SNAPSHOT (collapsible) ── -->
+    <details class="team-collapse">
+      <summary>🔒 ดูข้อมูลที่จะส่งให้ทีม S41 <span class="team-collapse-hint">(กดเพื่อขยาย · เก็บเป็นความลับ)</span></summary>
+      ${buildTeamReportHTML(r)}
+    </details>
+
+    <button class="nb show" style="background:none;border:1.5px solid var(--gray2);color:var(--muted);margin-top:8px" onclick="restart()">🔄 ทำ survey ใหม่อีกรอบ</button>
+  </div>`;
+}
+
+function rThankyou(){
+  const isSelf=S.intent==='self_planning';
+  const isCall=S.intent==='requested_call';
+
+  /* hero illustration — line-art style matching archetype SVGs */
+  const TYSVG={
+    self:`<svg viewBox="0 0 100 88" width="100" height="88" fill="none" stroke="#002366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14,68 L86,68 L80,76 L20,76 Z"/><rect x="20" y="18" width="60" height="50" rx="3"/><line x1="20" y1="26" x2="80" y2="26"/><circle cx="26" cy="22" r="1.3" fill="#002366" stroke="none"/><circle cx="31" cy="22" r="1.3" fill="#002366" stroke="none"/><circle cx="36" cy="22" r="1.3" fill="#002366" stroke="none"/><line x1="30" y1="60" x2="30" y2="48" stroke="#C8A94A" stroke-width="3"/><line x1="40" y1="60" x2="40" y2="40" stroke="#C8A94A" stroke-width="3"/><line x1="50" y1="60" x2="50" y2="50" stroke="#C8A94A" stroke-width="3"/><line x1="60" y1="60" x2="60" y2="36" stroke="#C8A94A" stroke-width="3"/><line x1="70" y1="60" x2="70" y2="44" stroke="#C8A94A" stroke-width="3"/><path d="M85,9 L87,5 L89,9 L93,9 L90,11 L92,15 L87,12 L82,15 L83,11 L80,9 Z" stroke="#C8A94A" stroke-width="1.5"/></svg>`,
+    call:`<svg viewBox="0 0 100 88" width="100" height="88" fill="none" stroke="#002366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16,22 Q16,12 26,12 L74,12 Q84,12 84,22 L84,52 Q84,62 74,62 L46,62 L34,72 L34,62 L26,62 Q16,62 16,52 Z"/><path d="M50,48 Q40,42 36,32 Q34,24 42,22 Q48,22 50,30 Q52,22 58,22 Q66,24 64,32 Q60,42 50,48 Z" stroke="#C8A94A" stroke-width="1.8"/><circle cx="86" cy="76" r="2" fill="#C8A94A" stroke="none"/><circle cx="92" cy="80" r="1.5" fill="#C8A94A" stroke="none"/></svg>`,
+    done:`<svg viewBox="0 0 100 88" width="100" height="88" fill="none" stroke="#002366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M50,16 L56,32 L74,32 L60,42 L66,58 L50,48 L34,58 L40,42 L26,32 L44,32 Z" stroke="#C8A94A"/><circle cx="20" cy="20" r="2" fill="#C8A94A" stroke="none"/><circle cx="84" cy="24" r="2" fill="#C8A94A" stroke="none"/><circle cx="78" cy="68" r="2" fill="#C8A94A" stroke="none"/><circle cx="22" cy="70" r="2" fill="#C8A94A" stroke="none"/></svg>`,
+  };
+  const heroSvg=isSelf?TYSVG.self:isCall?TYSVG.call:TYSVG.done;
+  const heroTitle=isSelf?'Dashboard เปิดให้แล้ว!':isCall?'ส่งข้อมูลเรียบร้อย!':'ขอบคุณมากเลยนะคะ!';
+  const heroSub=isSelf
+    ?'เปิดแท็บใหม่ให้เรียบร้อย — ตอบเพิ่มอีกแค่ 5 ข้อ ก็เริ่มวางแผนการเงินส่วนตัวได้เลย<br><span style="font-size:13px">(ถ้าไม่เห็นแท็บใหม่ กดปุ่มด้านล่างได้)</span>'
+    :isCall
+    ?'ทีม S41 จะติดต่อคุณกลับผ่าน Line ภายใน 24 ชั่วโมง<br>พร้อมวิเคราะห์เชิงลึกและแผนเฉพาะสำหรับคุณ'
+    :'ทีม S41 จะติดต่อคุณเร็วๆ นี้ พร้อมรายงานสุขภาพเงินที่วิเคราะห์เฉพาะสำหรับคุณโดยเฉพาะ';
+
+  /* Primary card — depends on intent. Style matches survey result-page
+     pattern (subtle tint + border-left accent — like prescription/team-report) */
+  let primaryCard='';
+  if(isSelf){
+    primaryCard=`
+    <div style="background:rgba(200,169,74,.06);border:1px solid rgba(200,169,74,.25);border-left:4px solid var(--gold);border-radius:0 16px 16px 0;padding:20px;margin-bottom:14px;text-align:left">
+      <div style="font-size:10px;font-weight:800;color:var(--gold);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:8px">✦ DASHBOARD ของคุณ</div>
+      <div style="font-size:17px;font-weight:800;color:var(--navy);margin-bottom:6px;line-height:1.4">S41 Premium Dashboard</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6">หากแท็บใหม่ไม่ขึ้นมา กดปุ่มด้านล่างเพื่อเปิดอีกครั้ง</div>
+      <button class="btn-full btn-navy" style="margin-bottom:0" onclick="openDashboard()">✨ เปิด Dashboard อีกครั้ง</button>
+    </div>`;
+  }else if(isCall){
+    primaryCard=`
+    <div style="background:rgba(0,35,102,.03);border:1px solid rgba(0,35,102,.12);border-left:4px solid var(--navy);border-radius:0 16px 16px 0;padding:20px;margin-bottom:14px;text-align:left">
+      <div style="font-size:10px;font-weight:800;color:var(--navy);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:8px">✦ STAY IN TOUCH</div>
+      <div style="font-size:17px;font-weight:800;color:var(--navy);margin-bottom:6px;line-height:1.4">เพิ่มเพื่อน Line @S41Clinic</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6">เพื่อให้ทีมติดต่อได้เร็วขึ้น หรือส่งคำถามล่วงหน้าได้</div>
+      <a href="https://line.me/R/ti/p/@186dtxnp" target="_blank" class="btn-full" style="margin-bottom:0;background:#fff;color:#06C755;border:1.5px solid #06C755">💬 เพิ่มเพื่อน Line @S41Clinic</a>
+    </div>`;
+  }else{
+    primaryCard=`
+    <div style="background:rgba(200,169,74,.06);border:1px solid rgba(200,169,74,.25);border-left:4px solid var(--gold);border-radius:0 16px 16px 0;padding:20px;margin-bottom:14px;text-align:left">
+      <div style="font-size:10px;font-weight:800;color:var(--gold);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:8px">✦ ทดลอง DASHBOARD</div>
+      <div style="font-size:17px;font-weight:800;color:var(--navy);margin-bottom:6px;line-height:1.4">เปิด S41 Premium Dashboard</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6">เราเก็บข้อมูลพื้นฐานจาก survey ไว้แล้ว · กรอกอีกแค่ 2 จอ ก็เริ่มวางแผนได้</div>
+      <button class="btn-full btn-navy" style="margin-bottom:0" onclick="openDashboard()">✨ เปิด Dashboard ของคุณ</button>
+    </div>`;
+  }
+
+  return`<div class="card" style="text-align:center">
+    <div style="display:flex;justify-content:center;margin-bottom:14px">${heroSvg}</div>
+    <div class="wtitle" style="margin-bottom:8px">${heroTitle}</div>
+    <div class="wsub" style="margin-bottom:24px">${heroSub}</div>
+    ${primaryCard}
+    <button class="nb show" style="background:none;border:1.5px solid var(--gray2);color:var(--muted);margin-top:8px" onclick="restart()">🔄 ทำ survey ใหม่อีกรอบ</button>
+  </div>`;
+}
+
+/* ─── Open dashboard with prefill data from survey ───
+   Phase 2: prefer ?leadId= (Supabase fetch). Fallback to ?d=base64
+   when no leadId (e.g. if user clicks "เปิด Dashboard" after view_only path
+   without submitting, or if Edge Function failed). */
+function openDashboard(){
+  let dashUrl;
+  if(S.leadId){
+    /* Phase 2 path — Supabase fetch via leadId */
+    dashUrl = 'S41_Premium_Dashboard_v3.html?leadId=' + encodeURIComponent(S.leadId);
+  } else {
+    /* Fallback — URL base64 prefill (no submission yet) */
+    const intake = buildCFPIntake();
+    const prefill = {
+      v: '1',
+      name: intake.fullName,
+      phone: intake.phone,
+      email: intake.email,
+      income: intake.income?.monthly || 0,
+      archetype: {
+        key: intake.archetype?.key,
+        name: intake.archetype?.name,
+        tag: intake.archetype?.tag
+      },
+      scores: intake.scores,
+      painPoint: intake.painPoint,
+      customerWants: intake.customerWants,
+      insurance: intake.insurance,
+      surveyVersion: intake.surveyVersion,
+      completedAt: intake.completedAt
+    };
+    const json = JSON.stringify(prefill);
+    const b64 = btoa(unescape(encodeURIComponent(json)));
+    dashUrl = 'S41_Premium_Dashboard_v3.html?d=' + b64;
+  }
+  window.open(dashUrl, '_blank');
+}
+
+/* ════ ACTIONS ════ */
+function startQ(){S.screen='question';S.currentQ=0;render();window.scrollTo(0,0);}
+
+function pick(qid,choice){
+  const q=QS[S.currentQ];
+  if(q.multi){
+    /* multi-select: toggle in array */
+    const prev=S.answers[qid]?.choices||[];
+    const has=prev.includes(choice);
+    const next=has?prev.filter(k=>k!==choice):[...prev,choice];
+    S.answers[qid]={choices:next};
+    document.querySelectorAll('.ch').forEach(btn=>{
+      const m=btn.getAttribute('onclick').match(/'([ABCDE])'[^']*\)$/);
+      const k=m?m[1]:null;
+      const isSel=k&&next.includes(k);
+      btn.classList.toggle('sel',isSel);
+      const ck=btn.querySelector('.ck');
+      if(ck){ck.style.background=isSel?'var(--navy)':'';ck.style.color=isSel?'#fff':'';}
+    });
+    const rxTxt=next.length===0?'':(next.length===1?(q.rxMap?q.rxMap[next[0]]:q.rx||''):'รับทราบ! เลือกหลายข้อได้ — เราจะดูแลทุกมิติที่คุณใส่ใจ ✨');
+    const rx=document.getElementById('rx');
+    if(rx){if(rxTxt){rx.innerHTML=rxTxt;rx.className='rx show';}else{rx.className='rx';}}
+    const nb=document.getElementById('nb');
+    if(nb){if(next.length>0)setTimeout(()=>{nb.className='nb show';},200);else nb.className='nb';}
+  }else{
+    /* single-select (default) */
+    S.answers[qid]={choice};
+    document.querySelectorAll('.ch').forEach(btn=>{
+      const m=btn.getAttribute('onclick').match(/'([ABCDE])'[^']*\)$/);
+      const k=m?m[1]:null;
+      btn.classList.toggle('sel',k===choice);
+      const ck=btn.querySelector('.ck');
+      if(ck){ck.style.background=k===choice?'var(--navy)':'';ck.style.color=k===choice?'#fff':'';}
+    });
+    const rxTxt=q.rxMap?q.rxMap[choice]:q.rx||'';
+    const rx=document.getElementById('rx');
+    if(rx&&rxTxt){rx.innerHTML=rxTxt;rx.className='rx show';}
+    const nb=document.getElementById('nb');
+    if(nb)setTimeout(()=>{nb.className='nb show';},200);
+  }
+  saveDraft();
+}
+
+function next(){
+  saveDraft();
+  if(S.currentQ>=QS.length-1){
+    S.radarScores=calcRadar();
+    S.archetype=calcArchetype();
+    S.screen='calc';render();
+    setTimeout(()=>{S.screen='result';render();window.scrollTo(0,0);},2000);
+  } else {
+    S.currentQ++;render();window.scrollTo(0,0);
+  }
+}
+
+function pickIntent(k){
+  /* toggle: clicking same option de-selects */
+  S.intent=(S.intent===k)?null:k;
+  render();
+  /* smooth-scroll to form / hint when something opens */
+  setTimeout(()=>{
+    const target=document.querySelector('.opt-form-inner')||document.querySelector('.opt-hint');
+    if(target)target.scrollIntoView({behavior:'smooth',block:'center'});
+  },80);
+}
+
+function buildCFPIntake(){
+  const surp=calcSurplus();
+  const ins=calcInsurance();
+  const priorities=calcPriorities(S.radarScores||{});
+  const arch=ARCH[S.archetype]||{};
+  const q1Labels={A:'ไลฟ์สไตล์และประสบการณ์',B:'ครอบครัวและคนรัก',C:'อิสรภาพทางการเงิน',D:'ส่งต่อและสร้างมรดก'};
+  const q2Labels={A:'ฐาน (เงินสำรอง/ประกัน)',B:'หนี้และกระแสเงินสด',C:'การเติบโตและลงทุน',D:'ตรวจเช็กและวางแผนรวม'};
+  const q12Labels={A:'สร้างหลักประกัน',B:'ลดหนี้',C:'ออมและลงทุน',D:'วางแผนภาษี',E:'เป้าหมายระยะยาว'};
+  return{
+    /* intent — 3-option flow (view_only / self_planning / requested_call) */
+    intent:S.intent||'view_only',
+    /* contact */
+    fullName:S.contactName,
+    phone:S.contactPhone,
+    email:S.contactEmail||null,
+    lineId:S.contactLine||null,
+    /* archetype */
+    archetype:{key:S.archetype,name:arch.name,tag:arch.tag||null},
+    /* 5-dimension scores (0-100) */
+    scores:{
+      emergency:S.radarScores?.emergency||0,
+      protection:S.radarScores?.protection||0,
+      cashflow:S.radarScores?.cashflow||0,
+      savings:S.radarScores?.savings||0,
+      planning:S.radarScores?.planning||0,
+    },
+    /* financial snapshot */
+    income:{monthly:surp.income,annual:surp.income*12,range:INCOME_RANGE?.[surp.incQ]||null,taxBracket:TAX_BRACKET?.[surp.incQ]||null},
+    surplus:{monthly:Math.round(surp.monthly),annual:Math.round(surp.annual),range:SURPLUS_RANGE?.[surp.surQ]||null},
+    /* insurance */
+    insurance:{health:ins.health.status,life:ins.life.status,overall:ins.overall},
+    /* priorities */
+    priorities:priorities.slice(0,5).map((p,i)=>({rank:i+1,dimension:p.label,score:p.score})),
+    /* qualitative */
+    lifeValues:getChoiceArr('Q1').map(k=>q1Labels[k]).filter(Boolean).join(' · ')||null,
+    painPoint:getChoiceArr('Q2').map(k=>q2Labels[k]).filter(Boolean).join(' · ')||null,
+    customerWants:getChoiceArr('Q12').map(k=>q12Labels[k]).filter(Boolean).join(' · ')||null,
+    lifeValuesArr:getChoiceArr('Q1'),
+    painPointArr:getChoiceArr('Q2'),
+    customerWantsArr:getChoiceArr('Q12'),
+    /* raw */
+    rawAnswers:Object.fromEntries(Object.entries(S.answers).map(([q,v])=>[q,v.choices||v.choice])),
+    surveyVersion:'4.1',
+    completedAt:new Date().toISOString(),
+  };
+}
+
+async function submitLead(){
+  /* must have an intent (option 2 or 3); option 1 doesn't call submitLead */
+  if(S.intent!=='self_planning'&&S.intent!=='requested_call'){
+    alert('กรุณาเลือกขั้นตอนถัดไปก่อน (ข้อ 2 หรือ 3)');return;
+  }
+  const name=(document.getElementById('inp-name')?.value||S.contactName).trim();
+  const phone=(document.getElementById('inp-phone')?.value||S.contactPhone).trim();
+  const email=(document.getElementById('inp-email')?.value||S.contactEmail).trim();
+  if(!name){alert('กรุณากรอกชื่อ-นามสกุลของคุณ');return;}
+  const lineId=(document.getElementById('inp-line')?.value||S.contactLine||'').trim();
+  S.contactLine=lineId;
+  /* Require either phone OR line (for requested_call) */
+  if(S.intent==='requested_call'&&!phone&&!lineId){
+    alert('กรุณากรอกเบอร์โทรศัพท์ หรือ Line ID อย่างน้อย 1 ช่อง เพื่อให้ทีมติดต่อกลับได้ค่ะ');return;
+  }
+  if(S.intent==='self_planning'&&!email){alert('สำหรับเปิด Dashboard กรุณากรอกอีเมลด้วยค่ะ');return;}
+  S.contactName=name;S.contactPhone=phone;S.contactEmail=email;
+
+  const ref=new URLSearchParams(window.location.search).get('ref')||'direct';
+  const cfpIntake=buildCFPIntake();
+  const intent=S.intent;
+
+  /* disable submit button to prevent double-submit */
+  const btn=document.querySelector('.opt-form-inner .btn-full');
+  const origText=btn?btn.innerHTML:'';
+  if(btn){btn.disabled=true;btn.innerHTML='กำลังส่งข้อมูล...';}
+
+  try{
+    const res=await fetch('https://lpqcglmpkuasgjgzqdyp.supabase.co/functions/v1/survey-lead',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer sb_publishable_CL-lFLHRCuQNLqFYxaWsxA_odaH_WTa',
+      },
+      body:JSON.stringify({lead:{name,phone,email,line:S.contactLine||null},cfpIntake,ref,intent}),
+    });
+    if(!res.ok){
+      const errText=await res.text();
+      console.error('[S41] Edge Function error',res.status,errText);
+      /* still navigate to thank-you — don't block the user */
+    } else {
+      /* capture lead_id for Phase 2 Dashboard fetch */
+      try{
+        const data=await res.json();
+        if(data?.lead_id) S.leadId=data.lead_id;
+      }catch(e){console.warn('[S41] could not parse lead_id',e);}
+    }
+  }catch(err){
+    console.error('[S41] submitLead fetch error',err);
+    /* non-blocking — still show thank-you */
+  }
+
+  /* self_planning → also auto-open Dashboard in new tab */
+  if(intent==='self_planning'){
+    try{ openDashboard(); }catch(e){ console.error('[S41] openDashboard error',e); }
+  }
+
+  /* clear local draft now that lead is submitted */
+  clearDraft();
+  S.screen='thankyou';render();window.scrollTo(0,0);
+}
+
+function restart(){
+  if(!confirm('ทำ survey ใหม่อีกรอบ? ข้อมูลที่ตอบไว้จะหายทั้งหมดนะคะ'))return;
+  clearDraft();
+  S={screen:'welcome',currentQ:0,answers:{},archetype:null,radarScores:null,contactOpen:false,contactName:'',contactPhone:'',contactLine:'',contactEmail:'',intent:null,intentStep:'pick',leadId:null,hasDraft:false,draftSummary:null,_draftRaw:null};
+  render();window.scrollTo(0,0);
+}
+
+function downloadPDF(){
+  const arch=ARCH[S.archetype];const r=S.radarScores;
+  const discItems=buildDisc(r);
+  const surp=calcSurplus();const priorities=calcPriorities(r);const ins=calcInsurance();
+  const vals=[r.emergency,r.protection,r.cashflow,r.savings,r.planning];
+  const names=['เงินสำรอง','ความคุ้มครอง','กระแสเงินสด','การออม/ลงทุน','การวางแผน'];
+  const sc2=v=>v>=70?'#2E7D32':v>=40?'#C8A94A':'#E05252';
+  /* Overall financial health score (avg of 5 dims) */
+  const overallScore=Math.round((vals.reduce((a,b)=>a+b,0))/5);
+  const healthLabel=overallScore>=70?'สุขภาพดี':overallScore>=50?'ปานกลาง':'ต้องดูแล';
+  const scoreRows=names.map((n,i)=>{
+    const v=vals[i];const c=sc2(v);
+    return `<div class="sc-row"><div class="sc-dot" style="background:${c}"></div><div class="sc-name">${n}</div><div class="sc-bar-bg"><div class="sc-bar" style="width:${v}%;background:${c}"></div></div><div class="sc-num" style="color:${c}">${v}</div></div>`;
+  }).join('');
+  const discList=discItems.map(t=>`<li class="disc-li"><span class="disc-bullet">●</span><span>${t}</span></li>`).join('');
+  const priActions={'เงินสำรอง':'สะสม 3–6 เดือนของรายจ่าย แยกบัญชีต่างหาก','ความคุ้มครอง':'ทบทวน health + ทุนชีวิต ≥ 10× รายได้/ปี','กระแสเงินสด':'จัดงบ + ลดรายจ่ายไม่จำเป็น เพิ่ม surplus','การออม/ลงทุน':'เริ่ม DCA + กระจายพอร์ต SSF/RMF','การวางแผน':'ตั้งเป้าหมายเป็นตัวเลข + วาง roadmap'};
+  const priItems=priorities.slice(0,5).map((p,i)=>`<div class="pri-item"><div class="pri-badge">${i+1}</div><div class="pri-body"><div class="pri-lbl">${p.icon||''} ${p.label}<span class="pri-pct" style="color:${sc2(p.score)}">${p.score}/100</span></div><div class="pri-act">${priActions[p.label]||''}</div></div></div>`).join('');
+  const today=new Date().toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'});
+  const html=`<!DOCTYPE html><html lang="th"><head><meta charset="UTF-8"><title>S41 Wealth Report — ${arch.name}</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{font-family:'Sarabun',sans-serif;background:#fff;color:#1C1C2E;font-size:11px;line-height:1.5}
+.page{width:210mm;height:297mm;margin:0 auto;padding:0;display:flex;flex-direction:column;overflow:hidden}
+.hdr{background:linear-gradient(135deg,#002366 0%,#1a3a6e 100%);padding:10px 18px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #C8A94A;flex-shrink:0}
+.hdr-l{color:#fff;font-size:8.5px;font-weight:800;letter-spacing:3.5px;text-transform:uppercase}
+.hdr-l .hdr-sub{display:block;font-size:6.5px;font-weight:500;color:#C8A94A;letter-spacing:2.8px;margin-top:1px}
+.hdr-r{color:#C8A94A;font-size:7.5px;font-weight:700;letter-spacing:2.2px;text-align:right;text-transform:uppercase}
+.hdr-r .hdr-date{display:block;font-size:6.5px;color:rgba(255,255,255,.7);font-weight:500;letter-spacing:.6px;text-transform:none;margin-top:1px}
+.sect-title{font-size:8px;font-weight:800;color:#002366;letter-spacing:2.6px;text-transform:uppercase;padding-bottom:4px;border-bottom:1.2px solid #C8A94A;margin-bottom:7px;display:flex;align-items:center;justify-content:space-between}
+.sect-title-num{font-family:'Cormorant Garamond',serif;font-size:12px;color:#C8A94A;font-weight:700;letter-spacing:0;font-style:italic}
+.section-wrap{padding:0 18px}
+/* Profile */
+.profile{display:flex;gap:14px;align-items:center;padding:11px 18px 10px;background:linear-gradient(180deg,#FAF8F2 0%,#fff 100%);border-bottom:1px solid rgba(0,35,102,.08);flex-shrink:0}
+.arch-icon-wrap{flex-shrink:0;width:78px;height:78px;background:#fff;border:1.8px solid #C8A94A;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 12px rgba(0,35,102,.08)}
+.arch-icon-wrap svg{width:56px!important;height:56px!important}
+.arch-body{flex:1;min-width:0}
+.arch-name{font-size:18px;font-weight:800;color:#002366;letter-spacing:-.3px;margin-bottom:2px;line-height:1.15}
+.arch-tag{display:inline-block;background:rgba(200,169,74,.12);color:#C8A94A;font-size:7.5px;font-weight:800;letter-spacing:2.2px;text-transform:uppercase;padding:2px 8px;border-radius:30px;margin-bottom:5px}
+.arch-diag{font-size:10.5px;color:#444;line-height:1.55;margin-bottom:5px}
+.arch-cap{font-size:10px;color:#002366;line-height:1.55;padding:5px 10px;border-left:2.5px solid #C8A94A;background:rgba(200,169,74,.05);border-radius:0 5px 5px 0;font-style:italic}
+/* KPI cards — qualitative only */
+.kpi-row{display:flex;gap:9px;padding:10px 18px 6px;flex-shrink:0}
+.kpi{flex:1;border:1px solid rgba(0,35,102,.12);border-top:3px solid #002366;border-radius:0 0 6px 6px;padding:8px 10px;background:linear-gradient(180deg,#F7F9FC 0%,#fff 100%);text-align:center}
+.kpi.gold{border-top-color:#C8A94A}
+.kpi.green{border-top-color:#2E7D32}
+.kpi-lbl{font-size:7.5px;font-weight:800;color:#7A7A8C;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px}
+.kpi-val{font-size:13px;font-weight:800;color:#002366;line-height:1.2}
+.kpi-val.pos{color:#1B6B3A}
+.kpi-val.neg{color:#C0392B}
+.kpi-sub{font-size:8px;color:#9B9B9B;margin-top:3px;font-weight:500}
+/* Analysis row */
+.analysis{display:flex;gap:14px;padding:6px 18px 8px;align-items:stretch;flex-shrink:0}
+.radar-wrap{flex:0 0 47%;text-align:center;padding:5px;border:1px solid rgba(0,35,102,.08);border-radius:7px;background:linear-gradient(180deg,#fff 0%,#FAFAF7 100%)}
+.radar-wrap svg{width:100%!important;height:auto!important;max-height:200px;margin:0 auto;display:block}
+.scores-wrap{flex:1;display:flex;flex-direction:column;justify-content:center;padding:4px 2px}
+.sc-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.sc-row:last-child{margin-bottom:0}
+.sc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;box-shadow:0 0 0 2px rgba(0,0,0,.04)}
+.sc-name{flex:1;font-size:10.5px;color:#3A3A50;font-weight:600}
+.sc-bar-bg{width:75px;height:6px;background:rgba(0,35,102,.08);border-radius:3px;overflow:hidden;flex-shrink:0}
+.sc-bar{height:6px;border-radius:3px}
+.sc-num{font-size:11.5px;font-weight:800;min-width:32px;text-align:right;flex-shrink:0}
+/* Two-col main */
+.two-col{display:flex;gap:14px;padding:4px 18px 8px;align-items:stretch;flex-shrink:0}
+.col-l{flex:0 0 55%}
+.col-r{flex:1}
+.disc-ul{list-style:none;margin-bottom:0}
+.disc-li{display:flex;gap:7px;margin-bottom:5px;font-size:10.5px;color:#2A2A40;line-height:1.55}
+.disc-bullet{color:#C8A94A;font-size:9px;line-height:1.7;flex-shrink:0;font-weight:800}
+.rx-box{margin-top:7px;padding:8px 11px;border-left:3px solid #C8A94A;background:rgba(200,169,74,.07);border-radius:0 6px 6px 0;font-size:10.5px;color:#002366;line-height:1.6}
+.rx-box strong{color:#002366}
+.pri-item{display:flex;gap:8px;margin-bottom:6px;align-items:flex-start;padding:4px 0;border-bottom:1px dashed rgba(0,35,102,.08)}
+.pri-item:last-child{border-bottom:none;margin-bottom:0}
+.pri-badge{width:18px;height:18px;border-radius:50%;background:#002366;color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.pri-body{flex:1;min-width:0}
+.pri-lbl{font-size:10.5px;color:#1C1C2E;font-weight:700;line-height:1.35;display:flex;justify-content:space-between;align-items:baseline;gap:5px;margin-bottom:1px}
+.pri-pct{font-size:9px;font-weight:800;flex-shrink:0}
+.pri-act{font-size:9.5px;color:#7A7A8C;line-height:1.5}
+/* Footer */
+.ftr{margin-top:auto;padding:9px 18px;border-top:1.2px solid #C8A94A;background:linear-gradient(180deg,#fff 0%,#FAF8F2 100%);display:flex;justify-content:space-between;align-items:center;font-size:7.5px;color:#7A7A8C;letter-spacing:.8px;text-transform:uppercase;flex-shrink:0}
+.ftr-l{display:flex;gap:7px;align-items:center}
+.ftr-badge{color:#C8A94A;font-weight:800;letter-spacing:1.8px}
+.ftr-r{text-align:right;font-weight:600}
+.disclaim{padding:6px 18px 0;font-size:8.5px;color:#9B9B9B;line-height:1.45;font-style:italic;text-align:center;flex-shrink:0}
+@media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  @page{margin:0;size:A4 portrait}
+  html,body{width:210mm;height:297mm;overflow:hidden}
+  .page{width:210mm;height:297mm;page-break-after:avoid;overflow:hidden}
+}
+</style></head><body>
+<div class="page">
+<div class="hdr">
+  <div class="hdr-l">SIGNATURE 41 FINANCIAL CLINIC<span class="hdr-sub">Wealth Report · Confidential</span></div>
+  <div class="hdr-r">CFP® Certified Financial Planner<span class="hdr-date">${today}</span></div>
+</div>
+<div class="profile">
+  <div class="arch-icon-wrap">${arch.key&&ASVG[arch.key]?ASVG[arch.key]:''}</div>
+  <div class="arch-body">
+    <div class="arch-name">${arch.name}</div>
+    <span class="arch-tag">${arch.tag}</span>
+    <div class="arch-diag">${arch.diagnosis}</div>
+    <div class="arch-cap">${arch.caption}</div>
+  </div>
+</div>
+<div class="section-wrap" style="padding-top:8px"><div class="sect-title">Financial Vitals <span class="sect-title-num">i.</span></div></div>
+<div class="kpi-row">
+  <div class="kpi">
+    <div class="kpi-lbl">รายได้/เดือน</div>
+    <div class="kpi-val">${INCOME_RANGE[surp.incQ]||'-'}</div>
+    <div class="kpi-sub">ช่วงรายได้</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-lbl">ฐานภาษี</div>
+    <div class="kpi-val">${TAX_BRACKET[surp.incQ]||'-'}</div>
+    <div class="kpi-sub">อัตราภาษีปัจจุบัน</div>
+  </div>
+  <div class="kpi gold">
+    <div class="kpi-lbl">Surplus เฉลี่ย</div>
+    <div class="kpi-val ${surp.pct>0?'pos':'neg'}">${SURPLUS_RANGE[surp.surQ]||'-'}</div>
+    <div class="kpi-sub">เงินเหลือออม</div>
+  </div>
+  <div class="kpi green">
+    <div class="kpi-lbl">Health Score</div>
+    <div class="kpi-val" style="color:${sc2(overallScore)}">${overallScore}/100</div>
+    <div class="kpi-sub">${healthLabel}</div>
+  </div>
+</div>
+<div class="section-wrap"><div class="sect-title">5-Dimension Analysis <span class="sect-title-num">ii.</span></div></div>
+<div class="analysis">
+  <div class="radar-wrap">${drawRadar(r)}</div>
+  <div class="scores-wrap">${scoreRows}</div>
+</div>
+<div class="two-col">
+  <div class="col-l">
+    <div class="sect-title">Diagnosis · สิ่งที่ต้องจัดการ <span class="sect-title-num">iii.</span></div>
+    <ul class="disc-ul">${discList}</ul>
+    <div class="rx-box">💊 <strong>คำสั่งยาจากหมอเงิน:</strong> ${arch.prescription}</div>
+  </div>
+  <div class="col-r">
+    <div class="sect-title">Priority Roadmap <span class="sect-title-num">iv.</span></div>
+    ${priItems}
+  </div>
+</div>
+<div class="disclaim">รายงานฉบับนี้เป็นข้อมูลเบื้องต้นจาก S41 Financial Health Check · เพื่อแผนเฉพาะบุคคล กรุณาปรึกษาทีม CFP® S41</div>
+<div class="ftr">
+  <span class="ftr-l">CONFIDENTIAL · <span class="ftr-badge">CFP® CERTIFIED FINANCIAL PLANNER</span></span>
+  <span class="ftr-r">SIGNATURE 41 · aoyoyoh.github.io/Survey</span>
+</div>
+</div>
+<script>window.onload=()=>{setTimeout(()=>window.print(),300);}<\/script>
+</body></html>`;
+  const win=window.open('','_blank','width=900,height=1200');
+  if(win){win.document.write(html);win.document.close();}
+  else alert('กรุณาอนุญาต Pop-up ในเบราว์เซอร์ก่อนนะคะ แล้วลองกดใหม่อีกครั้ง');
+}
+
+render();
+</script>
+</body>
+</html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
