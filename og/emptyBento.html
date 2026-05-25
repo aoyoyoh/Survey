@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>ฉันคือ คุณกล่องเบนโตะว่าง 💊 S41 Financial Clinic</title>
 
-<!-- ═══ Open Graph (Facebook) ═══ -->
+<!-- ═══ Open Graph (Facebook) — must come BEFORE any redirect ═══ -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://aoyoyoh.github.io/Survey/og/emptyBento.html">
 <meta property="og:title" content="ฉันคือ คุณกล่องเบนโตะว่าง 💊 S41 Financial Clinic">
@@ -21,13 +21,13 @@
 <meta name="twitter:description" content="Empty Bento · ผู้เริ่มต้นที่รอจัดวาง · ตรวจสุขภาพเงินใน 5 นาที">
 <meta name="twitter:image" content="https://aoyoyoh.github.io/Survey/og/emptyBento.png">
 
-<!-- ═══ Redirect to main survey after 3 seconds ═══ -->
-<!-- (delay allows FB/Twitter scraper to read og tags before follow redirect) -->
-<meta http-equiv="refresh" content="3;url=https://aoyoyoh.github.io/Survey/">
+<!-- NOTE: NO meta http-equiv refresh — would cause FB scraper to follow redirect
+     and use main survey's meta tags instead. Use JS redirect (below) — FB doesn't run JS. -->
 
 <style>
 body{font-family:'Sarabun','Noto Sans Thai',sans-serif;background:#F5F2EC;color:#1C1C2E;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;padding:20px;text-align:center}
 .box{max-width:480px}
+.preview-img{max-width:100%;border-radius:14px;margin-bottom:18px;box-shadow:0 6px 24px rgba(0,35,102,.12)}
 h1{color:#002366;font-size:22px;margin-bottom:8px}
 .tag{display:inline-block;background:rgba(200,169,74,.15);color:#C8A94A;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:30px;margin-bottom:14px}
 p{color:#7A7A8C;font-size:14px;line-height:1.7;margin-bottom:20px}
@@ -38,11 +38,19 @@ a:hover{background:#1a3a6e}
 </head>
 <body>
 <div class="box">
+<img src="emptyBento.png" alt="S41 Archetype: คุณกล่องเบนโตะว่าง" class="preview-img">
 <h1>ฉันคือ คุณกล่องเบนโตะว่าง</h1>
 <div class="tag">Empty Bento · ผู้เริ่มต้นที่รอจัดวาง</div>
 <p>กำลังพาคุณไปทำ Survey ตรวจสุขภาพเงินกับ S41 Financial Clinic...</p>
 <a href="https://aoyoyoh.github.io/Survey/">▶ เริ่มทำ Survey เลย</a>
 <div class="small">หากไม่ redirect อัตโนมัติใน 3 วินาที กดปุ่มด้านบน</div>
 </div>
+
+<!-- JS redirect — FB scraper doesn't run JS, so og tags above are used as-is -->
+<script>
+setTimeout(function(){
+  window.location.href = 'https://aoyoyoh.github.io/Survey/';
+}, 3000);
+</script>
 </body>
 </html>
