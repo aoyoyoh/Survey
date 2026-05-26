@@ -1,0 +1,23 @@
+# S41 Financial Clinic — robots.txt
+# Allow all bots, with explicit allow for social media scrapers
+
+User-agent: *
+Allow: /
+
+# Facebook / Meta
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Facebot
+Allow: /
+
+User-agent: meta-externalagent
+Allow: /
+
+# LINE
+User-agent: LINE-Bot
+Allow: /
+
+# Twitter / X
+User-agent: Twitterbot
+Allow: /
