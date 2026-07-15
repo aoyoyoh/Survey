@@ -1112,7 +1112,7 @@ function rWelcome(){
     </div>`:'';
   return`<div class="card" style="text-align:center">
     <div class="s41" style="margin-bottom:24px">✦ Signature 41 ✦</div>
-    <div class="wbadge">S41 Japanese Financial Menu · Health Check v6.21</div>
+    <div class="wbadge">S41 Japanese Financial Menu · Health Check v6.22</div>
     <div class="wtitle" style="font-size:28px">ถ้าสถานะการเงินของคุณ<br>เป็น<span>อาหารญี่ปุ่น</span>... คุณคือจานไหน?</div>
     <div class="dish-parade">${Object.values(ASVG).map(s=>`<span class="dp">${s}</span>`).join('')}</div>
     <div class="wsub">ตรวจ 5 นาที · 12 คำถามตามหลัก CFP® โดยหมอเงิน<br>ค้นพบ<strong>เมนูประจำตัวของคุณ</strong> พร้อม<strong>จุดที่ต้องดูแลก่อน</strong></div>
@@ -1232,7 +1232,7 @@ function rResult(){
   return`<div class="card">
     <div class="topbar">
       <span class="s41">Signature 41</span>
-      <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">Financial Report v6.21 · 150726</span>
+      <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">Financial Report v6.22 · 150726</span>
     </div>
     <div class="rarch">
       <div class="a-svg-wrap">${ASVG[arch.key]||''}</div>
@@ -1285,7 +1285,7 @@ function rResult(){
       </div>`:''}
 
       <div class="cta-secondary-row">
-        <button type="button" class="cta-secondary" onclick="downloadShareCard()"><span class="em">🍣</span>อวดเมนู<br>ให้เพื่อนทาย</button>
+        <button type="button" class="cta-secondary" onclick="downloadShareCard()"><span class="em" style="display:flex;align-items:center;gap:5px;justify-content:center">🍣<svg width="17" height="17" viewBox="0 0 24 24" fill="#1877F2" style="flex-shrink:0"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></span>อวดเมนู<br>ให้เพื่อนทาย</button>
         <button type="button" class="cta-secondary" onclick="downloadPDF()"><span class="em">📄</span>บันทึกผล<br>เป็น PDF</button>
       </div>
     </div>
