@@ -486,19 +486,36 @@ function discardDraft(){clearDraft();S.hasDraft=false;S.draftSummary=null;S._dra
 function back(){ history.back(); }
 
 /* ==== HISTORY-BASED BACK NAV (v6.21) — ปุ่ม back ของ browser/มือถือไม่หลุดออกนอกแอป ==== */
+/* v6.23: popstate guard — entry 'result'/'thankyou' ที่ state ถูกล้างไปแล้ว (restart/refresh) ต้องไม่ crash · ยกเลิก calc timer ค้าง · render มี fallback ห้าม hang ทุกกรณี */
 function _histSnap(){return {s:S.screen,q:S.currentQ,intent:S.intent};}
 function pushHistory(){try{history.pushState({nav:_histSnap()},'');}catch(e){}}
+function _safeRender(){
+  try{render();}catch(err){
+    console.error('[S41] render error — fallback to welcome',err);
+    S.screen='welcome';S.currentQ=0;
+    try{render();}catch(e2){}
+  }
+  window.scrollTo(0,0);
+}
 function initHistory(){
   try{history.replaceState({nav:_histSnap()},'');}catch(e){}
   window.addEventListener('popstate',function(e){
+    /* v6.23: back ระหว่างหน้า "กำลังวิเคราะห์" — ยกเลิก timer ไม่ให้เด้งกลับไป result เอง */
+    if(S._calcTimer){clearTimeout(S._calcTimer);S._calcTimer=null;}
     var nav=e&&e.state&&e.state.nav;
+    /* v6.23: entry ตาย — result/thankyou แต่ archetype ถูกล้างแล้ว → คำนวณใหม่ถ้าคำตอบครบ ไม่งั้นกลับ welcome */
+    if(nav&&(nav.s==='result'||nav.s==='thankyou')&&!S.archetype){
+      var done=QS.every(function(q){var a=S.answers[q.id];return a&&((a.choices&&a.choices.length)||a.choice);});
+      if(done){S.radarScores=calcRadar();S.archetype=calcArchetype();}
+      else nav=null;
+    }
     if(nav&&nav.s){
       S.screen=nav.s;
       S.currentQ=(typeof nav.q==='number')?nav.q:0;
       S.intent=(typeof nav.intent!=='undefined')?nav.intent:null;
-      render();window.scrollTo(0,0);
+      _safeRender();
     }else{
-      S.screen='welcome';S.currentQ=0;render();window.scrollTo(0,0);
+      S.screen='welcome';S.currentQ=0;_safeRender();
     }
   });
 }
@@ -1112,7 +1129,7 @@ function rWelcome(){
     </div>`:'';
   return`<div class="card" style="text-align:center">
     <div class="s41" style="margin-bottom:24px">✦ Signature 41 ✦</div>
-    <div class="wbadge">S41 Japanese Financial Menu · Health Check v6.22</div>
+    <div class="wbadge">S41 Japanese Financial Menu · Health Check v6.23</div>
     <div class="wtitle" style="font-size:28px">ถ้าสถานะการเงินของคุณ<br>เป็น<span>อาหารญี่ปุ่น</span>... คุณคือจานไหน?</div>
     <div class="dish-parade">${Object.values(ASVG).map(s=>`<span class="dp">${s}</span>`).join('')}</div>
     <div class="wsub">ตรวจ 5 นาที · 12 คำถามตามหลัก CFP® โดยหมอเงิน<br>ค้นพบ<strong>เมนูประจำตัวของคุณ</strong> พร้อม<strong>จุดที่ต้องดูแลก่อน</strong></div>
@@ -1232,7 +1249,7 @@ function rResult(){
   return`<div class="card">
     <div class="topbar">
       <span class="s41">Signature 41</span>
-      <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">Financial Report v6.22 · 150726</span>
+      <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">Financial Report v6.23 · 150726</span>
     </div>
     <div class="rarch">
       <div class="a-svg-wrap">${ASVG[arch.key]||''}</div>
@@ -1438,12 +1455,16 @@ function pick(qid,choice){
 }
 
 function next(){
+  /* v6.23: navLock — กันดับเบิลแทป "ถัดไป" ข้ามคำถาม/timer ซ้อน */
+  if(S._navLock)return;
+  S._navLock=true;setTimeout(()=>{S._navLock=false;},350);
   saveDraft();
   if(S.currentQ>=QS.length-1){
+    if(S._calcTimer)return; /* กำลังวิเคราะห์อยู่แล้ว */
     S.radarScores=calcRadar();
     S.archetype=calcArchetype();
     S.screen='calc';render();
-    setTimeout(()=>{S.screen='result';pushHistory();render();window.scrollTo(0,0);},2000);
+    S._calcTimer=setTimeout(()=>{S._calcTimer=null;S.screen='result';pushHistory();render();window.scrollTo(0,0);},2000);
   } else {
     S.currentQ++;pushHistory();render();window.scrollTo(0,0);
   }
@@ -1536,6 +1557,9 @@ async function submitLead(){
   const origText=btn?btn.innerHTML:'';
   if(btn){btn.disabled=true;btn.innerHTML='กำลังส่งข้อมูล...';}
 
+  /* v6.23: timeout 8 วิ — เน็ตค้างต้องไม่ทำให้ปุ่มค้าง "กำลังส่งข้อมูล..." ตลอดกาล (ไป thankyou ต่อเสมอ) */
+  const _ctrl=new AbortController();
+  const _t=setTimeout(()=>_ctrl.abort(),8000);
   try{
     const res=await fetch('https://lpqcglmpkuasgjgzqdyp.supabase.co/functions/v1/survey-lead',{
       method:'POST',
@@ -1544,6 +1568,7 @@ async function submitLead(){
         'Authorization':'Bearer sb_publishable_CL-lFLHRCuQNLqFYxaWsxA_odaH_WTa',
       },
       body:JSON.stringify({lead:{name,phone,email,line:S.contactLine||null},cfpIntake,ref,intent}),
+      signal:_ctrl.signal,
     });
     if(!res.ok){
       const errText=await res.text();
@@ -1560,6 +1585,7 @@ async function submitLead(){
     console.error('[S41] submitLead fetch error',err);
     /* non-blocking — still show thank-you */
   }
+  clearTimeout(_t);
 
   /* self_planning → also auto-open Dashboard in new tab */
   if(intent==='self_planning'){
