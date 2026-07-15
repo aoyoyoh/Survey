@@ -135,6 +135,16 @@ body{font-family:'Sarabun','Noto Sans Thai',sans-serif;background:var(--cream);c
 .opt-tag.team{background:rgba(0,35,102,.08);color:var(--navy)}
 .opt-form-inner{background:#fff;border:1.5px solid var(--gray2);border-radius:14px;padding:18px;margin-top:14px;animation:up .3s ease}
 .opt-hint{margin-top:14px;padding:12px 16px;background:rgba(46,125,50,.06);border-left:3px solid #2E7D32;border-radius:0 10px 10px 0;font-size:13px;color:#2E7D32;line-height:1.6;animation:up .3s ease}
+/* v6.21 result CTA — 1 primary + 2 secondary */
+.cta-primary{width:100%;border:none;border-radius:14px;padding:16px 20px;background:var(--navy);color:#fff;cursor:pointer;font-family:inherit;text-align:center;transition:all .2s;box-shadow:0 6px 20px rgba(0,35,102,.22);display:block}
+.cta-primary:hover{background:var(--navy2);transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,35,102,.3)}
+.cta-primary.sel{box-shadow:0 0 0 3px var(--gold),0 6px 20px rgba(0,35,102,.22)}
+.cta-primary-main{font-size:17px;font-weight:800;letter-spacing:.3px;margin-bottom:4px}
+.cta-primary-sub{font-size:12px;font-weight:500;opacity:.92;line-height:1.5}
+.cta-secondary-row{display:flex;gap:10px;margin-top:12px}
+.cta-secondary{flex:1;border:1.5px solid var(--gray2);border-radius:12px;padding:12px 8px;background:#fff;color:var(--navy);font-family:inherit;font-size:12.5px;font-weight:700;line-height:1.35;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:66px;text-align:center}
+.cta-secondary:hover{border-color:var(--gold);background:#FBF6E7;transform:translateY(-1px)}
+.cta-secondary .em{font-size:20px;line-height:1}
 /* ── TEAM S41 REPORT ── */
 .team-report{background:rgba(0,35,102,.03);border:1.5px solid rgba(0,35,102,.12);border-left:4px solid var(--navy);border-radius:0 16px 16px 0;padding:20px 22px;margin:20px 0;}
 .team-report-title{font-size:10px;font-weight:800;color:var(--navy);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid rgba(0,35,102,.10);}
@@ -470,12 +480,27 @@ function resumeDraft(){
   S.contactName=d.contactName||'';S.contactPhone=d.contactPhone||'';
   S.contactLine=d.contactLine||'';S.contactEmail=d.contactEmail||'';
   S.hasDraft=false;S.draftSummary=null;S._draftRaw=null;
-  render();window.scrollTo(0,0);
+  pushHistory();render();window.scrollTo(0,0);
 }
 function discardDraft(){clearDraft();S.hasDraft=false;S.draftSummary=null;S._draftRaw=null;render();}
-function back(){
-  if(S.currentQ<=0){S.screen='welcome';render();window.scrollTo(0,0);return;}
-  S.currentQ--;render();window.scrollTo(0,0);saveDraft();
+function back(){ history.back(); }
+
+/* ==== HISTORY-BASED BACK NAV (v6.21) — ปุ่ม back ของ browser/มือถือไม่หลุดออกนอกแอป ==== */
+function _histSnap(){return {s:S.screen,q:S.currentQ,intent:S.intent};}
+function pushHistory(){try{history.pushState({nav:_histSnap()},'');}catch(e){}}
+function initHistory(){
+  try{history.replaceState({nav:_histSnap()},'');}catch(e){}
+  window.addEventListener('popstate',function(e){
+    var nav=e&&e.state&&e.state.nav;
+    if(nav&&nav.s){
+      S.screen=nav.s;
+      S.currentQ=(typeof nav.q==='number')?nav.q:0;
+      S.intent=(typeof nav.intent!=='undefined')?nav.intent:null;
+      render();window.scrollTo(0,0);
+    }else{
+      S.screen='welcome';S.currentQ=0;render();window.scrollTo(0,0);
+    }
+  });
 }
 function getChoiceArr(qid){const a=S.answers[qid];if(!a)return[];return a.choices||(a.choice?[a.choice]:[]);}
 function getChoiceFirst(qid){const arr=getChoiceArr(qid);return arr[0]||null;}
@@ -1087,7 +1112,7 @@ function rWelcome(){
     </div>`:'';
   return`<div class="card" style="text-align:center">
     <div class="s41" style="margin-bottom:24px">✦ Signature 41 ✦</div>
-    <div class="wbadge">S41 Japanese Financial Menu · Health Check v6.20</div>
+    <div class="wbadge">S41 Japanese Financial Menu · Health Check v6.21</div>
     <div class="wtitle" style="font-size:28px">ถ้าสถานะการเงินของคุณ<br>เป็น<span>อาหารญี่ปุ่น</span>... คุณคือจานไหน?</div>
     <div class="dish-parade">${Object.values(ASVG).map(s=>`<span class="dp">${s}</span>`).join('')}</div>
     <div class="wsub">ตรวจ 5 นาที · 12 คำถามตามหลัก CFP® โดยหมอเงิน<br>ค้นพบ<strong>เมนูประจำตัวของคุณ</strong> พร้อม<strong>จุดที่ต้องดูแลก่อน</strong></div>
@@ -1207,7 +1232,7 @@ function rResult(){
   return`<div class="card">
     <div class="topbar">
       <span class="s41">Signature 41</span>
-      <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">Financial Report v6.20 · 150726</span>
+      <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">Financial Report v6.21 · 150726</span>
     </div>
     <div class="rarch">
       <div class="a-svg-wrap">${ASVG[arch.key]||''}</div>
@@ -1231,66 +1256,39 @@ function rResult(){
     <div class="caption-box">${arch.caption}</div>
     <div class="divider"></div>
 
-    <!-- ── 3-OPTION NEXT STEP PICKER (moved up — primary CTA) ── -->
+    <!-- ── NEXT STEP (v6.21 redesign: 1 primary + 2 secondary) ── -->
     <div class="next-pick">
       <div class="next-title">✦ Next Step ✦</div>
-      <div class="next-sub">วิเคราะห์พบจุดที่ต้องพัฒนา <strong style="color:var(--navy)">"${weakName}"</strong><br>เลือกได้เลยตามสะดวก — <strong style="color:#8a6d1f">ฟรีทั้งสองแบบ</strong></div>
-      <div class="opt-grid">
-        <button type="button" class="opt-card ${intentSel('view_only')}" onclick="pickIntent('view_only')">
-          <div class="opt-num">1</div>
-          <div class="opt-body">
-            <div class="opt-name"><span class="opt-emo">✨</span>เปิดจานของฉัน · ดูผลและแชร์</div>
-            <div class="opt-desc">ฟรี · ไม่ต้องกรอกข้อมูล · ดาวน์โหลด PDF / แชร์ลง Facebook ได้เลย</div>
-            <span class="opt-tag free">ฟรี · ไม่ต้องส่งข้อมูล</span>
-          </div>
-        </button>
-        <div class="opt-or">— หรือ —</div>
-        <button type="button" class="opt-card ${intentSel('requested_call')}" onclick="pickIntent('requested_call')">
-          <div class="opt-num">2</div>
-          <div class="opt-body">
-            <div class="opt-name"><span class="opt-emo">💬</span>ปรึกษาทีม S41 เชิงลึก</div>
-            <div class="opt-desc">ทีมที่ปรึกษาการเงินติดต่อกลับผ่าน Line @s41clinic — วิเคราะห์เชิงลึก พร้อมแผนเฉพาะคุณ</div>
-            <span class="opt-tag team">ไม่มีค่าใช้จ่ายหรือข้อผูกมัด</span>
-          </div>
-        </button>
-      </div>
-      ${S.intent==='view_only'?`
-      <div class="opt-hint">
-        <div style="margin-bottom:10px;font-weight:600;color:#2E7D32">✓ ดูผลฟรี! แชร์ให้เพื่อน หรือ ดาวน์โหลด PDF</div>
-        <button class="btn-full btn-fb" onclick="downloadShareCard()" style="margin-bottom:8px;margin-top:0">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="white" style="flex-shrink:0"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-          แชร์ "เมนูของฉัน" ลง Facebook 🍱
-        </button>
-        <button class="btn-full btn-ghost" onclick="downloadPDF()" style="margin-bottom:0">💾 ดาวน์โหลด ใบตรวจสุขภาพเงิน (PDF)</button>
-      </div>`:''}
-      ${(S.intent==='self_planning'||S.intent==='requested_call')?`
+      <div class="next-sub">วิเคราะห์พบจุดที่ต้องพัฒนา <strong style="color:var(--navy)">"${weakName}"</strong><br>อยากให้ทีมที่ปรึกษาช่วยดูให้ลึกขึ้นไหม?</div>
+
+      <button type="button" class="cta-primary ${S.intent==='requested_call'?'sel':''}" onclick="pickIntent('requested_call')">
+        <div class="cta-primary-main">💬 ปรึกษาทีม S41 เชิงลึก</div>
+        <div class="cta-primary-sub">วิเคราะห์เชิงลึก พร้อมแผนเฉพาะคุณ · ฟรี ไม่มีข้อผูกมัด</div>
+      </button>
+
+      ${S.intent==='requested_call'?`
       <div class="opt-form-inner">
-        <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:12px">
-          ${S.intent==='self_planning'?'📝 ฝากข้อมูลเพื่อเปิด Dashboard ของคุณ':'📝 ฝากข้อมูลให้ทีม S41 ติดต่อกลับ'}
-        </div>
+        <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:12px">📝 ฝากข้อมูลให้ทีม S41 ติดต่อกลับ</div>
         <label class="flabel">ชื่อ-นามสกุล</label>
         <input class="ti" id="inp-name" type="text" placeholder="กรุณากรอกชื่อ-นามสกุล" value="${S.contactName}" oninput="S.contactName=this.value">
         <div style="font-size:11px;color:var(--muted);margin:6px 0 8px;letter-spacing:.3px">📞 กรอกเบอร์โทรศัพท์ <strong>หรือ</strong> Line ID อย่างใดอย่างหนึ่งก็ได้ (ตามที่คุณสะดวกให้ทีมติดต่อกลับ)</div>
         <label class="flabel">เบอร์โทรศัพท์ <span style="font-weight:400;color:var(--muted)">(ไม่บังคับ)</span></label>
         <input class="ti" id="inp-phone" type="tel" placeholder="0812345678" value="${S.contactPhone}" oninput="S.contactPhone=this.value">
-        ${S.intent==='self_planning'?`
-        <label class="flabel">อีเมล <span style="font-weight:400;color:var(--muted)">(สำหรับรับลิงก์เข้าระบบ Dashboard)</span></label>
-        <input class="ti" id="inp-email" type="email" placeholder="email@example.com" value="${S.contactEmail}" oninput="S.contactEmail=this.value">
-        `:''}
         <label class="flabel">Line ID <span style="font-weight:400;color:var(--muted)">(ไม่บังคับ)</span></label>
         <input class="ti" id="inp-line" type="text" placeholder="@lineid หรือ ID Line" value="${S.contactLine}" oninput="S.contactLine=this.value">
-        <button class="btn-full" style="${S.intent==='self_planning'?'background:var(--navy);color:#fff':'background:#fff;color:#06C755;border:1.5px solid #06C755'};margin-bottom:0" onclick="submitLead()">
-          ${S.intent==='self_planning'?'🧭 ส่งข้อมูล + เปิด Dashboard':'💬 ส่งข้อมูล + นัดทีม S41'}
-        </button>
+        <button class="btn-full" style="background:#fff;color:#06C755;border:1.5px solid #06C755;margin-bottom:0" onclick="submitLead()">💬 ส่งข้อมูล + นัดทีม S41</button>
+        <details class="team-collapse" style="margin:14px 0 0">
+          <summary>🔒 ดูข้อมูลที่จะส่งให้ทีม S41 <span class="team-collapse-hint">(กดเพื่อขยาย · เก็บเป็นความลับ)</span></summary>
+          ${buildTeamReportHTML(r)}
+        </details>
         <div style="font-size:11px;color:var(--muted);line-height:1.7;margin-top:10px">🔒 การกดส่ง = ยินยอมให้ทีม S41 ใช้ข้อมูลเพื่อติดต่อกลับและจัดทำแผนการเงินของคุณเท่านั้น · ไม่ส่งต่อบุคคลที่สาม · แจ้งลบข้อมูลได้ทุกเมื่อผ่าน Line @S41Clinic</div>
       </div>`:''}
-    </div>
 
-    <!-- ── TEAM SNAPSHOT (collapsible) ── -->
-    <details class="team-collapse">
-      <summary>🔒 ดูข้อมูลที่จะส่งให้ทีม S41 <span class="team-collapse-hint">(กดเพื่อขยาย · เก็บเป็นความลับ)</span></summary>
-      ${buildTeamReportHTML(r)}
-    </details>
+      <div class="cta-secondary-row">
+        <button type="button" class="cta-secondary" onclick="downloadShareCard()"><span class="em">🍣</span>อวดเมนู<br>ให้เพื่อนทาย</button>
+        <button type="button" class="cta-secondary" onclick="downloadPDF()"><span class="em">📄</span>บันทึกผล<br>เป็น PDF</button>
+      </div>
+    </div>
 
     <button class="nb show" style="background:none;border:1.5px solid var(--gray2);color:var(--muted);margin-top:8px" onclick="restart()">🔄 ทำ survey ใหม่อีกรอบ</button>
     <div style="font-size:10.5px;color:var(--muted);line-height:1.7;margin-top:16px;text-align:center;opacity:.85">ผลตรวจนี้เป็นการประเมินสุขภาพการเงินเบื้องต้นจากคำตอบของคุณ ไม่ใช่คำแนะนำการลงทุนหรือผลิตภัณฑ์เฉพาะบุคคล · การวางแผนจริงควรปรึกษานักวางแผนการเงินโดยตรง</div>
@@ -1356,7 +1354,7 @@ function rThankyou(){
 
 /* v6.18: กลับจากหน้าขอบคุณไปหน้าผลได้เสมอ — ผล/PDF/แชร์ยังครบ (คำตอบยังอยู่ใน state) */
 function backToResult(){
-  S.screen='result';render();window.scrollTo(0,0);
+  S.screen='result';pushHistory();render();window.scrollTo(0,0);
 }
 
 /* ─── Open dashboard with prefill data from survey ───
@@ -1397,7 +1395,7 @@ function openDashboard(){
 }
 
 /* ════ ACTIONS ════ */
-function startQ(){S.screen='question';S.currentQ=0;render();window.scrollTo(0,0);}
+function startQ(){S.screen='question';S.currentQ=0;pushHistory();render();window.scrollTo(0,0);}
 
 function pick(qid,choice){
   const q=QS[S.currentQ];
@@ -1445,19 +1443,21 @@ function next(){
     S.radarScores=calcRadar();
     S.archetype=calcArchetype();
     S.screen='calc';render();
-    setTimeout(()=>{S.screen='result';render();window.scrollTo(0,0);},2000);
+    setTimeout(()=>{S.screen='result';pushHistory();render();window.scrollTo(0,0);},2000);
   } else {
-    S.currentQ++;render();window.scrollTo(0,0);
+    S.currentQ++;pushHistory();render();window.scrollTo(0,0);
   }
 }
 
 function pickIntent(k){
-  /* toggle: clicking same option de-selects */
-  S.intent=(S.intent===k)?null:k;
+  /* toggle: closing the open form goes through history.back so browser stays in sync */
+  if(S.intent===k){ history.back(); return; }
+  const wasOpen=!!S.intent;
+  S.intent=k;
+  if(!wasOpen) pushHistory();
   render();
-  /* smooth-scroll to form / hint when something opens */
   setTimeout(()=>{
-    const target=document.querySelector('.opt-form-inner')||document.querySelector('.opt-hint');
+    const target=document.querySelector('.opt-form-inner');
     if(target)target.scrollIntoView({behavior:'smooth',block:'center'});
   },80);
 }
@@ -1568,14 +1568,14 @@ async function submitLead(){
 
   /* clear local draft now that lead is submitted */
   clearDraft();
-  S.screen='thankyou';render();window.scrollTo(0,0);
+  S.screen='thankyou';pushHistory();render();window.scrollTo(0,0);
 }
 
 function restart(){
   if(!confirm('ทำ survey ใหม่อีกรอบ? ข้อมูลที่ตอบไว้จะหายทั้งหมดนะคะ'))return;
   clearDraft();
   S={screen:'welcome',currentQ:0,answers:{},archetype:null,radarScores:null,contactOpen:false,contactName:'',contactPhone:'',contactLine:'',contactEmail:'',intent:null,intentStep:'pick',leadId:null,hasDraft:false,draftSummary:null,_draftRaw:null};
-  render();window.scrollTo(0,0);
+  pushHistory();render();window.scrollTo(0,0);
 }
 
 function downloadPDF(){
@@ -1737,6 +1737,7 @@ html,body{font-family:'Sarabun',sans-serif;background:#fff;color:#1C1C2E;font-si
 }
 
 render();
+initHistory();
 </script>
 <script>/* v5 viral loop */
 (function(){try{
@@ -1749,4 +1750,3 @@ var w=document.querySelector('.wrap');if(w){w.insertBefore(b,w.firstChild);}else
 </script>
 </body>
 </html>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
