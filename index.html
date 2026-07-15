@@ -1024,9 +1024,9 @@ function _s41FbGate(fbUrl){
   ol.onclick=e=>{if(e.target===ol)ol.remove();};
 }
 
-/* v6.19: ลิงก์แชร์ทุกแบบพก ref ตัวแทนต่อไปด้วย — เพื่อนที่กดจากโพสต์แล้วส่งข้อมูล lead จะขึ้นชื่อตัวแทนเดิม (viral chain attribution) */
+/* v6.25: ลิงก์แชร์ตัดเหลือโดเมนเปล่า ไม่มี archetype key เก่าในลิงก์แล้ว — ยังพก ref ตัวแทนต่อไปด้วย — เพื่อนที่กดจากโพสต์แล้วส่งข้อมูล lead จะขึ้นชื่อตัวแทนเดิม (viral chain attribution) */
 function _s41ShareUrl(){
-  const base=S.archetype?(SURVEY_URL+'og/'+S.archetype+'.html?from='+S.archetype):SURVEY_URL;
+  const base=SURVEY_URL;
   const ref=new URLSearchParams(window.location.search).get('ref');
   if(ref&&/^[A-Za-z0-9_-]{2,20}$/.test(ref))return base+(base.includes('?')?'&':'?')+'ref='+encodeURIComponent(ref);
   return base;
@@ -1133,7 +1133,7 @@ function rWelcome(){
     </div>`:'';
   return`<div class="card" style="text-align:center">
     <div class="s41" style="margin-bottom:24px">✦ Signature 41 ✦</div>
-    <div class="wbadge">S41 Japanese Financial Menu · Health Check v6.24</div>
+    <div class="wbadge">S41 Japanese Financial Menu · Health Check v6.25</div>
     <div class="wtitle" style="font-size:28px">ถ้าสถานะการเงินของคุณ<br>เป็น<span>อาหารญี่ปุ่น</span>... คุณคือจานไหน?</div>
     <div class="dish-parade">${Object.values(ASVG).map(s=>`<span class="dp">${s}</span>`).join('')}</div>
     <div class="wsub">ตรวจ 5 นาที · 12 คำถามตามหลัก CFP® โดยหมอเงิน<br>ค้นพบ<strong>เมนูประจำตัวของคุณ</strong> พร้อม<strong>จุดที่ต้องดูแลก่อน</strong></div>
@@ -1253,7 +1253,7 @@ function rResult(){
   return`<div class="card">
     <div class="topbar">
       <span class="s41">Signature 41</span>
-      <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">Financial Report v6.24 · 160726</span>
+      <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">Financial Report v6.25 · 160726</span>
     </div>
     <div class="rarch">
       <div class="a-svg-wrap">${ASVG[arch.key]||''}</div>
