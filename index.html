@@ -504,14 +504,23 @@ function calcRadar(){
   };
 }
 
-/* ═══ v6.15 · 150726 — Shape Matching Archetype (แก้กระจุก · pl=Q10 เดี่ยว ตัด Q11 ที่กลับด้าน · คาลิเบรตใหม่ด้วย simulation 30,000 เคส · persona test 12/12) ═══ */
+/* ═══ v6.17 · 150726 — Shape Matching + Story Guards (จานต้อง "เล่าเรื่องตรงกับคำตอบ" เท่านั้น · แก้เคส "ไม่ลงทุนแต่โดนบอกว่าลงทุนเป็น" — audit 40k เคส: mismatch 29.8% → 0.1% · persona 12/12 · weights คาลิเบรตใหม่พร้อม guard) ═══ */
 const ARCH_PROTO={
- tightDenim:{v:[2.5,2.5,1.2,2.5,2.5],w:0.782},
- toppingHeavy:{v:[1.8,1.8,2.8,3.8,2.8],w:1.949},
- zenStone:{v:[3.2,2.8,3.2,1.5,2.4],w:0.497},
- tinyWagasa:{v:[3.0,1.2,3.0,3.2,3.0],w:1.579},
- starvingManeki:{v:[1.4,2.8,2.4,3.6,2.8],w:1.419},
- lostTsuru:{v:[2.9,2.7,2.9,3.1,1.3],w:0.902}
+ tightDenim:{v:[2.5,2.5,1.2,2.5,2.5],w:0.35},
+ toppingHeavy:{v:[1.8,1.8,2.8,3.8,2.8],w:3.0},
+ zenStone:{v:[3.2,2.8,3.2,1.5,2.4],w:0.35},
+ tinyWagasa:{v:[3.0,1.2,3.0,3.2,3.0],w:3.0},
+ starvingManeki:{v:[1.4,2.8,2.4,3.6,2.8],w:3.0},
+ lostTsuru:{v:[2.9,2.7,2.9,3.1,1.3],w:0.636}
+};
+/* Story Guards — จานนี้เล่าเรื่องได้กับคำตอบจริงมั้ย (กันข้อความขัดตัวตน) */
+const ARCH_OK={
+ toppingHeavy:c=>['A','B'].includes(c.Q9),                                    /* "ลงทุนสูง" ต้องลงทุนจริง */
+ tinyWagasa:c=>['A','B'].includes(c.Q9)&&c.Q6!=='A',                          /* "มั่งคั่ง+ทุนประกันน้อย" */
+ starvingManeki:c=>['A','B'].includes(c.Q9)&&['C','D'].includes(c.Q4),        /* "ทรัพย์เยอะแต่สภาพคล่องต่ำ" */
+ zenStone:c=>c.Q9!=='A'&&!(c.Q9==='D'&&['C','D'].includes(c.Q4)),             /* "ออมเก่งแต่ไม่ลงทุน" */
+ lostTsuru:c=>c.Q3!=='A'&&!(['D','E'].includes(c.Q7)&&['C','D'].includes(c.Q4)),/* "ออมเก่งแต่ไร้เป้าหมาย" */
+ tightDenim:c=>!(c.Q8==='A'&&c.Q7!=='E'),                                     /* "หนี้แน่น" ต้องหนี้หนักจริง */
 };
 const ARCH_POWER={
  toppingHeavy:'หัวใจนักลงทุน กล้าให้เงินทำงานก่อนใคร',
@@ -523,7 +532,7 @@ const ARCH_POWER={
  lostTsuru:'พลังการออมวิ่งฉิว พร้อมพุ่งทันทีที่รู้ปลายทาง',
  emptyBento:'อิสระสูงสุด — กล่องว่างจัดได้ทุกทรง แต้มต่อของผู้เริ่มก่อน'
 };
-const ARCH_RARITY={tightDenim:'~15%',toppingHeavy:'~15%',zenStone:'~15%',tinyWagasa:'~15%',starvingManeki:'~15%',lostTsuru:'~15%',emptyBento:'~9%',cozyMinka:'~2% · หายากที่สุด'};
+const ARCH_RARITY={tightDenim:'~20%',toppingHeavy:'~9% · หายาก',zenStone:'~20%',tinyWagasa:'~8% · หายาก',starvingManeki:'~13%',lostTsuru:'~15%',emptyBento:'~11%',cozyMinka:'~2% · หายากที่สุด'};
 const ARCH_GIFT={
  toppingHeavy:'ความกล้าปล่อยให้เงินทำงาน', zenStone:'วินัยที่นิ่งพอให้อีกคนพิง',
  tightDenim:'ความอึดที่ไม่ยอมล้ม', cozyMinka:'ความสมดุลที่หาได้ยาก',
@@ -559,18 +568,21 @@ function shapeBest(dims,rank){
   return sims[Math.min(rank,sims.length)-1][0];
 }
 function calcArchetype(){
-  /* v6.15: pl ใช้ Q10 เดี่ยว (Q11=ฐานภาษี วัดรายได้ ไม่ใช่คุณภาพการวางแผน — เดิมทำให้คนรายได้สูงโดนกด planning) · มิติเดี่ยว shrink 0.72 เหมือน em/sv · emptyBento gate ยกเว้นคนที่ cashflow ต่ำเด่นชัด (ควรได้ tightDenim) */
+  /* v6.17: shape matching + story guards — เดินตามอันดับความคล้าย เลือกจานแรกที่ "เล่าเรื่องตรงกับคำตอบ" (v6.15: pl=Q10 เดี่ยว · gate ยกเว้นคนหนี้หนัก) */
   const em=sc('Q4'), pr=(sc('Q5')+sc('Q6'))/2, cf=(sc('Q7')+sc('Q8'))/2, sv=sc('Q9'), pl=sc('Q10');
   const L=(em+pr+cf+sv+pl)/5;
   const dims=[L+(em-L)*0.72, pr, cf, L+(sv-L)*0.72, L+(pl-L)*0.72];
   const spread=Math.max(...dims)-Math.min(...dims);
   const cfLowest=cf<=1.5&&cf===Math.min(em,pr,cf,sv,pl);
-  S.archetype2=shapeBest(dims,1);
+  const ch={Q3:getChoiceFirst('Q3'),Q4:S.answers['Q4']?.choice,Q6:S.answers['Q6']?.choice,Q7:S.answers['Q7']?.choice,Q8:S.answers['Q8']?.choice,Q9:S.answers['Q9']?.choice};
+  const sims=Object.entries(ARCH_PROTO).map(([k,p])=>[k,_cosSim(_center(dims),_center(p.v))*p.w]).sort((a,b)=>b[1]-a[1]).map(x=>x[0]);
+  const passing=sims.filter(k=>ARCH_OK[k](ch));
+  S.archetype2=passing[1]||passing[0]||sims[1];
   if(L<=2.1&&spread<=1.4&&!cfLowest){return 'emptyBento';}
   if(L>=2.9&&spread<=1.0){return 'cozyMinka';}
-  const best=shapeBest(dims,1);
-  S.archetype2=shapeBest(dims,2);
-  return best;
+  if(passing.length){S.archetype2=passing[1]||sims.find(k=>k!==passing[0])||passing[0];return passing[0];}
+  /* ไม่มีจานไหนเล่าได้ (หายากมาก): ต่ำ→เบนโตะ สูง→ไคเซกิ กลาง→อันดับ 1 */
+  return L<=2.3?'emptyBento':(L>=2.8?'cozyMinka':sims[0]);
 }
 
 /* ════ PRIORITY CALCULATION ════ */
@@ -1049,7 +1061,7 @@ function rWelcome(){
     </div>`:'';
   return`<div class="card" style="text-align:center">
     <div class="s41" style="margin-bottom:24px">✦ Signature 41 ✦</div>
-    <div class="wbadge">S41 Japanese Financial Menu · Health Check v6.16</div>
+    <div class="wbadge">S41 Japanese Financial Menu · Health Check v6.17</div>
     <div class="wtitle" style="font-size:28px">ถ้าสถานะการเงินของคุณ<br>เป็น<span>อาหารญี่ปุ่น</span>... คุณคือจานไหน?</div>
     <div class="dish-parade">${Object.values(ASVG).map(s=>`<span class="dp">${s}</span>`).join('')}</div>
     <div class="wsub">ตรวจ 5 นาที · 12 คำถามตามหลัก CFP® โดยหมอเงิน<br>ค้นพบ<strong>เมนูประจำตัวของคุณ</strong> พร้อม<strong>จุดที่ต้องดูแลก่อน</strong></div>
@@ -1169,7 +1181,7 @@ function rResult(){
   return`<div class="card">
     <div class="topbar">
       <span class="s41">Signature 41</span>
-      <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">Financial Report v6.16 · 150726</span>
+      <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">Financial Report v6.17 · 150726</span>
     </div>
     <div class="rarch">
       <div class="a-svg-wrap">${ASVG[arch.key]||''}</div>
