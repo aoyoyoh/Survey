@@ -966,13 +966,11 @@ async function s41ShareToFacebook(){
       return;
     }catch(e){/* ผู้ใช้กดยกเลิก หรือแชร์ไม่ได้ → ไปทาง sharer */}
   }
-  /* เดสก์ท็อป: เตรียมทุกอย่างให้ แล้วพาไป Facebook */
-  try{if(typeof _shareDataUrl==='undefined'||!_shareDataUrl){_shareDataUrl=await generateShareCard();}s41SaveImg();}catch(e){}
-  try{const cap=(arch.caption||'')+'\n\n👇 กดลิงก์นี้ ดูสิว่าเธอคือจานไหน (ฟรี 5 นาที)\n'+shareUrl;
-    if(navigator.clipboard)await navigator.clipboard.writeText(cap);}catch(e){}
-  const w=window.open('https://www.facebook.com/','_blank');
-  if(!w){location.href='https://www.facebook.com/';return;}
-  setTimeout(function(){alert('เตรียมให้ครบแล้ว! 🍱\n\n✅ รูปการ์ดเมนูของคุณ → อยู่ในโฟลเดอร์ Downloads\n✅ แคปชั่น → ก๊อปไว้ให้แล้ว\n\nใน Facebook:\n1. กด "สร้างโพสต์"\n2. กด Ctrl+V วางแคปชั่น\n3. แนบรูปจาก Downloads แล้วโพสต์ได้เลย');},600);
+  /* เดสก์ท็อป: sharer + quote = มีข้อความบนโพสต์อัตโนมัติ */
+  try{navigator.clipboard&&navigator.clipboard.writeText((arch.caption||'')+'\n\n'+shareUrl);}catch(e){}
+  const fbUrl='https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(shareUrl)+'&quote='+encodeURIComponent(arch.caption||'');
+  const w=window.open(fbUrl,'_blank','width=680,height=640');
+  if(!w)location.href=fbUrl;
 }
 
 function s41SaveImg(){
@@ -993,12 +991,12 @@ function s41CopyCaption(){
 }
 
 async function shareToFacebook(){
-  const arch=ARCH[S.archetype];
-  const shareText=arch.caption+'\n\n🔍 ลองทำ Survey ได้เลยที่ → '+SURVEY_URL;
-  try{await navigator.clipboard.writeText(shareText);}catch(e){}
-  /* Use archetype-specific stub URL so FB pulls per-archetype OG image */
+  const arch=ARCH[S.archetype]||{};
   const shareUrl=S.archetype?(SURVEY_URL+'og/'+S.archetype+'.html?from='+S.archetype):SURVEY_URL;
-  window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(shareUrl),'_blank','noopener,noreferrer,width=600,height=500');
+  try{navigator.clipboard&&navigator.clipboard.writeText((arch.caption||'')+'\n\n'+shareUrl);}catch(e){}
+  const fbUrl='https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(shareUrl)+'&quote='+encodeURIComponent(arch.caption||'');
+  const w=window.open(fbUrl,'_blank','width=680,height=640');
+  if(!w)location.href=fbUrl;
 }
 
 /* ════ RENDER ════ */
@@ -1049,7 +1047,7 @@ function rWelcome(){
     </div>`:'';
   return`<div class="card" style="text-align:center">
     <div class="s41" style="margin-bottom:24px">✦ Signature 41 ✦</div>
-    <div class="wbadge">S41 Japanese Financial Menu · Health Check v6.13</div>
+    <div class="wbadge">S41 Japanese Financial Menu · Health Check v6.14</div>
     <div class="wtitle" style="font-size:28px">ถ้าสถานะการเงินของคุณ<br>เป็น<span>อาหารญี่ปุ่น</span>... คุณคือจานไหน?</div>
     <div class="dish-parade">${Object.values(ASVG).map(s=>`<span class="dp">${s}</span>`).join('')}</div>
     <div class="wsub">ตรวจ 5 นาที · 12 คำถามตามหลัก CFP® โดยหมอเงิน<br>ค้นพบ<strong>เมนูประจำตัวของคุณ</strong> พร้อม<strong>จุดที่ต้องดูแลก่อน</strong></div>
@@ -1169,7 +1167,7 @@ function rResult(){
   return`<div class="card">
     <div class="topbar">
       <span class="s41">Signature 41</span>
-      <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">Financial Report v6.13 · 140726</span>
+      <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">Financial Report v6.14 · 150726</span>
     </div>
     <div class="rarch">
       <div class="a-svg-wrap">${ASVG[arch.key]||''}</div>
