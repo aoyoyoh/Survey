@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>นัดหมอเงิน · Money Doctor Visit — S41 Financial Clinic (Step 2)</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FAF7EE; --paper:#FFFFFF; --ink:#2A2A2A; --muted:#7A7A7A; --faint:#B5AFA0;
+  --line:#EDE8DC; --yellow:#FBF4DC; --yellow-hi:#F6ECC2; --yellow-bd:#E8DAAE;
+  --carrier:#C8635A; --carrier-soft:#DDA49C;
+  --sage:#6BA89E; --sage-soft:#93C4B8;
+  --gold:#D4A961; --gold-soft:#E6CB92;
+  --dep:#7991AB; --dep-soft:#A2B3C5;
+  --navy:#1f3b5e; --gold2:#C9A24B;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --thai:'IBM Plex Sans Thai',-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--thai);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:28px 20px 80px}
+
+/* ---------- header ---------- */
+.brand{display:flex;align-items:baseline;gap:10px;justify-content:center;margin-bottom:4px}
+.brand .logo{font-family:var(--serif);font-size:26px;letter-spacing:4px;font-weight:600}
+.brand .logo span{color:var(--carrier)}
+.brand .div{color:var(--faint)}
+.brand .sub{font-size:12px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+.tagline{text-align:center;font-size:12.5px;color:var(--muted);margin-bottom:22px}
+
+/* ---------- journey strip ---------- */
+.journey{display:flex;align-items:stretch;background:var(--paper);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:26px}
+.jstep{flex:1;padding:12px 14px;position:relative;opacity:.55}
+.jstep+.jstep{border-left:1px dashed var(--line)}
+.jstep .no{font-family:var(--serif);font-size:20px;color:var(--faint);line-height:1}
+.jstep .t{font-weight:600;font-size:13.5px;margin-top:2px}
+.jstep .d{font-size:11.5px;color:var(--muted)}
+.jstep.here{opacity:1;background:var(--yellow)}
+.jstep.here .no{color:var(--carrier)}
+.jstep.here::after{content:'คุณอยู่ที่นี่';position:absolute;top:8px;right:10px;font-size:10px;background:var(--carrier);color:#fff;padding:1px 8px;border-radius:99px}
+
+/* ---------- cards ---------- */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:26px 28px;margin-bottom:18px;box-shadow:0 1px 2px rgba(42,42,42,.03)}
+h1{font-family:var(--serif);font-size:32px;font-weight:600;line-height:1.2;color:var(--navy)}
+h2{font-size:19px;font-weight:600;color:var(--navy)}
+
+/* ---------- survey-style line icons (navy stroke + gold accent) ---------- */
+.hero-ico{text-align:center;margin:2px 0 8px}
+.hero-ico svg{width:96px;height:96px;color:var(--navy)}
+h2 svg{width:26px;height:26px;vertical-align:-5px;margin-right:4px;color:var(--navy)}
+.nm svg,.rt svg{width:19px;height:19px;vertical-align:-4px;margin-right:3px;color:var(--navy)}
+.pick .pi svg{width:38px;height:38px;color:var(--navy)}
+.cid .ci-i svg{width:30px;height:30px;color:var(--navy)}
+h3{font-size:15px;font-weight:600;margin:20px 0 2px}
+.serif{font-family:var(--serif)}
+.mut{color:var(--muted);font-size:13px}
+.small{font-size:12px;color:var(--muted)}
+
+/* ---------- talk block ---------- */
+.talk{background:var(--yellow);border:1px solid var(--yellow-bd);border-radius:12px;padding:16px 20px 18px;margin:16px 0 6px}
+.talk .tt{font-size:12px;letter-spacing:1.5px;color:#A9832F;font-weight:600;text-transform:uppercase;margin-bottom:2px}
+.talk .tt::before{content:'💬 '}
+.talk label{margin-top:12px}
+textarea{width:100%;min-height:44px;padding:9px 13px;border:1px solid var(--yellow-bd);border-radius:10px;
+  font-family:var(--thai);font-size:14.5px;background:#fff;color:var(--ink);outline:none;resize:vertical}
+textarea:focus{border-color:var(--gold)}
+
+/* ---------- form ---------- */
+label{display:block;font-size:13.5px;font-weight:500;margin:14px 0 4px}
+label .hint{font-weight:400;color:var(--muted);font-size:12px}
+input[type=text],input[type=number],select{
+  width:100%;padding:10px 14px;border:1px solid var(--line);border-radius:10px;
+  font-family:var(--thai);font-size:16px;background:#FDFCF8;color:var(--ink);outline:none}
+input:focus,select:focus{border-color:var(--gold);background:#fff}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 14px}
+/* ป้ายยาวไม่เท่ากัน → ดันช่องกรอกให้ชิดล่างเสมอ ช่องจะเรียงตรงกันทุกคอลัมน์ */
+.grid2>div,.grid3>div{display:flex;flex-direction:column}
+.grid2>div>.baht,.grid3>div>.baht,
+.grid2>div>input,.grid3>div>input,
+.grid2>div>select,.grid3>div>select{margin-top:auto}
+@media(max-width:620px){.grid2,.grid3{grid-template-columns:1fr}}
+.baht{position:relative}
+.baht input{padding-right:38px}
+.baht::after{content:'฿';position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--faint);font-size:14px}
+
+/* ---------- chips (tuition quick pick) ---------- */
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.chip{border:1px solid var(--line);background:#FDFCF8;border-radius:99px;padding:7px 16px;font-family:var(--thai);
+  font-size:13px;cursor:pointer;transition:all .15s}
+.chip small{display:block;font-size:10.5px;color:var(--muted);line-height:1.2}
+.chip:hover{border-color:var(--gold)}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chip.on small{color:var(--gold-soft)}
+
+/* ---------- module picker ---------- */
+.picks{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+@media(max-width:620px){.picks{grid-template-columns:1fr}}
+.pick{border:1.5px solid var(--line);border-radius:14px;padding:16px 18px;cursor:pointer;background:#FDFCF8;transition:all .15s;position:relative}
+.pick:hover{border-color:var(--gold)}
+.pick .pi{font-size:22px}
+.pick .pt{font-weight:600;font-size:14.5px;margin-top:4px}
+.pick .pd{font-size:12px;color:var(--muted)}
+.pick .tick{position:absolute;top:10px;right:12px;width:56px;height:56px;border-radius:50%;border:2px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:700;color:transparent;background:#fff;font-family:var(--serif);line-height:1}
+.pick{padding-right:80px}
+.pick.on{border-color:var(--sage);background:#F4FAF8}
+.pick.on .tick{background:var(--sage);border-color:var(--sage);color:#fff}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-block;border:none;cursor:pointer;font-family:var(--thai);font-size:15px;font-weight:600;
+  padding:12px 30px;border-radius:99px;transition:transform .12s ease, box-shadow .12s ease}
+.btn:active{transform:scale(.97)}
+.btn-main{background:var(--ink);color:#fff}
+.btn-main:hover{box-shadow:0 4px 14px rgba(42,42,42,.25)}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
+.btn-ghost:hover{border-color:var(--faint)}
+.navrow{display:flex;justify-content:space-between;align-items:center;margin-top:24px;gap:10px}
+
+/* ---------- progress ---------- */
+.prog{display:flex;gap:6px;margin:0 0 18px}
+.prog .p{flex:1;height:5px;border-radius:99px;background:var(--line);transition:background .3s}
+.prog .p.done{background:var(--sage)}
+.prog .p.now{background:var(--gold)}
+.stepmeta{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.stepmeta .no{font-family:var(--serif);font-size:15px;color:var(--faint);letter-spacing:1px}
+
+/* ---------- live gauge ---------- */
+.live{margin-top:18px;background:#F7F9F6;border:1px solid var(--line);border-radius:12px;padding:13px 18px}
+.live .lt{display:flex;justify-content:space-between;font-size:13px;font-weight:600}
+.bar{height:10px;background:#fff;border:1px solid var(--line);border-radius:99px;margin-top:8px;overflow:hidden}
+.bar i{display:block;height:100%;width:0%;border-radius:99px;transition:width .5s cubic-bezier(.2,.8,.2,1)}
+.gapline{font-size:12.5px;color:var(--muted);margin-top:8px}
+
+/* ---------- kid card & education path table ---------- */
+.kid{border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-top:14px;background:#FDFCF8}
+.kid .kh{display:flex;align-items:center;gap:10px;font-weight:600}
+.kid .kh .kn{font-family:var(--serif);font-size:20px;color:var(--gold)}
+.edt{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}
+.edt th,.edt td{padding:5px 4px;text-align:center;border-bottom:1px dashed var(--line)}
+.edt th{color:var(--muted);font-weight:500;font-size:11px}
+.edt td:first-child,.edt th:first-child{text-align:left;white-space:nowrap;font-weight:500}
+.eb{width:100%;border:1px solid var(--line);background:#fff;border-radius:8px;padding:5px 2px;font-family:var(--thai);
+  font-size:11.5px;cursor:pointer;transition:all .12s}
+.eb:hover{border-color:var(--gold)}
+.eb.on{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:600}
+.eb small{display:block;font-size:9.5px;color:var(--muted);font-weight:400;line-height:1.3}
+.eb.on small{color:var(--gold-soft)}
+.rankchips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 4px}
+.rankchip{background:#fff;border:1px solid var(--line);border-radius:99px;padding:5px 14px;font-size:13px}
+.rankchip b{font-family:var(--serif);font-size:16px;color:var(--carrier);margin-right:6px}
+.edt input.ex{width:84px;padding:5px 6px;font-size:12px;text-align:right;border:1px solid var(--line);border-radius:8px;background:#fff}
+.edt tr.passed td{opacity:.4}
+.edt tr.passed .eb{cursor:not-allowed}
+.kidtotal{text-align:right;font-size:13px;margin-top:6px}
+.kidtotal b{font-family:var(--serif);font-size:17px}
+.grandtotal{background:var(--yellow);border:1px solid var(--yellow-bd);border-radius:12px;padding:12px 18px;margin-top:14px;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.grandtotal b{font-family:var(--serif);font-size:22px}
+
+/* ---------- retirement timeline ---------- */
+.tl{display:flex;align-items:flex-start;justify-content:center;gap:4px;flex-wrap:wrap;margin:18px 0 6px}
+.tlc{width:118px;text-align:center}
+.tlc .cir{width:96px;height:96px;border:2.5px solid var(--gold);border-radius:50%;margin:0 auto;
+  display:flex;align-items:center;justify-content:center;background:#fff;box-shadow:0 2px 8px rgba(212,169,97,.15);overflow:hidden}
+.tlc .cir input{width:80px;border:none;background:transparent;font-size:32px;text-align:center;
+  font-family:var(--serif);font-weight:600;outline:none;color:var(--ink);
+  -moz-appearance:textfield;appearance:textfield;padding:0;line-height:1}
+.tlc .cir input::-webkit-outer-spin-button,.tlc .cir input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.tlc .cl{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.3}
+.tla{flex:none;width:96px;text-align:center;padding-top:26px}
+.tla .ar{color:var(--carrier);font-size:20px;line-height:1}
+.tla .al{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.4}
+.tla .al b{color:var(--carrier);font-size:17px;font-family:var(--serif)}
+.lump{background:var(--yellow);border:1px solid var(--yellow-bd);border-radius:12px;padding:12px 18px;margin-top:10px;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.lump b{font-family:var(--serif);font-size:24px}
+.cmp{margin:14px 0 4px}
+.cmp-row{display:flex;align-items:center;gap:10px;margin-top:8px}
+.cmp-l{width:120px;flex:none;font-size:13px;font-weight:500;text-align:right}
+.cmp-bar{flex:1;height:22px;background:var(--bg);border-radius:8px;overflow:hidden}
+.cmp-bar i{display:block;height:100%;width:0;border-radius:8px;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.cmp-v{width:70px;flex:none;font-family:var(--serif);font-size:19px;font-weight:600}
+.cmp-msg{font-size:13px;color:var(--carrier);font-weight:600;margin-top:8px;text-align:center}
+@media(max-width:620px){.tla{width:64px}.tla .al{font-size:10px}.tla .al b{font-size:14px}}
+
+/* ---------- CI disease cards & tier chips ---------- */
+.cids{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 2px}
+.cid{flex:1;min-width:130px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#FDFCF8;text-align:center}
+.cid .ci-i{font-size:20px}
+.cid .ci-n{font-weight:600;font-size:12.5px;margin-top:2px}
+.cid .ci-v{font-family:var(--serif);font-size:16.5px;color:var(--carrier);font-weight:600}
+.cid .ci-d{font-size:10.5px;color:var(--muted)}
+
+/* ---------- result ---------- */
+.scorewrap{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
+.dial{width:190px;height:190px;flex:none}
+.verdict .v1{font-family:var(--serif);font-size:30px;font-weight:600;line-height:1.15}
+.verdict .v2{color:var(--muted);font-size:13.5px;margin-top:6px;max-width:420px}
+.sysrow{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px dashed var(--line)}
+.sysrow:last-child{border-bottom:none}
+.sysrow .nm{width:225px;flex:none;font-size:13.5px;font-weight:500}
+.sysrow .nm .en{display:block;font-size:10.5px;color:var(--faint);letter-spacing:.5px}
+.sysrow .bb{flex:1;height:9px;background:var(--bg);border-radius:99px;overflow:hidden}
+.sysrow .bb i{display:block;height:100%;border-radius:99px;transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.sysrow .pc{width:120px;flex:none;text-align:right;font-size:12.5px;font-weight:600}
+.tagok{color:var(--sage)} .tagmid{color:var(--gold)} .tagbad{color:var(--carrier)}
+.pill{display:inline-block;font-size:10.5px;padding:1px 9px;border-radius:99px;margin-left:6px;vertical-align:1px}
+.pill.ok{background:#EAF3F0;color:var(--sage)} .pill.mid{background:#F9F1DE;color:#A9832F} .pill.bad{background:#F7E8E6;color:var(--carrier)}
+
+.rx{border-left:3px solid var(--carrier);background:#FDFAF6;border-radius:0 12px 12px 0;padding:14px 18px;margin-top:12px}
+.rx.r2{border-color:var(--gold)} .rx.r3{border-color:var(--dep)}
+.rx .rt{font-weight:600;font-size:14.5px}
+.rx .rd{font-size:13px;color:var(--muted);margin-top:2px}
+.rx .amt{font-weight:700;color:var(--ink)}
+
+.quote{border-left:3px solid var(--gold-soft);padding:8px 16px;margin-top:12px}
+.quote .ql{font-size:11px;color:var(--muted);letter-spacing:.5px}
+.quote .qv{font-size:14px;font-style:italic}
+.budgetcard{background:var(--yellow);border:1px solid var(--yellow-bd);border-radius:12px;padding:14px 20px;margin-top:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.budgetcard b{font-size:20px;font-family:var(--serif)}
+
+.signrow{display:flex;justify-content:space-between;align-items:flex-end;margin-top:26px;padding-top:16px;border-top:1px solid var(--line);flex-wrap:wrap;gap:12px}
+.signrow .who{font-size:13px}
+.signrow .who b{font-family:var(--serif);font-size:17px;display:block}
+.next3{background:var(--ink);color:#fff;border-radius:14px;padding:20px 24px;margin-top:18px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+.next3 .t{font-weight:600}
+.next3 .d{font-size:12.5px;opacity:.75}
+.next3 .go{background:var(--gold);color:var(--ink);border:none;border-radius:99px;padding:10px 22px;font-family:var(--thai);font-weight:700;cursor:pointer}
+
+.hide{display:none}
+.printonly{display:none}
+@media print{
+  @page{size:A4;margin:9mm 11mm}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{background:#fff;font-size:12px;line-height:1.5}
+  .journey,.noprint,.tagline{display:none!important}
+  .printonly{display:block}
+  .wrap{padding:0;max-width:none}
+  .brand img{height:72px!important}
+  .card{border:none;box-shadow:none;padding:6px 0;margin-bottom:3px;break-inside:avoid}
+  h1{font-size:20px!important}
+  h1 svg{width:24px!important;height:24px!important;vertical-align:-5px!important}
+  h2{font-size:14.5px}
+  .stepmeta,.small{font-size:10px}
+  /* score */
+  .scorewrap{gap:20px;margin-top:8px!important}
+  .dial{width:118px;height:118px}
+  .verdict .v1{font-size:20px}
+  .verdict .v2{font-size:11.5px;margin-top:3px;max-width:none}
+  /* system rows */
+  .sysrow{padding:4.5px 0;gap:10px}
+  .sysrow .nm{width:190px;font-size:11.5px}
+  .sysrow .nm .en{display:none}
+  .sysrow .nm svg{width:14px;height:14px;vertical-align:-3px}
+  .sysrow .bb{height:7px}
+  .sysrow .pc{width:112px;font-size:10.5px}
+  .pill{font-size:9px;padding:0 7px}
+  /* priorities: 4 อันดับ */
+  .rx{padding:6px 12px;margin-top:5px}
+  .rx .rt{font-size:12px}
+  .rx .rt svg{width:13px;height:13px}
+  .rx .rd{font-size:10.5px;margin-top:1px;line-height:1.45}
+  .budgetcard{padding:7px 14px;margin-top:7px}
+  .budgetcard b{font-size:15px}
+  .budgetcard .small{font-size:10px}
+  /* customer voice: พิมพ์แบบ 2 คอลัมน์ กะทัดรัด */
+  #voiceCard h2{font-size:13px}
+  #voiceHost{display:grid;grid-template-columns:1fr 1fr;gap:2px 16px}
+  .quote{padding:3px 10px;margin-top:4px;break-inside:avoid}
+  .quote .ql{font-size:8.5px}
+  .quote .qv{font-size:10.5px;line-height:1.4}
+  .signrow{margin-top:10px;padding-top:8px}
+  .signrow .who{font-size:10.5px}
+  .signrow .who b{font-size:13px}
+  /* CTA ท้ายกระดาษ */
+  .printcta{background:var(--navy);color:#fff;border-radius:10px;padding:10px 16px;margin-top:8px;
+    font-size:11px;line-height:1.55;text-align:center}
+  .printcta b{color:var(--gold-soft)}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="brand" style="flex-direction:column;gap:2px">
+    <img src="data:image/png;base64,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" alt="SIGNATURE 41 · Customized for One" style="height:136px">
+  </div>
+  <div class="tagline">Financial Clinic · <b style="color:var(--navy)">นัดหมอเงิน — Money Doctor Visit</b> · ตรวจสุขภาพเงินกับหมอเงินประจำตัวคุณ</div>
+
+  <div class="journey">
+    <div class="jstep"><div class="no">01</div><div class="t">เช็คชีพจรเงิน · Money Pulse Check</div><div class="d">ทำเอง 5 นาที · health.s41clinic.com</div></div>
+    <div class="jstep here"><div class="no">02</div><div class="t">นัดหมอเงิน · Money Doctor Visit</div><div class="d">ตรวจตัวต่อตัว แจ้งผลเบื้องต้น รู้จุดเสี่ยงก่อนใคร</div></div>
+    <div class="jstep"><div class="no">03</div><div class="t">สแกนเต็มระบบ · Money MRI</div><div class="d">ตอนต่อไป: รู้วิธีรักษา + แผนที่ปรับตามชีวิตทุกปี · Signature 41 Planner</div></div>
+  </div>
+
+  <!-- ============ SCREEN: PERSONAL / ทำความรู้จัก ============ -->
+  <div class="card scr" id="scr_intro">
+    <div class="stepmeta"><span class="no">FACT FINDING · ทำความรู้จักกัน</span></div>
+    <div class="hero-ico"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7 V17 C15 24 19 28 24 28 C29 28 33 24 33 17 V7"/><line x1="12" y1="7" x2="18" y2="7"/><line x1="30" y1="7" x2="36" y2="7"/><path d="M24 28 V33 C24 37 26.8 39 30.5 39"/><path d="M36.5 44 C33.5 41.2 31.5 39.6 31.5 37.4 C31.5 35.9 32.7 34.8 34.2 34.8 C35.1 34.8 35.9 35.3 36.5 36 C37.1 35.3 37.9 34.8 38.8 34.8 C40.3 34.8 41.5 35.9 41.5 37.4 C41.5 39.6 39.5 41.2 36.5 44 Z" stroke="#C9A24B"/></svg></div>
+    <h1 style="text-align:center">หมอเงินขอฟังหัวใจคุณก่อน</h1>
+    <p class="mut" style="margin-top:6px;text-align:center;max-width:560px;margin-left:auto;margin-right:auto">เหมือนพบแพทย์ — ก่อนตรวจ เราอยากรู้จักชีวิตของคุณก่อน ไม่มีคำตอบถูกผิด คุยกันสบาย ๆ ค่ะ<br>
+    <span class="small">ข้อมูลทั้งหมดอยู่ในเครื่องนี้เท่านั้น ไม่ถูกส่งออกไปที่ใด</span></p>
+
+    <div class="grid2">
+      <div><label>ชื่อ – นามสกุล</label><input type="text" id="cname" placeholder="ชื่อลูกค้า"></div>
+      <div><label>อายุ <span class="hint">ปี</span></label><input type="number" id="cage" placeholder="35"></div>
+      <div><label>อาชีพ / ตำแหน่งงาน</label><input type="text" id="cjob" placeholder="เช่น วิศวกร · ผู้จัดการ"></div>
+      <div><label>สถานที่ทำงาน</label><input type="text" id="cwork" placeholder=""></div>
+    </div>
+
+    <div class="talk">
+      <div class="tt">ชวนคุย · Life Story</div>
+      <label>มองเห็นตัวเองเกษียณที่ที่ทำงานปัจจุบันไหม เพราะอะไร</label>
+      <textarea id="t_retirehere" placeholder="ฟังแล้วจดสั้น ๆ ..."></textarea>
+      <label>เวลาว่าง ชอบทำอะไร</label>
+      <textarea id="t_hobby"></textarea>
+      <label>ความสำเร็จในอดีตที่ภูมิใจที่สุด</label>
+      <textarea id="t_proud"></textarea>
+      <label>คิดอย่างไรกับ "การวางแผนทางการเงิน"</label>
+      <textarea id="t_viewplan"></textarea>
+    </div>
+
+    <h3>ภาพรวมการเงินคร่าว ๆ</h3>
+    <div class="grid3">
+      <div><label>รายได้รวม / เดือน</label><div class="baht"><input type="text" id="cinc" inputmode="numeric" placeholder="80,000"></div></div>
+      <div><label>ค่าใช้จ่ายครอบครัว / เดือน <span class="hint">รวมผ่อน</span></label><div class="baht"><input type="text" id="cexp" inputmode="numeric" placeholder="50,000"></div></div>
+      <div><label>คนที่ต้องดูแล <span class="hint">คน</span></label><input type="number" id="cdep" placeholder="2"></div>
+      <div><label>เงินสำรองฉุกเฉินที่มี <span class="hint">เงินฝากถอนได้ทันที · เกณฑ์ 3–6 เท่าของรายจ่าย</span></label><div class="baht"><input type="text" id="cemer" inputmode="numeric" placeholder="150,000"></div></div>
+    </div>
+    <label>ชื่อที่ปรึกษาผู้ตรวจ</label><input type="text" id="aname" placeholder="ชื่อที่ปรึกษา S41" style="max-width:320px">
+
+    <div class="navrow">
+      <span class="small">ใช้เวลารวม 15–20 นาที · ผลตรวจสร้างทันทีเมื่อเสร็จ</span>
+      <button class="btn btn-main" onclick="toPick()">ถัดไป → เลือกแผนที่อยากคุย</button>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN: MODULE PICKER ============ -->
+  <div class="card scr hide" id="scr_pick">
+    <div class="stepmeta"><span class="no">จัดลำดับความสำคัญ · Priority</span></div>
+    <h1>เรื่องไหนสำคัญกับคุณที่สุด</h1>
+    <p class="mut" style="margin-top:6px">แตะการ์ดเรียงตามความสำคัญ — อันดับ 1 ก่อน แล้วไล่ไปเรื่อย ๆ
+    แผนไหนยังไม่อยากคุยวันนี้ ไม่ต้องแตะ (แตะซ้ำเพื่อยกเลิก) เราจะพาคุณตรวจทีละแผนตามอันดับที่คุณให้เลยค่ะ</p>
+    <div class="picks" id="pickHost"></div>
+    <div class="navrow">
+      <button class="btn btn-ghost" onclick="show('scr_intro')">← ย้อนกลับ</button>
+      <button class="btn btn-main" onclick="startModules()">เริ่มตรวจแผนที่เลือก →</button>
+    </div>
+  </div>
+
+  <!-- module screens generated here -->
+  <div id="modHost"></div>
+
+  <!-- ============ SCREEN: WRAP-UP ============ -->
+  <div class="card scr hide" id="scr_wrap">
+    <div class="stepmeta"><span class="no">ก่อนดูผล · สรุปความรู้สึก</span></div>
+    <h1>คำถามสุดท้าย</h1>
+    <p class="mut" style="margin-top:4px">ลำดับความสำคัญที่คุณเลือกไว้วันนี้</p>
+    <div class="rankchips" id="wrapRecap"></div>
+    <div class="talk">
+      <div class="tt">ชวนคุย · Commitment</div>
+      <label>ใน 2–10 ปีข้างหน้า มีเป้าหมายอะไรอีกบ้าง <span class="hint">บ้าน · รถ · แต่งงาน · ท่องเที่ยว</span></label>
+      <textarea id="t_midgoal"></textarea>
+      <label id="lq_prio">อะไรทำให้แผนอันดับ 1 สำคัญกับคุณที่สุด</label>
+      <textarea id="t_prio"></textarea>
+      <label id="lq_impact">ถ้าแผนอันดับ 1 ยังไม่ถูกจัดการภายใน 1–2 ปีนี้ คุณกังวลอะไรที่สุด</label>
+      <textarea id="t_impact"></textarea>
+    </div>
+    <label>งบวางแผนที่คิดไว้ ประมาณเดือนละเท่าไร</label>
+    <div class="baht" style="max-width:280px"><input type="text" id="cbudget" inputmode="numeric" placeholder="10,000"></div>
+
+    <div class="talk" style="margin-top:18px">
+      <div class="tt">ส่งต่อความห่วงใย</div>
+      <label>อยากส่งต่อการตรวจสุขภาพเงินนี้ ให้ใครตรวจฟรีไหมคะ <span class="hint">ชื่อ · เบอร์โทร · สำหรับทีมงาน ไม่ขึ้นในใบผลตรวจ</span></label>
+      <textarea id="t_refer" placeholder="เช่น พี่สาว 08x-xxx-xxxx"></textarea>
+    </div>
+
+    <div class="navrow">
+      <button class="btn btn-ghost" id="wrapBack">← ย้อนกลับ</button>
+      <button class="btn btn-main" onclick="showResult()">ดูผลวินิจฉัย ✓</button>
+    </div>
+  </div>
+
+  <!-- ============ RESULT ============ -->
+  <div class="scr hide" id="scr_R">
+    <div class="card">
+      <div class="stepmeta"><span class="no">DIAGNOSIS REPORT</span><span class="small" id="rdate"></span></div>
+      <h1 style="font-size:28px"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:34px;height:34px;vertical-align:-6px;margin-right:6px"><path d="M15 7 V17 C15 24 19 28 24 28 C29 28 33 24 33 17 V7"/><line x1="12" y1="7" x2="18" y2="7"/><line x1="30" y1="7" x2="36" y2="7"/><path d="M24 28 V33 C24 37 26.8 39 30.5 39"/><path d="M36.5 44 C33.5 41.2 31.5 39.6 31.5 37.4 C31.5 35.9 32.7 34.8 34.2 34.8 C35.1 34.8 35.9 35.3 36.5 36 C37.1 35.3 37.9 34.8 38.8 34.8 C40.3 34.8 41.5 35.9 41.5 37.4 C41.5 39.6 39.5 41.2 36.5 44 Z" stroke="#C9A24B"/></svg>ใบสรุปผลตรวจเบื้องต้น โดยหมอเงิน</h1>
+      <p class="small" id="rname" style="margin-top:2px"></p>
+      <div class="scorewrap" style="margin-top:18px">
+        <svg class="dial" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="50" fill="none" stroke="var(--line)" stroke-width="9"/>
+          <circle id="dialArc" cx="60" cy="60" r="50" fill="none" stroke="var(--sage)" stroke-width="9"
+            stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="314" transform="rotate(-90 60 60)" style="transition:stroke-dashoffset 1.2s cubic-bezier(.2,.8,.2,1)"/>
+          <text id="dialNum" x="60" y="62" text-anchor="middle" font-size="30" font-weight="600" fill="var(--ink)" font-family="Cormorant Garamond,serif">0</text>
+          <text x="60" y="80" text-anchor="middle" font-size="9" fill="var(--muted)">/ 100</text>
+        </svg>
+        <div class="verdict">
+          <div class="v1" id="vTitle"></div>
+          <div class="v2" id="vDesc"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>ผลตรวจรายระบบ</h2>
+      <p class="small" style="margin-bottom:8px">ความพร้อม = สิ่งที่เตรียมไว้แล้ว ÷ สิ่งที่ควรมี · แสดงเฉพาะแผนที่เลือกตรวจวันนี้ (เงินสำรองฉุกเฉินประเมินให้เสมอ เพราะเป็นพื้นฐานของทุกแผน)</p>
+      <div id="sysHost"></div>
+    </div>
+
+    <div class="card">
+      <h2>แผนลำดับความสำคัญ <span class="small">เรียงตามความเสี่ยง × ผลกระทบต่อครอบครัว</span></h2>
+      <div id="rxHost"></div>
+      <div class="budgetcard" id="budgetCard">
+        <div><div class="small">งบที่คุณพร้อมจัดสรรต่อเดือน</div><b id="budgetVal">—</b></div>
+        <div class="small" style="max-width:340px">ที่ปรึกษาจะออกแบบแผนให้อยู่ในงบนี้ โดยเริ่มจากอันดับ 1 ก่อนเสมอ</div>
+      </div>
+    </div>
+
+    <div class="card" id="voiceCard">
+      <h2>เสียงของคุณจากบทสนทนาวันนี้</h2>
+      <div id="voiceHost"></div>
+      <div class="signrow">
+        <div class="who">หมอเงินผู้ตรวจ<b id="sigA">—</b><span class="small">Financial Doctor · Signature 41</span></div>
+        <div class="who" style="text-align:right">ผู้รับการตรวจ<b id="sigC">—</b><span class="small" id="sigD"></span></div>
+      </div>
+    </div>
+
+    <div class="printonly printcta">
+      คุณเพิ่งผ่าน <b>Step 2 · นัดหมอเงิน (Money Doctor Visit)</b> — ใบนี้บอกว่าคุณเสี่ยงตรงไหน แต่ยังไม่ได้บอกว่าเงินเฟ้อจะกัดเป้าหมายอีกเท่าไหร่ ภาษีขอคืนได้กี่บาท และต้องออมเดือนละเท่าไหร่ถึงพอดี<br>
+      ทั้งหมดอยู่ใน <b>Step 3 · สแกนเต็มระบบ Money MRI</b> — ติดต่อที่ปรึกษาการเงิน S41 เพื่อวิเคราะห์และจัดทำแผนองค์รวมได้เลย
+    </div>
+
+    <div class="next3 noprint">
+      <div>
+        <div class="t">ตัวอย่างตอนต่อไป — Step 3 · สแกนเต็มระบบ Money MRI</div>
+        <div class="d">ใบผลตรวจนี้บอกว่าคุณเสี่ยงตรงไหน — แต่ยังไม่ได้บอกว่า<b>เงินเฟ้อจะกัดเป้าหมายคุณอีกเท่าไหร่ · ภาษีขอคืนได้กี่บาท · และต้องออมเดือนละเท่าไหร่ถึงพอดี</b> — ทั้งหมดรออยู่ใน Step 3 พร้อมแผนที่ปรับตามชีวิตคุณทุกปี</div>
+      </div>
+      <button class="go" onclick="alert('เปิด Signature 41 Planner (Step 3) เพื่อตรวจละเอียดและวางแผนรักษาต่อได้เลยค่ะ')">นัดตรวจละเอียด →</button>
+    </div>
+
+    <div class="navrow noprint">
+      <div>
+        <button class="btn btn-ghost" onclick="show('scr_wrap')">← กลับไปแก้ไข</button>
+        <button class="btn btn-ghost" onclick="location.reload()">↺ ตรวจคนใหม่</button>
+      </div>
+      <button class="btn btn-main" onclick="window.print()">🖨 พิมพ์ / บันทึก PDF</button>
+    </div>
+  </div>
+
+  <div style="text-align:center;font-size:10.5px;color:var(--faint);margin-top:26px">
+    Money Doctor Visit™ · © 2026 Signature 41 — Customized for One · สงวนลิขสิทธิ์
+  </div>
+
+</div>
+
+<script>
+/* ---------------- helpers ---------------- */
+const fmt = n => (isFinite(n)?Math.round(n):0).toLocaleString('en-US');
+const num = id => { const el=document.getElementById(id); if(!el) return 0;
+  const v=parseFloat(String(el.value).replace(/,/g,'')); return isFinite(v)?v:0; };
+const txt = id => { const el=document.getElementById(id); return el?el.value.trim():''; };
+function money(el){ el.addEventListener('input',()=>{ const raw=el.value.replace(/[^\d]/g,'');
+  el.value = raw? Number(raw).toLocaleString('en-US') : ''; }); }
+const colorOf = p => p>=80?'var(--sage)':p>=50?'var(--gold)':'var(--carrier)';
+const tagOf   = p => p>=80?['แข็งแรง','ok']:p>=50?['ควรดูแล','mid']:['เร่งด่วน','bad'];
+
+/* ---------------- survey-style line icons (navy + gold accent) ---------------- */
+const svgWrap = inner => `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;
+const ICON = {
+  edu:    svgWrap('<path d="M24 13 L42 21 L24 29 L6 21 Z"/><path d="M14 24 V32 C14 32 18 35 24 35 C30 35 34 32 34 32 V24"/><line x1="42" y1="21" x2="42" y2="30" stroke="#C9A24B"/>'),
+  retire: svgWrap('<line x1="7" y1="37" x2="41" y2="37"/><circle cx="24" cy="26" r="7" stroke="#C9A24B"/><line x1="24" y1="11" x2="24" y2="15" stroke="#C9A24B"/><line x1="11" y1="20" x2="14" y2="22" stroke="#C9A24B"/><line x1="37" y1="20" x2="34" y2="22" stroke="#C9A24B"/>'),
+  health: svgWrap('<rect x="10" y="10" width="28" height="28" rx="6"/><path d="M24 17 V31 M17 24 H31" stroke="#C9A24B"/>'),
+  ci:     svgWrap('<path d="M24 40 C15 33 9 28 9 20.5 C9 15.8 12.8 12 17.5 12 C20.3 12 22.8 13.4 24 15.5 C25.2 13.4 27.7 12 30.5 12 C35.2 12 39 15.8 39 20.5 C39 28 33 33 24 40 Z"/><path d="M14 25 H19.5 L22.5 20 L26.5 29 L29 25 H34" stroke="#C9A24B"/>'),
+  acc:    svgWrap('<path d="M24 9 L43 40 H5 Z"/><line x1="24" y1="20" x2="24" y2="29" stroke="#C9A24B"/><line x1="24" y1="34" x2="24" y2="34.5" stroke="#C9A24B"/>'),
+  shield: svgWrap('<path d="M24 6 L39 12 V22 C39 32 33 39 24 42 C15 39 9 32 9 22 V12 Z"/><path d="M17 23 L22 28 L31 18" stroke="#C9A24B"/>'),
+  buoy:   svgWrap('<circle cx="24" cy="24" r="14"/><circle cx="24" cy="24" r="6" stroke="#C9A24B"/><line x1="24" y1="10" x2="24" y2="18"/><line x1="24" y1="30" x2="24" y2="38"/><line x1="10" y1="24" x2="18" y2="24"/><line x1="30" y1="24" x2="38" y2="24"/>'),
+  heart:  svgWrap('<path d="M24 40 C15 33 9 28 9 20.5 C9 15.8 12.8 12 17.5 12 C20.3 12 22.8 13.4 24 15.5 C25.2 13.4 27.7 12 30.5 12 C35.2 12 39 15.8 39 20.5 C39 28 33 33 24 40 Z" stroke="#C9A24B"/>'),
+  brain:  svgWrap('<circle cx="24" cy="23" r="12"/><path d="M24 11 V35 M17 15 C20 18 20 28 17 31 M31 15 C28 18 28 28 31 31" stroke="#C9A24B" stroke-width="1.6"/>'),
+};
+
+/* ---------------- systems (result rows) ---------------- */
+const SYS = [
+ {icon:ICON.edu,th:'ทุนการศึกษาบุตร',en:'EDUCATION FUND'},
+ {icon:ICON.retire,th:'เงินเกษียณ',en:'RETIREMENT'},
+ {icon:ICON.health,th:'ค่าห้องโรงพยาบาล',en:'HOSPITAL & HEALTH'},
+ {icon:ICON.ci,th:'โรคร้ายแรง',en:'CRITICAL ILLNESS'},
+ {icon:ICON.acc,th:'อุบัติเหตุ',en:'ACCIDENT'},
+ {icon:ICON.shield,th:'หลักประกันรายได้ครอบครัว',en:'FAMILY INCOME PROTECTION'},
+ {icon:ICON.buoy,th:'เงินสำรองฉุกเฉิน',en:'EMERGENCY FUND'},
+];
+
+/* ---------------- modules (Fact Finding order) ---------------- */
+/* ระดับชั้น: [ชื่อ, จำนวนปี, [รัฐบาล,เอกชน,นานาชาติ,ต่างประเทศ] (ค่ารวมทั้งช่วง), อายุที่เรียนจบช่วงนี้] */
+const LEVELS=[
+ ['อนุบาล',3,[90000,450000,2250000,4500000],6],
+ ['ประถม',6,[180000,1080000,4500000,9000000],12],
+ ['มัธยม',6,[180000,1080000,5400000,9000000],18],
+ ['ป.ตรี',4,[240000,720000,2400000,12000000],22],
+ ['ป.โท*',2,[200000,400000,700000,5000000],24],
+];
+const PATHS=['รัฐบาล','เอกชน','นานาชาติ','ต่างประเทศ'];
+const fmtK=n=>n>=1e6?((n/1e6).toFixed(n%1e6?2:0).replace(/\.?0+$/,''))+'M':(n/1e3)+'K';
+
+const MODS = [
+{ id:'edu', icon:ICON.edu, title:'แผนการศึกษาบุตร', desc:'Education Plan · ทุนเรียนที่มีวันครบกำหนดแน่นอน',
+  sys:[0],
+  talk:[],
+  body:`
+    <label style="max-width:220px">มีลูกกี่คน <span class="hint">กรอกจำนวน</span></label>
+    <input type="number" id="kidCount" min="1" max="12" value="1" onchange="buildKids()" style="max-width:220px">
+    <div id="kidHost"></div>
+    <h3>เส้นทางการศึกษาที่ตั้งเป้า <span class="hint" style="font-weight:400">· ใช้ร่วมกันทุกคน — แตะเลือกแบบของแต่ละชั้น หรือกรอกเองช่องขวาสุด</span></h3>
+    <table class="edt">
+      <tr><th>ระดับชั้น</th>${PATHS.map(p=>`<th>${p}</th>`).join('')}<th>กำหนดเอง (฿)</th></tr>
+      ${LEVELS.map((L,l)=>`
+      <tr>
+        <td>${L[0]} <span class="small">(${L[1]} ปี)</span></td>
+        ${L[2].map((cost,p)=>`<td><button type="button" class="eb" id="eb_${l}_${p}" onclick="selEdu(${l},${p})">รวม ${fmtK(cost)}<small>${fmtK(cost/L[1])} ต่อปี × ${L[1]} ปี</small></button></td>`).join('')}
+        <td><input class="ex" id="ex_${l}" inputmode="numeric" placeholder="กรอกเอง" oninput="selEduCustom(${l})"></td>
+      </tr>`).join('')}
+    </table>
+    <p class="small" style="margin-top:8px">* ป.โท เป็นประมาณการ · ตัวเลขเป็น<b>ค่าเฉลี่ยระดับกลาง ปี 2025</b> (โรงเรียนพรีเมียมสูงกว่านี้ 30–50% — ใช้ช่องกำหนดเองได้) · ยังไม่รวมเงินเฟ้อการศึกษา ~4%/ปี ซึ่งจะคิดละเอียดใน Step 3 · ระบบคิดตาม<b>จำนวนปีที่เหลือเรียนจริง</b>ของลูกแต่ละคน (จากอายุ) — เรียนไปแล้วกี่ปีหักออกให้อัตโนมัติ</p>
+    <div class="grandtotal">
+      <div><div class="small">ทุนการศึกษาที่ต้องมีรวมทุกคน</div><b id="eduTotal">0 ฿</b></div>
+      <div style="min-width:240px"><label style="margin-top:0">เตรียมไว้แล้วรวม <span class="hint">เงินออม + ประกันเพื่อลูก</span></label>
+        <div class="baht"><input type="text" data-money id="s0_have" oninput="liveCalc(0)"></div></div>
+    </div>
+    <input type="hidden" id="s0_need">` },
+
+{ id:'ret', icon:ICON.retire, title:'แผนเกษียณ', desc:'Retirement Plan · วันที่รายได้หยุด แต่ชีวิตยังเดินต่อ',
+  sys:[1],
+  talk:[['t_ret_view','คิดอย่างไรกับ "การวางแผนเกษียณ" · ภาพเกษียณในฝันเป็นแบบไหน']],
+  body:`
+    <div class="tl">
+      <div class="tlc"><div class="cir"><input type="number" id="s1_age" oninput="recalcRet()"></div><div class="cl">อายุปัจจุบัน</div></div>
+      <div class="tla"><div class="ar">⟶</div><div class="al">สะสมเงินออม<br><b id="tlSave">— ปี</b></div></div>
+      <div class="tlc"><div class="cir" style="border-color:var(--carrier)"><input type="number" id="s1_ra" value="60" oninput="recalcRet()"></div><div class="cl">อายุที่จะเกษียณ</div></div>
+      <div class="tla"><div class="ar">⟶</div><div class="al">ใช้เงินก้อนนี้<br><b id="tlUse">— ปี</b></div></div>
+      <div class="tlc"><div class="cir" style="border-color:var(--sage)"><input type="number" id="s1_end" value="85" oninput="recalcRet()"></div><div class="cl">อายุสิ้นสุดกองทุน</div></div>
+    </div>
+    <div class="cmp">
+      <div class="cmp-row"><span class="cmp-l">เวลาเก็บเงิน</span><div class="cmp-bar"><i id="cmpS" style="background:var(--gold)"></i></div><span class="cmp-v" id="cmpSv">—</span></div>
+      <div class="cmp-row"><span class="cmp-l">เวลาใช้เงิน</span><div class="cmp-bar"><i id="cmpU" style="background:var(--carrier)"></i></div><span class="cmp-v" id="cmpUv">—</span></div>
+      <div class="cmp-msg" id="cmpMsg"></div>
+    </div>
+    <div class="grid2">
+      <div><label>ค่าใช้จ่ายหลังเกษียณ / เดือน <span class="hint">~70% ของปัจจุบัน · ค่าเงินวันนี้</span></label><div class="baht"><input type="text" data-money id="s1_re" oninput="recalcRet()"></div></div>
+      <div><label>เตรียมไว้แล้ว <span class="hint">PVD · RMF · บำนาญ · เงินออม</span></label><div class="baht"><input type="text" data-money id="s1_have" oninput="recalcRet()"></div></div>
+    </div>
+    <div class="lump"><div><div class="small">เงินก้อนที่ต้องมี ณ วันเกษียณ</div><b id="retLump">0 ฿</b></div>
+      <div class="small" style="max-width:300px">ยังไม่รวมเงินเฟ้อ — จะคิดละเอียดพร้อมผลตอบแทนการลงทุนใน Step 3</div></div>` },
+
+{ id:'hlt', icon:ICON.health, title:'แผนสุขภาพ & โรคร้ายแรง', desc:'Health & Critical Illness · ค่าห้อง ค่ารักษา และวันที่รายได้หยุดเพราะป่วย',
+  sys:[2,3],
+  talk:[['t_h_wel','ปัจจุบันใช้สวัสดิการอะไรอยู่ · มีประกันสุขภาพอยู่แล้วเท่าไร แบบไหน'],
+        ['t_h_gene','ครอบครัวมีประวัติโรคทางกรรมพันธุ์ไหม (เบาหวาน · ความดัน · มะเร็ง · หัวใจ)']],
+  body:`
+    <h3>ค่าห้องโรงพยาบาล <span class="hint" style="font-weight:400">· เลือกระดับ รพ. ตาม lifestyle เพื่อเห็นภาพ</span></h3>
+    <div class="chips">
+      <button type="button" class="chip" id="hch0" onclick="pickHosp(0)">รัฐบาล<small>~1,500 ฿/คืน</small></button>
+      <button type="button" class="chip" id="hch1" onclick="pickHosp(1)">เอกชน<small>~6,000 ฿/คืน</small></button>
+      <button type="button" class="chip" id="hch2" onclick="pickHosp(2)">เอกชนระดับสูง<small>~12,000 ฿/คืน</small></button>
+    </div>
+    <div class="grid2">
+      <div><label>โรงพยาบาลที่ต้องการใช้</label><input type="text" id="s2_hosp" placeholder="ชื่อ รพ."></div>
+      <div><label>ค่าห้องที่ต้องการ / คืน <span class="hint">ปรับเองได้</span></label><div class="baht"><input type="text" data-money id="s2_need" oninput="liveCalc(2)"></div></div>
+      <div><label>ค่าห้องที่ประกัน + สวัสดิการจ่ายให้ / คืน <span class="hint">สิ่งที่มีอยู่แล้ว</span></label><div class="baht"><input type="text" data-money id="s2_have" oninput="liveCalc(2)"></div></div>
+    </div>
+    <div class="live" id="live2"><div class="lt"><span>ความพร้อมค่าห้อง</span><span id="lp2">—</span></div>
+      <div class="bar"><i id="lb2"></i></div><div class="gapline" id="lg2">กรอกตัวเลขแล้ว gap จะขึ้นทันที</div></div>
+
+    <h3>โรคร้ายแรง — 3 โรคที่ค่าใช้จ่ายสูงที่สุด</h3>
+    <div class="cids">
+      <div class="cid"><div class="ci-i">${ICON.ci}</div><div class="ci-n">มะเร็ง</div><div class="ci-v">1.5–4 ล้าน</div><div class="ci-d">รักษาต่อเนื่อง · ยามุ่งเป้า</div></div>
+      <div class="cid"><div class="ci-i">${ICON.heart}</div><div class="ci-n">โรคหัวใจ</div><div class="ci-v">1–2.5 ล้าน</div><div class="ci-d">ผ่าตัด · บอลลูน · ติดตามผล</div></div>
+      <div class="cid"><div class="ci-i">${ICON.brain}</div><div class="ci-n">หลอดเลือดสมอง</div><div class="ci-v">1–3 ล้าน</div><div class="ci-d">กายภาพ · คนดูแลระยะยาว</div></div>
+    </div>
+    <div class="talk" style="margin-top:10px">
+      <div class="tt" style="margin-bottom:6px">ค่าใช้จ่ายที่คนมักลืมคิด</div>
+      <p style="font-size:13px;margin:0">นอกจากค่ารักษาตามใบเสร็จ ยังมี <b>ค่าเดินทางไป รพ.</b> · <b>รายได้ที่หายไปเพราะทำงานไม่ได้</b> · <b>ค่ากายภาพ/บำบัดต่าง ๆ</b> · <b>Palliative care</b></p>
+      <p style="font-size:13px;margin:8px 0 0"><b style="color:var(--carrier)">ถ้าถึงขั้นติดเตียง / ทุพพลภาพถาวร (TPD)</b> (จากเจ็บป่วยหรืออุบัติเหตุ):
+      ค่าจ้างพยาบาลดูแล · ค่าแพมเพิร์ส · ค่าใช้จ่ายบ้านยังเดินต่อแต่รายได้เราหยุด · ค่าเดินทางหาหมอ · เบี้ยประกันสุขภาพที่ยังต้องจ่ายต่อทุกปี
+      — <b>ภาระที่ยิ่งใหญ่ที่สุดตกกับคนที่เหลืออยู่</b> แต่ข่าวดีคือความเสี่ยงนี้<b style="color:var(--sage)">ปิดได้ด้วยเบี้ย TPD ที่ถูกมาก ๆ</b></p>
+    </div>
+    <div class="grid2">
+      <div><label>ถ้าเป็นขึ้นมา — รวมค่ารักษานอก รพ. และรายได้ที่หายไประหว่างรักษา คิดว่าต้องมีเงินกองทุนกี่ล้าน</label><div class="baht"><input type="text" data-money id="s3_need" oninput="liveCalc(3)"></div></div>
+      <div><label>ความคุ้มครองโรคร้ายแรงที่มี</label><div class="baht"><input type="text" data-money id="s3_have" oninput="liveCalc(3)"></div></div>
+    </div>` },
+
+{ id:'acc', icon:ICON.acc, title:'แผนอุบัติเหตุ', desc:'Accident Plan · ความเสี่ยงเดียวที่ไม่เลือกอายุและสุขภาพ',
+  sys:[4],
+  talk:[['t_a_view','งานหรือไลฟ์สไตล์ มีความเสี่ยงอุบัติเหตุแค่ไหน (ขับรถ · มอเตอร์ไซค์ · เดินทางบ่อย · กีฬา)'],
+        ['t_a_work','ถ้าเกิดอุบัติเหตุ แขนหัก ขาหัก ทำงานไม่ได้ชั่วคราว — รายได้กระทบไหม ใครดูแลงานแทน'],
+        ['t_a_fatal','มีความเสี่ยงเสียชีวิตจากอุบัติเหตุไหม — ทุนคุ้มครองชีวิตแบบอุบัติเหตุ เบี้ยถูกกว่าประกันชีวิตปกติมาก']],
+  body:`
+    <div class="grid2">
+      <div><label>วงเงินค่ารักษาอุบัติเหตุที่ต้องการ ต่อครั้ง <span class="hint">รวมรักษาหลัง 24 ชม. / follow-up · เช่น แขนหัก ต้อง X-ray · MRI · กายภาพ ≈ 50,000–200,000</span></label><div class="baht"><input type="text" data-money id="s4_need" oninput="liveCalc(4)"></div></div>
+      <div><label>วงเงินอุบัติเหตุที่มี <span class="hint">PA + สวัสดิการ</span></label><div class="baht"><input type="text" data-money id="s4_have" oninput="liveCalc(4)"></div></div>
+    </div>` },
+
+{ id:'pro', icon:ICON.shield, title:'แผนคุ้มครองรายได้ครอบครัว', desc:'Protection Plan · ถ้ารายได้ของคุณหยุดลง ครอบครัวไปต่ออย่างไร',
+  sys:[5],
+  talk:[['t_p_imp','ความสามารถหารายได้ของคุณ สำคัญกับครอบครัวแค่ไหน'],
+        ['t_p_resp','ต้องอุปการะใครบ้าง กี่คน (พ่อแม่ · คู่สมรส · ลูก · คนอื่น)'],
+        ['t_p_years','คิดว่าจะต้องดูแลพวกเขาไปอีกกี่ปี · ถ้าวันหนึ่งคุณไม่อยู่ ใครจะดูแลต่อ']],
+  body:`
+    <div class="grid2">
+      <div><label>ทุกวันนี้จ่ายให้คนในบ้าน/คนที่ดูแล เดือนละเท่าไร <span class="hint">ถ้าเว้นว่าง ใช้ค่าใช้จ่ายครอบครัวจากหน้าแรก</span></label><div class="baht"><input type="text" data-money id="s5_mo" oninput="liveCalc(5)"></div></div>
+      <div><label>ถ้าคุณไม่อยู่ ครอบครัวต้องใช้เวลากี่ปี กว่าจะยืนได้ด้วยตัวเอง <span class="hint">แนะนำอย่างน้อย 5 ปี</span></label><input type="number" id="s5_yrs" value="5" oninput="liveCalc(5)"></div>
+      <div><label>หนี้สินคงเหลือทั้งหมด <span class="hint">บ้าน + รถ + อื่น ๆ</span></label><div class="baht"><input type="text" data-money id="s5_debt" oninput="liveCalc(5)"></div></div>
+      <div><label>เงินเก็บสภาพคล่องที่มี <span class="hint">เงินฝาก หุ้น กองทุน ทอง</span></label><div class="baht"><input type="text" data-money id="s5_liq" oninput="liveCalc(5)"></div></div>
+      <div><label>ทุนประกันชีวิตที่มีอยู่ <span class="hint">รวมทุกกรมธรรม์</span></label><div class="baht"><input type="text" data-money id="s5_life" oninput="liveCalc(5)"></div></div>
+    </div>
+    <p class="small" style="margin-top:6px">เป้าหมาย = เงินที่จ่ายดูแลครอบครัว/ปี × จำนวนปีที่ต้องยืนให้ได้ + หนี้สิน</p>` },
+];
+
+/* ---------------- system calculations ---------------- */
+function calcSys(k){
+  const exp=num('cexp')||0;
+  switch(k){
+    case 0: return {need:num('s0_need'), have:num('s0_have'), unit:'฿'};
+    case 1: { const ra=num('s1_ra')||60, end=num('s1_end')||85, now=num('s1_age')||num('cage')||35;
+              const yrs=Math.max(end-ra,0);
+              return {need:num('s1_re')*12*yrs, have:num('s1_have'), unit:'฿',
+                      extra:`เหลือเวลาออม ${Math.max(ra-now,0)} ปี`}; }
+    case 2: return {need:num('s2_need'), have:num('s2_have'), unit:'฿/คืน'};
+    case 3: return {need:num('s3_need'), have:num('s3_have'), unit:'฿'};
+    case 4: return {need:num('s4_need'), have:num('s4_have'), unit:'฿'};
+    case 5: { const base=num('s5_mo')||exp;
+              return {need:base*12*(num('s5_yrs')||5)+num('s5_debt'), have:num('s5_liq')+num('s5_life'), unit:'฿'}; }
+    case 6: return {need:exp*6, have:num('cemer'), unit:'฿', extra:'เกณฑ์ 3–6 เท่าของรายจ่าย/เดือน'};
+  }
+}
+function sysWeight(k){
+  const dep=num('cdep');
+  return [13,14,10,18,10,dep>0?30:12,12][k];
+}
+
+/* ---------------- module picker : tap = priority order ---------------- */
+let order = [];               // module ids เรียงตามอันดับที่ลูกค้าแตะ
+const pickHost=document.getElementById('pickHost');
+MODS.forEach(m=>{
+  pickHost.insertAdjacentHTML('beforeend',
+  `<div class="pick" id="pk_${m.id}" onclick="togglePick('${m.id}')">
+     <div class="tick" id="tk_${m.id}"></div><div class="pi">${m.icon}</div>
+     <div class="pt">${m.title}</div><div class="pd">${m.desc}</div></div>`);
+});
+function togglePick(id){
+  const i=order.indexOf(id);
+  if(i>=0) order.splice(i,1); else order.push(id);
+  renderPicks();
+}
+function renderPicks(){
+  MODS.forEach(m=>{
+    const i=order.indexOf(m.id);
+    document.getElementById('pk_'+m.id).classList.toggle('on',i>=0);
+    document.getElementById('tk_'+m.id).textContent = i>=0 ? (i+1) : '';
+  });
+}
+const isPicked = id => order.includes(id);
+const custRankOf = k => { // อันดับที่ลูกค้าให้ ของระบบ k
+  const m=MODS.find(m=>m.sys.includes(k));
+  if(!m) return 0;
+  const i=order.indexOf(m.id); return i>=0? i+1 : 0; };
+
+/* ---------------- value persistence (ย้อนกลับแก้ได้ ไม่หาย) ---------------- */
+const VALS={};
+document.addEventListener('input',e=>{ if(e.target.id) VALS[e.target.id]=e.target.value; });
+function restoreVals(root){
+  root.querySelectorAll('input,textarea,select').forEach(el=>{
+    if(el.id && VALS[el.id]!==undefined) el.value=VALS[el.id];
+  });
+}
+
+/* ---------------- education: เส้นทางร่วมกัน + ข้อมูลรายลูก ---------------- */
+let eduSel={};   // eduSel[l] = 0-3 (path) | -1 (กรอกเอง) — เส้นทางเดียว ใช้กับลูกทุกคน
+function buildKids(){
+  const n=parseInt(document.getElementById('kidCount').value)||1;
+  const host=document.getElementById('kidHost'); if(!host) return;
+  host.innerHTML='';
+  for(let c=1;c<=n;c++){
+    host.insertAdjacentHTML('beforeend',`
+    <div class="kid">
+      <div class="kh"><span class="kn">${c}</span> ลูกคนที่ ${c}
+        <span class="small" style="font-weight:400;margin-left:auto" id="krem${c}"></span></div>
+      <div class="grid3">
+        <div><label>ชื่อเล่น</label><input type="text" id="k${c}_name" oninput="recalcEdu()"></div>
+        <div><label>อายุ <span class="hint">ปี</span></label><input type="number" id="k${c}_age" oninput="recalcEdu()"></div>
+        <div><label>อาชีพในฝันของลูก</label><input type="text" id="k${c}_dream"></div>
+      </div>
+      <div class="grid2">
+        <div><label>วิชาโปรด / สิ่งที่ลูกชอบ</label><input type="text" id="k${c}_fav"></div>
+        <div><label>เตรียมเรื่องการศึกษาของลูกคนนี้ไว้อย่างไรบ้าง</label><input type="text" id="k${c}_prep"></div>
+      </div>
+      <div class="kidtotal">ทุนที่ต้องเตรียมสำหรับคนนี้: <b id="kt${c}">0 ฿</b></div>
+    </div>`);
+  }
+  restoreVals(host);
+  applyEduSel(); recalcEdu();
+}
+function selEdu(l,p){
+  eduSel[l] = (eduSel[l]===p)? undefined : p;          // แตะซ้ำ = ยกเลิก
+  if(eduSel[l]!==undefined){ const ex=document.getElementById('ex_'+l); if(ex){ ex.value=''; VALS[ex.id]=''; } }
+  applyEduSel(); recalcEdu();
+}
+function selEduCustom(l){
+  eduSel[l] = num('ex_'+l)>0 ? -1 : undefined;
+  applyEduSel(); recalcEdu();
+}
+function applyEduSel(){
+  LEVELS.forEach((L,l)=>L[2].forEach((_,p)=>{
+    const b=document.getElementById(`eb_${l}_${p}`);
+    if(b) b.classList.toggle('on', eduSel[l]===p);
+  }));
+}
+function levelCost(l){
+  const sel=eduSel[l];
+  if(sel===-1) return num('ex_'+l);
+  if(sel!==undefined) return LEVELS[l][2][sel];
+  return 0;
+}
+function recalcEdu(){
+  const n=parseInt(document.getElementById('kidCount')?.value)||0;
+  let grand=0;
+  for(let c=1;c<=n;c++){
+    const age=num(`k${c}_age`);
+    let tot=0; const remain=[];
+    LEVELS.forEach((L,l)=>{
+      const cost=levelCost(l); if(cost<=0) return;
+      const years=L[1], endAge=L[3];
+      let remYrs=years;                                 // ไม่กรอกอายุ = นับเต็ม
+      if(age>0) remYrs=Math.min(Math.max(endAge-age,0),years);   // เหลือเรียนอีกกี่ปีจริง ๆ
+      if(remYrs<=0) return;                             // ผ่านชั้นนี้แล้ว
+      tot += cost*remYrs/years;                         // คิดตามสัดส่วนปีที่เหลือ
+      remain.push(L[0].replace('*','')+(remYrs<years?` อีก ${remYrs} ปี`:''));
+    });
+    tot=Math.round(tot);
+    const kt=document.getElementById('kt'+c); if(kt) kt.textContent=fmt(tot)+' ฿';
+    const kr=document.getElementById('krem'+c);
+    if(kr) kr.textContent = remain.length? 'นับ: '+remain.join(' · ') : '';
+    grand+=tot;
+  }
+  const needEl=document.getElementById('s0_need');
+  if(needEl){ needEl.value=grand; VALS['s0_need']=String(grand); }
+  const gt=document.getElementById('eduTotal'); if(gt) gt.textContent=fmt(grand)+' ฿';
+  liveCalc(0);
+}
+
+/* ---------------- hospital tier quick-pick ---------------- */
+const HOSP=[1500,6000,12000];
+function pickHosp(i){
+  HOSP.forEach((_,j)=>{ const c=document.getElementById('hch'+j); if(c) c.classList.toggle('on',j===i); });
+  const el=document.getElementById('s2_need');
+  if(el){ el.value=fmt(HOSP[i]); VALS['s2_need']=el.value; liveCalc(2); }
+}
+
+/* ---------------- retirement timeline ---------------- */
+function recalcRet(){
+  const now=num('s1_age')||num('cage')||0, ra=num('s1_ra')||60, end=num('s1_end')||85;
+  const save=Math.max(ra-now,0), use=Math.max(end-ra,0);
+  const s=document.getElementById('tlSave'), u=document.getElementById('tlUse'), lp=document.getElementById('retLump');
+  if(s) s.textContent=(now?save:'—')+' ปี';
+  if(u) u.textContent=use+' ปี';
+  if(lp) lp.textContent=fmt(num('s1_re')*12*use)+' ฿';
+  /* แท่งเทียบ เก็บเงิน vs ใช้เงิน */
+  const mx=Math.max(save,use,1);
+  const cs=document.getElementById('cmpS'), cu=document.getElementById('cmpU');
+  if(cs){ cs.style.width=(save/mx*100)+'%'; cu.style.width=(use/mx*100)+'%';
+    document.getElementById('cmpSv').textContent=(now?save:'—')+' ปี';
+    document.getElementById('cmpUv').textContent=use+' ปี';
+    const msg=document.getElementById('cmpMsg');
+    msg.textContent = (now && use>save)
+      ? `⚠ เวลาใช้เงินยาวกว่าเวลาเก็บเงินถึง ${use-save} ปี — ทุกปีที่เริ่มช้า ภาระออมต่อเดือนยิ่งสูงขึ้น`
+      : (now && save>use ? `มีเวลาเก็บมากกว่าเวลาใช้ ${save-use} ปี — เริ่มตอนนี้ได้เปรียบที่สุด` : '');
+  }
+  liveCalc(1);
+}
+
+/* ---------------- build module screens ---------------- */
+let flow=[];
+function startModules(){
+  const chosen=order.map(id=>MODS.find(m=>m.id===id));   // ตามอันดับที่ลูกค้ากด
+  if(chosen.length===0){ alert('แตะเลือกอย่างน้อย 1 แผน ตามลำดับความสำคัญค่ะ'); return; }
+  const host=document.getElementById('modHost'); host.innerHTML='';
+  chosen.forEach((m,i)=>{
+    const talks=m.talk.map(([id,q])=>`<label>${q}</label><textarea id="${id}"></textarea>`).join('');
+    const gauges=m.sys.filter(k=>k!==2&&k!==3).map(k=>`
+      <div class="live" id="live${k}"><div class="lt"><span>ความพร้อมด้านนี้</span><span id="lp${k}">—</span></div>
+        <div class="bar"><i id="lb${k}"></i></div><div class="gapline" id="lg${k}">กรอกตัวเลขแล้วผลจะขยับให้ลูกค้าเห็นทันที</div></div>`).join('');
+    const extraGauge = m.id==='hlt' ? `
+      <div class="live" id="live3x"><div class="lt"><span>ความพร้อมโรคร้ายแรง</span><span id="lp3">—</span></div>
+        <div class="bar"><i id="lb3"></i></div><div class="gapline" id="lg3">กรอกตัวเลขแล้วผลจะขยับทันที</div></div>` : gauges;
+    host.insertAdjacentHTML('beforeend',`
+    <div class="card scr hide" id="scr_${m.id}">
+      <div class="prog">${chosen.map((_,j)=>`<div class="p ${j<i?'done':j===i?'now':''}"></div>`).join('')}</div>
+      <div class="stepmeta"><span class="no">แผนที่ ${i+1} / ${chosen.length} · คุณให้ความสำคัญอันดับ ${i+1}</span></div>
+      <h2>${m.icon} ${m.title}</h2>
+      <p class="mut" style="margin-top:2px">${m.desc}</p>
+      ${talks?`<div class="talk"><div class="tt">ชวนคุยก่อนดูตัวเลข</div>${talks}</div>`:''}
+      ${m.body}
+      ${extraGauge}
+      <div class="navrow">
+        <button class="btn btn-ghost" onclick="navMod(${i-1})">← ย้อนกลับ</button>
+        <button class="btn btn-main" onclick="navMod(${i+1})">${i===chosen.length-1?'ไปสรุปผล →':'แผนถัดไป →'}</button>
+      </div>
+    </div>`);
+  });
+  document.querySelectorAll('#modHost [data-money], #modHost input.ex').forEach(money);
+  restoreVals(host);                                     // ย้อนกลับมาแล้วค่าเดิมยังอยู่
+  if(document.getElementById('kidHost')) buildKids();
+  if(document.getElementById('s1_age')){
+    const a=document.getElementById('s1_age');
+    if(!a.value) a.value = VALS['s1_age'] || document.getElementById('cage').value || '';
+    recalcRet();
+  }
+  [2,3,4,5].forEach(k=>{ if(document.getElementById('lb'+k)) liveCalc(k); });
+  flow=chosen.map(m=>'scr_'+m.id);
+  navMod(0);
+}
+function navMod(i){
+  if(i<0){ show('scr_pick'); return; }
+  if(i>=flow.length){ document.getElementById('wrapBack').onclick=()=>navMod(flow.length-1); prepWrap(); show('scr_wrap'); return; }
+  show(flow[i]);
+}
+/* หน้าสรุป: โชว์อันดับที่เลือกไว้ + ปรับคำถามให้เจาะอันดับ 1 */
+function prepWrap(){
+  const rc=document.getElementById('wrapRecap');
+  rc.innerHTML = order.map((id,i)=>{ const m=MODS.find(m=>m.id===id);
+    return `<span class="rankchip"><b>${i+1}</b>${m.title.replace('แผน','')}</span>`; }).join('');
+  const top=MODS.find(m=>m.id===order[0]);
+  if(top){
+    const nm=top.title.replace('แผน','');
+    document.getElementById('lq_prio').textContent=`อันดับ 1 ของคุณคือ "${nm}" — อะไรทำให้เรื่องนี้สำคัญกับคุณที่สุด`;
+    document.getElementById('lq_impact').textContent=`ถ้า "${nm}" ยังไม่ถูกจัดการภายใน 1–2 ปีนี้ คุณกังวลอะไรที่สุด`;
+  }
+}
+/* ---------------- navigation ---------------- */
+function show(id){
+  document.querySelectorAll('.scr').forEach(e=>e.classList.add('hide'));
+  document.getElementById(id).classList.remove('hide');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function toPick(){ show('scr_pick'); }
+
+/* ---------------- live gauges ---------------- */
+function liveCalc(k){
+  const r=calcSys(k); if(!document.getElementById('lb'+k)) return;
+  const p = r.need>0 ? Math.min(r.have/r.need*100,100) : 0;
+  const lb=document.getElementById('lb'+k), lp=document.getElementById('lp'+k), lg=document.getElementById('lg'+k);
+  lb.style.width=(r.need>0?p:0)+'%'; lb.style.background=colorOf(p);
+  lp.textContent = r.need>0 ? Math.round(p)+'%' : '—';
+  lg.textContent = r.need>0
+    ? `เป้าหมาย ${fmt(r.need)} ${r.unit} · เตรียมแล้ว ${fmt(r.have)} ${r.unit}` +
+      (r.have<r.need?` · ยังขาด ≈ ${fmt(r.need-r.have)} ${r.unit}`:' · ครบแล้ว 🎉') +
+      (r.extra?` · ${r.extra}`:'')
+    : 'กรอกตัวเลขแล้วผลจะขยับให้ลูกค้าเห็นทันที';
+}
+
+/* ---------------- result ---------------- */
+function showResult(){
+  const dep=num('cdep'), age=num('cage')||35;
+  const activeSys={};
+  MODS.forEach(m=>{ if(isPicked(m.id)) m.sys.forEach(k=>activeSys[k]=true); });
+  activeSys[6]=true;   // เงินสำรองฉุกเฉิน: พื้นฐานของทุกแผน ประเมินเสมอ
+
+  let wSum=0,pSum=0; const rows=[];
+  SYS.forEach((s,k)=>{
+    if(!activeSys[k]){ rows.push({k,off:true}); return; }
+    const r=calcSys(k);
+    if(!r || r.need<=0){ rows.push({k,empty:true}); return; }
+    const p=Math.min(r.have/r.need*100,100), w=sysWeight(k);
+    wSum+=w; pSum+=p*w;
+    rows.push({k,p,w,gap:Math.max(r.need-r.have,0),r});
+  });
+  const score=wSum>0?Math.round(pSum/wSum):0;
+
+  show('scr_R');
+  const arc=document.getElementById('dialArc');
+  arc.style.stroke=colorOf(score);
+  requestAnimationFrame(()=>{ arc.style.strokeDashoffset=314-(314*score/100); });
+  let c=0; const t=setInterval(()=>{ c=Math.min(c+Math.max(1,Math.round(score/40)),score);
+    document.getElementById('dialNum').textContent=c; if(c>=score)clearInterval(t); },25);
+
+  const [vt,vd]=score>=80
+    ?['สุขภาพการเงินแข็งแรง','โครงสร้างความคุ้มครองโดยรวมอยู่ในเกณฑ์ดีมาก เหลือเพียงปรับจูนรายละเอียดและติดตามผลรายปีใน Step 3']
+    :score>=50
+    ?['แข็งแรงบางส่วน — มีจุดที่ควรดูแล','พื้นฐานหลายด้านทำได้ดี แต่มีบางระบบที่ยังเปราะบาง หากเกิดเหตุไม่คาดฝันในจุดนั้นจะกระทบแผนทั้งหมด']
+    :['มีความเสี่ยงที่ควรรีบดูแล','ความคุ้มครองหลายด้านยังต่ำกว่าที่ครอบครัวต้องการจริง ข่าวดีคือทุกช่องว่างมีวิธีอุด และเริ่มวันนี้ต้นทุนถูกที่สุด'];
+  document.getElementById('vTitle').textContent=vt;
+  document.getElementById('vDesc').textContent=vd;
+
+  const today=new Date().toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('rdate').textContent=today;
+  const cn=txt('cname')||'—', an=txt('aname')||'—', job=txt('cjob');
+  document.getElementById('rname').textContent=`คุณ${cn} · อายุ ${age} ปี${job?' · '+job:''} · ผู้อยู่ในความดูแล ${dep} คน`;
+  document.getElementById('sigA').textContent=an;
+  document.getElementById('sigC').textContent='คุณ'+cn;
+  document.getElementById('sigD').textContent=today;
+
+  /* system rows */
+  document.getElementById('sysHost').innerHTML=rows.map(row=>{
+    const s=SYS[row.k];
+    if(row.off) return `<div class="sysrow" style="opacity:.5"><div class="nm">${s.icon} ${s.th}<span class="en">${s.en}</span></div>
+      <div class="bb"><i style="width:0"></i></div><div class="pc" style="color:var(--faint)">เก็บไว้คุยครั้งหน้า</div></div>`;
+    if(row.empty) return `<div class="sysrow"><div class="nm">${s.icon} ${s.th}<span class="en">${s.en}</span></div>
+      <div class="bb"><i style="width:0"></i></div><div class="pc" style="color:var(--faint)">ไม่ได้ระบุตัวเลข</div></div>`;
+    const [tg,cl]=tagOf(row.p);
+    return `<div class="sysrow"><div class="nm">${s.icon} ${s.th}<span class="en">${s.en}</span></div>
+      <div class="bb"><i style="width:0;background:${colorOf(row.p)}" data-w="${row.p}"></i></div>
+      <div class="pc ${row.p>=80?'tagok':row.p>=50?'tagmid':'tagbad'}">${Math.round(row.p)}%<span class="pill ${cl}">${tg}</span></div></div>`;
+  }).join('');
+  setTimeout(()=>document.querySelectorAll('.sysrow .bb i[data-w]').forEach(el=>el.style.width=el.dataset.w+'%'),80);
+
+  /* priority rx */
+  const needs=rows.filter(r=>!r.off&&!r.empty&&r.p<100&&r.gap>0)
+    .sort((a,b)=>(100-b.p)*b.w-(100-a.p)*a.w).slice(0,4);
+  const whyMap={
+    5:`มีผู้อยู่ในความดูแล ${dep} คน — หากรายได้หยุด ผลกระทบสูงสุด`,
+    1:`เหลือเวลาเตรียมจำกัด ยิ่งเริ่มช้า เงินที่ต้องออมต่อเดือนยิ่งสูงขึ้น`,
+    0:`มีวันครบกำหนดชัดเจน เลื่อนไม่ได้`,
+    3:`ค่ารักษาต่อเนื่องหลักล้าน และมาพร้อมรายได้ที่หายไประหว่างรักษา`,
+    6:`เกราะชั้นแรกของทุกแผน — ถ้าไม่มี เหตุฉุกเฉินเล็ก ๆ จะลามไปกระทบทุกเป้าหมาย`,
+  };
+  document.getElementById('rxHost').innerHTML = needs.length===0
+    ? `<p class="mut" style="margin-top:10px">ทุกด้านที่ตรวจอยู่ในเกณฑ์ครบถ้วน — นัดทบทวนประจำปีเพื่อรักษาระดับนี้ไว้</p>`
+    : needs.map((row,ix)=>{
+        const s=SYS[row.k];
+        const why=whyMap[row.k]||`ความพร้อมเพียง ${Math.round(row.p)}% — เกิดเหตุแล้วต้องดึงเงินเก็บก้อนอื่นมาใช้`;
+        const cr=custRankOf(row.k);
+        return `<div class="rx ${ix===0?'':'r'+(ix>2?3:ix+1)}">
+          <div class="rt">อันดับ ${ix+1} · ${s.icon} ${s.th} <span class="pill ${tagOf(row.p)[1]}">${tagOf(row.p)[0]} · พร้อม ${Math.round(row.p)}%</span>${cr?`<span class="pill mid">คุณให้อันดับ ${cr}</span>`:''}</div>
+          <div class="rd">${why}<br>ช่องว่างที่ควรอุด: <span class="amt">≈ ${fmt(row.gap)} ${row.r.unit}</span></div>
+        </div>`;}).join('');
+
+  /* budget */
+  const bud=num('cbudget');
+  document.getElementById('budgetVal').textContent = bud>0 ? fmt(bud)+' ฿ / เดือน' : '—';
+
+  /* customer voice */
+  const VOICES=[
+    ['t_viewplan','มุมมองต่อการวางแผนการเงิน'],['t_proud','ความสำเร็จที่ภูมิใจที่สุด'],
+    ['t_ret_view','ภาพเกษียณในฝัน'],
+    ['t_h_gene','ประวัติสุขภาพครอบครัว'],
+    ['t_p_resp','ภาระที่ดูแลอยู่'],['t_midgoal','เป้าหมาย 2–10 ปีข้างหน้า'],['t_prio','ทำไมอันดับ 1 ของคุณถึงสำคัญที่สุด'],['t_impact','สิ่งที่กังวลที่สุด หากยังไม่จัดการ'],
+  ];
+  /* เสียงของลูกแต่ละคน */
+  const kidQ=[];
+  const nk=parseInt(document.getElementById('kidCount')?.value)||0;
+  for(let c=1;c<=nk;c++){
+    const nm=txt(`k${c}_name`)||`ลูกคนที่ ${c}`;
+    if(txt(`k${c}_dream`)) kidQ.push([`k${c}_dream`,`อาชีพในฝันของ${nm}`]);
+    if(txt(`k${c}_fav`))   kidQ.push([`k${c}_fav`,`สิ่งที่${nm}ชอบ`]);
+  }
+  const vh=[...VOICES.slice(0,2),...kidQ,...VOICES.slice(2)].filter(([id])=>txt(id)).map(([id,l])=>
+    `<div class="quote"><div class="ql">${l}</div><div class="qv">“${txt(id)}”</div></div>`).join('');
+  document.getElementById('voiceHost').innerHTML = vh || '<p class="small">—</p>';
+}
+
+/* init money inputs on static screens */
+['cinc','cexp','cemer','cbudget'].forEach(id=>money(document.getElementById(id)));
+</script>
+</body>
+</html>
