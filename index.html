@@ -960,6 +960,24 @@ function showShareModal(){
   ol.onclick=e=>{if(e.target===ol)ol.remove();};
 }
 
+/* v6.20: popup เตือนวางแคปชั่นก่อนเปิด FB sharer (FB ห้าม pre-fill ข้อความ — เราจึง copy ให้ + เตือนให้วาง) */
+function _s41FbGate(fbUrl){
+  window.__fbGateUrl=fbUrl;
+  document.getElementById('fbgate-el')?.remove();
+  const ol=document.createElement('div');
+  ol.id='fbgate-el';
+  ol.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px';
+  ol.innerHTML=`<div style="max-width:360px;width:100%;background:#fff;border-radius:20px;padding:26px 22px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.4)">
+    <div style="font-size:36px;margin-bottom:10px">📋✅</div>
+    <div style="font-size:17px;font-weight:800;color:#002366;margin-bottom:8px">Copy แคปชั่นให้เรียบร้อยแล้ว!</div>
+    <div style="font-size:14px;color:#5A6B85;line-height:1.7;margin-bottom:18px">พอหน้า Facebook เปิดขึ้น ให้<strong style="color:#002366">กด "วาง" (Paste) ในช่องข้อความ</strong>ก่อนโพสต์<br>โพสต์ที่มีแคปชั่น เพื่อนกดเข้ามาทายเมนูเยอะกว่าหลายเท่า 🍱</div>
+    <button onclick="var w=window.open(window.__fbGateUrl,'_blank','width=680,height=640');if(!w)location.href=window.__fbGateUrl;document.getElementById('fbgate-el').remove()" style="width:100%;padding:14px;background:#1877F2;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;margin-bottom:8px">เข้าใจแล้ว · เปิด Facebook →</button>
+    <button onclick="document.getElementById('fbgate-el').remove()" style="width:100%;padding:10px;background:none;border:none;color:#999;font-size:13px;font-family:inherit;cursor:pointer">ยกเลิก</button>
+  </div>`;
+  document.body.appendChild(ol);
+  ol.onclick=e=>{if(e.target===ol)ol.remove();};
+}
+
 /* v6.19: ลิงก์แชร์ทุกแบบพก ref ตัวแทนต่อไปด้วย — เพื่อนที่กดจากโพสต์แล้วส่งข้อมูล lead จะขึ้นชื่อตัวแทนเดิม (viral chain attribution) */
 function _s41ShareUrl(){
   const base=S.archetype?(SURVEY_URL+'og/'+S.archetype+'.html?from='+S.archetype):SURVEY_URL;
@@ -993,8 +1011,7 @@ async function s41ShareToFacebook(){
   /* เดสก์ท็อป: sharer + quote = มีข้อความบนโพสต์อัตโนมัติ */
   try{navigator.clipboard&&navigator.clipboard.writeText((arch.caption||'')+'\n\n'+shareUrl);}catch(e){}
   const fbUrl='https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(shareUrl)+'&quote='+encodeURIComponent(arch.caption||'');
-  const w=window.open(fbUrl,'_blank','width=680,height=640');
-  if(!w)location.href=fbUrl;
+  _s41FbGate(fbUrl);
 }
 
 function s41SaveImg(){
@@ -1019,8 +1036,7 @@ async function shareToFacebook(){
   const shareUrl=_s41ShareUrl();
   try{navigator.clipboard&&navigator.clipboard.writeText((arch.caption||'')+'\n\n'+shareUrl);}catch(e){}
   const fbUrl='https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(shareUrl)+'&quote='+encodeURIComponent(arch.caption||'');
-  const w=window.open(fbUrl,'_blank','width=680,height=640');
-  if(!w)location.href=fbUrl;
+  _s41FbGate(fbUrl);
 }
 
 /* ════ RENDER ════ */
@@ -1071,7 +1087,7 @@ function rWelcome(){
     </div>`:'';
   return`<div class="card" style="text-align:center">
     <div class="s41" style="margin-bottom:24px">✦ Signature 41 ✦</div>
-    <div class="wbadge">S41 Japanese Financial Menu · Health Check v6.19</div>
+    <div class="wbadge">S41 Japanese Financial Menu · Health Check v6.20</div>
     <div class="wtitle" style="font-size:28px">ถ้าสถานะการเงินของคุณ<br>เป็น<span>อาหารญี่ปุ่น</span>... คุณคือจานไหน?</div>
     <div class="dish-parade">${Object.values(ASVG).map(s=>`<span class="dp">${s}</span>`).join('')}</div>
     <div class="wsub">ตรวจ 5 นาที · 12 คำถามตามหลัก CFP® โดยหมอเงิน<br>ค้นพบ<strong>เมนูประจำตัวของคุณ</strong> พร้อม<strong>จุดที่ต้องดูแลก่อน</strong></div>
@@ -1191,7 +1207,7 @@ function rResult(){
   return`<div class="card">
     <div class="topbar">
       <span class="s41">Signature 41</span>
-      <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">Financial Report v6.19 · 150726</span>
+      <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">Financial Report v6.20 · 150726</span>
     </div>
     <div class="rarch">
       <div class="a-svg-wrap">${ASVG[arch.key]||''}</div>
@@ -1266,6 +1282,7 @@ function rResult(){
         <button class="btn-full" style="${S.intent==='self_planning'?'background:var(--navy);color:#fff':'background:#fff;color:#06C755;border:1.5px solid #06C755'};margin-bottom:0" onclick="submitLead()">
           ${S.intent==='self_planning'?'🧭 ส่งข้อมูล + เปิด Dashboard':'💬 ส่งข้อมูล + นัดทีม S41'}
         </button>
+        <div style="font-size:11px;color:var(--muted);line-height:1.7;margin-top:10px">🔒 การกดส่ง = ยินยอมให้ทีม S41 ใช้ข้อมูลเพื่อติดต่อกลับและจัดทำแผนการเงินของคุณเท่านั้น · ไม่ส่งต่อบุคคลที่สาม · แจ้งลบข้อมูลได้ทุกเมื่อผ่าน Line @S41Clinic</div>
       </div>`:''}
     </div>
 
@@ -1276,6 +1293,7 @@ function rResult(){
     </details>
 
     <button class="nb show" style="background:none;border:1.5px solid var(--gray2);color:var(--muted);margin-top:8px" onclick="restart()">🔄 ทำ survey ใหม่อีกรอบ</button>
+    <div style="font-size:10.5px;color:var(--muted);line-height:1.7;margin-top:16px;text-align:center;opacity:.85">ผลตรวจนี้เป็นการประเมินสุขภาพการเงินเบื้องต้นจากคำตอบของคุณ ไม่ใช่คำแนะนำการลงทุนหรือผลิตภัณฑ์เฉพาะบุคคล · การวางแผนจริงควรปรึกษานักวางแผนการเงินโดยตรง</div>
   </div>`;
 }
 
@@ -1692,43 +1710,4 @@ html,body{font-family:'Sarabun',sans-serif;background:#fff;color:#1C1C2E;font-si
 <div class="section-wrap"><div class="sect-title">5-Dimension Analysis <span class="sect-title-num">ii.</span></div></div>
 <div class="analysis">
   <div class="radar-wrap">${drawRadar(r)}</div>
-  <div class="scores-wrap">${scoreRows}</div>
-</div>
-<div class="two-col">
-  <div class="col-l">
-    <div class="sect-title">Diagnosis · สิ่งที่ต้องจัดการ <span class="sect-title-num">iii.</span></div>
-    <ul class="disc-ul">${discList}</ul>
-    <div class="rx-box">💊 <strong>คำสั่งยาจากหมอเงิน:</strong> ${arch.prescription}</div>
-  </div>
-  <div class="col-r">
-    <div class="sect-title">Priority Roadmap <span class="sect-title-num">iv.</span></div>
-    ${priItems}
-  </div>
-</div>
-<style>\n.next-step{margin-top:20px;background:#0b2a5c;border-radius:12px;padding:18px 24px}\n.ns-title{color:#C8A94A;font-weight:800;font-size:15px;margin-bottom:7px;letter-spacing:.5px}\n.ns-body{font-size:12.5px;line-height:1.75;color:rgba(255,255,255,.93)}\n.ns-body b{color:#F5D98A}\n.sig-row{display:flex;gap:48px;margin-top:30px;padding:0 10px}\n.sig-box{flex:1;text-align:center;font-size:11px;color:#555;font-weight:700}\n.sig-line{border-bottom:1.2px solid #9a9a9a;height:36px;margin-bottom:7px}\n</style>\n<div class="next-step">\n  <div class="ns-title">🩺 ขั้นต่อไปของคุณ — นัดพบหมอเงิน · ฟรี 20 นาที</div>\n  <div class="ns-body">ใบนี้บอกว่าคุณควรดูแลจุดไหนก่อน — แต่ยังไม่ได้บอก <b>ตัวเลขจริงของคุณ</b>: ขาดอยู่เท่าไหร่ เงินเฟ้อจะกัดเป้าหมายอีกแค่ไหน และภาษีขอคืนได้กี่บาท ทั้งหมดรู้ได้ในนัดพบหมอเงิน S41 (Step 2 · Financial Health Check ตัวต่อตัว)</div>\n</div>\n<div class="sig-row">\n  <div class="sig-box"><div class="sig-line"></div>หมอเงินผู้ตรวจ · Financial Doctor · Signature 41</div>\n  <div class="sig-box"><div class="sig-line"></div>ผู้รับการตรวจ</div>\n</div>\n<div class="disclaim">รายงานฉบับนี้เป็นข้อมูลเบื้องต้นจาก S41 Financial Health Check · เพื่อแผนเฉพาะบุคคล กรุณาปรึกษาทีม CFP® S41</div>
-<div class="ftr">
-  <span class="ftr-l">CONFIDENTIAL · <span class="ftr-badge">CFP® CERTIFIED FINANCIAL PLANNER</span></span>
-  <span class="ftr-r">SIGNATURE 41 · health.s41clinic.com</span>
-</div>
-</div>
-<script>window.onload=()=>{setTimeout(()=>window.print(),300);}<\/script>
-</body></html>`;
-  const win=window.open('','_blank','width=900,height=1200');
-  if(win){win.document.write(html);win.document.close();}
-  else alert('กรุณาอนุญาต Pop-up ในเบราว์เซอร์ก่อนนะคะ แล้วลองกดใหม่อีกครั้ง');
-}
-
-render();
-</script>
-<script>/* v5 viral loop */
-(function(){try{
-var p=new URLSearchParams(location.search).get("from");
-if(p&&typeof ARCH==="object"&&ARCH[p]){window.__fromArch=p;
-var b=document.createElement("div");b.className="from-banner";
-b.innerHTML="👋 เพื่อนของคุณคือ <b>"+ARCH[p].name+"</b> — ส่วนคุณล่ะ เป็นเมนูไหน?";
-var w=document.querySelector('.wrap');if(w){w.insertBefore(b,w.firstChild);}else{document.body.insertBefore(b,document.body.firstChild);}}
-}catch(e){}})();
-</script>
-</body>
-</html>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+  <div class="scores-wrap">${scoreRows
