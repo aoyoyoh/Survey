@@ -202,7 +202,7 @@ body{font-family:'Sarabun','Noto Sans Thai',sans-serif;background:var(--cream);c
 .apower{margin:10px 0 4px;font-weight:700;color:var(--navy);font-size:15px}
 .ararity{display:inline-block;font-size:12px;color:var(--gold);border:1px solid #EDE8DC;border-radius:20px;padding:2px 10px;margin:6px 0;background:#FAF7EE}
 .aduo{margin:10px auto;max-width:520px;font-size:13px;background:#FBF4DC;border:1px solid #EDE8DC;border-radius:12px;padding:10px 14px;color:var(--navy)}
-.from-banner{background:#FBF4DC;border-bottom:1px solid #EDE8DC;padding:10px 16px;text-align:center;font-size:14px;color:#1f3b5e}
+.from-banner{background:#FBF4DC;border:1px solid #EDE8DC;border-radius:14px;padding:11px 16px;margin-bottom:14px;text-align:center;font-size:14px;color:#1f3b5e;animation:up .3s ease}
 </style>
 </head>
 <body>
@@ -504,14 +504,14 @@ function calcRadar(){
   };
 }
 
-/* ═══ v5 · 100726 — Shape Matching Archetype (แก้กระจุก · คาลิเบรตด้วย simulation 20,000 เคส) ═══ */
+/* ═══ v6.15 · 150726 — Shape Matching Archetype (แก้กระจุก · pl=Q10 เดี่ยว ตัด Q11 ที่กลับด้าน · คาลิเบรตใหม่ด้วย simulation 30,000 เคส · persona test 12/12) ═══ */
 const ARCH_PROTO={
- tightDenim:{v:[2.5,2.5,1.2,2.5,2.5],w:1.07},
- toppingHeavy:{v:[1.8,1.8,2.8,3.8,2.8],w:1.55},
- zenStone:{v:[3.2,2.8,3.2,1.5,2.4],w:0.49},
- tinyWagasa:{v:[3.0,1.2,3.0,3.2,3.0],w:1.26},
- starvingManeki:{v:[1.4,2.8,2.4,3.6,2.8],w:1.25},
- lostTsuru:{v:[2.9,2.7,2.9,3.1,1.3],w:1.08}
+ tightDenim:{v:[2.5,2.5,1.2,2.5,2.5],w:0.782},
+ toppingHeavy:{v:[1.8,1.8,2.8,3.8,2.8],w:1.949},
+ zenStone:{v:[3.2,2.8,3.2,1.5,2.4],w:0.497},
+ tinyWagasa:{v:[3.0,1.2,3.0,3.2,3.0],w:1.579},
+ starvingManeki:{v:[1.4,2.8,2.4,3.6,2.8],w:1.419},
+ lostTsuru:{v:[2.9,2.7,2.9,3.1,1.3],w:0.902}
 };
 const ARCH_POWER={
  toppingHeavy:'หัวใจนักลงทุน กล้าให้เงินทำงานก่อนใคร',
@@ -559,12 +559,14 @@ function shapeBest(dims,rank){
   return sims[Math.min(rank,sims.length)-1][0];
 }
 function calcArchetype(){
-  const em=sc('Q4'), pr=(sc('Q5')+sc('Q6'))/2, cf=(sc('Q7')+sc('Q8'))/2, sv=sc('Q9'), pl=(sc('Q10')+sc('Q11'))/2;
+  /* v6.15: pl ใช้ Q10 เดี่ยว (Q11=ฐานภาษี วัดรายได้ ไม่ใช่คุณภาพการวางแผน — เดิมทำให้คนรายได้สูงโดนกด planning) · มิติเดี่ยว shrink 0.72 เหมือน em/sv · emptyBento gate ยกเว้นคนที่ cashflow ต่ำเด่นชัด (ควรได้ tightDenim) */
+  const em=sc('Q4'), pr=(sc('Q5')+sc('Q6'))/2, cf=(sc('Q7')+sc('Q8'))/2, sv=sc('Q9'), pl=sc('Q10');
   const L=(em+pr+cf+sv+pl)/5;
-  const dims=[L+(em-L)*0.72, pr, cf, L+(sv-L)*0.72, pl];
+  const dims=[L+(em-L)*0.72, pr, cf, L+(sv-L)*0.72, L+(pl-L)*0.72];
   const spread=Math.max(...dims)-Math.min(...dims);
+  const cfLowest=cf<=1.5&&cf===Math.min(em,pr,cf,sv,pl);
   S.archetype2=shapeBest(dims,1);
-  if(L<=2.1&&spread<=1.4){return 'emptyBento';}
+  if(L<=2.1&&spread<=1.4&&!cfLowest){return 'emptyBento';}
   if(L>=2.9&&spread<=1.0){return 'cozyMinka';}
   const best=shapeBest(dims,1);
   S.archetype2=shapeBest(dims,2);
@@ -1047,7 +1049,7 @@ function rWelcome(){
     </div>`:'';
   return`<div class="card" style="text-align:center">
     <div class="s41" style="margin-bottom:24px">✦ Signature 41 ✦</div>
-    <div class="wbadge">S41 Japanese Financial Menu · Health Check v6.14</div>
+    <div class="wbadge">S41 Japanese Financial Menu · Health Check v6.15</div>
     <div class="wtitle" style="font-size:28px">ถ้าสถานะการเงินของคุณ<br>เป็น<span>อาหารญี่ปุ่น</span>... คุณคือจานไหน?</div>
     <div class="dish-parade">${Object.values(ASVG).map(s=>`<span class="dp">${s}</span>`).join('')}</div>
     <div class="wsub">ตรวจ 5 นาที · 12 คำถามตามหลัก CFP® โดยหมอเงิน<br>ค้นพบ<strong>เมนูประจำตัวของคุณ</strong> พร้อม<strong>จุดที่ต้องดูแลก่อน</strong></div>
@@ -1167,7 +1169,7 @@ function rResult(){
   return`<div class="card">
     <div class="topbar">
       <span class="s41">Signature 41</span>
-      <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">Financial Report v6.14 · 150726</span>
+      <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">Financial Report v6.15 · 150726</span>
     </div>
     <div class="rarch">
       <div class="a-svg-wrap">${ASVG[arch.key]||''}</div>
@@ -1696,7 +1698,7 @@ var p=new URLSearchParams(location.search).get("from");
 if(p&&typeof ARCH==="object"&&ARCH[p]){window.__fromArch=p;
 var b=document.createElement("div");b.className="from-banner";
 b.innerHTML="👋 เพื่อนของคุณคือ <b>"+ARCH[p].name+"</b> — ส่วนคุณล่ะ เป็นเมนูไหน?";
-document.body.insertBefore(b,document.body.firstChild);}
+var w=document.querySelector('.wrap');if(w){w.insertBefore(b,w.firstChild);}else{document.body.insertBefore(b,document.body.firstChild);}}
 }catch(e){}})();
 </script>
 </body>
