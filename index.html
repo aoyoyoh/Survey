@@ -477,8 +477,8 @@ function back(){
 }
 function getChoiceArr(qid){const a=S.answers[qid];if(!a)return[];return a.choices||(a.choice?[a.choice]:[]);}
 function getChoiceFirst(qid){const arr=getChoiceArr(qid);return arr[0]||null;}
-/* check draft on page load */
-(function(){const d=loadDraft();if(d){S.hasDraft=true;S.draftSummary={currentQ:d.currentQ||0,answered:Object.keys(d.answers||{}).length,savedAt:d.savedAt};S._draftRaw=d;}})();
+/* v6.16: ทุกลิงก์เริ่มใหม่เป็น default — ล้าง draft เก่าทุกครั้งที่โหลดหน้า (การ์ด "ทำต่อจากเดิม" จะไม่โผล่อีก) · draft ยังเซฟระหว่างทำอยู่เผื่อกดย้อนกลับ แต่รีเฟรชหน้า = เริ่มใหม่ */
+(function(){clearDraft();})();
 
 /* ════ SCORING ════ */
 const KS={A:4,B:3,C:2,D:1,E:1};
@@ -1049,7 +1049,7 @@ function rWelcome(){
     </div>`:'';
   return`<div class="card" style="text-align:center">
     <div class="s41" style="margin-bottom:24px">✦ Signature 41 ✦</div>
-    <div class="wbadge">S41 Japanese Financial Menu · Health Check v6.15</div>
+    <div class="wbadge">S41 Japanese Financial Menu · Health Check v6.16</div>
     <div class="wtitle" style="font-size:28px">ถ้าสถานะการเงินของคุณ<br>เป็น<span>อาหารญี่ปุ่น</span>... คุณคือจานไหน?</div>
     <div class="dish-parade">${Object.values(ASVG).map(s=>`<span class="dp">${s}</span>`).join('')}</div>
     <div class="wsub">ตรวจ 5 นาที · 12 คำถามตามหลัก CFP® โดยหมอเงิน<br>ค้นพบ<strong>เมนูประจำตัวของคุณ</strong> พร้อม<strong>จุดที่ต้องดูแลก่อน</strong></div>
@@ -1169,7 +1169,7 @@ function rResult(){
   return`<div class="card">
     <div class="topbar">
       <span class="s41">Signature 41</span>
-      <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">Financial Report v6.15 · 150726</span>
+      <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">Financial Report v6.16 · 150726</span>
     </div>
     <div class="rarch">
       <div class="a-svg-wrap">${ASVG[arch.key]||''}</div>
