@@ -906,8 +906,11 @@ let _shareDataUrl=null;
 async function generateShareCard(){
   try{await document.fonts.load('800 56px Sarabun');await document.fonts.load('400 18px Sarabun');}catch(e){}
   const arch=ARCH[S.archetype];
-  const C=document.createElement('canvas');C.width=1080;C.height=1080;
-  const ctx=C.getContext('2d');
+  /* v6.24: supersample 2x — FB/LINE ย่อ+บีบอัดรูปเสมอ วาดที่ 2160 ให้เส้นบางไม่แตก (โค้ดวาดใช้พิกัด 1080 เดิมผ่าน ctx.scale) */
+  const SS=2;
+  const C=document.createElement('canvas');C.width=1080*SS;C.height=1080*SS;
+  const ctx=C.getContext('2d');ctx.scale(SS,SS);
+  ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
   ctx.fillStyle='#FAF3E1';ctx.fillRect(0,0,1080,1080);
   ctx.fillStyle='rgba(0,35,102,0.025)';
   for(let x=54;x<1080;x+=54)for(let y=54;y<1080;y+=54){ctx.beginPath();ctx.arc(x,y,1.5,0,Math.PI*2);ctx.fill();}
@@ -932,7 +935,8 @@ async function generateShareCard(){
     let vw=100,vh=100;
     if(vb){const p=vb.trim().split(/\s+/);vw=parseFloat(p[2])||100;vh=parseFloat(p[3])||100;}
     const svgW=280,svgH=Math.round(280*vh/vw);
-    const bigSvg=svgStr.replace(/width="[\d.]+"/,`width="${svgW}"`).replace(/height="[\d.]+"/,`height="${svgH}"`);
+    /* v6.24: rasterize มาสคอตที่ 2x กันเบลอตอน scale */
+    const bigSvg=svgStr.replace(/width="[\d.]+"/,`width="${svgW*SS}"`).replace(/height="[\d.]+"/,`height="${svgH*SS}"`);
     await new Promise(res=>{try{
       const img=new Image();
       img.onload=()=>{ctx.drawImage(img,CX-svgW/2,CY-svgH/2,svgW,svgH);res();};
@@ -1129,7 +1133,7 @@ function rWelcome(){
     </div>`:'';
   return`<div class="card" style="text-align:center">
     <div class="s41" style="margin-bottom:24px">✦ Signature 41 ✦</div>
-    <div class="wbadge">S41 Japanese Financial Menu · Health Check v6.23</div>
+    <div class="wbadge">S41 Japanese Financial Menu · Health Check v6.24</div>
     <div class="wtitle" style="font-size:28px">ถ้าสถานะการเงินของคุณ<br>เป็น<span>อาหารญี่ปุ่น</span>... คุณคือจานไหน?</div>
     <div class="dish-parade">${Object.values(ASVG).map(s=>`<span class="dp">${s}</span>`).join('')}</div>
     <div class="wsub">ตรวจ 5 นาที · 12 คำถามตามหลัก CFP® โดยหมอเงิน<br>ค้นพบ<strong>เมนูประจำตัวของคุณ</strong> พร้อม<strong>จุดที่ต้องดูแลก่อน</strong></div>
@@ -1249,7 +1253,7 @@ function rResult(){
   return`<div class="card">
     <div class="topbar">
       <span class="s41">Signature 41</span>
-      <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">Financial Report v6.23 · 150726</span>
+      <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">Financial Report v6.24 · 160726</span>
     </div>
     <div class="rarch">
       <div class="a-svg-wrap">${ASVG[arch.key]||''}</div>
