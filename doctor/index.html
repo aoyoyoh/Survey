@@ -363,10 +363,8 @@ input:focus,select:focus{border-color:var(--gold);background:#fff}
       <div class="tt">ชวนคุย · Commitment</div>
       <label>ใน 2–10 ปีข้างหน้า มีเป้าหมายอะไรอีกบ้าง <span class="hint">บ้าน · รถ · แต่งงาน · ท่องเที่ยว</span></label>
       <textarea id="t_midgoal"></textarea>
-      <label id="lq_prio">อะไรทำให้แผนอันดับ 1 สำคัญกับคุณที่สุด</label>
+      <label id="lq_prio">อะไรทำให้แผนอันดับ 1 สำคัญกับคุณที่สุด — และถ้ายังไม่ได้จัดการใน 1–2 ปีนี้ กังวลอะไรที่สุด</label>
       <textarea id="t_prio"></textarea>
-      <label id="lq_impact">ถ้าแผนอันดับ 1 ยังไม่ถูกจัดการภายใน 1–2 ปีนี้ คุณกังวลอะไรที่สุด</label>
-      <textarea id="t_impact"></textarea>
     </div>
     <label>งบวางแผนที่คิดไว้ ประมาณเดือนละเท่าไร</label>
     <div class="baht" style="max-width:280px"><input type="text" id="cbudget" inputmode="numeric" placeholder="10,000"></div>
@@ -411,7 +409,7 @@ input:focus,select:focus{border-color:var(--gold);background:#fff}
     </div>
 
     <div class="card">
-      <h2>แผนลำดับความสำคัญ <span class="small">เรียงตามความเสี่ยง × ผลกระทบต่อครอบครัว</span></h2>
+      <h2>แผนลำดับความสำคัญ <span class="small">เรียงตามอันดับที่คุณเลือก · หมอเงินติดป้ายจุดเสี่ยงสูงสุดให้</span></h2>
       <div id="rxHost"></div>
       <div class="budgetcard" id="budgetCard">
         <div><div class="small">งบที่คุณพร้อมจัดสรรต่อเดือน</div><b id="budgetVal">—</b></div>
@@ -566,7 +564,7 @@ const MODS = [
     </div>
     <div class="grid2">
       <div><label>โรงพยาบาลที่ต้องการใช้</label><input type="text" id="s2_hosp" placeholder="ชื่อ รพ."></div>
-      <div><label>ค่าห้องที่ต้องการ / คืน <span class="hint">ปรับเองได้</span></label><div class="baht"><input type="text" data-money id="s2_need" oninput="liveCalc(2)"></div></div>
+      <div><label>ค่าห้องที่ต้องการ / คืน <span class="hint">ปรับเองได้</span></label><div class="baht"><input type="text" data-money id="s2_need" oninput="syncHospChips();liveCalc(2)"></div></div>
       <div><label>ค่าห้องที่ประกัน + สวัสดิการจ่ายให้ / คืน <span class="hint">สิ่งที่มีอยู่แล้ว</span></label><div class="baht"><input type="text" data-money id="s2_have" oninput="liveCalc(2)"></div></div>
     </div>
     <div class="live" id="live2"><div class="lt"><span>ความพร้อมค่าห้อง</span><span id="lp2">—</span></div>
@@ -746,6 +744,8 @@ function recalcEdu(){
   const needEl=document.getElementById('s0_need');
   if(needEl){ needEl.value=grand; VALS['s0_need']=String(grand); }
   const gt=document.getElementById('eduTotal'); if(gt) gt.textContent=fmt(grand)+' ฿';
+  const wr=document.getElementById('eduWarn');
+  if(grand>0){ if(wr) wr.remove(); eduWarned=false; }
   liveCalc(0);
 }
 
@@ -755,6 +755,10 @@ function pickHosp(i){
   HOSP.forEach((_,j)=>{ const c=document.getElementById('hch'+j); if(c) c.classList.toggle('on',j===i); });
   const el=document.getElementById('s2_need');
   if(el){ el.value=fmt(HOSP[i]); VALS['s2_need']=el.value; liveCalc(2); }
+}
+function syncHospChips(){   /* พิมพ์ค่าเอง → chip ที่ไม่ตรงกับตัวเลข ต้องไม่ค้าง highlight */
+  const v=num('s2_need');
+  HOSP.forEach((h,j)=>{ const c=document.getElementById('hch'+j); if(c) c.classList.toggle('on',v===h); });
 }
 
 /* ---------------- retirement timeline ---------------- */
@@ -820,8 +824,27 @@ function startModules(){
   flow=chosen.map(m=>'scr_'+m.id);
   navMod(0);
 }
+let eduWarned=false;
 function navMod(i){
   if(i<0){ show('scr_pick'); return; }
+  /* guard: กำลังจะออกจากหน้าการศึกษาไปข้างหน้า แต่ทุนการศึกษายังเป็น 0 → เตือนก่อน 1 ครั้ง */
+  const cur=document.querySelector('.scr:not(.hide)');
+  if(cur&&cur.id==='scr_edu'&&i===flow.indexOf('scr_edu')+1&&num('s0_need')<=0&&!eduWarned){
+    eduWarned=true;
+    let w=document.getElementById('eduWarn');
+    if(!w){
+      w=document.createElement('div'); w.id='eduWarn';
+      w.style.cssText='margin-top:12px;padding:12px 16px;border-radius:12px;background:#F7E8E6;color:var(--carrier);font-size:13.5px;line-height:1.6';
+      const nav=document.querySelector('#scr_edu .navrow');
+      nav.parentNode.insertBefore(w,nav);
+    }
+    const pickedPath=Object.values(eduSel).some(v=>v!==undefined);
+    w.innerHTML = pickedPath
+      ? '<b>ทุนการศึกษายังเป็น 0 ฿</b> — เช็คอายุลูกกับระดับชั้นที่เลือกอีกครั้ง (ถ้าลูกเรียนผ่านระดับที่เลือกไปแล้ว ระบบจะไม่นับ) หรือกรอกตัวเลขเองช่องขวาสุด<br>ถ้าวันนี้ยังไม่พร้อมระบุ แตะปุ่มเดิมอีกครั้งเพื่อข้ามไปก่อนได้ค่ะ'
+      : '<b>ทุนการศึกษายังเป็น 0 ฿</b> — แตะเลือกเส้นทางเรียนของแต่ละช่วงชั้น (รัฐบาล / เอกชน / นานาชาติ / ต่างประเทศ) หรือกรอกตัวเลขเองช่องขวาสุด เพื่อให้แผนนี้ขึ้นผลในใบตรวจ<br>ถ้าวันนี้ยังไม่พร้อมระบุ แตะปุ่มเดิมอีกครั้งเพื่อข้ามไปก่อนได้ค่ะ';
+    w.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
   if(i>=flow.length){ document.getElementById('wrapBack').onclick=()=>navMod(flow.length-1); prepWrap(); show('scr_wrap'); return; }
   show(flow[i]);
 }
@@ -833,8 +856,7 @@ function prepWrap(){
   const top=MODS.find(m=>m.id===order[0]);
   if(top){
     const nm=top.title.replace('แผน','');
-    document.getElementById('lq_prio').textContent=`อันดับ 1 ของคุณคือ "${nm}" — อะไรทำให้เรื่องนี้สำคัญกับคุณที่สุด`;
-    document.getElementById('lq_impact').textContent=`ถ้า "${nm}" ยังไม่ถูกจัดการภายใน 1–2 ปีนี้ คุณกังวลอะไรที่สุด`;
+    document.getElementById('lq_prio').textContent=`อันดับ 1 ของคุณคือ "${nm}" — อะไรทำให้เรื่องนี้สำคัญกับคุณที่สุด และถ้ายังไม่ได้จัดการใน 1–2 ปีนี้ กังวลอะไรที่สุด`;
   }
 }
 /* ---------------- navigation ---------------- */
@@ -914,9 +936,7 @@ function showResult(){
   }).join('');
   setTimeout(()=>document.querySelectorAll('.sysrow .bb i[data-w]').forEach(el=>el.style.width=el.dataset.w+'%'),80);
 
-  /* priority rx */
-  const needs=rows.filter(r=>!r.off&&!r.empty&&r.p<100&&r.gap>0)
-    .sort((a,b)=>(100-b.p)*b.w-(100-a.p)*a.w).slice(0,4);
+  /* priority rx — เรียงตามอันดับที่ลูกค้าเลือกไว้ (อันดับ 1 ขึ้นก่อนเสมอ) */
   const whyMap={
     5:`มีผู้อยู่ในความดูแล ${dep} คน — หากรายได้หยุด ผลกระทบสูงสุด`,
     1:`เหลือเวลาเตรียมจำกัด ยิ่งเริ่มช้า เงินที่ต้องออมต่อเดือนยิ่งสูงขึ้น`,
@@ -924,14 +944,32 @@ function showResult(){
     3:`ค่ารักษาต่อเนื่องหลักล้าน และมาพร้อมรายได้ที่หายไประหว่างรักษา`,
     6:`เกราะชั้นแรกของทุกแผน — ถ้าไม่มี เหตุฉุกเฉินเล็ก ๆ จะลามไปกระทบทุกเป้าหมาย`,
   };
-  document.getElementById('rxHost').innerHTML = needs.length===0
-    ? `<p class="mut" style="margin-top:10px">ทุกด้านที่ตรวจอยู่ในเกณฑ์ครบถ้วน — นัดทบทวนประจำปีเพื่อรักษาระดับนี้ไว้</p>`
-    : needs.map((row,ix)=>{
+  const byRank=[];
+  order.forEach(id=>{ const m=MODS.find(m=>m.id===id);
+    m.sys.forEach(k=>{ const row=rows.find(r=>r.k===k); if(row&&!row.off) byRank.push(row); }); });
+  const emRow=rows.find(r=>r.k===6);
+  if(emRow&&!emRow.off&&!byRank.includes(emRow)) byRank.push(emRow);   // เงินฉุกเฉิน ต่อท้ายเสมอ
+  const gapRows=byRank.filter(r=>!r.empty&&r.p<100&&r.gap>0);
+  const riskiest=gapRows.slice().sort((a,b)=>(100-b.p)*b.w-(100-a.p)*a.w)[0];   // มุมมองหมอเงิน: ช่องว่าง × ผลกระทบ
+  document.getElementById('rxHost').innerHTML = byRank.length===0
+    ? `<p class="mut" style="margin-top:10px">ยังไม่มีแผนที่เลือกตรวจในวันนี้</p>`
+    : byRank.map(row=>{
         const s=SYS[row.k];
-        const why=whyMap[row.k]||`ความพร้อมเพียง ${Math.round(row.p)}% — เกิดเหตุแล้วต้องดึงเงินเก็บก้อนอื่นมาใช้`;
         const cr=custRankOf(row.k);
-        return `<div class="rx ${ix===0?'':'r'+(ix>2?3:ix+1)}">
-          <div class="rt">อันดับ ${ix+1} · ${s.icon} ${s.th} <span class="pill ${tagOf(row.p)[1]}">${tagOf(row.p)[0]} · พร้อม ${Math.round(row.p)}%</span>${cr?`<span class="pill mid">คุณให้อันดับ ${cr}</span>`:''}</div>
+        const rank=cr?`อันดับ ${cr}`:'พื้นฐานทุกแผน';
+        if(row.empty) return `<div class="rx r3">
+          <div class="rt">${rank} · ${s.icon} ${s.th} <span class="pill mid">ยังไม่ได้ระบุเป้าหมาย</span></div>
+          <div class="rd">วันนี้ยังไม่มีตัวเลขเป้าหมายของแผนนี้ — นัดเก็บข้อมูลเพิ่มกับที่ปรึกษา เพื่อให้ผลตรวจด้านนี้สมบูรณ์</div>
+        </div>`;
+        if(row.p>=100||row.gap<=0) return `<div class="rx r3">
+          <div class="rt">${rank} · ${s.icon} ${s.th} <span class="pill ok">ครบแล้ว · พร้อม 100%</span></div>
+          <div class="rd">เตรียมไว้ครบตามเป้าหมายแล้ว — นัดทบทวนรายปีเพื่อรักษาระดับนี้ไว้</div>
+        </div>`;
+        const why=whyMap[row.k]||`ความพร้อมเพียง ${Math.round(row.p)}% — เกิดเหตุแล้วต้องดึงเงินเก็บก้อนอื่นมาใช้`;
+        const hot=riskiest&&row.k===riskiest.k?`<span class="pill bad">⚠ หมอเงินชี้ เสี่ยงสูงสุด</span>`:'';
+        const cls=row.p>=80?'r3':row.p>=50?'r2':'';
+        return `<div class="rx ${cls}">
+          <div class="rt">${rank} · ${s.icon} ${s.th} <span class="pill ${tagOf(row.p)[1]}">${tagOf(row.p)[0]} · พร้อม ${Math.round(row.p)}%</span>${hot}</div>
           <div class="rd">${why}<br>ช่องว่างที่ควรอุด: <span class="amt">≈ ${fmt(row.gap)} ${row.r.unit}</span></div>
         </div>`;}).join('');
 
@@ -944,7 +982,7 @@ function showResult(){
     ['t_viewplan','มุมมองต่อการวางแผนการเงิน'],['t_proud','ความสำเร็จที่ภูมิใจที่สุด'],
     ['t_ret_view','ภาพเกษียณในฝัน'],
     ['t_h_gene','ประวัติสุขภาพครอบครัว'],
-    ['t_p_resp','ภาระที่ดูแลอยู่'],['t_midgoal','เป้าหมาย 2–10 ปีข้างหน้า'],['t_prio','ทำไมอันดับ 1 ของคุณถึงสำคัญที่สุด'],['t_impact','สิ่งที่กังวลที่สุด หากยังไม่จัดการ'],
+    ['t_p_resp','ภาระที่ดูแลอยู่'],['t_midgoal','เป้าหมาย 2–10 ปีข้างหน้า'],['t_prio','ทำไมอันดับ 1 ถึงสำคัญที่สุด และสิ่งที่กังวลหากยังไม่จัดการ'],
   ];
   /* เสียงของลูกแต่ละคน */
   const kidQ=[];
