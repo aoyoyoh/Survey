@@ -1041,6 +1041,14 @@ async function _s41ShareFile(){
 }
 
 /* เครื่องนี้ส่งไฟล์รูปเข้าแผงแชร์ได้ไหม (มือถือส่วนใหญ่ได้ / เดสก์ท็อปส่วนใหญ่ไม่ได้) */
+/* v6.31: ตรวจว่ากำลังเปิดอยู่ในเบราว์เซอร์ที่ฝังในแอป (Facebook / LINE / IG)
+   เบราว์เซอร์พวกนี้ปิดการแชร์ของระบบ ปิดการเปิดหน้าต่างใหม่ และปิดการดาวน์โหลด
+   ถ้าไม่แยกทางเดินให้ ปุ่มจะกดแล้วนิ่งไปเฉย ๆ */
+function _s41InApp(){
+  const ua=navigator.userAgent||'';
+  return /FBAN|FBAV|FB_IAB|FB4A|Instagram|Line\/|LIFF|MicroMessenger|Messenger|GSA\//i.test(ua);
+}
+
 function _s41CanShareFiles(){
   try{
     if(!navigator.canShare)return false;
@@ -1088,17 +1096,17 @@ function _s41Toast(msg,good){
 
 function showShareModal(){
   document.getElementById('share-modal-el')?.remove();
-  const canFiles=_s41CanShareFiles();
   const ol=document.createElement('div');
   ol.id='share-modal-el';
   ol.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.78);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto';
   const bBase='display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px 20px;border-radius:12px;font-size:15px;font-family:inherit;font-weight:700;cursor:pointer;margin-bottom:10px';
+  const inApp=_s41InApp();
   ol.innerHTML=`<div style="max-width:400px;width:100%;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.4)">
     <img src="${_shareDataUrl}" style="width:100%;display:block">
     <div style="padding:18px 16px">
       <div style="font-size:10px;font-weight:800;color:#002366;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">📤 แชร์เมนูของคุณ 🍱</div>
-      ${canFiles?`<button onclick="s41ShareImage(this)" style="${bBase};background:#002366;color:#fff;border:none">📤 แชร์รูปการ์ดนี้</button>`:''}
-      <button onclick="s41SaveImg(this)" style="${bBase};background:${canFiles?'#fff':'#002366'};color:${canFiles?'#002366':'#fff'};border:${canFiles?'1.5px solid rgba(0,35,102,.25)':'none'}">💾 บันทึกรูปลงเครื่อง</button>
+      ${inApp?`<div style="background:rgba(200,169,74,.12);border-left:3px solid #C8A94A;border-radius:0 10px 10px 0;padding:10px 12px;margin-bottom:12px;font-size:12.5px;color:#7A5500;line-height:1.65">กำลังเปิดอยู่ในแอปนะคะ ถ้าจะบันทึกรูป ให้<strong>กดค้างที่รูปด้านบน</strong> หรือเปิดลิงก์นี้ในเบราว์เซอร์ปกติจะสะดวกกว่าค่ะ</div>`:''}
+      <button onclick="s41SaveImg(this)" style="${bBase};background:#002366;color:#fff;border:none">💾 บันทึกรูปลงเครื่อง</button>
       <button onclick="s41ShareToFacebook(this)" style="${bBase};background:#fff;color:#1877F2;border:1.5px solid #1877F2;margin-bottom:10px">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="#1877F2" style="flex-shrink:0"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
         ชวนเพื่อนมาทายเมนูของตัวเอง
@@ -1126,11 +1134,20 @@ function _s41FbGate(fbUrl,copied,caption){
     <div style="font-size:14px;color:#5A6B85;line-height:1.7;margin-bottom:14px">${copied?'พอหน้า Facebook เปิดขึ้น ให้<strong style="color:#002366">กด "วาง" (Paste) ในช่องข้อความ</strong>ก่อนโพสต์':'เบราว์เซอร์นี้ไม่ยอมให้คัดลอกอัตโนมัติ กด<strong style="color:#002366">ปุ่มคัดลอกด้านล่าง</strong>ก่อน แล้วค่อยเปิด Facebook'}<br>โพสต์ที่มีแคปชั่น เพื่อนกดเข้ามาทายเมนูเยอะกว่าหลายเท่า 🍱</div>
     <textarea readonly onclick="this.select()" style="width:100%;height:78px;resize:none;border:1.5px solid rgba(0,35,102,.15);border-radius:10px;padding:10px 12px;font-size:12.5px;font-family:inherit;color:#1C1C2E;line-height:1.6;background:#FAFAF7;margin-bottom:8px">${_s41Esc(caption)}</textarea>
     <button onclick="_s41GateCopy(this)" style="width:100%;padding:11px;background:rgba(0,35,102,.06);color:#002366;border:1.5px solid rgba(0,35,102,.15);border-radius:12px;font-size:13.5px;font-weight:700;font-family:inherit;cursor:pointer;margin-bottom:10px">📋 คัดลอกแคปชั่น${copied?'อีกครั้ง':''}</button>
-    <button onclick="var w=window.open(window.__fbGateUrl,'_blank','width=680,height=640');if(!w)location.href=window.__fbGateUrl;document.getElementById('fbgate-el').remove()" style="width:100%;padding:14px;background:#1877F2;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;margin-bottom:8px">เข้าใจแล้ว · เปิด Facebook →</button>
+    <button onclick="_s41OpenFb()" style="width:100%;padding:14px;background:#1877F2;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;margin-bottom:8px">เข้าใจแล้ว · เปิด Facebook →</button>
     <button onclick="document.getElementById('fbgate-el').remove()" style="width:100%;padding:10px;background:none;border:none;color:#999;font-size:13px;font-family:inherit;cursor:pointer">ยกเลิก</button>
   </div>`;
   document.body.appendChild(ol);
   ol.onclick=e=>{if(e.target===ol)ol.remove();};
+}
+
+function _s41OpenFb(){
+  const u=window.__fbGateUrl;
+  document.getElementById('fbgate-el')?.remove();
+  if(_s41InApp()){location.href=u;return;}
+  let w=null;
+  try{w=window.open(u,'_blank','width=680,height=640');}catch(e){}
+  if(!w)location.href=u;
 }
 
 function _s41GateCopy(b){
@@ -1182,28 +1199,32 @@ async function s41ShareToFacebook(btn){
   const shareUrl=_s41ShareUrl();
   const caption=_s41Caption();
   const orig=btn?btn.innerHTML:null;
+  const reset=()=>{if(btn){btn.innerHTML=orig;btn.disabled=false;}};
 
-  /* มือถือ: แผงแชร์ของเครื่อง — ส่งรูปการ์ดเข้าฟีดได้สวยที่สุด */
-  if(navigator.share&&/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)){
-    if(btn){btn.disabled=true;btn.innerHTML='⏳ กำลังเตรียม...';}
-    try{
-      const file=await _s41ShareFile();
-      if(navigator.canShare&&navigator.canShare({files:[file]})){
-        await navigator.share({files:[file],text:caption,title:arch.name||''});
-      }else{
-        await navigator.share({text:caption,url:shareUrl,title:arch.name||''});
+  try{
+    /* มือถือปกติ: แผงแชร์ของเครื่อง — ส่งรูปการ์ดเข้าฟีดได้สวยที่สุด
+       v6.31: ข้ามขั้นนี้ถ้าอยู่ในเบราว์เซอร์ที่ฝังในแอป เพราะสั่งแล้วค้าง ไม่มีอะไรเกิดขึ้น */
+    if(!_s41InApp()&&navigator.share&&/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)){
+      if(btn){btn.disabled=true;btn.innerHTML='⏳ กำลังเตรียม...';}
+      try{
+        const file=await _s41ShareFile();
+        if(navigator.canShare&&navigator.canShare({files:[file]})){
+          await navigator.share({files:[file],text:caption,title:arch.name||''});
+        }else{
+          await navigator.share({text:caption,url:shareUrl,title:arch.name||''});
+        }
+        return;
+      }catch(e){
+        if(e&&e.name==='AbortError')return;   /* ผู้ใช้กดยกเลิกเอง */
       }
-      if(btn){btn.innerHTML=orig;btn.disabled=false;}
-      return;
-    }catch(e){
-      if(btn){btn.innerHTML=orig;btn.disabled=false;}
-      if(e&&e.name==='AbortError')return;   /* ผู้ใช้กดยกเลิกเอง — ไม่ต้องเด้งอะไรต่อ */
     }
-  }
 
-  /* เดสก์ท็อป: copy แคปชั่นก่อน แล้วค่อยเปิด FB */
-  const copied=await _s41CopyText(caption);
-  _s41FbGate('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(shareUrl),copied,caption);
+    /* เดสก์ท็อป และในแอป: copy แคปชั่นก่อน แล้วค่อยเปิด FB */
+    const copied=await _s41CopyText(caption);
+    _s41FbGate('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(shareUrl),copied,caption);
+  }finally{
+    reset();   /* v6.31: ไม่ว่าทางไหน ปุ่มต้องกลับมากดได้เสมอ ไม่ค้างที่ "กำลังเตรียม" */
+  }
 }
 
 /* v6.30: เดิมใช้ <a download> ชี้ไปที่ dataURL หลาย MB และไม่ได้ต่อ <a> เข้ากับหน้าเว็บ
@@ -1212,6 +1233,11 @@ async function s41ShareToFacebook(btn){
 async function s41SaveImg(btn){
   const arch=ARCH[S.archetype]||{};
   const orig=btn?btn.innerHTML:null;
+  /* v6.31: ในแอป Facebook/LINE ปุ่มดาวน์โหลดถูกปิด กดแล้วเงียบ — บอกวิธีกดค้างแทน */
+  if(_s41InApp()){
+    _s41Toast('แอปนี้บันทึกรูปตรง ๆ ไม่ได้ค่ะ — กดค้างที่รูปด้านบน แล้วเลือก "บันทึกรูปภาพ"');
+    return;
+  }
   if(btn){btn.disabled=true;btn.innerHTML='⏳ กำลังบันทึก...';}
   try{
     if(!_shareDataUrl)_shareDataUrl=await generateShareCard();
@@ -1318,7 +1344,7 @@ function rWelcome(){
     </div>`:'';
   return`<div class="card" style="text-align:center">
     <div class="s41" style="margin-bottom:24px">✦ Signature 41 ✦</div>
-    <div class="wbadge">S41 Japanese Financial Menu · Health Check v6.30</div>
+    <div class="wbadge">S41 Japanese Financial Menu · Health Check v6.31</div>
     <div class="wtitle" style="font-size:28px">ถ้าสถานะการเงินของคุณ<br>เป็น<span>อาหารญี่ปุ่น</span>... คุณคือจานไหน?</div>
     <div class="dish-parade">${Object.values(ASVG).map(s=>`<span class="dp">${s}</span>`).join('')}</div>
     <div class="wsub">ตรวจ 5 นาที · 12 คำถามตามหลัก CFP® โดยหมอเงิน<br>ค้นพบ<strong>เมนูประจำตัวของคุณ</strong> พร้อม<strong>จุดที่ต้องดูแลก่อน</strong></div>
@@ -1438,7 +1464,7 @@ function rResult(){
   return`<div class="card">
     <div class="topbar">
       <span class="s41">Signature 41</span>
-      <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">Financial Report v6.30 · 260726</span>
+      <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">Financial Report v6.31 · 260726</span>
     </div>
     <div class="rarch">
       <div class="a-svg-wrap">${ASVG[arch.key]||''}</div>
