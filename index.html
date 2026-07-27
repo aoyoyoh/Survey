@@ -541,6 +541,19 @@ function loadResultSnap(){
 }
 (function(){
   clearDraft();
+
+  /* v6.32: กันคนถัดไปเห็นผล (และชื่อ เบอร์ อีเมล) ของคนก่อนหน้าบนเครื่องเดียวกัน
+     - เข้ามาจากการกดลิงก์ใหม่ (navigate) → เริ่มใหม่เสมอ และลบผลเก่าทิ้งทันที
+     - มาจากลิงก์ที่เพื่อนแชร์ (มี ?from=) → เริ่มใหม่เสมอ ไม่ว่ากรณีใด
+     - คงการ restore ไว้เฉพาะ reload กับกดย้อนกลับ ซึ่งคือคนเดิมในแท็บเดิม
+       (เคสที่ v6.29 ต้องแก้: เปิด PDF หรือเด้งไป Facebook แล้ว OS ล้างแท็บ พอกลับมาผลต้องยังอยู่) */
+  var _navType='navigate';
+  try{_navType=(performance.getEntriesByType('navigation')[0]||{}).type||'navigate';}catch(e){}
+  var _fromShare=false;
+  try{_fromShare=new URLSearchParams(location.search).has('from');}catch(e){}
+  var _sameVisit=(_navType==='reload'||_navType==='back_forward');
+  if(_fromShare||!_sameVisit){clearResultSnap();return;}
+
   const snap=loadResultSnap();
   if(snap){
     S.answers=snap.answers||{};
@@ -1344,7 +1357,7 @@ function rWelcome(){
     </div>`:'';
   return`<div class="card" style="text-align:center">
     <div class="s41" style="margin-bottom:24px">✦ Signature 41 ✦</div>
-    <div class="wbadge">S41 Japanese Financial Menu · Health Check v6.31</div>
+    <div class="wbadge">S41 Japanese Financial Menu · Health Check v6.32</div>
     <div class="wtitle" style="font-size:28px">ถ้าสถานะการเงินของคุณ<br>เป็น<span>อาหารญี่ปุ่น</span>... คุณคือจานไหน?</div>
     <div class="dish-parade">${Object.values(ASVG).map(s=>`<span class="dp">${s}</span>`).join('')}</div>
     <div class="wsub">ตรวจ 5 นาที · 12 คำถามตามหลัก CFP® โดยหมอเงิน<br>ค้นพบ<strong>เมนูประจำตัวของคุณ</strong> พร้อม<strong>จุดที่ต้องดูแลก่อน</strong></div>
@@ -1464,7 +1477,7 @@ function rResult(){
   return`<div class="card">
     <div class="topbar">
       <span class="s41">Signature 41</span>
-      <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">Financial Report v6.31 · 260726</span>
+      <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">Financial Report v6.32 · 270726</span>
     </div>
     <div class="rarch">
       <div class="a-svg-wrap">${ASVG[arch.key]||''}</div>
