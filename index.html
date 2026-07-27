@@ -1014,20 +1014,96 @@ async function downloadShareCard(){
   }
 }
 
+function _s41Esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+/* v6.30: แปลง dataURL เป็น Blob — จำเป็นเพราะ dataURL ของการ์ด 2160px ใหญ่หลาย MB
+   เบราว์เซอร์มือถือจะไม่ยอมดาวน์โหลด dataURL ขนาดนี้ (นี่คือสาเหตุที่กดบันทึกแล้วไม่มีอะไรเกิดขึ้น) */
+function _s41DataUrlToBlob(dataUrl){
+  const parts=String(dataUrl).split(',');
+  const mime=(parts[0].match(/:(.*?);/)||[null,'image/png'])[1];
+  const bin=atob(parts[1]);
+  const buf=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++)buf[i]=bin.charCodeAt(i);
+  return new Blob([buf],{type:mime});
+}
+
+/* v6.30: ตั้งชื่อไฟล์เป็นอักษรอังกฤษล้วน — ทดสอบแล้วว่าชื่อไฟล์ภาษาไทยทำให้ Chrome
+   ทิ้งชื่อและนามสกุลไปเลย กลายเป็นไฟล์ชื่อ "download" ที่เปิดไม่ออก */
+function _s41FileName(){
+  const slug=(typeof S41_SLUG!=='undefined'&&S41_SLUG[S.archetype])||S.archetype||'menu';
+  return ('S41-'+slug).replace(/[^A-Za-z0-9._-]+/g,'-').slice(0,60)+'.png';
+}
+
+async function _s41ShareFile(){
+  if(!_shareDataUrl)_shareDataUrl=await generateShareCard();
+  const arch=ARCH[S.archetype]||{};
+  return new File([_s41DataUrlToBlob(_shareDataUrl)],_s41FileName(),{type:'image/png'});
+}
+
+/* เครื่องนี้ส่งไฟล์รูปเข้าแผงแชร์ได้ไหม (มือถือส่วนใหญ่ได้ / เดสก์ท็อปส่วนใหญ่ไม่ได้) */
+function _s41CanShareFiles(){
+  try{
+    if(!navigator.canShare)return false;
+    const probe=new File([new Blob(['x'],{type:'image/png'})],'probe.png',{type:'image/png'});
+    return navigator.canShare({files:[probe]});
+  }catch(e){return false;}
+}
+
+/* v6.30: copy ที่ "รู้ผลจริง" — ของเดิมยิง writeText ทิ้งไว้เฉย ๆ ถ้า copy ไม่สำเร็จก็ไม่มีใครรู้
+   แล้ว popup ยังขึ้นว่า "Copy ให้เรียบร้อยแล้ว" ทั้งที่คลิปบอร์ดว่างเปล่า */
+async function _s41CopyText(text){
+  try{
+    if(navigator.clipboard&&window.isSecureContext){
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  }catch(e){}
+  try{
+    const ta=document.createElement('textarea');
+    ta.value=text;ta.setAttribute('readonly','');
+    ta.style.cssText='position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;border:none;padding:0';
+    document.body.appendChild(ta);
+    ta.select();ta.setSelectionRange(0,String(text).length);
+    const ok=document.execCommand('copy');
+    document.body.removeChild(ta);
+    return !!ok;
+  }catch(e){}
+  return false;
+}
+
+function _s41Caption(){
+  const arch=ARCH[S.archetype]||{};
+  return (arch.caption||'')+'\n\n👇 กดลิงก์นี้ ดูสิว่าเธอคือจานไหน (ฟรี 5 นาที)\n'+_s41ShareUrl();
+}
+
+function _s41Toast(msg,good){
+  document.getElementById('s41-toast')?.remove();
+  const t=document.createElement('div');
+  t.id='s41-toast';
+  t.textContent=msg;
+  t.style.cssText='position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:10002;max-width:88vw;background:'+(good===false?'#8a2b2b':'#002366')+';color:#fff;padding:13px 20px;border-radius:14px;font-size:14px;font-family:inherit;font-weight:600;line-height:1.5;box-shadow:0 12px 34px rgba(0,0,0,.3);text-align:center';
+  document.body.appendChild(t);
+  setTimeout(()=>{t.style.transition='opacity .4s';t.style.opacity='0';setTimeout(()=>t.remove(),450);},2600);
+}
+
 function showShareModal(){
   document.getElementById('share-modal-el')?.remove();
+  const canFiles=_s41CanShareFiles();
   const ol=document.createElement('div');
   ol.id='share-modal-el';
   ol.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.78);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto';
+  const bBase='display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px 20px;border-radius:12px;font-size:15px;font-family:inherit;font-weight:700;cursor:pointer;margin-bottom:10px';
   ol.innerHTML=`<div style="max-width:400px;width:100%;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.4)">
     <img src="${_shareDataUrl}" style="width:100%;display:block">
     <div style="padding:18px 16px">
       <div style="font-size:10px;font-weight:800;color:#002366;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">📤 แชร์เมนูของคุณ 🍱</div>
-      <button onclick="s41SaveImg()" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px 20px;background:#002366;color:#fff;border:none;border-radius:12px;font-size:15px;font-family:inherit;font-weight:700;cursor:pointer;margin-bottom:10px">💾 บันทึกรูปลงเครื่อง</button>
-      <button onclick="s41ShareToFacebook()" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px 20px;background:#fff;color:#1877F2;border:1.5px solid #1877F2;border-radius:12px;font-size:15px;font-family:inherit;font-weight:700;cursor:pointer;margin-bottom:14px">
+      ${canFiles?`<button onclick="s41ShareImage(this)" style="${bBase};background:#002366;color:#fff;border:none">📤 แชร์รูปการ์ดนี้</button>`:''}
+      <button onclick="s41SaveImg(this)" style="${bBase};background:${canFiles?'#fff':'#002366'};color:${canFiles?'#002366':'#fff'};border:${canFiles?'1.5px solid rgba(0,35,102,.25)':'none'}">💾 บันทึกรูปลงเครื่อง</button>
+      <button onclick="s41ShareToFacebook(this)" style="${bBase};background:#fff;color:#1877F2;border:1.5px solid #1877F2;margin-bottom:10px">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="#1877F2" style="flex-shrink:0"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
         ชวนเพื่อนมาทายเมนูของตัวเอง
       </button>
+      <button id="s41-copy-btn" onclick="s41CopyCaption(this)" style="width:100%;padding:12px;background:rgba(0,35,102,0.06);color:#002366;border:1.5px solid rgba(0,35,102,0.15);border-radius:12px;font-size:14px;font-family:inherit;font-weight:700;cursor:pointer;margin-bottom:8px">📋 คัดลอกแคปชั่น</button>
       <button onclick="document.getElementById('share-modal-el').remove()" style="width:100%;padding:10px;background:none;border:1.5px solid #e5e5e5;border-radius:12px;font-size:13px;font-family:inherit;cursor:pointer;color:#999">ปิด</button>
     </div>
   </div>`;
@@ -1035,22 +1111,34 @@ function showShareModal(){
   ol.onclick=e=>{if(e.target===ol)ol.remove();};
 }
 
-/* v6.20: popup เตือนวางแคปชั่นก่อนเปิด FB sharer (FB ห้าม pre-fill ข้อความ — เราจึง copy ให้ + เตือนให้วาง) */
-function _s41FbGate(fbUrl){
+/* v6.20: popup เตือนวางแคปชั่นก่อนเปิด FB sharer (FB ห้าม pre-fill ข้อความ — เราจึง copy ให้ + เตือนให้วาง)
+   v6.30: บอกผลตามจริงว่า copy ติดหรือไม่ + มีช่องข้อความให้คัดลอกเองได้ถ้า copy อัตโนมัติไม่ผ่าน */
+function _s41FbGate(fbUrl,copied,caption){
   window.__fbGateUrl=fbUrl;
+  window.__fbCaption=caption||'';
   document.getElementById('fbgate-el')?.remove();
   const ol=document.createElement('div');
   ol.id='fbgate-el';
-  ol.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px';
+  ol.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto';
   ol.innerHTML=`<div style="max-width:360px;width:100%;background:#fff;border-radius:20px;padding:26px 22px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.4)">
-    <div style="font-size:36px;margin-bottom:10px">📋✅</div>
-    <div style="font-size:17px;font-weight:800;color:#002366;margin-bottom:8px">Copy แคปชั่นให้เรียบร้อยแล้ว!</div>
-    <div style="font-size:14px;color:#5A6B85;line-height:1.7;margin-bottom:18px">พอหน้า Facebook เปิดขึ้น ให้<strong style="color:#002366">กด "วาง" (Paste) ในช่องข้อความ</strong>ก่อนโพสต์<br>โพสต์ที่มีแคปชั่น เพื่อนกดเข้ามาทายเมนูเยอะกว่าหลายเท่า 🍱</div>
+    <div style="font-size:36px;margin-bottom:10px">${copied?'📋✅':'📋'}</div>
+    <div style="font-size:17px;font-weight:800;color:#002366;margin-bottom:8px">${copied?'Copy แคปชั่นให้เรียบร้อยแล้ว!':'คัดลอกแคปชั่นก่อนนะคะ'}</div>
+    <div style="font-size:14px;color:#5A6B85;line-height:1.7;margin-bottom:14px">${copied?'พอหน้า Facebook เปิดขึ้น ให้<strong style="color:#002366">กด "วาง" (Paste) ในช่องข้อความ</strong>ก่อนโพสต์':'เบราว์เซอร์นี้ไม่ยอมให้คัดลอกอัตโนมัติ กด<strong style="color:#002366">ปุ่มคัดลอกด้านล่าง</strong>ก่อน แล้วค่อยเปิด Facebook'}<br>โพสต์ที่มีแคปชั่น เพื่อนกดเข้ามาทายเมนูเยอะกว่าหลายเท่า 🍱</div>
+    <textarea readonly onclick="this.select()" style="width:100%;height:78px;resize:none;border:1.5px solid rgba(0,35,102,.15);border-radius:10px;padding:10px 12px;font-size:12.5px;font-family:inherit;color:#1C1C2E;line-height:1.6;background:#FAFAF7;margin-bottom:8px">${_s41Esc(caption)}</textarea>
+    <button onclick="_s41GateCopy(this)" style="width:100%;padding:11px;background:rgba(0,35,102,.06);color:#002366;border:1.5px solid rgba(0,35,102,.15);border-radius:12px;font-size:13.5px;font-weight:700;font-family:inherit;cursor:pointer;margin-bottom:10px">📋 คัดลอกแคปชั่น${copied?'อีกครั้ง':''}</button>
     <button onclick="var w=window.open(window.__fbGateUrl,'_blank','width=680,height=640');if(!w)location.href=window.__fbGateUrl;document.getElementById('fbgate-el').remove()" style="width:100%;padding:14px;background:#1877F2;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;margin-bottom:8px">เข้าใจแล้ว · เปิด Facebook →</button>
     <button onclick="document.getElementById('fbgate-el').remove()" style="width:100%;padding:10px;background:none;border:none;color:#999;font-size:13px;font-family:inherit;cursor:pointer">ยกเลิก</button>
   </div>`;
   document.body.appendChild(ol);
   ol.onclick=e=>{if(e.target===ol)ol.remove();};
+}
+
+function _s41GateCopy(b){
+  const orig=b.innerHTML;
+  _s41CopyText(window.__fbCaption||'').then(ok=>{
+    b.innerHTML=ok?'✅ คัดลอกแล้ว':'⚠️ กดค้างที่ข้อความด้านบนเพื่อคัดลอกเอง';
+    setTimeout(()=>{b.innerHTML=orig;},2400);
+  });
 }
 
 /* v6.25: ลิงก์แชร์ตัดเหลือโดเมนเปล่า ไม่มี archetype key เก่าในลิงก์แล้ว — ยังพก ref ตัวแทนต่อไปด้วย — เพื่อนที่กดจากโพสต์แล้วส่งข้อมูล lead จะขึ้นชื่อตัวแทนเดิม (viral chain attribution) */
@@ -1063,58 +1151,124 @@ function _s41ShareUrl(){
   return base;
 }
 
+/* v6.30: แชร์รูปการ์ดจริงผ่านแผงแชร์ของเครื่อง — เลือกลง FB / LINE / IG ได้ในทีเดียว */
+async function s41ShareImage(btn){
+  const arch=ARCH[S.archetype]||{};
+  const orig=btn?btn.innerHTML:null;
+  if(btn){btn.disabled=true;btn.innerHTML='⏳ กำลังเตรียมรูป...';}
+  try{
+    const file=await _s41ShareFile();
+    if(navigator.canShare&&navigator.canShare({files:[file]})){
+      await navigator.share({files:[file],text:_s41Caption(),title:arch.name||'S41'});
+    }else{
+      await s41SaveImg(null);
+      const ok=await _s41CopyText(_s41Caption());
+      _s41Toast(ok?'บันทึกรูปแล้ว และคัดลอกแคปชั่นให้แล้ว':'บันทึกรูปแล้ว');
+    }
+  }catch(e){
+    if(!(e&&e.name==='AbortError'))_s41Toast('แชร์ไม่สำเร็จ ลองกด "บันทึกรูปลงเครื่อง" แทนได้ค่ะ',false);
+  }
+  if(btn){btn.innerHTML=orig;btn.disabled=false;}
+}
+
 /* Open Facebook share dialog with the survey URL.
    FB will pull og:title / og:description / og:image meta tags from
-   the survey page automatically, so friends who click the post → land
-   on the survey URL and can take it themselves. */
-async function s41ShareToFacebook(){
-  /* v6.9: มือถือแชร์รูปการ์ดจริงผ่าน native share (สวยสุดบนฟีด) + fallback ครบ */
+   the per-archetype og page automatically, so friends who click the post →
+   land on the survey and can take it themselves.
+   v6.30: ตัด &quote= ออก — Facebook เลิกรองรับตั้งแต่ 2017 ใส่ไปก็ถูกทิ้ง
+   ข้อความบนโพสต์จึงต้องให้ผู้ใช้กดวางเอง (เรา copy ให้ล่วงหน้าและตรวจว่าติดจริง) */
+async function s41ShareToFacebook(btn){
   const arch=ARCH[S.archetype]||{};
   const shareUrl=_s41ShareUrl();
-  if(navigator.share&&/Android|iPhone|iPad/i.test(navigator.userAgent)){
+  const caption=_s41Caption();
+  const orig=btn?btn.innerHTML:null;
+
+  /* มือถือ: แผงแชร์ของเครื่อง — ส่งรูปการ์ดเข้าฟีดได้สวยที่สุด */
+  if(navigator.share&&/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)){
+    if(btn){btn.disabled=true;btn.innerHTML='⏳ กำลังเตรียม...';}
     try{
-      let payload={title:'เมนูของฉันคือ '+(arch.name||''),text:(arch.caption||'')+'\n\n👇 กดลิงก์นี้ ดูสิว่าเธอคือจานไหน (ฟรี 5 นาที)\n'+shareUrl};
-      try{
-        const dataUrl=(typeof _shareDataUrl!=='undefined'&&_shareDataUrl)?_shareDataUrl:await generateShareCard();
-        const blob=await (await fetch(dataUrl)).blob();
-        const f=new File([blob],'S41-'+(arch.key||'menu')+'.png',{type:'image/png'});
-        if(navigator.canShare&&navigator.canShare({files:[f]})){payload.files=[f];}
-        else{payload.url=shareUrl;}
-      }catch(e){payload.url=shareUrl;}
-      await navigator.share(payload);
+      const file=await _s41ShareFile();
+      if(navigator.canShare&&navigator.canShare({files:[file]})){
+        await navigator.share({files:[file],text:caption,title:arch.name||''});
+      }else{
+        await navigator.share({text:caption,url:shareUrl,title:arch.name||''});
+      }
+      if(btn){btn.innerHTML=orig;btn.disabled=false;}
       return;
-    }catch(e){/* ผู้ใช้กดยกเลิก หรือแชร์ไม่ได้ → ไปทาง sharer */}
+    }catch(e){
+      if(btn){btn.innerHTML=orig;btn.disabled=false;}
+      if(e&&e.name==='AbortError')return;   /* ผู้ใช้กดยกเลิกเอง — ไม่ต้องเด้งอะไรต่อ */
+    }
   }
-  /* เดสก์ท็อป: sharer + quote = มีข้อความบนโพสต์อัตโนมัติ */
-  try{navigator.clipboard&&navigator.clipboard.writeText((arch.caption||'')+'\n\n'+shareUrl);}catch(e){}
-  const fbUrl='https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(shareUrl)+'&quote='+encodeURIComponent(arch.caption||'');
-  _s41FbGate(fbUrl);
+
+  /* เดสก์ท็อป: copy แคปชั่นก่อน แล้วค่อยเปิด FB */
+  const copied=await _s41CopyText(caption);
+  _s41FbGate('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(shareUrl),copied,caption);
 }
 
-function s41SaveImg(){
-  const arch=ARCH[S.archetype];
-  const a=document.createElement('a');a.href=_shareDataUrl;
-  a.download=`S41-${arch.name}.png`;a.click();
-}
-
-function s41CopyCaption(){
-  const arch=ARCH[S.archetype];
-  const shareUrl=_s41ShareUrl();
-  const caption=arch.caption+'\n\n👇 กดลิงก์นี้ ดูสิว่าเธอคือจานไหน (ฟรี 5 นาที)\n'+shareUrl;
-  navigator.clipboard.writeText(caption).then(()=>{
-    const btn=document.getElementById('s41-copy-btn');
-    if(btn){const orig=btn.textContent;btn.textContent='✅ Copy แล้ว!';btn.style.background='rgba(46,158,82,0.1)';btn.style.color='#2E9E52';btn.style.borderColor='rgba(46,158,82,0.3)';
-    setTimeout(()=>{if(btn){btn.textContent=orig;btn.style.cssText='width:100%;padding:12px;background:rgba(0,35,102,0.06);color:#002366;border:1.5px solid rgba(0,35,102,0.15);border-radius:12px;font-size:14px;font-family:inherit;font-weight:700;cursor:pointer;margin-bottom:8px';}},2200);}
-  }).catch(()=>{});
-}
-
-async function shareToFacebook(){
+/* v6.30: เดิมใช้ <a download> ชี้ไปที่ dataURL หลาย MB และไม่ได้ต่อ <a> เข้ากับหน้าเว็บ
+   → iOS ไม่รองรับ download กับ dataURL เลย และ Android บางรุ่นก็เงียบ ไม่มีอะไรเกิดขึ้น
+   ตอนนี้เปลี่ยนเป็น Blob + object URL และมีทางสำรองสองชั้น */
+async function s41SaveImg(btn){
   const arch=ARCH[S.archetype]||{};
-  const shareUrl=_s41ShareUrl();
-  try{navigator.clipboard&&navigator.clipboard.writeText((arch.caption||'')+'\n\n'+shareUrl);}catch(e){}
-  const fbUrl='https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(shareUrl)+'&quote='+encodeURIComponent(arch.caption||'');
-  _s41FbGate(fbUrl);
+  const orig=btn?btn.innerHTML:null;
+  if(btn){btn.disabled=true;btn.innerHTML='⏳ กำลังบันทึก...';}
+  try{
+    if(!_shareDataUrl)_shareDataUrl=await generateShareCard();
+    const blob=_s41DataUrlToBlob(_shareDataUrl);
+    const name=_s41FileName();
+    const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+
+    /* iOS ไม่รองรับ <a download> — ต้องผ่านแผงแชร์แล้วกด "บันทึกรูปภาพ" */
+    if(isIOS){
+      const file=new File([blob],name,{type:'image/png'});
+      if(navigator.canShare&&navigator.canShare({files:[file]})){
+        await navigator.share({files:[file],title:arch.name||'S41'});
+        if(btn){btn.innerHTML=orig;btn.disabled=false;}
+        return;
+      }
+    }
+
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;a.download=name;a.rel='noopener';
+    a.style.display='none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(()=>{try{document.body.removeChild(a);}catch(e){}URL.revokeObjectURL(url);},5000);
+    if(btn){btn.innerHTML='✅ บันทึกแล้ว';setTimeout(()=>{if(btn){btn.innerHTML=orig;btn.disabled=false;}},2000);}
+    else _s41Toast('บันทึกรูปเรียบร้อย');
+  }catch(e){
+    /* ทางสำรองสุดท้าย: เปิดรูปในแท็บใหม่ ให้กดค้างเพื่อบันทึกเอง */
+    try{
+      const w=window.open('','_blank');
+      if(w){
+        w.document.write('<!DOCTYPE html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>กดค้างที่รูปเพื่อบันทึก</title></head><body style="margin:0;background:#111;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif"><p style="color:#fff;font-size:15px;padding:14px;text-align:center">กดค้างที่รูป แล้วเลือก "บันทึกรูปภาพ"</p><img src="'+_shareDataUrl+'" style="max-width:100%;height:auto"></body></html>');
+        w.document.close();
+      }else{
+        _s41Toast('เบราว์เซอร์บล็อกหน้าต่างใหม่ — กดค้างที่รูปด้านบนเพื่อบันทึกได้เลยค่ะ',false);
+      }
+    }catch(e2){
+      _s41Toast('บันทึกไม่สำเร็จ — กดค้างที่รูปด้านบนเพื่อบันทึกได้ค่ะ',false);
+    }
+    if(btn){btn.innerHTML=orig;btn.disabled=false;}
+  }
 }
+
+function s41CopyCaption(btn){
+  const b=btn||document.getElementById('s41-copy-btn');
+  const orig=b?b.innerHTML:null;
+  _s41CopyText(_s41Caption()).then(ok=>{
+    if(!b)return;
+    b.innerHTML=ok?'✅ คัดลอกแล้ว!':'⚠️ คัดลอกไม่ได้ ลองกดใหม่อีกครั้ง';
+    b.style.background=ok?'rgba(46,158,82,0.1)':'rgba(224,82,82,0.08)';
+    b.style.color=ok?'#2E9E52':'#C0392B';
+    b.style.borderColor=ok?'rgba(46,158,82,0.3)':'rgba(224,82,82,0.3)';
+    setTimeout(()=>{if(b){b.innerHTML=orig;b.style.cssText='width:100%;padding:12px;background:rgba(0,35,102,0.06);color:#002366;border:1.5px solid rgba(0,35,102,0.15);border-radius:12px;font-size:14px;font-family:inherit;font-weight:700;cursor:pointer;margin-bottom:8px';}},2200);
+  });
+}
+
+async function shareToFacebook(btn){ return s41ShareToFacebook(btn); }
 
 /* ════ RENDER ════ */
 function render(){
@@ -1164,7 +1318,7 @@ function rWelcome(){
     </div>`:'';
   return`<div class="card" style="text-align:center">
     <div class="s41" style="margin-bottom:24px">✦ Signature 41 ✦</div>
-    <div class="wbadge">S41 Japanese Financial Menu · Health Check v6.29</div>
+    <div class="wbadge">S41 Japanese Financial Menu · Health Check v6.30</div>
     <div class="wtitle" style="font-size:28px">ถ้าสถานะการเงินของคุณ<br>เป็น<span>อาหารญี่ปุ่น</span>... คุณคือจานไหน?</div>
     <div class="dish-parade">${Object.values(ASVG).map(s=>`<span class="dp">${s}</span>`).join('')}</div>
     <div class="wsub">ตรวจ 5 นาที · 12 คำถามตามหลัก CFP® โดยหมอเงิน<br>ค้นพบ<strong>เมนูประจำตัวของคุณ</strong> พร้อม<strong>จุดที่ต้องดูแลก่อน</strong></div>
@@ -1284,7 +1438,7 @@ function rResult(){
   return`<div class="card">
     <div class="topbar">
       <span class="s41">Signature 41</span>
-      <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">Financial Report v6.29 · 240726</span>
+      <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">Financial Report v6.30 · 260726</span>
     </div>
     <div class="rarch">
       <div class="a-svg-wrap">${ASVG[arch.key]||''}</div>
@@ -1814,5 +1968,6 @@ b.innerHTML="👋 เพื่อนของคุณคือ <b>"+ARCH[p].nam
 var w=document.querySelector('.wrap');if(w){w.insertBefore(b,w.firstChild);}else{document.body.insertBefore(b,document.body.firstChild);}}
 }catch(e){}})();
 </script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2147003cf29f924',t:'MTc4NTA3OTc0Mg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"418b7c57506d4c7896e73bfe24fc748a","r":1}' crossorigin="anonymous"></script>
 </body>
 </html>
