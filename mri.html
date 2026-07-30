@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S41 Money MRI — เตรียมตัวก่อนสแกน (Prototype)</title>
+<style>
+:root{
+  --navy:#002366; --gold:#C8A94A; --bg:#F6F7FA; --card:#fff;
+  --muted:#6b7280; --line:#e5e7eb; --green:#0e9f6e; --red:#e02424;
+}
+*{box-sizing:border-box; margin:0; padding:0; font-family:'Segoe UI',system-ui,-apple-system,'Noto Sans Thai',sans-serif}
+body{background:var(--bg); color:#1f2937; display:flex; justify-content:center; min-height:100vh}
+.app{width:100%; max-width:430px; background:var(--bg); min-height:100vh; display:flex; flex-direction:column}
+
+/* Header */
+.hdr{background:var(--navy); color:#fff; padding:16px 20px 14px; position:sticky; top:0; z-index:10}
+.hdr .brand{font-size:10px; letter-spacing:2.5px; color:var(--gold); font-weight:800; text-transform:uppercase}
+.hdr h1{font-size:17px; font-weight:800; margin-top:2px}
+.hdr .sub{font-size:12px; color:#c7d2e8; margin-top:2px}
+.pbar{height:6px; background:rgba(255,255,255,.15); border-radius:3px; margin-top:12px; overflow:hidden}
+.pbar>div{height:100%; background:var(--gold); border-radius:3px; transition:width .4s}
+.pmeta{display:flex; justify-content:space-between; font-size:11px; color:#c7d2e8; margin-top:6px}
+
+/* Body */
+.body{flex:1; padding:20px 18px 110px}
+.step-tag{font-size:10px; font-weight:800; color:var(--gold); letter-spacing:2px; text-transform:uppercase; margin-bottom:6px}
+.step-title{font-size:20px; font-weight:800; color:var(--navy); line-height:1.3}
+.step-desc{font-size:13px; color:var(--muted); margin-top:6px; line-height:1.6; margin-bottom:18px}
+
+.card{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:16px; margin-bottom:12px}
+label.f{display:block; font-size:13.5px; font-weight:700; color:#374151; margin-bottom:6px}
+.hint{font-size:11.5px; color:var(--muted); margin-top:5px; line-height:1.5}
+input[type=text],input[type=number],select{
+  width:100%; padding:12px 14px; border:1.5px solid var(--line); border-radius:12px;
+  font-size:16px; background:#fff; outline:none; transition:border .15s}
+input:focus,select:focus{border-color:var(--gold)}
+.row2{display:flex; gap:10px}
+.row2>*{flex:1}
+
+/* chips */
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chip{padding:9px 14px; border:1.5px solid var(--line); border-radius:999px; font-size:13.5px;
+  background:#fff; cursor:pointer; user-select:none; transition:all .15s}
+.chip.on{background:var(--navy); color:#fff; border-color:var(--navy)}
+.chip.gold.on{background:var(--gold); border-color:var(--gold); color:#fff}
+
+/* slider */
+.slider-val{font-size:26px; font-weight:800; color:var(--navy); text-align:center; margin:4px 0}
+input[type=range]{width:100%; accent-color:var(--gold)}
+.slider-ends{display:flex; justify-content:space-between; font-size:11px; color:var(--muted)}
+
+/* skip / estimate */
+.skips{display:flex; gap:8px; margin-top:8px}
+.skip-btn{font-size:11.5px; color:var(--muted); background:#f3f4f6; border:none; border-radius:999px;
+  padding:6px 12px; cursor:pointer}
+.skip-btn.on{background:rgba(200,169,74,.15); color:#8a6d1f; font-weight:700}
+
+/* add-row lists */
+.item{display:flex; align-items:center; justify-content:space-between; background:#f8fafc;
+  border:1px solid var(--line); border-radius:12px; padding:10px 12px; margin-bottom:8px; font-size:13.5px}
+.item b{color:var(--navy)}
+.item .del{color:var(--red); background:none; border:none; font-size:16px; cursor:pointer; padding:2px 6px}
+.add-btn{width:100%; padding:12px; border:1.5px dashed var(--gold); background:rgba(200,169,74,.05);
+  color:#8a6d1f; border-radius:12px; font-size:14px; font-weight:700; cursor:pointer}
+
+/* live summary */
+.live{position:sticky; bottom:84px; background:var(--navy); color:#fff; border-radius:14px;
+  padding:12px 16px; display:flex; justify-content:space-between; align-items:center;
+  box-shadow:0 8px 20px rgba(0,35,102,.25); margin-top:14px}
+.live .lbl{font-size:11px; color:#c7d2e8}
+.live .val{font-size:18px; font-weight:800}
+.live .val.neg{color:#fca5a5}
+.live .val.pos{color:#86efac}
+
+/* upload */
+.upload{border:2px dashed var(--gold); border-radius:16px; padding:22px 16px; text-align:center;
+  background:rgba(200,169,74,.05); cursor:pointer}
+.upload .ico{font-size:30px}
+.upload .t{font-size:14.5px; font-weight:800; color:var(--navy); margin-top:6px}
+.upload .s{font-size:12px; color:var(--muted); margin-top:4px; line-height:1.5}
+.or{display:flex; align-items:center; gap:10px; color:var(--muted); font-size:11px; margin:14px 0}
+.or::before,.or::after{content:""; flex:1; height:1px; background:var(--line)}
+
+/* goal cards */
+.goal-detail{background:#f8fafc; border-radius:12px; padding:12px; margin-top:10px}
+.goal-detail .g-name{font-size:13.5px; font-weight:800; color:var(--navy); margin-bottom:8px}
+
+/* footer nav */
+.nav{position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:430px;
+  background:#fff; border-top:1px solid var(--line); padding:14px 18px; display:flex; gap:10px; z-index:10}
+.btn{flex:1; padding:14px; border-radius:14px; font-size:15px; font-weight:800; cursor:pointer; border:none}
+.btn.back{background:#f3f4f6; color:#374151; flex:0 0 30%}
+.btn.next{background:var(--navy); color:#fff}
+.btn.next:active{opacity:.85}
+.autosave{position:fixed; bottom:76px; left:50%; transform:translateX(-50%); font-size:10.5px;
+  color:var(--muted); background:#fff; border:1px solid var(--line); padding:3px 12px;
+  border-radius:999px; opacity:0; transition:opacity .3s; z-index:9}
+.autosave.show{opacity:1}
+
+/* result */
+.res-hero{text-align:center; padding:10px 0 6px}
+.res-hero .big{font-size:44px}
+.res-hero h2{font-size:21px; font-weight:800; color:var(--navy); margin-top:4px}
+.res-hero p{font-size:13px; color:var(--muted); margin-top:4px}
+.stat{background:#fff; border:1px solid var(--line); border-left:4px solid var(--gold);
+  border-radius:0 14px 14px 0; padding:14px 16px; margin-bottom:10px}
+.stat .k{font-size:11px; color:var(--muted); font-weight:700; letter-spacing:1px; text-transform:uppercase}
+.stat .v{font-size:24px; font-weight:800; color:var(--navy); margin-top:2px}
+.stat .n{font-size:12px; color:var(--muted); margin-top:3px}
+.cta{background:rgba(200,169,74,.08); border:1px solid rgba(200,169,74,.3); border-radius:14px;
+  padding:16px; text-align:center; font-size:13.5px; color:#374151; line-height:1.6; margin-top:14px}
+.badge-est{display:inline-block; font-size:9.5px; background:rgba(200,169,74,.15); color:#8a6d1f;
+  border-radius:999px; padding:2px 8px; font-weight:700; margin-left:6px; vertical-align:middle}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="hdr">
+    <div class="brand">✦ S41 Money MRI</div>
+    <h1 id="hdr-title">เตรียมตัวก่อนสแกน</h1>
+    <div class="sub" id="hdr-sub">ใบซักประวัติการเงิน — กรอกสบายๆ หยุดพักได้ ระบบบันทึกให้เอง</div>
+    <div class="pbar"><div id="pfill" style="width:12.5%"></div></div>
+    <div class="pmeta"><span id="pstep">ตอนที่ 1 จาก 8</span><span id="ptime">เหลือประมาณ 20 นาที</span></div>
+  </div>
+
+  <div class="body">
+
+    <!-- ═══ STEP 1 ═══ -->
+    <section class="step" id="s1">
+      <div class="step-tag">ตอนที่ 1 · 8</div>
+      <div class="step-title">มารู้จักกันก่อนค่ะ 👋</div>
+      <div class="step-desc">คำถามง่ายๆ เกี่ยวกับตัวคุณ ใช้เวลาไม่ถึง 2 นาที</div>
+
+      <div class="card" style="border-left:4px solid var(--gold)">
+        <label class="f">แผนนี้เป็นของใครคะ?</label>
+        <div class="chips" id="pmode-chips"></div>
+        <div class="hint" id="pmode-hint">เลือกก่อนนะคะ ฟอร์มจะปรับคำถามให้พอดีกับแบบของคุณ</div>
+      </div>
+
+      <div class="sep-only" style="display:none">
+        <div class="card" style="background:rgba(200,169,74,.06);border-color:rgba(200,169,74,.3)">
+          <div style="font-size:13px;line-height:1.6">💡 <b>กติกาเดียวของโหมดนี้:</b> ทุกอย่างที่เป็น "ของร่วมกัน" (บ้าน หนี้ร่วม ค่าใช้จ่ายบ้าน ค่าเลี้ยงลูก) ให้ใส่<b>เฉพาะส่วนของคุณ</b> เช่น ผ่อนบ้านคนละครึ่ง ก็ใส่ครึ่งเดียวค่ะ — เดี๋ยวมีตัวช่วยเตือนในแต่ละตอนให้</div>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-bottom:14px">
+        <button class="skip-btn" onclick="resetAll()">🗑 ล้างข้อมูล เริ่มกรอกใหม่</button>
+      </div>
+
+      <div class="card">
+        <label class="f">ชื่อเล่นของคุณ</label>
+        <input type="text" id="nickname" placeholder="เช่น อุ้ม" oninput="save()">
+        <div class="hint">ใช้เรียกคุณใน Dashboard ค่ะ</div>
+      </div>
+
+      <div class="card">
+        <label class="f">ชื่อ-นามสกุล</label>
+        <input type="text" id="fullname" placeholder="สำหรับจัดทำแผนของคุณโดยเฉพาะ" oninput="save()">
+        <label class="f" style="margin-top:12px">LINE ID หรือเบอร์โทร</label>
+        <input type="text" id="contact" placeholder="ช่องทางที่ที่ปรึกษาติดต่อคุณสะดวกที่สุด" oninput="save()">
+      </div>
+
+      <div class="joint-only" style="display:none">
+        <div class="card" style="border-left:4px solid var(--navy)">
+          <div class="step-tag" style="margin-bottom:8px">💑 ข้อมูลคู่สมรส</div>
+          <label class="f">ชื่อเล่นของคู่</label>
+          <input type="text" id="nickname2" placeholder="เช่น ต้น" oninput="save()">
+          <label class="f" style="margin-top:12px">เดือน/ปีเกิดของคู่</label>
+          <div class="row2">
+            <select id="bmonth2" onchange="save()"><option value="">เดือน</option></select>
+            <select id="byear2" onchange="save()"><option value="">พ.ศ.</option></select>
+          </div>
+          <label class="f" style="margin-top:12px">อาชีพของคู่</label>
+          <div class="chips" id="job2-chips"></div>
+          <label class="f" style="margin-top:12px">คู่อยากเกษียณตอนอายุ</label>
+          <div class="slider-val"><span id="ret2-val">60</span> ปี</div>
+          <input type="range" min="45" max="70" value="60" id="ret2-slider" oninput="document.getElementById('ret2-val').textContent=this.value; save()">
+        </div>
+      </div>
+
+      <div class="card">
+        <label class="f">เดือน/ปีเกิด</label>
+        <div class="row2">
+          <select id="bmonth" onchange="save()"><option value="">เดือน</option></select>
+          <select id="byear" onchange="save()"><option value="">พ.ศ.</option></select>
+        </div>
+      </div>
+
+      <div class="card">
+        <label class="f">อาชีพหลักตอนนี้</label>
+        <div class="chips" id="job-chips"></div>
+      </div>
+
+      <div class="card">
+        <label class="f">อยากเกษียณตอนอายุเท่าไหร่?</label>
+        <div class="slider-val"><span id="ret-val">60</span> ปี</div>
+        <input type="range" min="45" max="70" value="60" id="ret-slider" oninput="document.getElementById('ret-val').textContent=this.value; save()">
+        <div class="slider-ends"><span>45</span><span>70</span></div>
+      </div>
+
+      <div class="card">
+        <label class="f">มีใครที่คุณดูแลค่าใช้จ่ายให้บ้าง?</label>
+        <div class="chips" id="dep-chips"></div>
+        <div id="dep-detail"></div>
+      </div>
+    </section>
+
+    <!-- ═══ STEP 2 ═══ -->
+    <section class="step hidden" id="s2">
+      <div class="step-tag">ตอนที่ 2 · 8</div>
+      <div class="step-title">รายรับของคุณ 💰</div>
+      <div class="step-desc">ตัวเลขกลมๆ พอค่ะ ไม่ต้องเป๊ะ</div>
+
+      <div class="card">
+        <label class="f">รายได้ประจำต่อเดือน (ก่อนหักภาษี)</label>
+        <input type="number" id="income" placeholder="เช่น 45000" oninput="save()">
+        <div class="skips">
+          <button class="skip-btn" onclick="toggleSkip(this)">จำได้แต่ยอดหลังหัก</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <label class="f">โบนัส / รายได้พิเศษต่อปี</label>
+        <input type="number" id="bonus" placeholder="เช่น 90000" oninput="save()">
+        <div class="skips">
+          <button class="skip-btn" onclick="toggleSkip(this)">ไม่แน่นอน</button>
+          <button class="skip-btn" onclick="toggleSkip(this)">ไม่มี</button>
+        </div>
+      </div>
+
+      <div class="joint-only" style="display:none">
+        <div class="card" style="border-left:4px solid var(--navy)">
+          <div class="step-tag" style="margin-bottom:8px">💑 ของคู่สมรส</div>
+          <label class="f">รายได้ประจำของคู่ต่อเดือน</label>
+          <input type="number" id="income2" placeholder="เช่น 50000" oninput="liveCalc()">
+          <label class="f" style="margin-top:12px">โบนัสของคู่ต่อปี</label>
+          <input type="number" id="bonus2" placeholder="ไม่มีเว้นว่างได้" oninput="save()">
+        </div>
+      </div>
+
+      <div class="card">
+        <label class="f">รายได้อื่นๆ <span style="font-weight:400;color:var(--muted)">(ค่าเช่า ขายของ ฯลฯ)</span></label>
+        <div id="oinc-list"></div>
+        <div id="oinc-form" class="goal-detail hidden">
+          <input type="text" id="oinc-name" placeholder="รายได้อะไรคะ? เช่น ค่าเช่าห้อง" style="margin-bottom:8px">
+          <input type="number" id="oinc-amt" placeholder="เดือนละประมาณ (บาท)">
+          <div style="margin-top:8px"><button class="btn next" style="padding:10px" onclick="addOtherIncome()">เพิ่มรายการ</button></div>
+        </div>
+        <button class="add-btn" id="oinc-add" onclick="document.getElementById('oinc-form').classList.remove('hidden');this.classList.add('hidden')">＋ มีรายได้อื่น</button>
+      </div>
+    </section>
+
+    <!-- ═══ STEP 3 ═══ -->
+    <section class="step hidden" id="s3">
+      <div class="step-tag">ตอนที่ 3 · 8</div>
+      <div class="step-title">รายจ่ายต่อเดือน 🛒</div>
+      <div class="step-desc">แค่ 5 ก้อนใหญ่พอค่ะ ดูแถบสรุปด้านล่างไปด้วย — ถ้าตัวเลขดูแปลกๆ ปรับได้เลย</div>
+      <div class="joint-only" style="display:none"><div class="hint" style="background:rgba(0,35,102,.04);border-radius:10px;padding:10px 12px;margin-bottom:12px">💑 กรอกเป็น<b>รายจ่ายของบ้านรวมกัน</b>ครั้งเดียวเลยค่ะ ไม่ต้องแยกใครจ่าย</div></div>
+      <div class="sep-only" style="display:none"><div class="hint" style="background:rgba(200,169,74,.08);border-radius:10px;padding:10px 12px;margin-bottom:12px">💡 ใส่<b>เฉพาะก้อนที่คุณจ่าย</b> — ค่าใช้จ่ายบ้าน/ลูกที่แชร์กัน ใส่ตามสัดส่วนของคุณค่ะ</div></div>
+
+      <div class="card">
+        <label class="f">ค่าผ่อนต่างๆ รวมกัน (บ้าน รถ ผ่อนของ)</label>
+        <input type="number" class="exp" id="exp1" placeholder="ไม่แน่ใจ? เว้นไว้ได้ค่ะ" oninput="liveCalc()">
+        <div class="hint">ถ้าเว้นไว้ เดี๋ยวระบบรวมยอดผ่อนจากตอน "หนี้สิน" มาเติมให้อัตโนมัติค่ะ</div>
+      </div>
+      <div class="card">
+        <label class="f">ค่ากินอยู่ประจำ</label>
+        <input type="number" class="exp" id="exp2" placeholder="เช่น 15000" oninput="liveCalc()">
+        <div class="hint">อาหาร เดินทาง ของใช้ ค่าน้ำไฟ มือถือ</div>
+      </div>
+      <div class="card">
+        <label class="f">ค่าใช้จ่ายเพื่อความสุข</label>
+        <input type="number" class="exp" id="exp3" placeholder="เช่น 5000" oninput="liveCalc()">
+        <div class="hint">ช้อปปิ้ง เที่ยว สังสรรค์ Netflix ฯลฯ</div>
+      </div>
+      <div class="card">
+        <label class="f">เงินที่ให้ครอบครัว</label>
+        <input type="number" class="exp" id="exp4" placeholder="เช่น 5000" oninput="liveCalc()">
+      </div>
+      <div class="card">
+        <label class="f">เบี้ยประกันเฉลี่ยต่อเดือน</label>
+        <input type="number" class="exp" id="exp5" placeholder="ไม่แน่ใจข้ามได้" oninput="liveCalc()">
+        <div class="skips"><button class="skip-btn" onclick="toggleSkip(this)">ไม่แน่ใจ — เดี๋ยวได้จากตอนประกัน</button></div>
+      </div>
+
+      <div class="live">
+        <div><div class="lbl">รายรับ − รายจ่ายที่กรอก</div><div style="font-size:11px;color:#c7d2e8">เหลือต่อเดือน</div></div>
+        <div class="val pos" id="live-val">—</div>
+      </div>
+    </section>
+
+    <!-- ═══ STEP 4 ═══ -->
+    <section class="step hidden" id="s4">
+      <div class="step-tag">ตอนที่ 4 · 8</div>
+      <div class="step-title">ทรัพย์สินที่มี 🏦</div>
+      <div class="step-desc">แตะเลือกประเภท → ใส่มูลค่ากลมๆ → เพิ่มได้เรื่อยๆ</div>
+      <div class="sep-only" style="display:none"><div class="hint" style="background:rgba(200,169,74,.08);border-radius:10px;padding:10px 12px;margin-bottom:12px">💡 ทรัพย์สินที่เป็นเจ้าของร่วมกับคู่ (เช่น บ้าน) ใส่มูลค่า<b>เฉพาะส่วนของคุณ</b> เช่น ครึ่งเดียวค่ะ</div></div>
+
+      <div class="card">
+        <label class="f">เพิ่มทรัพย์สิน</label>
+        <div class="chips" id="asset-chips"></div>
+        <div id="asset-form" class="goal-detail hidden">
+          <div class="g-name" id="asset-form-name"></div>
+          <div class="joint-only" style="display:none;margin-bottom:8px">
+            <div class="hint" style="margin:0 0 4px">ของใครคะ?</div>
+            <div class="chips" id="asset-owner-chips"></div>
+          </div>
+          <input type="number" id="asset-val" placeholder="มูลค่าโดยประมาณ (บาท)">
+          <div style="margin-top:8px"><button class="btn next" style="padding:10px" onclick="addAsset()">เพิ่มรายการ</button></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <label class="f">รายการของคุณ</label>
+        <div id="asset-list"><div class="hint">ยังไม่มีรายการ — เลือกประเภทด้านบนได้เลยค่ะ</div></div>
+      </div>
+
+      <div class="card">
+        <label class="f">ในเงินฝากทั้งหมด ก้อนไหนคือ "เงินเผื่อฉุกเฉิน"?</label>
+        <input type="number" id="emergency" placeholder="เช่น 100000" oninput="save()">
+        <div class="hint">เงินที่หยิบใช้ได้ทันทีถ้ามีเรื่องด่วน</div>
+      </div>
+    </section>
+
+    <!-- ═══ STEP 5 ═══ -->
+    <section class="step hidden" id="s5">
+      <div class="step-tag">ตอนที่ 5 · 8</div>
+      <div class="step-title">หนี้สินที่มี 📋</div>
+      <div class="step-desc">🔒 ข้อมูลนี้เห็นแค่คุณกับที่ปรึกษาของคุณเท่านั้น ยิ่งตรง แผนยิ่งช่วยได้จริงค่ะ</div>
+      <div class="sep-only" style="display:none"><div class="hint" style="background:rgba(200,169,74,.08);border-radius:10px;padding:10px 12px;margin-bottom:12px">💡 หนี้ที่กู้ร่วมกับคู่ ใส่ยอดและค่าผ่อน<b>เฉพาะส่วนของคุณ</b>ค่ะ</div></div>
+
+      <div class="card">
+        <label class="f">เพิ่มหนี้</label>
+        <div class="chips" id="debt-chips"></div>
+        <div id="debt-form" class="goal-detail hidden">
+          <div class="g-name" id="debt-form-name"></div>
+          <div class="joint-only" style="display:none;margin-bottom:8px">
+            <div class="hint" style="margin:0 0 4px">หนี้ของใครคะ?</div>
+            <div class="chips" id="debt-owner-chips"></div>
+          </div>
+          <input type="number" id="debt-bal" placeholder="ยอดคงเหลือ (บาท)" style="margin-bottom:8px">
+          <input type="number" id="debt-pay" placeholder="ผ่อนเดือนละ (บาท)" style="margin-bottom:8px">
+          <input type="number" id="debt-rate" placeholder="ดอกเบี้ย % ต่อปี">
+          <div class="skips"><button class="skip-btn" onclick="toggleSkip(this)">ไม่รู้ % — ให้ทีมประเมินให้</button></div>
+          <div style="margin-top:8px"><button class="btn next" style="padding:10px" onclick="addDebt()">เพิ่มรายการ</button></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <label class="f">รายการของคุณ</label>
+        <div id="debt-list"><div class="hint">ไม่มีหนี้? กดถัดไปได้เลยค่ะ 🎉</div></div>
+      </div>
+    </section>
+
+    <!-- ═══ STEP 6 ═══ -->
+    <section class="step hidden" id="s6">
+      <div class="step-tag">ตอนที่ 6 · 8</div>
+      <div class="step-title">ประกันที่มีอยู่ 🛡️</div>
+      <div class="step-desc">มีทางลัดค่ะ — ไม่ต้องกรอกเองก็ได้</div>
+
+      <div class="upload" style="cursor:default;text-align:left">
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <div class="ico" style="font-size:26px">📷</div>
+          <div>
+            <div class="t" style="margin-top:0">ให้ทีมงานกรอกให้ — ไม่ต้องกรอกเองค่ะ</div>
+            <div class="s" style="margin-top:6px">
+              ถ่ายรูป <b>หน้าตารางกรมธรรม์</b> ทุกเล่มที่มี<br>
+              แล้วส่งให้ที่ปรึกษาของคุณ<b>ทาง LINE</b> ได้เลย
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;margin-top:14px;padding-top:14px;border-top:1px dashed rgba(200,169,74,.4)">
+          <div class="ico" style="font-size:26px">📚</div>
+          <div class="s" style="margin-top:2px">
+            หรือสะดวกกว่านั้น — <b>ฝากเล่มกรมธรรม์ไว้กับที่ปรึกษา</b><br>
+            ให้ทีม S41 รับไปสรุปรายละเอียดให้ทั้งหมดก็ได้ค่ะ
+          </div>
+        </div>
+      </div>
+
+      <div class="or">หรือถ้าอยากกรอกเองแบบคร่าวๆ</div>
+
+      <div class="card">
+        <div class="chips" id="ins-chips"></div>
+        <div id="ins-form" class="goal-detail hidden">
+          <div class="g-name" id="ins-form-name"></div>
+          <div class="joint-only" style="display:none;margin-bottom:8px">
+            <div class="hint" style="margin:0 0 4px">กรมธรรม์ของใครคะ?</div>
+            <div class="chips" id="ins-owner-chips"></div>
+          </div>
+          <input type="number" id="ins-sum" placeholder="ทุนเอาประกัน (บาท)" style="margin-bottom:8px">
+          <input type="number" id="ins-prem" placeholder="เบี้ยต่อปี (บาท)">
+          <div style="margin-top:8px"><button class="btn next" style="padding:10px" onclick="addIns()">เพิ่มรายการ</button></div>
+        </div>
+        <div id="ins-list" style="margin-top:10px"></div>
+      </div>
+
+      <div class="card">
+        <label class="f">สวัสดิการที่มี</label>
+        <div class="chips" id="welfare-chips"></div>
+      </div>
+    </section>
+
+    <!-- ═══ STEP 7 ═══ -->
+    <section class="step hidden" id="s7">
+      <div class="step-tag">ตอนที่ 7 · 8</div>
+      <div class="step-title">เป้าหมายชีวิตของคุณ ✨</div>
+      <div class="step-desc">แตะเลือกสิ่งที่ฝันไว้ แล้วบอกคร่าวๆ ว่าเท่าไหร่ อีกกี่ปี</div>
+
+      <div class="card">
+        <div class="chips" id="goal-chips"></div>
+        <div id="goal-details"></div>
+      </div>
+
+      <div class="card">
+        <label class="f">🏖 ตอนเกษียณ อยากมีใช้เดือนละเท่าไหร่? <span class="badge-est">ประมาณการ</span></label>
+        <input type="number" id="ret-spend" placeholder="ระบบแนะนำ 70% ของรายจ่ายปัจจุบัน" oninput="save()">
+        <div class="hint" id="ret-hint">คิดเป็นค่าเงินวันนี้ค่ะ เดี๋ยวระบบคำนวณเงินเฟ้อให้เอง</div>
+      </div>
+
+      <div class="card">
+        <label class="f">ถ้าเงินลงทุนของคุณลดลง 20% ภายในเดือนเดียว <span class="joint-only" style="display:none">— <b>ตัวคุณ</b> —</span> จะ…</label>
+        <div class="chips" id="risk-chips"></div>
+      </div>
+
+      <div class="joint-only" style="display:none">
+        <div class="card" style="border-left:4px solid var(--navy)">
+          <label class="f">💑 แล้ว<b>คู่ของคุณ</b>ล่ะคะ ถ้าพอร์ตลง 20% จะ…</label>
+          <div class="chips" id="risk2-chips"></div>
+          <div class="hint">คู่สมรสรับความเสี่ยงต่างกันได้เป็นเรื่องปกติค่ะ — แผนที่ดีต้องรู้ทั้งสองมุม</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ STEP 8 ═══ -->
+    <section class="step hidden" id="s8">
+      <div class="step-tag">ตอนที่ 8 · 8 — ตอนสุดท้ายแล้วค่ะ!</div>
+      <div class="step-title">ภาษี & การส่งต่อ 📜</div>
+      <div class="step-desc">เบาๆ 3 ข้อ เป็นจุดตั้งต้นไว้คุยกันต่อ</div>
+
+      <div class="card">
+        <label class="f">ปีที่แล้ว<span class="joint-only" style="display:none"><b>คุณ</b></span>ใช้สิทธิลดหย่อนอะไรบ้าง? (เลือกได้หลายข้อ)</label>
+        <div class="chips" id="tax-chips"></div>
+      </div>
+
+      <div class="joint-only" style="display:none">
+        <div class="card" style="border-left:4px solid var(--navy)">
+          <label class="f">💑 แล้ว<b>คู่ของคุณ</b>ใช้สิทธิลดหย่อนอะไรบ้าง?</label>
+          <div class="chips" id="tax2-chips"></div>
+        </div>
+        <div class="card" style="border-left:4px solid var(--navy)">
+          <label class="f">💑 ปัจจุบันยื่นภาษีแบบไหนคะ?</label>
+          <div class="chips" id="filing-chips"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <label class="f">มีพินัยกรรมแล้วหรือยัง? <span class="joint-only" style="display:none">(ของคุณ)</span></label>
+        <div class="chips" id="will-chips"></div>
+      </div>
+
+      <div class="joint-only" style="display:none">
+        <div class="card" style="border-left:4px solid var(--navy)">
+          <label class="f">💑 คู่ของคุณมีพินัยกรรมแล้วหรือยัง?</label>
+          <div class="chips" id="will2-chips"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <label class="f">ถ้าเกิดอะไรขึ้น อยากให้ทรัพย์สินไปถึงใคร?</label>
+        <input type="text" id="heir" placeholder="ข้ามได้ ไว้คุยกันตอนนัดก็ได้ค่ะ" oninput="save()">
+      </div>
+    </section>
+
+    <!-- ═══ RESULT ═══ -->
+    <section class="step hidden" id="s9">
+      <div class="res-hero">
+        <div class="big">🎉</div>
+        <h2>เยี่ยมมากค่ะ<span id="res-name"></span>!</h2>
+        <p>นี่คือภาพรวมเบื้องต้นจากข้อมูลที่คุณกรอก</p>
+      </div>
+
+      <div class="stat">
+        <div class="k">ความมั่งคั่งสุทธิ (Net Worth)</div>
+        <div class="v" id="res-nw">—</div>
+        <div class="n">ทรัพย์สินทั้งหมด − หนี้สินทั้งหมด</div>
+      </div>
+      <div class="stat">
+        <div class="k">เงินเหลือต่อเดือน</div>
+        <div class="v" id="res-cf">—</div>
+        <div class="n">รายรับ − รายจ่ายที่กรอกไว้</div>
+      </div>
+      <div class="stat">
+        <div class="k">อัตราการออม</div>
+        <div class="v" id="res-sv">—</div>
+        <div class="n">เกณฑ์แนะนำทั่วไปคือ 10–20% ของรายได้</div>
+      </div>
+
+      <button class="btn next" style="width:100%;padding:16px;margin-top:6px" onclick="makePDF()">💾 บันทึกเป็นไฟล์ PDF</button>
+      <div class="hint" style="text-align:center;margin-top:8px" id="pdf-status">ไฟล์นี้เป็นของคุณ เก็บไว้ได้เลยค่ะ</div>
+
+      <div class="cta" style="margin-top:16px">
+        <b style="color:var(--navy)">ขั้นต่อไป — ส่งให้ที่ปรึกษาทาง LINE:</b><br>
+        1. ส่ง<b>ไฟล์ PDF</b> ที่บันทึกไว้<br>
+        2. ส่ง<b>รูปหน้าตารางกรมธรรม์</b>ทุกเล่ม (ถ้ายังไม่ได้ฝากเล่มไว้)<br>
+        <span style="font-size:12px;color:var(--muted)">ที่ปรึกษาจะนำเข้าเครื่องสแกน Money MRI แล้วนัดดูผลเต็มรูปแบบ<br>ภายใน 7 วันทำการ · แก้ไขข้อมูลย้อนหลังได้ตลอด</span>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="autosave" id="autosave">✓ บันทึกแล้ว</div>
+  <div id="pdf-doc" style="display:none;position:absolute;left:-9999px;top:0;width:700px;background:#fff;color:#1f2937;padding:36px;font-size:13px;line-height:1.7"></div>
+
+  <div class="nav">
+    <button class="btn back" id="btn-back" onclick="go(-1)" style="visibility:hidden">ย้อนกลับ</button>
+    <button class="btn next" id="btn-next" onclick="go(1)">ถัดไป →</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* ───── state (in-memory prototype; ของจริงใช้ auto-save ลงเครื่อง/เซิร์ฟเวอร์) ───── */
+const S = {step:1, mode:'single', assets:[], debts:[], ins:[], goals:{}, dep:{}, otherInc:[]};
+const TOTAL = 8;
+const fmt = n => n.toLocaleString('th-TH') + ' ฿';
+
+/* ───── chips factory ───── */
+function makeChips(elId, items, {multi=false, gold=false, onPick=null}={}){
+  const el = document.getElementById(elId);
+  items.forEach(t=>{
+    const c = document.createElement('div');
+    c.className = 'chip' + (gold?' gold':'');
+    c.textContent = t;
+    c.onclick = ()=>{
+      if(multi){ c.classList.toggle('on'); }
+      else { el.querySelectorAll('.chip').forEach(x=>x.classList.remove('on')); c.classList.add('on'); }
+      save(); if(onPick) onPick(t, c.classList.contains('on'));
+    };
+    el.appendChild(c);
+  });
+}
+
+/* plan mode */
+function setMode(t){
+  S.mode = t.includes('ร่วมกัน')?'joint':(t.includes('แยก')?'separate':'single');
+  document.querySelectorAll('.joint-only').forEach(e=>e.style.display=S.mode==='joint'?'':'none');
+  document.querySelectorAll('.sep-only').forEach(e=>e.style.display=S.mode==='separate'?'':'none');
+  document.getElementById('pmode-hint').textContent =
+    S.mode==='joint' ? 'ฟอร์มจะถามข้อมูลของทั้งสองคน — ส่วนที่ใช้ร่วมกันกรอกครั้งเดียวค่ะ'
+    : S.mode==='separate' ? 'กรอกเฉพาะส่วนของคุณ — คู่ของคุณกรอกฟอร์มของตัวเองอีกใบค่ะ'
+    : 'เลือกก่อนนะคะ ฟอร์มจะปรับคำถามให้พอดีกับแบบของคุณ';
+  liveCalc(); save();
+}
+makeChips('pmode-chips', ['ฉันคนเดียว','คู่ — วางแผนร่วมกัน','คู่ — แยกกันบริหาร'], {gold:true, onPick:setMode});
+
+const JOBS=['พนักงานประจำ','ราชการ/รัฐวิสาหกิจ','ธุรกิจส่วนตัว','ฟรีแลนซ์','อื่นๆ'];
+const RISKS=['ขายทันที นอนไม่หลับ','กังวล แต่รอดูก่อน','เฉยๆ เข้าใจว่าเป็นเรื่องปกติ','ซื้อเพิ่ม — ของถูก!'];
+const TAXES=['SSF/RMF/ThaiESG','ประกันชีวิต','ประกันสุขภาพ','ดอกเบี้ยบ้าน','บริจาค','ไม่เคยวางแผนเลย','ไม่แน่ใจ'];
+let curAssetOwner='', curDebtOwner='', curInsOwner='';
+
+makeChips('job-chips', JOBS);
+makeChips('job2-chips', JOBS);
+makeChips('asset-owner-chips', ['ของฉัน','ของคู่','ร่วมกัน'], {onPick:t=>curAssetOwner=t});
+makeChips('debt-owner-chips', ['ของฉัน','ของคู่','ร่วมกัน'], {onPick:t=>curDebtOwner=t});
+makeChips('ins-owner-chips', ['ของฉัน','ของคู่'], {onPick:t=>curInsOwner=t});
+makeChips('risk2-chips', RISKS);
+makeChips('tax2-chips', TAXES, {multi:true});
+makeChips('filing-chips', ['ยื่นรวม','ยื่นแยก','ยังไม่แน่ใจ']);
+makeChips('will2-chips', ['มีแล้ว','ยังไม่มี','กำลังคิดอยู่']);
+makeChips('dep-chips', ['พ่อ','แม่','บุตร','อื่นๆ','ไม่มี'], {multi:true, onPick:depPick});
+makeChips('asset-chips', ['💵 เงินฝาก/เงินสด','📈 กองทุน/หุ้น','🎯 SSF·RMF·ThaiESG','🥇 ทอง/คริปโต','🏠 บ้าน/คอนโด/ที่ดิน','🚗 รถ','💎 อื่นๆ'], {gold:true, onPick:t=>openAssetForm(t)});
+makeChips('debt-chips', ['🏠 บ้าน','🚗 รถ','💳 บัตรเครดิต','💰 สินเชื่อส่วนบุคคล','🎓 กยศ.','📄 อื่นๆ'], {gold:true, onPick:t=>openDebtForm(t)});
+makeChips('ins-chips', ['ชีวิต','สุขภาพ','โรคร้ายแรง','อุบัติเหตุ','สะสมทรัพย์','บำนาญ'], {gold:true, onPick:t=>openInsForm(t)});
+makeChips('welfare-chips', ['ประกันสังคม','กองทุนสำรองเลี้ยงชีพ (PVD)','กบข.','ไม่มี/ไม่แน่ใจ'], {multi:true});
+makeChips('goal-chips', ['🏠 ซื้อบ้าน','🚗 เปลี่ยนรถ','✈️ เที่ยวประจำปี','💍 แต่งงาน','👶 มีลูก','🎓 เรียนต่อ','💼 ทำธุรกิจ','🌟 อื่นๆ'], {multi:true, gold:true, onPick:renderGoals});
+makeChips('risk-chips', ['ขายทันที นอนไม่หลับ','กังวล แต่รอดูก่อน','เฉยๆ เข้าใจว่าเป็นเรื่องปกติ','ซื้อเพิ่ม — ของถูก!']);
+makeChips('tax-chips', ['SSF/RMF/ThaiESG','ประกันชีวิต','ประกันสุขภาพ','ดอกเบี้ยบ้าน','บริจาค','ไม่เคยวางแผนเลย','ไม่แน่ใจ'], {multi:true});
+makeChips('will-chips', ['มีแล้ว','ยังไม่มี','กำลังคิดอยู่']);
+
+/* birth selects */
+const ms=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+ms.forEach((m,i)=>{document.getElementById('bmonth').add(new Option(m,i+1)); document.getElementById('bmonth2').add(new Option(m,i+1));});
+for(let y=2551; y>=2490; y--){ document.getElementById('byear').add(new Option(y,y)); document.getElementById('byear2').add(new Option(y,y)); }
+
+/* dependents detail — บุตร/อื่นๆ เพิ่มได้หลายคน (แตะ chip ซ้ำ) */
+S.depList=[];
+function depPick(t){
+  if(t==='ไม่มี'){ S.depList=[]; }
+  else if(t==='พ่อ'||t==='แม่'){
+    const i=S.depList.findIndex(d=>d.type===t);
+    i>=0 ? S.depList.splice(i,1) : S.depList.push({type:t,age:'',amt:''});
+  } else { // บุตร / อื่นๆ — เพิ่มใหม่ทุกครั้งที่แตะ
+    S.depList.push({type:t,age:'',amt:''});
+  }
+  syncDepChips(); renderDeps(); save();
+}
+function syncDepChips(){
+  document.querySelectorAll('#dep-chips .chip').forEach(c=>{
+    const t=c.textContent;
+    if(t==='ไม่มี') c.classList.toggle('on', S.depList.length===0 && c.classList.contains('on'));
+    else c.classList.toggle('on', S.depList.some(d=>d.type===t));
+  });
+}
+function depRemove(i){ S.depList.splice(i,1); syncDepChips(); renderDeps(); save(); }
+function depSet(i,k,v){ S.depList[i][k]=v; save(); }
+function renderDeps(){
+  const counts={};
+  document.getElementById('dep-detail').innerHTML = S.depList.map((d,i)=>{
+    counts[d.type]=(counts[d.type]||0)+1;
+    const multi=S.depList.filter(x=>x.type===d.type).length>1;
+    const label=multi? `${d.type} คนที่ ${counts[d.type]}` : d.type;
+    return `
+    <div class="goal-detail">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="g-name" style="margin-bottom:8px">${label}</div>
+        <button class="del" onclick="depRemove(${i})">✕</button>
+      </div>
+      <div class="row2">
+        <input type="number" placeholder="อายุ (ปี)" value="${d.age}" oninput="depSet(${i},'age',this.value)">
+        <input type="number" placeholder="ช่วยเดือนละ (บาท)" value="${d.amt}" oninput="depSet(${i},'amt',this.value)">
+      </div>
+    </div>`;
+  }).join('') + (S.depList.some(d=>d.type==='บุตร')?
+    `<div class="hint" style="text-align:center;margin-top:6px">มีบุตรอีก? แตะ "บุตร" ด้านบนซ้ำเพื่อเพิ่มอีกคนได้เลยค่ะ</div>`:'');
+}
+
+/* other income — inline form (prompt() โดนบล็อกในเบราว์เซอร์ของแอป LINE) */
+function addOtherIncome(){
+  const name=document.getElementById('oinc-name').value.trim();
+  const amt=+document.getElementById('oinc-amt').value;
+  if(!name||!amt) return;
+  S.otherInc.push({name, amt});
+  document.getElementById('oinc-name').value=''; document.getElementById('oinc-amt').value='';
+  document.getElementById('oinc-form').classList.add('hidden');
+  document.getElementById('oinc-add').classList.remove('hidden');
+  addOtherIncomeRender(); save();
+}
+function addOtherIncomeRender(){ document.getElementById('oinc-list').innerHTML = S.otherInc.map((o,i)=>
+  `<div class="item"><span>${o.name} — <b>${fmt(o.amt)}</b>/เดือน</span><button class="del" onclick="S.otherInc.splice(${i},1);addOtherIncomeRender();save()">✕</button></div>`).join(''); }
+
+/* live expense calc */
+function liveCalc(){
+  const inc=(+document.getElementById('income').value||0)+(S.mode==='joint'?(+document.getElementById('income2').value||0):0);
+  let exp=0; document.querySelectorAll('.exp').forEach(e=>exp+=+e.value||0);
+  const left=inc-exp, el=document.getElementById('live-val');
+  el.textContent = inc? fmt(left) : 'กรอกรายรับก่อนค่ะ';
+  el.className='val '+(left<0?'neg':'pos');
+  save();
+}
+
+/* assets */
+let curAsset='';
+function openAssetForm(t){ curAsset=t; curAssetOwner=''; document.getElementById('asset-form').classList.remove('hidden');
+  document.getElementById('asset-form-name').textContent=t; document.getElementById('asset-val').value='';
+  document.querySelectorAll('#asset-owner-chips .chip').forEach(x=>x.classList.remove('on')); }
+function addAsset(){
+  const v=+document.getElementById('asset-val').value; if(!v) return;
+  S.assets.push({t:curAsset,v,o:S.mode==='joint'?curAssetOwner:''}); renderAssets();
+  document.getElementById('asset-form').classList.add('hidden');
+  document.querySelectorAll('#asset-chips .chip').forEach(x=>x.classList.remove('on')); save();
+}
+function renderAssets(){
+  const el=document.getElementById('asset-list');
+  el.innerHTML = S.assets.length? S.assets.map((a,i)=>
+    `<div class="item"><span>${a.t}${a.o?' <span style="font-size:11px;color:var(--gold)">('+a.o+')</span>':''} — <b>${fmt(a.v)}</b></span><button class="del" onclick="S.assets.splice(${i},1);renderAssets()">✕</button></div>`).join('')
+    : '<div class="hint">ยังไม่มีรายการ — เลือกประเภทด้านบนได้เลยค่ะ</div>';
+}
+
+/* debts */
+let curDebt='';
+function openDebtForm(t){ curDebt=t; curDebtOwner=''; document.getElementById('debt-form').classList.remove('hidden');
+  document.getElementById('debt-form-name').textContent=t;
+  ['debt-bal','debt-pay','debt-rate'].forEach(id=>document.getElementById(id).value='');
+  document.querySelectorAll('#debt-owner-chips .chip').forEach(x=>x.classList.remove('on')); }
+function addDebt(){
+  const b=+document.getElementById('debt-bal').value; if(!b) return;
+  S.debts.push({t:curDebt,b,p:+document.getElementById('debt-pay').value||0,r:document.getElementById('debt-rate').value||'?',o:S.mode==='joint'?curDebtOwner:''});
+  renderDebts(); document.getElementById('debt-form').classList.add('hidden');
+  document.querySelectorAll('#debt-chips .chip').forEach(x=>x.classList.remove('on')); save();
+}
+function renderDebts(){
+  const el=document.getElementById('debt-list');
+  el.innerHTML = S.debts.length? S.debts.map((d,i)=>
+    `<div class="item"><span>${d.t}${d.o?' <span style="font-size:11px;color:var(--gold)">('+d.o+')</span>':''} — <b>${fmt(d.b)}</b> · ผ่อน ${fmt(d.p)}/ด. · ${d.r}%</span><button class="del" onclick="S.debts.splice(${i},1);renderDebts()">✕</button></div>`).join('')
+    : '<div class="hint">ไม่มีหนี้? กดถัดไปได้เลยค่ะ 🎉</div>';
+}
+
+/* insurance */
+let curIns='';
+function openInsForm(t){ curIns=t; curInsOwner=''; document.getElementById('ins-form').classList.remove('hidden');
+  document.getElementById('ins-form-name').textContent='ประกัน'+t;
+  ['ins-sum','ins-prem'].forEach(id=>document.getElementById(id).value='');
+  document.querySelectorAll('#ins-owner-chips .chip').forEach(x=>x.classList.remove('on')); }
+function addIns(){
+  const s=+document.getElementById('ins-sum').value; if(!s) return;
+  S.ins.push({t:curIns,s,p:+document.getElementById('ins-prem').value||0,o:S.mode==='joint'?curInsOwner:''});
+  renderIns();
+  document.getElementById('ins-form').classList.add('hidden');
+  document.querySelectorAll('#ins-chips .chip').forEach(x=>x.classList.remove('on')); save();
+}
+function renderIns(){
+  document.getElementById('ins-list').innerHTML=S.ins.map((x,i)=>
+    `<div class="item"><span>ประกัน${x.t}${x.o?' <span style="font-size:11px;color:var(--gold)">('+x.o+')</span>':''} — ทุน <b>${fmt(x.s)}</b> · เบี้ย ${fmt(x.p)}/ปี</span><button class="del" onclick="S.ins.splice(${i},1);renderIns();save()">✕</button></div>`).join('');
+}
+
+/* goals */
+function renderGoals(){
+  const on=[...document.querySelectorAll('#goal-chips .chip.on')].map(c=>c.textContent);
+  document.getElementById('goal-details').innerHTML = on.map(t=>`
+    <div class="goal-detail"><div class="g-name">${t}</div>
+      <div class="row2">
+        <input type="number" placeholder="ใช้เงินประมาณ (บาท)" oninput="save()">
+        <input type="number" placeholder="อีกกี่ปี" oninput="save()">
+      </div></div>`).join('');
+}
+
+/* ───── auto-save จริง: เก็บลงเครื่อง ปิดแอปแล้วกลับมากรอกต่อได้ ───── */
+const SAVE_KEY='s41_mri_v1';
+function serialize(){
+  const inputs={};
+  document.querySelectorAll('input[id],select[id]').forEach(e=>{ if(e.type!=='range'||e.value) inputs[e.id]=e.value; });
+  const chips={};
+  document.querySelectorAll('.chips[id]').forEach(box=>{
+    chips[box.id]=[...box.querySelectorAll('.chip')].map((c,i)=>c.classList.contains('on')?i:-1).filter(i=>i>=0);
+  });
+  return JSON.stringify({
+    inputs, chips, step:S.step, mode:S.mode,
+    assets:S.assets, debts:S.debts, ins:S.ins, otherInc:S.otherInc, depList:S.depList,
+    goalVals:detailRows('goal-details').map(g=>g.vals)
+  });
+}
+let saveT;
+function save(){
+  try{ localStorage.setItem(SAVE_KEY, serialize()); }catch(e){}
+  const el=document.getElementById('autosave');
+  el.classList.add('show'); clearTimeout(saveT);
+  saveT=setTimeout(()=>el.classList.remove('show'),1200);
+}
+function restore(){
+  let d; try{ d=JSON.parse(localStorage.getItem(SAVE_KEY)||''); }catch(e){ return; }
+  if(!d) return;
+  Object.assign(S,{mode:d.mode||'single', assets:d.assets||[], debts:d.debts||[],
+    ins:d.ins||[], otherInc:d.otherInc||[], depList:d.depList||[]});
+  Object.entries(d.chips||{}).forEach(([id,idxs])=>{
+    const box=document.getElementById(id); if(!box) return;
+    [...box.querySelectorAll('.chip')].forEach((c,i)=>c.classList.toggle('on',idxs.includes(i)));
+  });
+  Object.entries(d.inputs||{}).forEach(([id,v])=>{ const e=document.getElementById(id); if(e) e.value=v; });
+  document.getElementById('ret-val').textContent=document.getElementById('ret-slider').value;
+  document.getElementById('ret2-val').textContent=document.getElementById('ret2-slider').value;
+  document.querySelectorAll('.joint-only').forEach(e=>e.style.display=S.mode==='joint'?'':'none');
+  document.querySelectorAll('.sep-only').forEach(e=>e.style.display=S.mode==='separate'?'':'none');
+  renderAssets(); renderDebts(); renderIns(); addOtherIncomeRender(); syncDepChips(); renderDeps(); renderGoals();
+  const gd=[...document.querySelectorAll('#goal-details .goal-detail')];
+  (d.goalVals||[]).forEach((vals,i)=>{ if(gd[i]) [...gd[i].querySelectorAll('input')].forEach((inp,j)=>{ if(vals[j]!=='—') inp.value=vals[j]; }); });
+  liveCalc();
+  if(d.step>1){
+    S.step=d.step; go(0);
+    const el=document.getElementById('autosave');
+    el.textContent='👋 กลับมากรอกต่อจากที่ค้างไว้ได้เลยค่ะ';
+    el.classList.add('show');
+    setTimeout(()=>{ el.classList.remove('show'); el.textContent='✓ บันทึกแล้ว'; },3000);
+  }
+}
+function resetAll(){
+  if(!confirm('ล้างข้อมูลทั้งหมดแล้วเริ่มใหม่ ใช่ไหมคะ?')) return;
+  try{ localStorage.removeItem(SAVE_KEY); }catch(e){}
+  location.reload();
+}
+window.addEventListener('load',restore);
+function toggleSkip(btn){ btn.classList.toggle('on'); save(); }
+
+/* navigation */
+function go(dir){
+  if(S.step===7 && dir===1){ prefillRetSpend(); }
+  /* ออกจากตอนหนี้: ถ้ายังไม่ได้กรอกค่าผ่อนในตอน 3 เติมยอดผ่อนรวมจากหนี้ให้ */
+  if(S.step===5 && dir===1 && S.debts.length){
+    const e1=document.getElementById('exp1');
+    const totalPay=S.debts.reduce((s,d)=>s+(+d.p||0),0);
+    if(!e1.value && totalPay>0){ e1.value=totalPay; liveCalc(); }
+  }
+  S.step=Math.min(9,Math.max(1,S.step+dir));
+  document.querySelectorAll('.step').forEach(s=>s.classList.add('hidden'));
+  document.getElementById('s'+S.step).classList.remove('hidden');
+  window.scrollTo({top:0});
+  const isRes=S.step===9;
+  document.getElementById('pfill').style.width=(isRes?100:S.step/TOTAL*100)+'%';
+  document.getElementById('pstep').textContent=isRes?'เสร็จสมบูรณ์!':`ตอนที่ ${S.step} จาก 8`;
+  const mins=[0,20,18,16,13,9,6,4,2,0][S.step];
+  document.getElementById('ptime').textContent=isRes?'ขอบคุณค่ะ 💛':`เหลือประมาณ ${mins} นาที`;
+  document.getElementById('btn-back').style.visibility=S.step===1?'hidden':'visible';
+  const nb=document.getElementById('btn-next');
+  if(isRes){ nb.textContent='แก้ไขข้อมูล'; nb.onclick=()=>{S.step=0;go(1)}; showResult(); }
+  else if(S.step===8){ nb.textContent='ดูสรุปผล ✓'; nb.onclick=()=>go(1); }
+  else { nb.textContent='ถัดไป →'; nb.onclick=()=>go(1); }
+  if(S.step===7) prefillRetHint();
+}
+
+function prefillRetHint(){
+  let exp=0; document.querySelectorAll('.exp').forEach(e=>exp+=+e.value||0);
+  if(exp>0) document.getElementById('ret-spend').placeholder='ระบบแนะนำ ~'+Math.round(exp*0.7).toLocaleString('th-TH')+' (70% ของรายจ่ายปัจจุบัน)';
+}
+function prefillRetSpend(){}
+
+/* ───── PDF export ───── */
+const gv = id => document.getElementById(id).value || '';
+const chipVals = id => [...document.querySelectorAll('#'+id+' .chip.on')].map(c=>c.textContent);
+function detailRows(boxId){
+  return [...document.querySelectorAll('#'+boxId+' .goal-detail')].map(g=>({
+    name: g.querySelector('.g-name').textContent,
+    vals: [...g.querySelectorAll('input')].map(i=>i.value||'—')
+  }));
+}
+function collectData(){
+  let exp=0; document.querySelectorAll('.exp').forEach(e=>exp+=+e.value||0);
+  return {
+    v:'1', ts:new Date().toLocaleDateString('th-TH'), mode:S.mode,
+    spouse: S.mode==='joint' ? {
+      nick:gv('nickname2'), birth:gv('bmonth2')+'/'+gv('byear2'),
+      job:chipVals('job2-chips')[0]||'', retAge:gv('ret2-slider'),
+      income:+gv('income2')||0, bonus:+gv('bonus2')||0,
+      risk:chipVals('risk2-chips')[0]||'', tax:chipVals('tax2-chips'),
+      will:chipVals('will2-chips')[0]||''
+    } : null,
+    filing: S.mode==='joint' ? (chipVals('filing-chips')[0]||'') : '',
+    nick:gv('nickname'), name:gv('fullname'), contact:gv('contact'),
+    birth:gv('bmonth')+'/'+gv('byear'), job:chipVals('job-chips')[0]||'',
+    retAge:gv('ret-slider'),
+    deps:detailRows('dep-detail'),
+    income:+gv('income')||0, bonus:+gv('bonus')||0, otherInc:S.otherInc,
+    exp:[+gv('exp1')||0,+gv('exp2')||0,+gv('exp3')||0,+gv('exp4')||0,+gv('exp5')||0], expTotal:exp,
+    assets:S.assets, emergency:+gv('emergency')||0,
+    debts:S.debts, ins:S.ins, welfare:chipVals('welfare-chips'),
+    goals:detailRows('goal-details'), retSpend:gv('ret-spend'),
+    risk:chipVals('risk-chips')[0]||'', tax:chipVals('tax-chips'),
+    will:chipVals('will-chips')[0]||'', heir:gv('heir')
+  };
+}
+function makePDF(){
+  if(typeof html2pdf==='undefined'){
+    document.getElementById('pdf-status').textContent='โหลดตัวสร้าง PDF ไม่สำเร็จ — เช็คอินเทอร์เน็ตแล้วปิด-เปิดหน้านี้ใหม่นะคะ (ข้อมูลที่กรอกไม่หายค่ะ)';
+    return;
+  }
+  const d=collectData();
+  const totalA=S.assets.reduce((s,a)=>s+a.v,0), totalD=S.debts.reduce((s,x)=>s+x.b,0);
+  const incTotal=d.income+(d.spouse?d.spouse.income:0);
+  const cf=incTotal-d.expTotal;
+  const modeTh={single:'แผนส่วนตัว', joint:'แผนคู่สมรส — วางแผนร่วมกัน', separate:'แผนส่วนตัว (คู่แยกกันบริหาร · ตัวเลขเฉพาะส่วนของผู้กรอก)'}[d.mode];
+  const own=x=>x.o?` <span style="color:#C8A94A;font-size:11px">(${x.o})</span>`:'';
+  const sec=(t,body)=>`<div style="margin-top:18px"><div style="font-size:11px;font-weight:800;color:#C8A94A;letter-spacing:2px">✦ ${t}</div><div style="border-top:1.5px solid #002366;margin-top:4px;padding-top:8px">${body}</div></div>`;
+  const kv=(k,v)=>`<div style="display:flex;justify-content:space-between;padding:3px 0"><span style="color:#6b7280">${k}</span><b>${v}</b></div>`;
+  const list=(arr,f)=>arr.length?arr.map(f).join(''):'<span style="color:#9ca3af">— ไม่มี / ไม่ได้ระบุ —</span>';
+
+  const el=document.getElementById('pdf-doc');
+  el.innerHTML=`
+    <div style="text-align:center;border-bottom:3px double #C8A94A;padding-bottom:14px">
+      <div style="font-size:11px;letter-spacing:3px;color:#C8A94A;font-weight:800">✦ S41 FINANCIAL CLINIC</div>
+      <div style="font-size:22px;font-weight:800;color:#002366;margin-top:4px">ใบซักประวัติการเงิน — Money MRI</div>
+      <div style="font-size:12px;color:#6b7280">คุณ${d.nick||'—'}${d.spouse?' & คุณ'+(d.spouse.nick||'—'):''} (${d.name||'—'}) · จัดทำเมื่อ ${d.ts}</div>
+      <div style="font-size:11px;color:#C8A94A;font-weight:700;margin-top:2px">${modeTh}</div>
+    </div>
+    ${sec('สรุปภาพรวม',
+      kv('ความมั่งคั่งสุทธิ',fmt(totalA-totalD))+kv('เงินเหลือต่อเดือน',incTotal?fmt(cf):'—')+
+      kv('อัตราการออม',incTotal?Math.max(0,Math.round(cf/incTotal*100))+'%':'—'))}
+    ${sec('ข้อมูลส่วนตัว',
+      kv('เดือน/ปีเกิด',d.birth)+kv('อาชีพ',d.job||'—')+kv('เป้าเกษียณ',d.retAge+' ปี')+kv('ช่องทางติดต่อ',d.contact||'—')+
+      (d.spouse?'<div style="margin-top:6px;color:#6b7280">คู่สมรส:</div>'+
+        kv('· ชื่อเล่น',d.spouse.nick||'—')+kv('· เดือน/ปีเกิด',d.spouse.birth)+kv('· อาชีพ',d.spouse.job||'—')+kv('· เป้าเกษียณ',d.spouse.retAge+' ปี'):'')+
+      (d.deps.length?'<div style="margin-top:6px;color:#6b7280">ผู้อยู่ในอุปการะ:</div>'+list(d.deps,x=>kv('· '+x.name,'อายุ '+x.vals[0]+' · ช่วยเดือนละ '+x.vals[1])):''))}
+    ${sec('รายรับ',
+      kv('รายได้ประจำ/เดือน'+(d.spouse?' (ผู้กรอก)':''),fmt(d.income))+kv('โบนัส/ปี'+(d.spouse?' (ผู้กรอก)':''),fmt(d.bonus))+
+      (d.spouse?kv('รายได้คู่/เดือน',fmt(d.spouse.income))+kv('โบนัสคู่/ปี',fmt(d.spouse.bonus))+kv('รวมรายได้/เดือน',fmt(incTotal)):'')+
+      list(d.otherInc,o=>kv('· '+o.name,fmt(o.amt)+'/เดือน')))}
+    ${sec('รายจ่ายต่อเดือน',
+      kv('ค่าผ่อนต่างๆ',fmt(d.exp[0]))+kv('ค่ากินอยู่ประจำ',fmt(d.exp[1]))+kv('ความสุข/ไลฟ์สไตล์',fmt(d.exp[2]))+
+      kv('ให้ครอบครัว',fmt(d.exp[3]))+kv('เบี้ยประกันเฉลี่ย',fmt(d.exp[4]))+kv('รวม',fmt(d.expTotal)))}
+    ${sec('ทรัพย์สิน — รวม '+fmt(totalA),
+      list(d.assets,a=>kv('· '+a.t+own(a),fmt(a.v)))+kv('เงินเผื่อฉุกเฉิน',fmt(d.emergency)))}
+    ${sec('หนี้สิน — รวม '+fmt(totalD),
+      list(d.debts,x=>kv('· '+x.t+own(x),fmt(x.b)+' · ผ่อน '+fmt(x.p)+'/ด. · ดอกเบี้ย '+x.r+'%')))}
+    ${sec('ประกันที่มี',
+      list(d.ins,x=>kv('· ประกัน'+x.t+own(x),'ทุน '+fmt(x.s)+' · เบี้ย '+fmt(x.p)+'/ปี'))+
+      '<div style="margin-top:4px;color:#6b7280;font-size:12px">สวัสดิการ: '+(d.welfare.join(' · ')||'—')+'</div>'+
+      '<div style="color:#8a6d1f;font-size:11.5px;margin-top:6px">※ รายละเอียดเต็มจากรูปกรมธรรม์ที่ส่งทาง LINE หรือเล่มที่ฝากไว้กับที่ปรึกษา</div>')}
+    ${sec('เป้าหมายชีวิต',
+      list(d.goals,g=>kv('· '+g.name,fmt(+g.vals[0]||0)+' · อีก '+g.vals[1]+' ปี'))+
+      kv('เงินใช้ตอนเกษียณ',d.retSpend?fmt(+d.retSpend)+'/เดือน':'ใช้ค่าแนะนำของระบบ')+
+      kv('มุมมองความเสี่ยง'+(d.spouse?' (ผู้กรอก)':''),d.risk||'—')+
+      (d.spouse?kv('มุมมองความเสี่ยง (คู่)',d.spouse.risk||'—'):''))}
+    ${sec('ภาษี & การส่งต่อ',
+      kv('ลดหย่อนที่ใช้'+(d.spouse?' (ผู้กรอก)':''),d.tax.join(' · ')||'—')+
+      (d.spouse?kv('ลดหย่อนที่ใช้ (คู่)',d.spouse.tax.join(' · ')||'—')+kv('การยื่นภาษี',d.filing||'—'):'')+
+      kv('พินัยกรรม'+(d.spouse?' (ผู้กรอก)':''),d.will||'—')+
+      (d.spouse?kv('พินัยกรรม (คู่)',d.spouse.will||'—'):'')+
+      kv('อยากส่งต่อให้',d.heir||'ไว้คุยตอนนัด'))}
+    <div style="margin-top:26px;padding-top:14px;border-top:1.5px dashed #C8A94A;text-align:center">
+      <div style="font-size:10px;color:#9ca3af;letter-spacing:1px">สำหรับที่ปรึกษา — สแกนเพื่อนำเข้า S41 Money MRI Dashboard</div>
+      <div id="qr-box" style="display:inline-block;margin-top:8px"></div>
+      <div style="font-size:9px;color:#c4c9d4;margin-top:8px">ข้อมูลทั้งหมดอยู่ในเอกสารนี้เท่านั้น ไม่มีการบันทึกบนเว็บไซต์</div>
+    </div>`;
+  try{
+    /* ตัด field ว่างออกก่อนใส่ QR เพื่อไม่ให้ข้อมูลยาวเกินความจุ */
+    const compact=o=>{
+      if(Array.isArray(o)) return o.map(compact).filter(x=>!(x&&typeof x==='object'&&!Object.keys(x).length));
+      if(o&&typeof o==='object'){ const r={};
+        for(const[k,v]of Object.entries(o)){ const c=compact(v);
+          if(c===''||c==null||c===0||(Array.isArray(c)&&!c.length)||(c&&typeof c==='object'&&!Object.keys(c).length)) continue;
+          r[k]=c; }
+        return r; }
+      return o; };
+    new QRCode(el.querySelector('#qr-box'),{
+      text:'S41MRI:'+btoa(unescape(encodeURIComponent(JSON.stringify(compact(d))))),
+      width:170,height:170,correctLevel:QRCode.CorrectLevel.L});
+  }catch(e){ el.querySelector('#qr-box').innerHTML='<div style="font-size:9px;color:#9ca3af">(ข้อมูลยาวเกิน QR — ที่ปรึกษานำเข้าจากไฟล์ PDF โดยตรง)</div>'; }
+  el.style.display='block';
+  const st=document.getElementById('pdf-status'); st.textContent='กำลังสร้างไฟล์ PDF…';
+  html2pdf().set({
+    margin:[8,8,8,8], filename:'S41_MoneyMRI_'+(d.nick||'client')+'.pdf',
+    image:{type:'jpeg',quality:.95}, html2canvas:{scale:2,useCORS:true},
+    jsPDF:{unit:'mm',format:'a4'}, pagebreak:{mode:['avoid-all','css']}
+  }).from(el).save().then(()=>{
+    el.style.display='none';
+    st.textContent='✓ บันทึกแล้ว — ส่งไฟล์นี้ให้ที่ปรึกษาทาง LINE ได้เลยค่ะ';
+  }).catch(()=>{ el.style.display='none'; st.textContent='บันทึกไม่สำเร็จ ลองอีกครั้งนะคะ'; });
+}
+
+/* result */
+function showResult(){
+  const inc=(+document.getElementById('income').value||0)+(S.mode==='joint'?(+document.getElementById('income2').value||0):0);
+  let exp=0; document.querySelectorAll('.exp').forEach(e=>exp+=+e.value||0);
+  const totalA=S.assets.reduce((s,a)=>s+a.v,0);
+  const totalD=S.debts.reduce((s,d)=>s+d.b,0);
+  const nick=document.getElementById('nickname').value;
+  const nick2=S.mode==='joint'?document.getElementById('nickname2').value:'';
+  document.getElementById('res-name').textContent=(nick?' คุณ'+nick:'')+(nick2?' & คุณ'+nick2:'');
+  document.getElementById('res-nw').textContent=fmt(totalA-totalD);
+  document.getElementById('res-cf').textContent=inc?fmt(inc-exp):'—';
+  document.getElementById('res-sv').textContent=inc?Math.max(0,Math.round((inc-exp)/inc*100))+'%':'—';
+}
+</script>
+</body>
+</html>
