@@ -513,7 +513,8 @@ input[type=range]{width:100%; accent-color:var(--gold)}
   </div>
 
   <div class="autosave" id="autosave">✓ บันทึกแล้ว</div>
-  <div id="pdf-doc" style="display:none;position:absolute;left:-9999px;top:0;width:700px;background:#fff;color:#1f2937;padding:36px;font-size:13px;line-height:1.7"></div>
+  <!-- fix 02/08/2026: แก้ PDF ออกมาเปล่า — ย้าย position:absolute จาก #pdf-doc ไปไว้ที่ wrapper เพื่อให้ html2pdf วัดความสูงเนื้อหาได้ -->
+  <div id="pdf-wrap" style="position:absolute;left:-9999px;top:0"><div id="pdf-doc" style="display:none;width:700px;background:#fff;color:#1f2937;padding:36px;font-size:13px;line-height:1.7"></div></div>
 
   <div class="nav">
     <button class="btn back" id="btn-back" onclick="go(-1)" style="visibility:hidden">ย้อนกลับ</button>
