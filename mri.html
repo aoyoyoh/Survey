@@ -121,7 +121,7 @@ input[type=range]{width:100%; accent-color:var(--gold)}
   <div class="hdr">
     <div class="brand">✦ S41 Money MRI</div>
     <h1 id="hdr-title">เตรียมตัวก่อนสแกน</h1>
-    <div class="sub" id="hdr-sub">ใบซักประวัติการเงิน — กรอกสบายๆ หยุดพักได้ ระบบบันทึกให้เอง · v2.2</div>
+    <div class="sub" id="hdr-sub">ใบซักประวัติการเงิน — กรอกสบายๆ หยุดพักได้ ระบบบันทึกให้เอง · v2.3</div>
     <div class="pbar"><div id="pfill" style="width:12.5%"></div></div>
     <div class="pmeta"><span id="pstep">ตอนที่ 1 จาก 8</span><span id="ptime">เหลือประมาณ 20 นาที</span></div>
   </div>
@@ -503,6 +503,13 @@ input[type=range]{width:100%; accent-color:var(--gold)}
         <div class="n">เกณฑ์แนะนำทั่วไปคือ 10–20% ของรายได้</div>
       </div>
 
+      <div id="empty-warn" class="hidden" style="margin-top:16px;background:#FEF3CD;border:1.5px solid #E0A800;border-radius:14px;padding:14px 16px;font-size:13px;line-height:1.7;color:#664D03">
+        ⚠️ <b>ยังไม่มีข้อมูลที่กรอกไว้ในเครื่องนี้</b><br>
+        แบบฟอร์มบันทึกข้อมูลไว้ใน<b>เครื่อง/เบราว์เซอร์ที่กรอกเท่านั้น</b> —
+        ถ้าคุณกรอกจากมือถือหรือเครื่องอื่น ให้เปิดลิงก์และกดบันทึกไฟล์ทั้ง 2 ปุ่ม<b>จากเครื่องนั้น</b>นะคะ
+        (ถ้ายังไม่เคยกรอก กด "แก้ไขข้อมูล" เพื่อเริ่มกรอกได้เลยค่ะ)
+      </div>
+
       <div class="cta" style="margin-top:16px;text-align:left">
         <b style="color:var(--navy)">ส่งการบ้านให้ที่ปรึกษา — 2 ไฟล์ค่ะ</b>
         <div class="hint" style="margin:6px 0 12px">กดบันทึกทีละไฟล์ แล้วส่งทั้งคู่ให้ที่ปรึกษาทาง LINE</div>
@@ -522,8 +529,8 @@ input[type=range]{width:100%; accent-color:var(--gold)}
 
   <div class="autosave" id="autosave">✓ บันทึกแล้ว</div>
   <!-- fix 02/08/2026: แก้ PDF ออกมาเปล่า — ย้าย position:absolute จาก #pdf-doc ไปไว้ที่ wrapper เพื่อให้ html2pdf วัดความสูงเนื้อหาได้ -->
-  <!-- v2.2: ขอบกระดาษ 1 นิ้วเท่ากันทั้ง 4 ด้าน จัดการโดย html2pdf margin — ตัว canvas ไม่ต้องมี padding เอง -->
-  <div id="pdf-wrap" style="position:absolute;left:-9999px;top:0"><div id="pdf-doc" style="display:none;width:600px;background:#fff;color:#1f2937;padding:0;font-size:13px;line-height:1.7"></div></div>
+  <!-- v2.3: PDF วาดใน iframe แยก สร้างสดตอนกดปุ่ม (ดู makePDF) — ไม่ต้องมีกล่องซ่อนในหน้าอีก -->
+
 
   <div class="nav">
     <button class="btn back" id="btn-back" onclick="go(-1)" style="visibility:hidden">ย้อนกลับ</button>
@@ -536,7 +543,7 @@ input[type=range]{width:100%; accent-color:var(--gold)}
 /* ═══ S41 Money MRI — ใบซักประวัติ v2.0 (10/08/2026)
    ใหม่ในรุ่นนี้: สร้าง "ไฟล์ลูกค้า .json" รูปแบบเดียวกับ Money MRI dashboard
    → ที่ปรึกษากดนำเข้าไฟล์ในห้องสมุดลูกค้าได้ทันที ไม่ต้องกรอกซ้ำ ═══ */
-const MRI_VER='2.2';
+const MRI_VER='2.3';
 
 /* ───── state (auto-save ลงเครื่องผ่าน localStorage) ───── */
 const S = {step:1, mode:'single', assets:[], debts:[], ins:[], goals:{}, dep:{}, otherInc:[], cid:''};
@@ -1131,7 +1138,19 @@ function makePDF(){
   const kv=(k,v)=>`<div class="pdf-kv" style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:3px 0;page-break-inside:avoid"><span style="color:#6b7280;flex:0 0 auto">${k}</span><b style="text-align:right">${v}</b></div>`;
   const list=(arr,f)=>arr.length?arr.map(f).join(''):'<span style="color:#9ca3af">— ไม่มี / ไม่ได้ระบุ —</span>';
 
-  const el=document.getElementById('pdf-doc');
+  const st=document.getElementById('pdf-status'); st.textContent='กำลังสร้างไฟล์ PDF…';
+  /* ═══ v2.3: กันเพี้ยนจากซูมเบราว์เซอร์/สเกลจอ Windows 125-150% ═══
+     1) ปิด CSS zoom ของหน้าชั่วคราวระหว่างสร้าง (คืนค่าหลังเสร็จ)
+     2) วางกล่องเอกสารไว้ที่มุม (0,0) จริง ใต้ม่านขาว "กำลังสร้าง…"
+     3) ล็อกทุกมิติของ html2canvas (x,y,width,height,windowWidth,windowHeight) ไม่ให้พึ่งการวัดหน้าจอ */
+  const zoomBak={html:document.documentElement.style.zoom, body:document.body.style.zoom};
+  document.documentElement.style.zoom='1'; document.body.style.zoom='1';
+  const veil=document.createElement('div');
+  veil.style.cssText='position:fixed;inset:0;background:#F6F7FA;z-index:99999;display:flex;align-items:center;justify-content:center;font-size:15px;color:#002366;font-weight:700';
+  veil.textContent='กำลังสร้างไฟล์ PDF…';
+  document.body.appendChild(veil);
+  const el=document.createElement('div');
+  el.style.cssText="position:absolute;left:0;top:0;z-index:99998;width:600px;background:#fff;color:#1f2937;padding:0;font-size:13px;line-height:1.7;font-family:'Segoe UI',system-ui,-apple-system,'Noto Sans Thai',sans-serif";
   el.innerHTML=`
     <div style="text-align:center;border-bottom:3px double #C8A94A;padding-bottom:14px">
       <div style="font-size:11px;letter-spacing:3px;color:#C8A94A;font-weight:800">✦ S41 FINANCIAL CLINIC</div>
@@ -1177,22 +1196,22 @@ function makePDF(){
       <div style="font-size:10px;color:#9ca3af;width:100%">S41 MONEY MRI · ใบซักประวัติ v${MRI_VER} — เอกสารนี้คู่กับไฟล์ข้อมูล .json สำหรับนำเข้าเครื่องสแกน Money MRI</div>
     </div>
     <div style="font-size:9px;color:#c4c9d4;margin-top:8px;text-align:center">ข้อมูลทั้งหมดอยู่ในเครื่องของคุณและไฟล์ที่บันทึกเท่านั้น ไม่มีการส่งขึ้นเว็บไซต์</div>`;
-  el.style.display='block';
-  const st=document.getElementById('pdf-status'); st.textContent='กำลังสร้างไฟล์ PDF…';
-  /* v2.1: ต้อง scroll ขึ้นบนสุดก่อนสร้าง — html2canvas ติด offset ตามระยะ scroll
-     ทำให้หน้าแรกมีที่ว่างยักษ์ด้านบน และจุดตัดหน้าเพี้ยนทั้งเล่ม (อาการ "print เบี้ยว") */
   const backTo=window.scrollY; window.scrollTo(0,0);
+  document.body.appendChild(el);
+  const H=el.scrollHeight;
+  const done=ok=>{ try{ el.remove(); veil.remove(); }catch(e){}
+    document.documentElement.style.zoom=zoomBak.html; document.body.style.zoom=zoomBak.body;
+    window.scrollTo(0,backTo);
+    st.textContent= ok ? '✓ บันทึกแล้ว — ส่งไฟล์นี้ให้ที่ปรึกษาทาง LINE ได้เลยค่ะ' : 'บันทึกไม่สำเร็จ ลองอีกครั้งนะคะ'; };
   html2pdf().set({
     margin:25.4,   /* 1 นิ้ว เท่ากันทั้งบน-ล่าง-ซ้าย-ขวา */
     filename:'S41_MoneyMRI_'+(String(d.nick||'client').replace(/[^A-Za-z0-9_-]/g,'')||'client')+'.pdf',
-    image:{type:'jpeg',quality:.95}, html2canvas:{scale:2,useCORS:true,scrollY:0},
+    image:{type:'jpeg',quality:.95},
+    html2canvas:{scale:2,useCORS:true,x:0,y:0,scrollX:0,scrollY:0,width:600,height:H,windowWidth:600,windowHeight:H},
     jsPDF:{unit:'mm',format:'a4'},
     /* ตัดหน้าราย row (กันแถวโดนผ่ากลาง) แทน avoid-all ที่ทำให้เกิดช่องว่างยักษ์กลางหน้า */
     pagebreak:{mode:['css','legacy'], avoid:['.pdf-kv','.pdf-sech']}
-  }).from(el).save().then(()=>{
-    el.style.display='none'; window.scrollTo(0,backTo);
-    st.textContent='✓ บันทึกแล้ว — ส่งไฟล์นี้ให้ที่ปรึกษาทาง LINE ได้เลยค่ะ';
-  }).catch(()=>{ el.style.display='none'; window.scrollTo(0,backTo); st.textContent='บันทึกไม่สำเร็จ ลองอีกครั้งนะคะ'; });
+  }).from(el).save().then(()=>done(true)).catch(()=>done(false));
 }
 
 /* result */
@@ -1207,6 +1226,10 @@ function showResult(){
   document.getElementById('res-nw').textContent=fmt(totalA-totalD);
   document.getElementById('res-cf').textContent=inc?fmt(inc-exp):'—';
   document.getElementById('res-sv').textContent=inc?Math.max(0,Math.round((inc-exp)/inc*100))+'%':'—';
+  /* v2.3: เตือนเมื่อเครื่องนี้ไม่มีข้อมูล — กันงง "ข้อมูลหาย" เวลากรอกจากเครื่อง/เบราว์เซอร์อื่น
+     (ข้อมูลบันทึกต่อเครื่อง ไม่ได้ขึ้นเซิร์ฟเวอร์ — เป็นความตั้งใจเรื่องความเป็นส่วนตัว) */
+  const hasData = inc>0 || exp>0 || S.assets.length || S.debts.length || S.ins.length || (S.depList||[]).length || nick;
+  document.getElementById('empty-warn').classList.toggle('hidden', !!hasData);
 }
 </script>
 </body>
