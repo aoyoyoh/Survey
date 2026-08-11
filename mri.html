@@ -121,7 +121,7 @@ input[type=range]{width:100%; accent-color:var(--gold)}
   <div class="hdr">
     <div class="brand">✦ S41 Money MRI</div>
     <h1 id="hdr-title">เตรียมตัวก่อนสแกน</h1>
-    <div class="sub" id="hdr-sub">ใบซักประวัติการเงิน — กรอกสบายๆ หยุดพักได้ ระบบบันทึกให้เอง · v2.3</div>
+    <div class="sub" id="hdr-sub">ใบซักประวัติการเงิน — กรอกสบายๆ หยุดพักได้ ระบบบันทึกให้เองในเครื่องที่กรอก · v2.4</div>
     <div class="pbar"><div id="pfill" style="width:12.5%"></div></div>
     <div class="pmeta"><span id="pstep">ตอนที่ 1 จาก 8</span><span id="ptime">เหลือประมาณ 20 นาที</span></div>
   </div>
@@ -506,7 +506,8 @@ input[type=range]{width:100%; accent-color:var(--gold)}
       <div id="empty-warn" class="hidden" style="margin-top:16px;background:#FEF3CD;border:1.5px solid #E0A800;border-radius:14px;padding:14px 16px;font-size:13px;line-height:1.7;color:#664D03">
         ⚠️ <b>ยังไม่มีข้อมูลที่กรอกไว้ในเครื่องนี้</b><br>
         แบบฟอร์มบันทึกข้อมูลไว้ใน<b>เครื่อง/เบราว์เซอร์ที่กรอกเท่านั้น</b> —
-        ถ้าคุณกรอกจากมือถือหรือเครื่องอื่น ให้เปิดลิงก์และกดบันทึกไฟล์ทั้ง 2 ปุ่ม<b>จากเครื่องนั้น</b>นะคะ
+        ถ้าคุณกรอกจากมือถือหรือเครื่องอื่น ให้กลับไปเปิดลิงก์<b>ในเครื่อง/แอปเดิมที่กรอก</b>
+        แล้วกดบันทึกไฟล์ทั้ง 2 ปุ่มจากที่นั่นนะคะ
         (ถ้ายังไม่เคยกรอก กด "แก้ไขข้อมูล" เพื่อเริ่มกรอกได้เลยค่ะ)
       </div>
 
@@ -514,9 +515,14 @@ input[type=range]{width:100%; accent-color:var(--gold)}
         <b style="color:var(--navy)">ส่งการบ้านให้ที่ปรึกษา — 2 ไฟล์ค่ะ</b>
         <div class="hint" style="margin:6px 0 12px">กดบันทึกทีละไฟล์ แล้วส่งทั้งคู่ให้ที่ปรึกษาทาง LINE</div>
         <button class="btn next" style="width:100%;padding:15px" onclick="saveMRIFile()">📁 ไฟล์ที่ 1 — ข้อมูลสำหรับที่ปรึกษา (.json)</button>
-        <div class="hint" style="text-align:center;margin:6px 0 14px" id="json-status">ไฟล์นี้นำเข้าเครื่องสแกน Money MRI ได้ทันที ไม่ต้องกรอกซ้ำ</div>
+        <div class="hint" style="text-align:center;margin:6px 0 14px" id="json-status">ไฟล์นี้อัปโหลดเข้าเครื่องสแกน Money MRI ได้ทันที ไม่ต้องกรอกซ้ำ</div>
         <button class="btn next" style="width:100%;padding:15px;background:var(--gold)" onclick="makePDF()">📄 ไฟล์ที่ 2 — PDF สรุปสำหรับคุณ</button>
         <div class="hint" style="text-align:center;margin-top:6px" id="pdf-status">เก็บไว้เป็นสำเนาของคุณ และแนบให้ที่ปรึกษาด้วยค่ะ</div>
+        <div style="border-top:1px dashed rgba(200,169,74,.4);margin-top:14px;padding-top:12px;text-align:center">
+          <div class="hint" style="margin-bottom:6px">กดบันทึกแล้ว<b>ไม่มีไฟล์ขึ้น</b>? (เจอได้ในเบราว์เซอร์ของแอป LINE)</div>
+          <button class="skip-btn" id="btn-send" onclick="submitMRI()">📮 ส่งข้อมูลเข้าระบบให้ที่ปรึกษาแทน</button>
+          <div class="hint" id="send-status" style="margin-top:6px"></div>
+        </div>
       </div>
 
       <div class="cta" style="margin-top:12px">
@@ -527,7 +533,7 @@ input[type=range]{width:100%; accent-color:var(--gold)}
 
   </div>
 
-  <div class="autosave" id="autosave">✓ บันทึกแล้ว</div>
+  <div class="autosave" id="autosave">✓ บันทึกในเครื่องนี้แล้ว</div>
   <!-- fix 02/08/2026: แก้ PDF ออกมาเปล่า — ย้าย position:absolute จาก #pdf-doc ไปไว้ที่ wrapper เพื่อให้ html2pdf วัดความสูงเนื้อหาได้ -->
   <!-- v2.3: PDF วาดใน iframe แยก สร้างสดตอนกดปุ่ม (ดู makePDF) — ไม่ต้องมีกล่องซ่อนในหน้าอีก -->
 
@@ -543,7 +549,7 @@ input[type=range]{width:100%; accent-color:var(--gold)}
 /* ═══ S41 Money MRI — ใบซักประวัติ v2.0 (10/08/2026)
    ใหม่ในรุ่นนี้: สร้าง "ไฟล์ลูกค้า .json" รูปแบบเดียวกับ Money MRI dashboard
    → ที่ปรึกษากดนำเข้าไฟล์ในห้องสมุดลูกค้าได้ทันที ไม่ต้องกรอกซ้ำ ═══ */
-const MRI_VER='2.3';
+const MRI_VER='2.4';
 
 /* ───── state (auto-save ลงเครื่องผ่าน localStorage) ───── */
 const S = {step:1, mode:'single', assets:[], debts:[], ins:[], goals:{}, dep:{}, otherInc:[], cid:''};
@@ -794,9 +800,19 @@ function serialize(){
 }
 let saveT;
 function save(){
-  try{ localStorage.setItem(SAVE_KEY, serialize()); }catch(e){}
+  /* v2.4: แสดงสถานะตามจริงเท่านั้น — ถ้าบันทึกลงเครื่องไม่ได้ (เช่นโหมดไม่ระบุตัวตน) ต้องเตือน ไม่ใช่ขึ้นว่าบันทึกแล้ว */
+  let ok=true;
+  try{ localStorage.setItem(SAVE_KEY, serialize()); }catch(e){ ok=false; }
   const el=document.getElementById('autosave');
-  el.classList.add('show'); clearTimeout(saveT);
+  clearTimeout(saveT);
+  if(!ok){
+    el.textContent='⚠️ เครื่องนี้บันทึกอัตโนมัติไม่ได้ — อย่าเพิ่งปิดหน้านี้ กรอกให้จบแล้วกดบันทึก/ส่งเลยนะคะ';
+    el.classList.add('show');
+    saveT=setTimeout(()=>el.classList.remove('show'),4000);
+    return;
+  }
+  el.textContent='✓ บันทึกในเครื่องนี้แล้ว';
+  el.classList.add('show');
   saveT=setTimeout(()=>el.classList.remove('show'),1200);
 }
 function restore(){
@@ -820,7 +836,7 @@ function restore(){
     const el=document.getElementById('autosave');
     el.textContent='👋 กลับมากรอกต่อจากที่ค้างไว้ได้เลยค่ะ';
     el.classList.add('show');
-    setTimeout(()=>{ el.classList.remove('show'); el.textContent='✓ บันทึกแล้ว'; },3000);
+    setTimeout(()=>{ el.classList.remove('show'); el.textContent='✓ บันทึกในเครื่องนี้แล้ว'; },3000);
   }
 }
 function resetAll(){
@@ -1092,9 +1108,54 @@ function buildMRI(){
     s41:{ clientId:ensureCid(), name:nick }, state, snapshots:{} };
 }
 
-/* บันทึก/แชร์ไฟล์ .json — มือถือใช้ share sheet (ส่งเข้า LINE ได้เลย) · คอมดาวน์โหลดตรง */
+/* ═══ v2.4: เช็คว่าเครื่องนี้มีข้อมูลที่กรอกไว้จริง — กันส่ง/บันทึกไฟล์ว่างเปล่า
+   (สาเหตุหลักของ "ค่าไม่เห็นมาเลย": กดปุ่มจากเครื่อง/เบราว์เซอร์อื่นที่ไม่ใช่เครื่องที่กรอก) ═══ */
+function deviceHasData(){
+  const inc=+gv('income')||0;
+  let exp=0; document.querySelectorAll('.exp').forEach(e=>exp+=+e.value||0);
+  return !!(inc>0 || exp>0 || S.assets.length || S.debts.length || S.ins.length || (S.depList||[]).length || gv('nickname').trim());
+}
+const NO_DATA_MSG='⚠️ เครื่องนี้ยังไม่มีข้อมูลที่กรอกไว้ค่ะ — ต้องกดจากเครื่อง/เบราว์เซอร์เดียวกับที่กรอก (หรือกด "แก้ไขข้อมูล" เพื่อกรอกในเครื่องนี้)';
+
+/* ═══ v2.4: ทางหนีไฟ — ส่งข้อมูลเข้าระบบ S41 (Supabase) ═══
+   ใช้เฉพาะกรณีกดบันทึกไฟล์แล้วไฟล์ไม่ขึ้น (พบได้ในเบราว์เซอร์ของแอป LINE ที่ดาวน์โหลด/แชร์ไฟล์ไม่ได้)
+   ไม่มีการส่งเข้า LINE ใดๆ — ข้อมูลเข้ากล่องรับไฟล์ส่วนตัวของที่ปรึกษา (mri-inbox) เท่านั้น
+   ที่ปรึกษาเปิดกล่องรับไฟล์ → ดาวน์โหลด .json → อัปโหลดเข้าเครื่องสแกน Money MRI (Step 3) ตามปกติ */
+const MRI_SUBMIT_URL='https://lpqcglmpkuasgjgzqdyp.supabase.co/functions/v1/mri-submit';
+async function submitMRI(){
+  const st=document.getElementById('send-status'), btn=document.getElementById('btn-send');
+  if(!deviceHasData()){ st.textContent=NO_DATA_MSG; document.getElementById('empty-warn').classList.remove('hidden'); return; }
+  btn.disabled=true; btn.style.opacity='.6'; st.textContent='กำลังส่งข้อมูลผ่านช่องทางปลอดภัย… รอสักครู่นะคะ';
+  try{
+    const data=buildMRI();
+    const ctrl=('AbortController' in window)?new AbortController():null;
+    const timer=ctrl?setTimeout(()=>ctrl.abort(),25000):null;
+    const res=await fetch(MRI_SUBMIT_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({payload:data, ua:navigator.userAgent||''}),
+      signal:ctrl?ctrl.signal:undefined
+    });
+    if(timer) clearTimeout(timer);
+    let j=null; try{ j=await res.json(); }catch(e){}
+    if(res.ok && j && j.success){
+      btn.textContent='✓ ส่งเข้าระบบแล้ว — แก้ข้อมูลแล้วกดส่งซ้ำได้';
+      btn.disabled=false; btn.style.opacity='1';
+      st.innerHTML='✅ <b>ส่งข้อมูลเข้าระบบเรียบร้อยแล้วค่ะ</b> (รหัสอ้างอิง '+(j.ref||'')+')<br>รบกวนพิมพ์บอกที่ปรึกษาทาง LINE สั้นๆ ว่า "ส่งข้อมูลเข้าระบบแล้ว" ด้วยนะคะ';
+    } else {
+      throw new Error((j&&j.error)||('การเชื่อมต่อขัดข้อง ('+res.status+')'));
+    }
+  }catch(err){
+    btn.disabled=false; btn.style.opacity='1';
+    const m=(err&&err.name==='AbortError')?'เชื่อมต่อนานเกินไป':(err&&err.message)||'เชื่อมต่อไม่ได้';
+    st.textContent='ส่งไม่สำเร็จ ('+m+') — เช็คอินเทอร์เน็ตแล้วลองกดอีกครั้งนะคะ';
+  }
+}
+
+/* บันทึก/แชร์ไฟล์ .json — วิธีสำรอง · มือถือใช้ share sheet (ส่งเข้า LINE ได้เลย) · คอมดาวน์โหลดตรง */
 async function saveMRIFile(){
   const st=document.getElementById('json-status');
+  if(!deviceHasData()){ st.textContent=NO_DATA_MSG; document.getElementById('empty-warn').classList.remove('hidden'); return; }
   try{
     const data=buildMRI();
     const nickA=String(data.s41.name||'').replace(/[^A-Za-z0-9_-]/g,'');
@@ -1106,7 +1167,7 @@ async function saveMRIFile(){
         const file=new File([blob],fname,{type:'application/json'});
         if(navigator.canShare({files:[file]})){
           await navigator.share({files:[file], title:'S41 Money MRI — ไฟล์ข้อมูล'});
-          st.textContent='✓ ส่งไฟล์เรียบร้อย — เลือกส่งให้ที่ปรึกษาทาง LINE ได้เลยค่ะ';
+          st.textContent='ส่งผ่านหน้าต่างแชร์ของเครื่องแล้ว — รบกวนเช็คในแชทด้วยนะคะว่าไฟล์ถึงที่ปรึกษาจริง';
           return;
         }
       }catch(e){ if(e && e.name==='AbortError'){ st.textContent='ยกเลิกการส่ง — กดใหม่ได้ทุกเมื่อค่ะ'; return; } }
@@ -1115,16 +1176,21 @@ async function saveMRIFile(){
     const a=document.createElement('a'); a.href=url; a.download=fname;
     document.body.appendChild(a); a.click();
     setTimeout(()=>{ document.body.removeChild(a); URL.revokeObjectURL(url); },200);
-    st.textContent='✓ บันทึก '+fname+' แล้ว — ส่งไฟล์นี้ให้ที่ปรึกษาทาง LINE ได้เลยค่ะ';
+    st.innerHTML='สั่งบันทึกไฟล์ <b>'+fname+'</b> แล้ว — รบกวน<b>เช็คว่าได้ไฟล์จริง</b>ในโฟลเดอร์ดาวน์โหลด/แอปไฟล์ก่อนส่งนะคะ ถ้าหาไฟล์ไม่เจอ แปลว่าเบราว์เซอร์นี้บันทึกไม่ได้ ให้กดปุ่ม "📮 ส่งข้อมูลเข้าระบบ" ด้านล่างแทนค่ะ';
   }catch(err){
-    st.textContent='บันทึกไม่สำเร็จ — ลองเปิดหน้านี้ในเบราว์เซอร์ภายนอก (Chrome/Safari) แล้วกดอีกครั้งนะคะ ข้อมูลที่กรอกไม่หายค่ะ';
+    st.textContent='บันทึกไฟล์ไม่สำเร็จ — เบราว์เซอร์นี้อาจไม่รองรับการดาวน์โหลดค่ะ กดปุ่ม "📮 ส่งข้อมูลเข้าระบบให้ที่ปรึกษาแทน" ด้านล่างสุดได้เลย (สำคัญ: ข้อมูลอยู่ในเครื่องนี้เท่านั้น อย่าย้ายไปกดที่เครื่องอื่นนะคะ)';
   }
 }
 
 /* ───── PDF export ───── */
 function makePDF(){
+  if(!deviceHasData()){
+    document.getElementById('pdf-status').textContent=NO_DATA_MSG;
+    document.getElementById('empty-warn').classList.remove('hidden');
+    return;
+  }
   if(typeof html2pdf==='undefined'){
-    document.getElementById('pdf-status').textContent='โหลดตัวสร้าง PDF ไม่สำเร็จ — เช็คอินเทอร์เน็ตแล้วปิด-เปิดหน้านี้ใหม่นะคะ (ข้อมูลที่กรอกไม่หายค่ะ)';
+    document.getElementById('pdf-status').textContent='โหลดตัวสร้าง PDF ไม่สำเร็จ — เช็คอินเทอร์เน็ตแล้วลองปิด-เปิดหน้านี้ใหม่ หรือกดปุ่ม "📮 ส่งข้อมูลเข้าระบบ" แทนค่ะ';
     return;
   }
   const d=collectData();
@@ -1202,7 +1268,7 @@ function makePDF(){
   const done=ok=>{ try{ el.remove(); veil.remove(); }catch(e){}
     document.documentElement.style.zoom=zoomBak.html; document.body.style.zoom=zoomBak.body;
     window.scrollTo(0,backTo);
-    st.textContent= ok ? '✓ บันทึกแล้ว — ส่งไฟล์นี้ให้ที่ปรึกษาทาง LINE ได้เลยค่ะ' : 'บันทึกไม่สำเร็จ ลองอีกครั้งนะคะ'; };
+    st.innerHTML= ok ? 'สร้าง PDF เสร็จและสั่งบันทึกแล้ว — รบกวน<b>เช็คว่าได้ไฟล์จริง</b>ในเครื่องก่อนส่งนะคะ ถ้าไม่เห็นไฟล์ กดปุ่ม "📮 ส่งข้อมูลเข้าระบบ" แทนได้ค่ะ' : 'สร้าง PDF ไม่สำเร็จค่ะ — ลองอีกครั้ง หรือกดปุ่ม "📮 ส่งข้อมูลเข้าระบบ" แทนนะคะ'; };
   html2pdf().set({
     margin:25.4,   /* 1 นิ้ว เท่ากันทั้งบน-ล่าง-ซ้าย-ขวา */
     filename:'S41_MoneyMRI_'+(String(d.nick||'client').replace(/[^A-Za-z0-9_-]/g,'')||'client')+'.pdf',
