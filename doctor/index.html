@@ -231,6 +231,7 @@ input:focus,select:focus{border-color:var(--gold);background:#fff}
 
 .hide{display:none}
 .printonly{display:none}
+#fullData{display:none}   /* v1.1: ภาคผนวก "ข้อมูลที่กรอกทั้งหมด" — โผล่เฉพาะตอนพิมพ์เมื่อติ๊กเลือก */
 @media print{
   @page{size:A4;margin:12mm 10mm}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -278,6 +279,26 @@ input:focus,select:focus{border-color:var(--gold);background:#fff}
   .printcta{background:var(--navy);color:#fff;border-radius:10px;padding:10px 16px;margin-top:8px;
     font-size:11px;line-height:1.55;text-align:center}
   .printcta b{color:var(--gold-soft)}
+  /* ═══ v1.1: ภาคผนวก — บันทึกข้อมูลที่กรอกทั้งหมด (พิมพ์เมื่อติ๊กเลือกเท่านั้น) ═══ */
+  body.print-full #fullData{display:block;break-before:page;page-break-before:always}
+  #fullData .fd-title{font-family:var(--serif);font-size:19px;font-weight:600;color:var(--navy);
+    border-bottom:3px double var(--gold2);padding-bottom:6px}
+  #fullData .fd-title .fx{color:var(--gold2)}
+  #fullData .fd-meta{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.5}
+  #fullData .fd-sec{margin-top:10px}
+  #fullData .fd-sech{font-size:11.5px;font-weight:700;color:#A9832F;border-bottom:1.2px solid var(--navy);
+    padding-bottom:2px;margin-bottom:3px;break-after:avoid;page-break-after:avoid}
+  #fullData .fd-sub{font-size:10px;font-weight:600;color:var(--muted);margin-top:5px}
+  #fullData .fd-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 22px}
+  #fullData .fd-kv{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;
+    padding:2.5px 0;border-bottom:1px dashed var(--line);font-size:10.5px;break-inside:avoid;page-break-inside:avoid}
+  #fullData .fd-kv span{color:var(--muted);flex:0 1 auto}
+  #fullData .fd-kv b{text-align:right;font-weight:600}
+  #fullData .fd-q{border-left:2px solid var(--gold-soft);padding:2px 10px;margin:5px 0;break-inside:avoid;page-break-inside:avoid}
+  #fullData .fd-q .l{font-size:9px;color:var(--muted);letter-spacing:.3px}
+  #fullData .fd-q .v{font-size:10.5px;font-style:italic;line-height:1.45}
+  #fullData .fd-kid{border:1px solid var(--line);border-radius:8px;padding:5px 10px;margin-top:5px;break-inside:avoid;page-break-inside:avoid}
+  #fullData .fd-kidh{font-size:10.5px;font-weight:700;color:var(--navy)}
 }
 </style>
 </head>
@@ -431,6 +452,9 @@ input:focus,select:focus{border-color:var(--gold);background:#fff}
       ทั้งหมดอยู่ใน <b>Step 3 · สแกนเต็มระบบ Money MRI</b> — ติดต่อที่ปรึกษาการเงิน S41 เพื่อวิเคราะห์และจัดทำแผนองค์รวมได้เลย
     </div>
 
+    <!-- v1.1: ภาคผนวก "บันทึกข้อมูลที่กรอกทั้งหมด" — สร้างสดตอนสั่งพิมพ์ พิมพ์เมื่อติ๊กเลือกเท่านั้น -->
+    <div id="fullData"></div>
+
     <div class="next3 noprint">
       <div>
         <div class="t">ตัวอย่างตอนต่อไป — Step 3 · สแกนเต็มระบบ Money MRI</div>
@@ -444,12 +468,18 @@ input:focus,select:focus{border-color:var(--gold);background:#fff}
         <button class="btn btn-ghost" onclick="show('scr_wrap')">← กลับไปแก้ไข</button>
         <button class="btn btn-ghost" onclick="location.reload()">↺ ตรวจคนใหม่</button>
       </div>
-      <button class="btn btn-main" onclick="window.print()">🖨 พิมพ์ / บันทึก PDF</button>
+      <div style="text-align:right">
+        <label style="display:flex;align-items:flex-start;gap:7px;justify-content:flex-end;font-size:12.5px;color:var(--muted);cursor:pointer;margin:0 0 8px auto;user-select:none;text-align:left;max-width:250px">
+          <input type="checkbox" id="pfAll" checked style="width:16px;height:16px;accent-color:var(--navy);flex:none;margin-top:2px">
+          <span>พิมพ์ข้อมูลที่กรอกไว้ทั้งหมดด้วย <span class="small">(แนบต่อท้ายใบผลตรวจ)</span></span>
+        </label>
+        <button class="btn btn-main" onclick="doPrint()">🖨 พิมพ์ / บันทึก PDF</button>
+      </div>
     </div>
   </div>
 
   <div style="text-align:center;font-size:10.5px;color:var(--faint);margin-top:26px">
-    Money Doctor Visit™ · © 2026 Signature 41 — Customized for One · สงวนลิขสิทธิ์
+    Money Doctor Visit™ · © 2026 Signature 41 — Customized for One · สงวนลิขสิทธิ์ · v1.1
   </div>
 
 </div>
@@ -996,6 +1026,120 @@ function showResult(){
     `<div class="quote"><div class="ql">${l}</div><div class="qv">“${txt(id)}”</div></div>`).join('');
   document.getElementById('voiceHost').innerHTML = vh || '<p class="small">—</p>';
 }
+
+/* ═══ v1.1: พิมพ์ข้อมูลที่กรอกทั้งหมด — สร้างภาคผนวกแนบท้ายใบผลตรวจ ═══
+   หมายเหตุ: ช่อง "ส่งต่อความห่วงใย" (t_refer) ตั้งใจไม่พิมพ์ลงกระดาษ ตามที่หน้าจอสัญญาไว้ว่า
+   "สำหรับทีมงาน ไม่ขึ้นในใบผลตรวจ" */
+const fdEsc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function buildFullData(){
+  const host=document.getElementById('fullData'); if(!host) return;
+  const kv=(l,v)=>`<div class="fd-kv"><span>${l}</span><b>${(v===''||v===undefined||v===null)?'—':v}</b></div>`;
+  const mv=id=>{const n=num(id);return n?fmt(n)+' ฿':'—'};
+  const tv=id=>{const t=txt(id);return t?fdEsc(t):'—'};
+  const q=(l,id)=>{const t=txt(id);return t?`<div class="fd-q"><div class="l">${l}</div><div class="v">“${fdEsc(t)}”</div></div>`:'';};
+  const sec=(t,body)=>`<div class="fd-sec"><div class="fd-sech">✦ ${t}</div>${body}</div>`;
+  const grid=b=>`<div class="fd-grid">${b}</div>`;
+  const ready=k=>{const r=calcSys(k);
+    if(!r||r.need<=0) return kv('ความพร้อม — '+SYS[k].th,'ยังไม่ได้ระบุตัวเลข');
+    const p=Math.round(Math.min(r.have/r.need*100,100));
+    return kv('ความพร้อม — '+SYS[k].th, p+'% · เป้าหมาย '+fmt(r.need)+' '+r.unit+' · เตรียมแล้ว '+fmt(r.have)+' '+r.unit+
+      (r.have<r.need?' · ขาด ≈ '+fmt(r.need-r.have)+' '+r.unit:' · ครบแล้ว'));};
+
+  const today=new Date().toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'});
+  let h=`<div class="fd-title"><span class="fx">✦</span> บันทึกข้อมูลการตรวจ — ฉบับเต็ม</div>
+  <div class="fd-meta">ทุกคำตอบที่บันทึกไว้ในการตรวจวันนี้ · แนบท้ายใบสรุปผลตรวจ Money Doctor Visit<br>
+  คุณ${tv('cname')} · ${today} · หมอเงินผู้ตรวจ: ${tv('aname')}</div>`;
+
+  /* — ทำความรู้จักกัน — */
+  h+=sec('ทำความรู้จักกัน · Fact Finding',
+    grid(
+      kv('ชื่อ – นามสกุล',tv('cname'))+kv('อายุ',num('cage')?num('cage')+' ปี':'—')+
+      kv('อาชีพ / ตำแหน่งงาน',tv('cjob'))+kv('สถานที่ทำงาน',tv('cwork'))+
+      kv('รายได้รวม / เดือน',mv('cinc'))+kv('ค่าใช้จ่ายครอบครัว / เดือน',mv('cexp'))+
+      kv('คนที่ต้องดูแล',num('cdep')?num('cdep')+' คน':'—')+kv('เงินสำรองฉุกเฉินที่มี',mv('cemer'))
+    )+ready(6)+
+    q('มองเห็นตัวเองเกษียณที่ที่ทำงานปัจจุบันไหม เพราะอะไร','t_retirehere')+
+    q('เวลาว่าง ชอบทำอะไร','t_hobby')+
+    q('ความสำเร็จในอดีตที่ภูมิใจที่สุด','t_proud')+
+    q('คิดอย่างไรกับ "การวางแผนทางการเงิน"','t_viewplan'));
+
+  /* — ลำดับความสำคัญ — */
+  h+=sec('ลำดับความสำคัญที่เลือกตรวจวันนี้',
+    order.length? order.map((id,i)=>{const m=MODS.find(m=>m.id===id);return kv('อันดับ '+(i+1),m.title);}).join('')
+    : kv('แผนที่เลือก','ยังไม่ได้เลือกแผนตรวจในวันนี้'));
+
+  /* — รายละเอียดทีละแผน ตามอันดับ — */
+  order.forEach((id,i)=>{
+    const m=MODS.find(x=>x.id===id); let b='';
+    if(id==='edu'){
+      const n=parseInt(document.getElementById('kidCount')?.value)||0;
+      b+=kv('จำนวนลูก',n?n+' คน':'—');
+      for(let c=1;c<=n;c++){
+        b+=`<div class="fd-kid"><div class="fd-kidh">ลูกคนที่ ${c}${txt('k'+c+'_name')?' — '+fdEsc(txt('k'+c+'_name')):''}</div>`+
+          grid(kv('อายุ',num('k'+c+'_age')?num('k'+c+'_age')+' ปี':'—')+kv('อาชีพในฝันของลูก',tv('k'+c+'_dream'))+
+               kv('วิชาโปรด / สิ่งที่ลูกชอบ',tv('k'+c+'_fav'))+kv('เตรียมเรื่องการศึกษาไว้แล้ว',tv('k'+c+'_prep')))+
+          kv('ทุนที่ต้องเตรียมสำหรับคนนี้',document.getElementById('kt'+c)?.textContent||'—')+`</div>`;
+      }
+      const path=LEVELS.map((L,l)=>{const s=eduSel[l];if(s===undefined)return '';
+        return kv(L[0].replace('*',''), s===-1? fmt(num('ex_'+l))+' ฿ (กำหนดเอง)' : PATHS[s]+' · รวม '+fmt(L[2][s])+' ฿');}).join('');
+      b+=(path?'<div class="fd-sub">เส้นทางการศึกษาที่ตั้งเป้า (ใช้ร่วมกันทุกคน)</div>'+grid(path):kv('เส้นทางการศึกษา','ยังไม่ได้เลือก'));
+      b+=grid(kv('ทุนการศึกษาที่ต้องมีรวมทุกคน',mv('s0_need'))+kv('เตรียมไว้แล้วรวม (เงินออม + ประกันเพื่อลูก)',mv('s0_have')))+ready(0);
+    }
+    if(id==='ret'){
+      const now=num('s1_age')||num('cage')||0, ra=num('s1_ra')||60, end=num('s1_end')||85;
+      const use=Math.max(end-ra,0);
+      b+=q('คิดอย่างไรกับ "การวางแผนเกษียณ" · ภาพเกษียณในฝันเป็นแบบไหน','t_ret_view')+
+        grid(kv('อายุปัจจุบัน',now?now+' ปี':'—')+kv('อายุที่จะเกษียณ',ra+' ปี')+
+             kv('อายุสิ้นสุดกองทุน',end+' ปี')+kv('เวลาเก็บเงิน / เวลาใช้เงิน',(now?Math.max(ra-now,0):'—')+' ปี / '+use+' ปี')+
+             kv('ค่าใช้จ่ายหลังเกษียณ / เดือน',mv('s1_re'))+kv('เตรียมไว้แล้ว (PVD · RMF · บำนาญ · เงินออม)',mv('s1_have')))+
+        kv('เงินก้อนที่ต้องมี ณ วันเกษียณ (ยังไม่รวมเงินเฟ้อ)',num('s1_re')?fmt(num('s1_re')*12*use)+' ฿':'—')+ready(1);
+    }
+    if(id==='hlt'){
+      b+=q('ปัจจุบันใช้สวัสดิการอะไรอยู่ · มีประกันสุขภาพอยู่แล้วเท่าไร แบบไหน','t_h_wel')+
+        q('ครอบครัวมีประวัติโรคทางกรรมพันธุ์ไหม (เบาหวาน · ความดัน · มะเร็ง · หัวใจ)','t_h_gene')+
+        grid(kv('โรงพยาบาลที่ต้องการใช้',tv('s2_hosp'))+kv('ค่าห้องที่ต้องการ / คืน',mv('s2_need'))+
+             kv('ค่าห้องที่ประกัน + สวัสดิการจ่ายให้ / คืน',mv('s2_have'))+kv('เงินกองทุนโรคร้ายแรงที่ควรมี',mv('s3_need'))+
+             kv('ความคุ้มครองโรคร้ายแรงที่มี',mv('s3_have')))+ready(2)+ready(3);
+    }
+    if(id==='acc'){
+      b+=q('งานหรือไลฟ์สไตล์ มีความเสี่ยงอุบัติเหตุแค่ไหน (ขับรถ · มอเตอร์ไซค์ · เดินทางบ่อย · กีฬา)','t_a_view')+
+        q('ถ้าเกิดอุบัติเหตุ ทำงานไม่ได้ชั่วคราว — รายได้กระทบไหม ใครดูแลงานแทน','t_a_work')+
+        q('มีความเสี่ยงเสียชีวิตจากอุบัติเหตุไหม — ทุนคุ้มครองชีวิตแบบอุบัติเหตุ','t_a_fatal')+
+        grid(kv('วงเงินค่ารักษาอุบัติเหตุที่ต้องการ ต่อครั้ง',mv('s4_need'))+kv('วงเงินอุบัติเหตุที่มี (PA + สวัสดิการ)',mv('s4_have')))+ready(4);
+    }
+    if(id==='pro'){
+      b+=q('ความสามารถหารายได้ของคุณ สำคัญกับครอบครัวแค่ไหน','t_p_imp')+
+        q('ต้องอุปการะใครบ้าง กี่คน (พ่อแม่ · คู่สมรส · ลูก · คนอื่น)','t_p_resp')+
+        q('คิดว่าจะต้องดูแลพวกเขาไปอีกกี่ปี · ถ้าวันหนึ่งคุณไม่อยู่ ใครจะดูแลต่อ','t_p_years')+
+        grid(kv('จ่ายให้คนในบ้าน / เดือน',num('s5_mo')?mv('s5_mo'):(num('cexp')?fmt(num('cexp'))+' ฿ (ใช้ค่าใช้จ่ายครอบครัวจากหน้าแรก)':'—'))+
+             kv('ครอบครัวต้องยืนให้ได้อีกกี่ปี',(num('s5_yrs')||5)+' ปี')+
+             kv('หนี้สินคงเหลือทั้งหมด',mv('s5_debt'))+kv('เงินเก็บสภาพคล่องที่มี',mv('s5_liq'))+
+             kv('ทุนประกันชีวิตที่มีอยู่',mv('s5_life')))+ready(5);
+    }
+    h+=sec('อันดับ '+(i+1)+' · '+m.title,b);
+  });
+
+  /* — สรุปก่อนดูผล — (ไม่รวมช่องส่งต่อความห่วงใย ตามที่สัญญาว่าไม่ขึ้นในใบผลตรวจ) */
+  h+=sec('ก่อนดูผล · สรุปความรู้สึก',
+    q('ใน 2–10 ปีข้างหน้า มีเป้าหมายอะไรอีกบ้าง','t_midgoal')+
+    q('อะไรทำให้แผนอันดับ 1 สำคัญที่สุด และสิ่งที่กังวลหากยังไม่จัดการ','t_prio')+
+    kv('งบวางแผนที่คิดไว้ / เดือน',mv('cbudget')));
+
+  host.innerHTML=h;
+}
+function doPrint(){
+  const full=!!document.getElementById('pfAll')?.checked;
+  if(full) buildFullData();
+  document.body.classList.toggle('print-full',full);
+  window.print();
+}
+/* รองรับสั่งพิมพ์จากเมนูเบราว์เซอร์ (Ctrl+P) ด้วย — เคารพช่องติ๊กเหมือนกัน */
+window.addEventListener('beforeprint',()=>{
+  const onResult=!document.getElementById('scr_R').classList.contains('hide');
+  const full=onResult && !!document.getElementById('pfAll')?.checked;
+  if(full) buildFullData();
+  document.body.classList.toggle('print-full',full);
+});
 
 /* init money inputs on static screens */
 ['cinc','cexp','cemer','cbudget'].forEach(id=>money(document.getElementById(id)));
