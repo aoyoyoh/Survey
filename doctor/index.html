@@ -231,7 +231,7 @@ input:focus,select:focus{border-color:var(--gold);background:#fff}
 
 .hide{display:none}
 .printonly{display:none}
-#fullData{display:none}   /* v1.1: ภาคผนวก "ข้อมูลที่กรอกทั้งหมด" — โผล่เฉพาะตอนพิมพ์เมื่อติ๊กเลือก */
+#fullData{display:none}   /* v2.2: ภาคผนวก "ข้อมูลที่กรอกทั้งหมด" — โผล่เฉพาะตอนพิมพ์เมื่อติ๊กเลือก */
 @media print{
   @page{size:A4;margin:12mm 10mm}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -279,7 +279,7 @@ input:focus,select:focus{border-color:var(--gold);background:#fff}
   .printcta{background:var(--navy);color:#fff;border-radius:10px;padding:10px 16px;margin-top:8px;
     font-size:11px;line-height:1.55;text-align:center}
   .printcta b{color:var(--gold-soft)}
-  /* ═══ v1.1: ภาคผนวก — บันทึกข้อมูลที่กรอกทั้งหมด (พิมพ์เมื่อติ๊กเลือกเท่านั้น) ═══ */
+  /* ═══ v2.2: ภาคผนวก — บันทึกข้อมูลที่กรอกทั้งหมด (พิมพ์เมื่อติ๊กเลือกเท่านั้น) ═══ */
   body.print-full #fullData{display:block;break-before:page;page-break-before:always}
   #fullData .fd-title{font-family:var(--serif);font-size:19px;font-weight:600;color:var(--navy);
     border-bottom:3px double var(--gold2);padding-bottom:6px}
@@ -452,7 +452,7 @@ input:focus,select:focus{border-color:var(--gold);background:#fff}
       ทั้งหมดอยู่ใน <b>Step 3 · สแกนเต็มระบบ Money MRI</b> — ติดต่อที่ปรึกษาการเงิน S41 เพื่อวิเคราะห์และจัดทำแผนองค์รวมได้เลย
     </div>
 
-    <!-- v1.1: ภาคผนวก "บันทึกข้อมูลที่กรอกทั้งหมด" — สร้างสดตอนสั่งพิมพ์ พิมพ์เมื่อติ๊กเลือกเท่านั้น -->
+    <!-- v2.2: ภาคผนวก "บันทึกข้อมูลที่กรอกทั้งหมด" — สร้างสดตอนสั่งพิมพ์ พิมพ์เมื่อติ๊กเลือกเท่านั้น -->
     <div id="fullData"></div>
 
     <div class="next3 noprint">
@@ -479,7 +479,7 @@ input:focus,select:focus{border-color:var(--gold);background:#fff}
   </div>
 
   <div style="text-align:center;font-size:10.5px;color:var(--faint);margin-top:26px">
-    Money Doctor Visit™ · © 2026 Signature 41 — Customized for One · สงวนลิขสิทธิ์ · v1.1
+    Money Doctor Visit™ · © 2026 Signature 41 — Customized for One · สงวนลิขสิทธิ์ · v2.2
   </div>
 
 </div>
@@ -1027,7 +1027,7 @@ function showResult(){
   document.getElementById('voiceHost').innerHTML = vh || '<p class="small">—</p>';
 }
 
-/* ═══ v1.1: พิมพ์ข้อมูลที่กรอกทั้งหมด — สร้างภาคผนวกแนบท้ายใบผลตรวจ ═══
+/* ═══ v2.2: พิมพ์ข้อมูลที่กรอกทั้งหมด — สร้างภาคผนวกแนบท้ายใบผลตรวจ ═══
    หมายเหตุ: ช่อง "ส่งต่อความห่วงใย" (t_refer) ตั้งใจไม่พิมพ์ลงกระดาษ ตามที่หน้าจอสัญญาไว้ว่า
    "สำหรับทีมงาน ไม่ขึ้นในใบผลตรวจ" */
 const fdEsc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
