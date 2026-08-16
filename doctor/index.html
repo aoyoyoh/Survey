@@ -748,7 +748,7 @@ input:focus,select:focus{border-color:var(--gold);background:#fff}
   <div id="blankFin"></div>
 
   <div style="text-align:center;font-size:10.5px;color:var(--faint);margin-top:26px">
-    Money Doctor Visit™ · © 2026 Signature 41 — Customized for One · สงวนลิขสิทธิ์ · v2.6
+    Money Doctor Visit™ · © 2026 Signature 41 — Customized for One · สงวนลิขสิทธิ์ · v2.6.1
   </div>
 
 </div>
@@ -1980,7 +1980,10 @@ function buildClientFile(){
      MRI อ่าน ciCov/paCov/healthMax จาก snap.protection เมื่อทะเบียนกรมธรรม์ยังว่าง
      พอทำทะเบียนกรมธรรม์ครบ ตัวเลขจากทะเบียนจะคำนวณทับให้เอง (ตามที่ MRI ออกแบบไว้) */
   if(num('s3_have')>0) protection.ciCov=num('s3_have');
-  if(num('s4_have')>0) protection.paCov=num('s4_have');
+  /* v2.6.1: อุบัติเหตุ — หน้านี้ถามเป็น "วงเงินค่ารักษาต่อครั้ง" อยู่แล้ว
+     จึงส่งเข้าช่องค่ารักษาพยาบาลของ Money MRI (paMedTarget/paMedMax) ไม่ใช่ทุนประกันชีวิตแบบอุบัติเหตุ */
+  if(num('s4_need')>0) protection.paMedTarget=num('s4_need');
+  if(num('s4_have')>0) protection.paMedMax=num('s4_have');
   if(num('s2_have')>0) protection.roomRateHave=num('s2_have');
   if(num('s3_have')>0||num('s4_have')>0||num('s2_have')>0)
     est.push('ทุนที่มีอยู่แล้วจากนัด 1 (โรคร้าย '+fmt(num('s3_have'))+' · อุบัติเหตุ '+fmt(num('s4_have'))+' · ค่าห้อง '+fmt(num('s2_have'))+' ฿/คืน) ใส่ไว้ให้แล้ว — เมื่อทำทะเบียนกรมธรรม์ครบ ทะเบียนจะคำนวณทับให้เอง');
@@ -2017,7 +2020,7 @@ function buildClientFile(){
   ].forEach(([id,l])=>{ if(txt(id)) talk[l]=txt(id); });
 
   const visit={
-    source:'S41 Money Doctor Visit v2.6',
+    source:'S41 Money Doctor Visit v2.6.1',
     visitDate:new Date().toISOString().slice(0,10),
     advisor:txt('aname')||'',
     goalPriority: order.map(id=>{const m=MODS.find(x=>x.id===id);return m?m.title:id;}),
@@ -2031,7 +2034,7 @@ function buildClientFile(){
   };
 
   return {
-    app:'S41 Signature 41 Planner', version:'3.8', savedAt:new Date().toISOString(),
+    app:'S41 Signature 41 Planner', version:'3.8.1', savedAt:new Date().toISOString(),
     s41:{ clientId:CID||newCid(), name:nm },
     state:{
       axisMin:Math.max(age-1,0), axisMax:life+2, snapAge:age, inflation:3,
