@@ -224,19 +224,151 @@ input:focus,select:focus{border-color:var(--gold);background:#fff}
 .signrow{display:flex;justify-content:space-between;align-items:flex-end;margin-top:26px;padding-top:16px;border-top:1px solid var(--line);flex-wrap:wrap;gap:12px}
 .signrow .who{font-size:13px}
 .signrow .who b{font-family:var(--serif);font-size:17px;display:block}
-.next3{background:var(--ink);color:#fff;border-radius:14px;padding:20px 24px;margin-top:18px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
-.next3 .t{font-weight:600}
-.next3 .d{font-size:12.5px;opacity:.75}
+.next3{background:#F6F3EA;color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:16px 22px;margin-top:18px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+.next3 .t{font-weight:600;color:var(--navy);font-size:14.5px}
+.next3 .d{font-size:12.5px;color:var(--muted);line-height:1.7}
+.next3 .d b{color:var(--ink)}
 .next3 .go{background:var(--gold);color:var(--ink);border:none;border-radius:99px;padding:10px 22px;font-family:var(--thai);font-weight:700;cursor:pointer}
 
 .hide{display:none}
 .printonly{display:none}
-#fullData{display:none}   /* v2.2: ภาคผนวก "ข้อมูลที่กรอกทั้งหมด" — โผล่เฉพาะตอนพิมพ์เมื่อติ๊กเลือก */
+
+/* ---------- v2.3: พีระมิดการเงิน ---------- */
+.pyr{display:flex;gap:22px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.pyr svg{width:430px;max-width:100%;height:auto;flex:none}
+.pyrleg{flex:1;min-width:250px}
+.pyrleg .pl{display:flex;align-items:flex-start;gap:9px;padding:7px 0;border-bottom:1px dashed var(--line);font-size:12.5px;line-height:1.55}
+.pyrleg .pl:last-child{border-bottom:none}
+.pyrleg .pd{width:9px;height:9px;border-radius:2px;flex:none;margin-top:5px}
+.pyrleg b{display:block;font-size:13px}
+.pyrnote{background:var(--yellow);border:1px solid var(--yellow-bd);border-radius:12px;
+  padding:12px 16px;margin-top:12px;font-size:13.5px;line-height:1.7}
+.pyrnote .pn{font-size:11px;font-weight:700;color:#A9832F;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px}
+
+/* ---------- v2.4: แบบประเมินความเสี่ยง (ก.ล.ต. 10 ข้อ) ---------- */
+.rq{border:1px solid var(--line);border-radius:14px;padding:15px 18px;margin-top:14px;background:#FDFCF8}
+.rq .rqh{display:flex;gap:10px;align-items:baseline;font-weight:600;font-size:14px;line-height:1.5}
+.rq .rqn{font-family:var(--serif);font-size:19px;color:var(--gold2);flex:none;width:26px}
+.rq .rqhint{font-weight:400;font-size:12px;color:var(--muted)}
+.rq .ropts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+@media(max-width:620px){.rq .ropts{grid-template-columns:1fr}}
+.ro{border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:9px 13px;font-family:var(--thai);
+  font-size:13px;line-height:1.5;cursor:pointer;text-align:left;transition:all .12s;color:var(--ink)}
+.ro:hover{border-color:var(--gold)}
+.ro.on{border-color:var(--navy);background:#EFF3F8;font-weight:600}
+.rq.done{border-color:var(--sage)}
+.riskprog{position:sticky;top:0;z-index:5;background:var(--yellow);border:1px solid var(--yellow-bd);
+  border-radius:10px;padding:8px 16px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;margin-top:14px}
+/* การ์ดผลบนใบผลตรวจ */
+.riskcard .rmeter{display:flex;gap:5px;margin:12px 0 4px}
+.riskcard .rmeter .seg{flex:1;height:14px;border-radius:5px;background:var(--bg);border:1px solid var(--line);position:relative}
+.riskcard .rmeter .seg.lit{border:none}
+.riskcard .rmeter .seg .sl{position:absolute;top:17px;left:0;right:0;text-align:center;font-size:10px;color:var(--muted);white-space:nowrap}
+.riskwrap{display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;margin-top:6px}
+.riskmain{flex:1;min-width:250px}
+.riskmain .rlv{font-family:var(--serif);font-size:26px;font-weight:600;line-height:1.2}
+.riskmain .rds{font-size:13px;color:var(--muted);margin-top:4px}
+.riskalloc{flex:1;min-width:240px;border:1px solid var(--line);border-radius:12px;padding:12px 16px;background:#FDFCF8}
+.riskalloc .rat{font-size:11.5px;font-weight:700;color:#A9832F;letter-spacing:1px;text-transform:uppercase}
+.riskalloc .rar{display:flex;justify-content:space-between;font-size:12.5px;padding:4px 0;border-bottom:1px dashed var(--line)}
+.riskalloc .rar:last-child{border-bottom:none}
+.riskalloc .rar b{font-weight:600}
+.risknote{font-size:11.5px;color:var(--muted);margin-top:10px;line-height:1.6}
+.handover{background:#EFF3F8;border:1px solid #C9D6E6;border-radius:12px;padding:11px 16px;
+  margin-top:14px;font-size:12.5px;line-height:1.7;color:#43536B}
+.handover b{color:var(--navy)}
+.riskgo{margin-top:12px}
+
+/* ---------- v2.5: กล่องส่งมอบ + ตรวจละเอียดเพิ่ม ---------- */
+.deliver{background:var(--paper);border:1px solid var(--sage-soft);border-radius:16px;padding:20px 24px;margin-bottom:16px}
+.deliver .dt{font-family:var(--serif);font-size:20px;font-weight:600;color:var(--sage)}
+.deliver .dd{font-size:13px;color:var(--muted);margin-top:2px}
+.deliver .dbtn{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.deliver .dbtn .btn{flex:0 0 auto;padding:10px 24px;font-size:14px}
+.deliver .dchk{display:flex;align-items:flex-start;gap:8px;font-size:12.5px;color:var(--muted);
+  cursor:pointer;user-select:none;margin:12px 0 0;font-weight:400}
+.deliver .dchk input{width:16px;height:16px;accent-color:var(--navy);flex:none;margin-top:2px}
+.deliver .dwarn{background:var(--yellow);border:1px solid var(--yellow-bd);border-radius:10px;
+  padding:9px 14px;margin-top:12px;font-size:12px;line-height:1.65;color:#8A6A1F}
+.more{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:22px 24px;margin-bottom:18px}
+.more .mtitle{font-size:17px;font-weight:600;color:var(--navy);margin-bottom:2px}
+.more .mtitle .small{font-weight:400}
+.mcards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+@media(max-width:700px){.mcards{grid-template-columns:1fr}}
+.mcard{border:1.5px solid var(--line);border-radius:14px;padding:16px 18px;background:#FDFCF8;display:flex;flex-direction:column}
+.mcard.done{border-color:var(--sage);background:#F4FAF8}
+.mcard .mh{font-weight:600;font-size:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mcard .mstat{font-size:10.5px;font-weight:600;padding:2px 10px;border-radius:99px;
+  background:#F0EEE7;color:var(--muted);margin-left:auto;white-space:nowrap}
+.mcard.done .mstat{background:#EAF3F0;color:var(--sage)}
+.mcard.partial .mstat{background:#F9F1DE;color:#A9832F}
+.mcard .md{font-size:12.5px;color:var(--muted);line-height:1.65;margin-top:6px;flex:1}
+.mcard .md b{color:var(--ink)}
+.mcard .mb{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+.mcard .mb .btn{flex:0 0 auto;font-size:13px;padding:8px 18px}
+.mcard .mb .btn-main{background:transparent;color:var(--navy);border:1.5px solid var(--navy)}
+.mcard .mb .btn-main:hover{background:var(--navy);color:#fff;box-shadow:none}
+
+/* ---------- v2.3: financial statement screen ---------- */
+.fcol-t{font-family:var(--serif);font-size:20px;font-weight:600;color:var(--navy);
+  border-bottom:3px double var(--gold2);padding-bottom:6px;margin-top:18px}
+.fcol-t span{display:block;font-family:var(--thai);font-size:11.5px;font-weight:400;color:var(--muted);margin-top:1px}
+.fsec{margin-top:14px}
+.fsec-h{display:flex;align-items:baseline;gap:10px;font-size:13px;font-weight:700;color:var(--navy);
+  border-bottom:1.5px solid var(--gold2);padding-bottom:5px;margin-bottom:2px}
+.fsec-h .u{margin-left:auto;font-size:11px;font-weight:500;color:var(--carrier);letter-spacing:.3px}
+.frow{display:flex;align-items:center;gap:12px;padding:6px 0;border-bottom:1px dashed var(--line)}
+.frow:last-child{border-bottom:none}
+.frow .fl{flex:1;font-size:13.5px}
+.frow .fu{font-size:11px;color:var(--faint);white-space:nowrap}
+.frow input{width:132px;flex:none;padding:7px 11px;font-size:15px;text-align:right;
+  border:1px solid var(--line);border-radius:9px;background:#FDFCF8;font-family:var(--thai)}
+.frow input:focus{border-color:var(--gold);background:#fff}
+.fsub{font-size:11.5px;color:var(--muted);margin:6px 0 2px;font-weight:600}
+.ftot{display:flex;justify-content:space-between;align-items:baseline;margin-top:6px;
+  background:var(--yellow);border:1px solid var(--yellow-bd);border-radius:9px;padding:7px 14px;font-size:13px}
+.ftot b{font-family:var(--serif);font-size:18px}
+.fcols{display:grid;grid-template-columns:1fr 1fr;gap:0 30px;align-items:start}
+@media(max-width:700px){.fcols{grid-template-columns:1fr}}
+.fkpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:18px}
+.fkpi .k{border:1px solid var(--line);border-top:3px solid var(--navy);border-radius:0 0 11px 11px;
+  padding:11px 13px;background:#FDFCF8;text-align:center}
+.fkpi .k.g{border-top-color:var(--sage)} .fkpi .k.w{border-top-color:var(--gold)} .fkpi .k.b{border-top-color:var(--carrier)}
+.fkpi .kl{font-size:10.5px;color:var(--muted);font-weight:600;letter-spacing:.5px}
+.fkpi .kv{font-family:var(--serif);font-size:21px;font-weight:600;margin-top:2px;line-height:1.2}
+.fkpi .kd{font-size:10.5px;color:var(--faint);margin-top:1px}
+.fnote{background:#F7F9F6;border-left:3px solid var(--sage);border-radius:0 10px 10px 0;
+  padding:10px 14px;margin-top:14px;font-size:12.5px;line-height:1.65;color:var(--muted)}
+.ftoggle{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);cursor:pointer;
+  user-select:none;margin-top:4px}
+.ftoggle input{width:16px;height:16px;accent-color:var(--navy)}
+.fcta{background:var(--yellow);border:1px solid var(--yellow-bd);border-radius:14px;padding:18px 22px;margin-top:18px}
+.fcta .ct{font-weight:600;font-size:15px;color:var(--navy)}
+.fcta .cd{font-size:13px;color:var(--muted);margin-top:3px;line-height:1.6}
+.fcta .cb{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}
+.fcta .cb button{flex:1;min-width:190px}
+
+/* ---------- v2.3: resume banner + save indicator ---------- */
+.resume{background:linear-gradient(135deg,rgba(200,169,74,.14),rgba(31,59,94,.05));border:1.5px solid var(--gold);
+  border-radius:14px;padding:15px 18px;margin-bottom:18px;animation:fadein .3s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.resume .rt{font-size:11px;font-weight:700;color:#A9832F;letter-spacing:2px;text-transform:uppercase;margin-bottom:3px}
+.resume .rb{font-size:14px;margin-bottom:11px;line-height:1.6}
+.resume .rbtn{display:flex;gap:8px;flex-wrap:wrap}
+.resume button{flex:1;min-width:150px;border:1px solid var(--line);background:#fff;color:var(--navy);
+  border-radius:10px;padding:10px 14px;font-size:13.5px;font-weight:600;font-family:var(--thai);cursor:pointer}
+.resume button:hover{border-color:var(--gold)}
+.resume button.pri{background:var(--ink);color:#fff;border-color:var(--ink)}
+.savetag{position:fixed;right:16px;bottom:16px;background:var(--sage);color:#fff;font-size:12px;
+  padding:7px 14px;border-radius:99px;opacity:0;transition:opacity .35s;pointer-events:none;z-index:60}
+.savetag.on{opacity:.95}
+#fullData{display:none}
+#blankFin{display:none}   /* v2.2: ภาคผนวก "ข้อมูลที่กรอกทั้งหมด" — โผล่เฉพาะตอนพิมพ์เมื่อติ๊กเลือก */
 @media print{
-  @page{size:A4;margin:12mm 10mm}
+  @page{size:A4;margin:12mm 13mm}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   body{background:#fff;font-size:12px;line-height:1.5}
-  .journey,.noprint,.tagline{display:none!important}
+  .journey,.noprint,.tagline,.savetag,.resume{display:none!important}
   .printonly{display:block}
   .wrap{padding:0;max-width:none}
   .brand img{height:72px!important}
@@ -267,38 +399,79 @@ input:focus,select:focus{border-color:var(--gold);background:#fff}
   .budgetcard b{font-size:15px}
   .budgetcard .small{font-size:10px}
   /* customer voice: พิมพ์แบบ 2 คอลัมน์ กะทัดรัด */
-  #voiceCard h2{font-size:13px}
-  #voiceHost{display:grid;grid-template-columns:1fr 1fr;gap:2px 16px}
   .quote{padding:3px 10px;margin-top:4px;break-inside:avoid}
   .quote .ql{font-size:8.5px}
   .quote .qv{font-size:10.5px;line-height:1.4}
   .signrow{margin-top:10px;padding-top:8px}
   .signrow .who{font-size:10.5px}
   .signrow .who b{font-size:13px}
+  /* พีระมิด */
+  .pyr{gap:14px;margin-top:6px}
+  .pyr svg{width:290px}
+  .pyrleg .pl{padding:3px 0;font-size:10.5px;line-height:1.4}
+  .pyrleg b{font-size:11px}
+  .pyrnote{padding:7px 12px;margin-top:6px;font-size:10.5px;line-height:1.5}
+  .pyrnote .pn{font-size:8.5px;margin-bottom:1px}
+  /* v2.4: การ์ดความเสี่ยง — พิมพ์กะทัดรัด */
+  .riskcard h2{font-size:13px}
+  .riskwrap{gap:14px;margin-top:2px}
+  .riskmain .rlv{font-size:15px}
+  .riskmain .rds{font-size:10px;margin-top:1px;line-height:1.45}
+  .riskcard .rmeter{margin:6px 0 14px}
+  .riskcard .rmeter .seg{height:9px}
+  .riskcard .rmeter .seg .sl{top:11px;font-size:7.5px}
+  .riskalloc{padding:6px 12px}
+  .riskalloc .rat{font-size:8.5px}
+  .riskalloc .rar{font-size:9.5px;padding:2px 0}
+  .risknote{font-size:8.5px;margin-top:4px;line-height:1.45}
   /* CTA ท้ายกระดาษ */
+  .wrap > div[style*="margin-top:26px"]{margin-top:8px!important}   /* footer ลิขสิทธิ์ — ลดระยะบนตอนพิมพ์ */
   .printcta{background:var(--navy);color:#fff;border-radius:10px;padding:10px 16px;margin-top:8px;
     font-size:11px;line-height:1.55;text-align:center}
   .printcta b{color:var(--gold-soft)}
+  /* ═══ v2.3: ฟอร์มเปล่าให้ลูกค้าเขียนมือ ═══ */
+  body.print-blank .wrap > *:not(#blankFin){display:none!important}
+  body.print-blank #blankFin{display:block}
+  #blankFin .bf-h{display:flex;justify-content:space-between;align-items:flex-end;
+    border-bottom:3px double var(--gold2);padding-bottom:7px;margin-bottom:9px}
+  #blankFin .bf-t{font-family:var(--serif);font-size:21px;font-weight:600;color:var(--navy);line-height:1.15}
+  #blankFin .bf-s{font-size:10px;color:var(--muted);margin-top:2px}
+  #blankFin .bf-id{font-size:10.5px;color:var(--muted);text-align:right;line-height:1.7}
+  #blankFin .bf-id b{font-size:12px;color:var(--navy)}
+  #blankFin .bf-w{border-bottom:1px solid var(--ink);display:inline-block;min-width:120px}
+  #blankFin .bf-chk{border:1px solid var(--gold2);background:#FDF9EE;border-radius:7px;
+    padding:8px 12px;font-size:10px;line-height:1.75;margin-bottom:11px}
+  #blankFin .bf-chk b{color:var(--navy)}
+  #blankFin .bf-cols{column-count:2;column-gap:22px}
+  #blankFin .bf-sec{break-inside:avoid;page-break-inside:avoid;margin-bottom:7.5px}
+  #blankFin .bf-sech{font-size:11px;font-weight:700;color:#A9832F;border-bottom:1.2px solid var(--navy);
+    padding-bottom:2px;margin-bottom:3px;margin-right:4px}
+  #blankFin .bf-r{display:flex;align-items:flex-end;gap:7px;padding:3.8px 4px 3.8px 0;font-size:10.9px;break-inside:avoid}
+  #blankFin .bf-r .l{flex:1;line-height:1.3}
+  #blankFin .bf-r .u{color:var(--muted);font-size:9px;white-space:nowrap}
+  #blankFin .bf-r .box{width:78px;height:19px;border:1px solid #999;border-radius:3px;flex:none;background:#fff}
+  #blankFin .bf-foot{margin-top:10px;border-top:1px solid var(--line);padding-top:7px;
+    font-size:9px;color:var(--muted);line-height:1.6}
   /* ═══ v2.2: ภาคผนวก — บันทึกข้อมูลที่กรอกทั้งหมด (พิมพ์เมื่อติ๊กเลือกเท่านั้น) ═══ */
   body.print-full #fullData{display:block;break-before:page;page-break-before:always}
-  #fullData .fd-title{font-family:var(--serif);font-size:19px;font-weight:600;color:var(--navy);
-    border-bottom:3px double var(--gold2);padding-bottom:6px}
+  #fullData .fd-title{font-family:var(--serif);font-size:18px;font-weight:600;color:var(--navy);
+    border-bottom:3px double var(--gold2);padding-bottom:4px}
   #fullData .fd-title .fx{color:var(--gold2)}
-  #fullData .fd-meta{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.5}
-  #fullData .fd-sec{margin-top:10px}
-  #fullData .fd-sech{font-size:11.5px;font-weight:700;color:#A9832F;border-bottom:1.2px solid var(--navy);
-    padding-bottom:2px;margin-bottom:3px;break-after:avoid;page-break-after:avoid}
-  #fullData .fd-sub{font-size:10px;font-weight:600;color:var(--muted);margin-top:5px}
-  #fullData .fd-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 22px}
+  #fullData .fd-meta{font-size:9.5px;color:var(--muted);margin-top:3px;line-height:1.45}
+  #fullData .fd-sec{margin-top:6px}
+  #fullData .fd-sech{font-size:11px;font-weight:700;color:#A9832F;border-bottom:1.2px solid var(--navy);
+    padding-bottom:1.5px;margin-bottom:2px;break-after:avoid;page-break-after:avoid}
+  #fullData .fd-sub{font-size:9.5px;font-weight:600;color:var(--muted);margin-top:3px}
+  #fullData .fd-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 26px}
   #fullData .fd-kv{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;
-    padding:2.5px 0;border-bottom:1px dashed var(--line);font-size:10.5px;break-inside:avoid;page-break-inside:avoid}
+    padding:1.6px 0;border-bottom:1px dashed var(--line);font-size:10px;line-height:1.35;break-inside:avoid;page-break-inside:avoid}
   #fullData .fd-kv span{color:var(--muted);flex:0 1 auto}
   #fullData .fd-kv b{text-align:right;font-weight:600}
-  #fullData .fd-q{border-left:2px solid var(--gold-soft);padding:2px 10px;margin:5px 0;break-inside:avoid;page-break-inside:avoid}
-  #fullData .fd-q .l{font-size:9px;color:var(--muted);letter-spacing:.3px}
-  #fullData .fd-q .v{font-size:10.5px;font-style:italic;line-height:1.45}
-  #fullData .fd-kid{border:1px solid var(--line);border-radius:8px;padding:5px 10px;margin-top:5px;break-inside:avoid;page-break-inside:avoid}
-  #fullData .fd-kidh{font-size:10.5px;font-weight:700;color:var(--navy)}
+  #fullData .fd-q{border-left:2px solid var(--gold-soft);padding:1px 9px;margin:3px 0;break-inside:avoid;page-break-inside:avoid}
+  #fullData .fd-q .l{font-size:8.5px;color:var(--muted);letter-spacing:.3px;line-height:1.3}
+  #fullData .fd-q .v{font-size:10px;font-style:italic;line-height:1.35}
+  #fullData .fd-kid{border:1px solid var(--line);border-radius:8px;padding:4px 9px;margin-top:4px;break-inside:avoid;page-break-inside:avoid}
+  #fullData .fd-kidh{font-size:10px;font-weight:700;color:var(--navy)}
 }
 </style>
 </head>
@@ -315,6 +488,8 @@ input:focus,select:focus{border-color:var(--gold);background:#fff}
     <div class="jstep here"><div class="no">02</div><div class="t">นัดหมอเงิน · Money Doctor Visit</div><div class="d">ตรวจตัวต่อตัว แจ้งผลเบื้องต้น รู้จุดเสี่ยงก่อนใคร</div></div>
     <div class="jstep"><div class="no">03</div><div class="t">สแกนเต็มระบบ · Money MRI</div><div class="d">ตอนต่อไป: รู้วิธีรักษา + แผนที่ปรับตามชีวิตทุกปี</div></div>
   </div>
+
+  <div id="resumeHost"></div>
 
   <!-- ============ SCREEN: PERSONAL / ทำความรู้จัก ============ -->
   <div class="card scr" id="scr_intro">
@@ -353,7 +528,7 @@ input:focus,select:focus{border-color:var(--gold);background:#fff}
     <label>ชื่อที่ปรึกษาผู้ตรวจ</label><input type="text" id="aname" placeholder="ชื่อที่ปรึกษา S41" style="max-width:320px">
 
     <div class="navrow">
-      <span class="small">ใช้เวลารวม 15–20 นาที · ผลตรวจสร้างทันทีเมื่อเสร็จ</span>
+      <span class="small">ตรวจหลัก 20–25 นาที · ได้ใบผลตรวจทันทีเมื่อเสร็จ · ถ้าอยากตรวจละเอียดต่อ ค่อยเลือกทีหลังได้</span>
       <button class="btn btn-main" onclick="toPick()">ถัดไป → เลือกแผนที่อยากคุย</button>
     </div>
   </div>
@@ -382,12 +557,12 @@ input:focus,select:focus{border-color:var(--gold);background:#fff}
     <div class="rankchips" id="wrapRecap"></div>
     <div class="talk">
       <div class="tt">ชวนคุย · Commitment</div>
-      <label>ใน 2–10 ปีข้างหน้า มีเป้าหมายอะไรอีกบ้าง <span class="hint">บ้าน · รถ · แต่งงาน · ท่องเที่ยว</span></label>
+      <label>ใน 2–10 ปีข้างหน้า มีเป้าหมายอะไรอีกบ้าง และแต่ละเป้าคิดว่าใช้เงินประมาณเท่าไหร่ <span class="hint">บ้าน · รถ · แต่งงาน · ท่องเที่ยว — ตัวเลขคร่าว ๆ พอค่ะ</span></label>
       <textarea id="t_midgoal"></textarea>
-      <label id="lq_prio">อะไรทำให้แผนอันดับ 1 สำคัญกับคุณที่สุด — และถ้ายังไม่ได้จัดการใน 1–2 ปีนี้ กังวลอะไรที่สุด</label>
+      <label id="lq_prio">เล่าให้ฟังหน่อยค่ะ — มีเหตุการณ์หรือความคิดอะไร ที่ทำให้เรื่องอันดับ 1 กลายเป็นเรื่องสำคัญของคุณช่วงนี้</label>
       <textarea id="t_prio"></textarea>
     </div>
-    <label>งบวางแผนที่คิดไว้ ประมาณเดือนละเท่าไร</label>
+    <label>ถ้าจะเริ่มดูแลเรื่องอันดับ 1 ของคุณ — เดือนละประมาณเท่าไหร่ที่รู้สึกสบาย ไม่กระทบการใช้ชีวิต <span class="hint">ตัวเลขคร่าว ๆ ปรับได้ตลอด · ใช้เพื่อออกแบบแผนไม่ให้เกินกำลัง ไม่ใช่ยอดที่ต้องจ่าย</span></label>
     <div class="baht" style="max-width:280px"><input type="text" id="cbudget" inputmode="numeric" placeholder="10,000"></div>
 
     <div class="talk" style="margin-top:18px">
@@ -399,6 +574,21 @@ input:focus,select:focus{border-color:var(--gold);background:#fff}
     <div class="navrow">
       <button class="btn btn-ghost" id="wrapBack">← ย้อนกลับ</button>
       <button class="btn btn-main" onclick="showResult()">ดูผลวินิจฉัย ✓</button>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN: RISK PROFILE (v2.5 · ตรวจละเอียดเพิ่ม — ไม่อยู่ใน flow หลักแล้ว) ============ -->
+  <div class="card scr hide" id="scr_risk">
+    <div class="stepmeta"><span class="no">ตรวจละเอียดเพิ่ม · RISK PROFILE</span></div>
+    <h1 style="font-size:26px">คุณรับความเสี่ยงได้แค่ไหน</h1>
+    <p class="mut" style="margin-top:6px">แบบประเมินมาตรฐาน 10 ข้อ (~5 นาที) — ใช้กำหนด<b>สมมติฐานผลตอบแทน</b>ของแผนที่หมอเงินจะเตรียมให้ในนัดที่ 2 เพื่อให้แผนพอดีกับใจคุณ ไม่เสี่ยงเกินตัว ไม่ระวังจนเป้าหมายไปไม่ถึง<br>
+    <span class="small">ไม่มีคำตอบถูกผิด · ตอบตามความรู้สึกจริงวันนี้ · หยุดกลางคันได้ คำตอบไม่หาย</span></p>
+    <div class="handover noprint">🤝 <b>ส่งจอให้ลูกค้ากดเอง</b> แล้วที่ปรึกษาไปถ่ายรูปกรมธรรม์/ลงปฏิทินนัดหน้าระหว่างนี้ได้เลย — คำถามเรื่องความกลัวขาดทุน ถ้าตอบตอนมีคนมองอยู่ มักได้คำตอบที่กล้ากว่าใจจริง แล้วแผนจะเสี่ยงเกินตัวลูกค้า</div>
+    <div class="riskprog noprint"><span>ตอบแล้ว <b id="riskDone">0</b> / 10 ข้อ</span><span id="riskLive"></span></div>
+    <div id="riskHost"></div>
+    <div class="navrow">
+      <button class="btn btn-ghost" onclick="backToResult()">← กลับใบผลตรวจ</button>
+      <button class="btn btn-main" onclick="finishRisk()">เสร็จแล้ว → กลับใบผลตรวจ ✓</button>
     </div>
   </div>
 
@@ -429,67 +619,157 @@ input:focus,select:focus{border-color:var(--gold);background:#fff}
       <div id="sysHost"></div>
     </div>
 
+    <div class="card" id="pyrCard">
+      <h2>พีระมิดการเงินของคุณ <span class="small">ฐานต้องแน่นก่อน ยอดถึงจะตั้งอยู่ได้</span></h2>
+      <div class="pyr">
+        <div id="pyrSvg"></div>
+        <div class="pyrleg" id="pyrLeg"></div>
+      </div>
+      <div class="pyrnote" id="pyrNote"></div>
+    </div>
+
+    <div class="card riskcard" id="riskCard">
+      <h2>ระดับความเสี่ยงที่ยอมรับได้ <span class="small">แบบประเมินมาตรฐาน 10 ข้อ · ใช้ตั้งสมมติฐานแผนในนัดที่ 2</span></h2>
+      <div id="riskResHost"></div>
+    </div>
+
     <div class="card">
       <h2>แผนลำดับความสำคัญ <span class="small">เรียงตามอันดับที่คุณเลือก · หมอเงินติดป้ายจุดเสี่ยงสูงสุดให้</span></h2>
       <div id="rxHost"></div>
       <div class="budgetcard" id="budgetCard">
-        <div><div class="small">งบที่คุณพร้อมจัดสรรต่อเดือน</div><b id="budgetVal">—</b></div>
-        <div class="small" style="max-width:340px">ที่ปรึกษาจะออกแบบแผนให้อยู่ในงบนี้ โดยเริ่มจากอันดับ 1 ก่อนเสมอ</div>
+        <div><div class="small">ระดับที่คุณสบายใจต่อเดือน</div><b id="budgetVal">—</b></div>
+        <div class="small" style="max-width:340px">ที่ปรึกษาจะออกแบบแผนไม่ให้เกินระดับนี้ โดยเริ่มจากอันดับ 1 ก่อนเสมอ</div>
       </div>
     </div>
 
+    <!-- v2.5.1: ตัดบล็อก "เสียงของคุณจากบทสนทนาวันนี้" ออกจากใบผลตรวจ
+         (คำตอบชวนคุยทั้งหมดยังพิมพ์อยู่ในภาคผนวก "ข้อมูลที่กรอกทั้งหมด" และยังติดไปในไฟล์ .json ตามเดิม) -->
     <div class="card" id="voiceCard">
-      <h2>เสียงของคุณจากบทสนทนาวันนี้</h2>
-      <div id="voiceHost"></div>
-      <div class="signrow">
+      <div class="signrow" style="margin-top:0;padding-top:0;border-top:none">
         <div class="who">หมอเงินผู้ตรวจ<b id="sigA">—</b><span class="small">Financial Doctor · Signature 41</span></div>
         <div class="who" style="text-align:right">ผู้รับการตรวจ<b id="sigC">—</b><span class="small" id="sigD"></span></div>
       </div>
     </div>
 
-    <div class="printonly printcta">
-      คุณเพิ่งผ่าน <b>Step 2 · นัดหมอเงิน (Money Doctor Visit)</b> — ใบนี้บอกว่าคุณเสี่ยงตรงไหน แต่ยังไม่ได้บอกว่าเงินเฟ้อจะกัดเป้าหมายอีกเท่าไหร่ ภาษีขอคืนได้กี่บาท และต้องออมเดือนละเท่าไหร่ถึงพอดี<br>
-      ทั้งหมดอยู่ใน <b>Step 3 · สแกนเต็มระบบ Money MRI</b> — ติดต่อที่ปรึกษาการเงิน S41 เพื่อวิเคราะห์และจัดทำแผนองค์รวมได้เลย
-    </div>
+    <div class="printonly printcta" id="printCta"></div>
 
     <!-- v2.2: ภาคผนวก "บันทึกข้อมูลที่กรอกทั้งหมด" — สร้างสดตอนสั่งพิมพ์ พิมพ์เมื่อติ๊กเลือกเท่านั้น -->
     <div id="fullData"></div>
 
-    <div class="next3 noprint">
-      <div>
-        <div class="t">ตัวอย่างตอนต่อไป — Step 3 · สแกนเต็มระบบ Money MRI</div>
-        <div class="d">ใบผลตรวจนี้บอกว่าคุณเสี่ยงตรงไหน — แต่ยังไม่ได้บอกว่า<b>เงินเฟ้อจะกัดเป้าหมายคุณอีกเท่าไหร่ · ภาษีขอคืนได้กี่บาท · และต้องออมเดือนละเท่าไหร่ถึงพอดี</b> — ทั้งหมดรออยู่ใน Step 3 พร้อมแผนที่ปรับตามชีวิตคุณทุกปี</div>
+    <!-- ═══ v2.5: กล่องส่งมอบ — จบนัดได้ตรงนี้ ═══ -->
+    <div class="deliver noprint">
+      <div class="dt">✓ ตรวจเสร็จแล้ว — ส่งมอบให้ลูกค้าได้เลย</div>
+      <div class="dd">ใบผลตรวจพร้อมพิมพ์ และไฟล์ลูกค้าพร้อมนำเข้า Money MRI แล้ว จบนัดวันนี้ได้ทันที</div>
+      <div class="dbtn">
+        <button class="btn btn-main" onclick="doPrint()">🖨 พิมพ์ใบผลตรวจ / บันทึก PDF</button>
+        <button class="btn btn-ghost" onclick="saveClientFile()">📁 บันทึกไฟล์ลูกค้า (.json)</button>
       </div>
-      <button class="go" onclick="alert('เปิด Signature 41 Planner (Step 3) เพื่อตรวจละเอียดและวางแผนรักษาต่อได้เลยค่ะ')">ติดต่อหมอเงิน S41 เพื่อนัดตรวจละเอียด →</button>
+      <label class="dchk">
+        <input type="checkbox" id="pfAll" checked>
+        <span>พิมพ์ข้อมูลที่กรอกไว้ทั้งหมดด้วย <span class="small">(ภาคผนวกต่อท้ายใบผลตรวจ)</span></span>
+      </label>
+      <div class="small jsonStatus" style="margin-top:8px"></div>
+      <div class="dwarn">⚠ ถ้าจะตรวจละเอียดต่อข้างล่าง <b>ให้บันทึก .json หลังทำครบทีเดียว</b> — Money MRI นำเข้าแบบเขียนทับ นำเข้าซ้ำงานที่กรอกใน MRI จะหาย</div>
+    </div>
+
+    <!-- ═══ v2.5: ตรวจละเอียดเพิ่ม — ไม่บังคับ ═══ -->
+    <div class="more noprint">
+      <div class="mtitle">อยากตรวจละเอียดต่อไหมคะ <span class="small">ไม่บังคับ · ทำอันไหนก่อนก็ได้ · ยกไปนัดหน้าก็ได้</span></div>
+      <div class="mcards">
+
+        <div class="mcard" id="mcFin">
+          <div class="mh">💸 ภาพการเงิน <span class="mstat" id="stFin">ยังไม่ได้ทำ</span></div>
+          <div class="md"><b>งบดุล + กระแสเงินสด</b> · ~15 นาที · ต้องมีเอกสารข้างตัว (แอปธนาคาร · ใบแจ้งยอดหนี้)<br>
+          ได้: ความมั่งคั่งสุทธิ · เงินเหลือต่อเดือน · อัตราการออม · ภาระหนี้ · เงินสำรองกี่เท่า</div>
+          <div class="mb">
+            <button class="btn btn-main" onclick="goFin()">กรอกในห้องเลย →</button>
+            <button class="btn btn-ghost" onclick="printBlankFin()">🖨 ปรินต์ให้เขียนที่บ้าน</button>
+          </div>
+        </div>
+
+        <div class="mcard" id="mcRisk">
+          <div class="mh">📊 ประเมินความเสี่ยง <span class="mstat" id="stRisk">ยังไม่ได้ทำ</span></div>
+          <div class="md"><b>แบบประเมินมาตรฐาน 10 ข้อ</b> · ~5 นาที · ลูกค้ากดเองได้<br>
+          ได้: ระดับ 1–5 + สัดส่วนการลงทุนที่เหมาะ → ใช้ตั้งสมมติฐานผลตอบแทนของแผนในนัดที่ 2</div>
+          <div class="mb">
+            <button class="btn btn-main" onclick="goRisk()">เริ่มประเมิน →</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="next3 noprint" style="display:block">
+      <div class="t">ตอนต่อไป — Step 3 · สแกนเต็มระบบ Money MRI (นัดที่ 2)</div>
+      <div class="d" style="margin-top:4px">ใบผลตรวจนี้บอกว่าคุณเสี่ยงตรงไหน — แต่ยังไม่ได้บอกว่า<b>เงินจะพอใช้ถึงอายุเท่าไหร่ · เงินเฟ้อจะกัดเป้าหมายอีกแค่ไหน · ภาษีขอคืนได้กี่บาท · ต้องออมเดือนละเท่าไหร่ถึงพอดี</b> — หมอเงินจะเตรียมมาให้ในนัดที่ 2</div>
     </div>
 
     <div class="navrow noprint">
-      <div>
-        <button class="btn btn-ghost" onclick="show('scr_wrap')">← กลับไปแก้ไข</button>
-        <button class="btn btn-ghost" onclick="location.reload()">↺ ตรวจคนใหม่</button>
+      <button class="btn btn-ghost" onclick="show('scr_wrap')">← กลับไปแก้ไขคำตอบ</button>
+      <button class="btn btn-ghost" onclick="resetAll()">↺ ตรวจคนใหม่</button>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN: FINANCIAL STATEMENTS (v2.3) ============ -->
+  <div class="scr hide" id="scr_fin">
+    <div class="card">
+      <div class="stepmeta"><span class="no">FINANCIAL STATEMENTS · งบดุล &amp; กระแสเงินสด</span></div>
+      <h1 style="font-size:26px">ภาพการเงินของคุณ</h1>
+      <p class="mut" style="margin-top:6px">ชื่อช่องและลำดับตรงกับหน้า “งบดุล / งบกระแสเงินสด” ใน Money MRI ทุกบรรทัด — กรอกที่นี่แล้วบันทึกไฟล์ นำเข้าได้เลยไม่ต้องกรอกซ้ำ<br>
+      <span class="small">ช่องไหนไม่มีข้ามได้ · เว้นว่าง = 0</span></p>
+
+      <div class="fnote">
+        💡 <b>กรอกให้ครบตามจริงได้เลยค่ะ</b> — เบี้ยประกันรวม กับ เงินให้ครอบครัว มีช่องให้แล้ว ระบบจะติดโน้ตในไฟล์บอกที่ปรึกษาให้ปรับตอนทำ<b>ทะเบียนกรมธรรม์</b>และ<b>ผู้พึ่งพิงรายคน</b>ใน Money MRI เพื่อไม่ให้ตัวเลขถูกนับซ้ำ · ช่องที่หน่วยเป็น <b>บาท/ปี</b> ระบบแปลงเป็นรายเดือนให้เอง (มีตัวเลขกำกับข้างช่อง)
       </div>
-      <div style="text-align:right">
-        <label style="display:flex;align-items:flex-start;gap:7px;justify-content:flex-end;font-size:12.5px;color:var(--muted);cursor:pointer;margin:0 0 8px auto;user-select:none;text-align:left;max-width:250px">
-          <input type="checkbox" id="pfAll" checked style="width:16px;height:16px;accent-color:var(--navy);flex:none;margin-top:2px">
-          <span>พิมพ์ข้อมูลที่กรอกไว้ทั้งหมดด้วย <span class="small">(แนบต่อท้ายใบผลตรวจ)</span></span>
-        </label>
-        <button class="btn btn-main" onclick="doPrint()">🖨 พิมพ์ / บันทึก PDF</button>
+
+      <div id="finHost"></div>
+
+      <div class="fkpi" id="finKpi"></div>
+
+      <div class="fcta" style="background:#F7F9F6;border-color:var(--line)">
+        <div class="ct">บันทึกไฟล์ให้ Money MRI</div>
+        <div class="cd">กดแล้วได้ไฟล์ <b>.json</b> — เปิด Money MRI → 👥 ห้องสมุดลูกค้า → <b>นำเข้าไฟล์</b> ข้อมูลขึ้นครบทันที ไม่ต้องกรอกซ้ำ<br>
+        <span class="small">⚠ นำเข้า <b>ครั้งเดียว</b> หลังนัดที่ 1 — หลังจากนั้นแก้ไข/เพิ่มทุกอย่างใน Money MRI (ทะเบียนกรมธรรม์ · ภาษี · งบดุลจากรูปเขียนมือ) เพราะการนำเข้าซ้ำจะเขียนทับงานที่ทำไว้ใน MRI</span></div>
+        <div class="cb">
+          <button class="btn btn-main" onclick="saveClientFile()">📁 บันทึกไฟล์ลูกค้า (.json)</button>
+          <button class="btn btn-ghost" onclick="printBlankFin()">🖨 ปรินต์ฟอร์มเปล่า</button>
+        </div>
+        <div class="small jsonStatus" style="margin-top:9px"></div>
+      </div>
+
+      <div class="navrow">
+        <button class="btn btn-ghost" onclick="backToResult()">← กลับไปใบผลตรวจ</button>
+        <button class="btn btn-main" onclick="backToResult()">เสร็จแล้ว → กลับใบผลตรวจ ✓</button>
       </div>
     </div>
   </div>
 
+  <!-- v2.3: ฟอร์มเปล่าให้ลูกค้าเขียนมือกลับบ้าน (สร้างสดตอนกดปุ่ม) -->
+  <div id="blankFin"></div>
+
   <div style="text-align:center;font-size:10.5px;color:var(--faint);margin-top:26px">
-    Money Doctor Visit™ · © 2026 Signature 41 — Customized for One · สงวนลิขสิทธิ์ · v2.2
+    Money Doctor Visit™ · © 2026 Signature 41 — Customized for One · สงวนลิขสิทธิ์ · v2.6
   </div>
 
 </div>
 
+<div class="savetag" id="savetag">✓ บันทึกในเครื่องนี้แล้ว</div>
+
 <script>
 /* ---------------- helpers ---------------- */
 const fmt = n => (isFinite(n)?Math.round(n):0).toLocaleString('en-US');
-const num = id => { const el=document.getElementById(id); if(!el) return 0;
-  const v=parseFloat(String(el.value).replace(/,/g,'')); return isFinite(v)?v:0; };
-const txt = id => { const el=document.getElementById(id); return el?el.value.trim():''; };
+const VALS={};   /* ค่าที่พิมพ์ทั้งหมด — เป็นแหล่งจริงคู่กับหน้าจอ ประกาศไว้บนสุดเพราะ num/txt ใช้ */
+/* ⚠ v2.5 แก้บั๊กสำคัญ (มีมาตั้งแต่ v2.3): ถ้าช่องยังไม่ถูกสร้างในหน้าจอ ให้ย้อนไปอ่านค่าที่บันทึกไว้แทน
+   เดิมคืน 0 เสมอ — เคสที่พังคือ กรอกงบการเงินไว้ → รีเฟรช/ทำต่อจากเดิม → กดบันทึก .json
+   จากใบผลตรวจโดยไม่ได้เปิดหน้างบการเงินอีก ตัวเลขงบดุล/กระแสเงินสดทั้งหมดจะหายจากไฟล์เงียบ ๆ
+   ทั้งที่หน้าจอขึ้นว่า "บันทึกไฟล์แล้ว" */
+const num = id => { const el=document.getElementById(id);
+  const raw = el ? el.value : VALS[id];
+  if(raw===undefined||raw===null||raw==='') return 0;
+  const v=parseFloat(String(raw).replace(/,/g,'')); return isFinite(v)?v:0; };
+const txt = id => { const el=document.getElementById(id);
+  const raw = el ? el.value : VALS[id];
+  return raw===undefined||raw===null ? '' : String(raw).trim(); };
 function money(el){ el.addEventListener('input',()=>{ const raw=el.value.replace(/[^\d]/g,'');
   el.value = raw? Number(raw).toLocaleString('en-US') : ''; }); }
 const colorOf = p => p>=80?'var(--sage)':p>=50?'var(--gold)':'var(--carrier)';
@@ -538,16 +818,16 @@ const MODS = [
   talk:[],
   body:`
     <label style="max-width:220px">มีลูกกี่คน <span class="hint">กรอกจำนวน</span></label>
-    <input type="number" id="kidCount" min="1" max="12" value="1" onchange="buildKids()" style="max-width:220px">
+    <input type="number" id="kidCount" min="1" max="12" value="1" oninput="buildKids()" onchange="buildKids()" style="max-width:220px">
     <div id="kidHost"></div>
     <h3>เส้นทางการศึกษาที่ตั้งเป้า <span class="hint" style="font-weight:400">· ใช้ร่วมกันทุกคน — แตะเลือกแบบของแต่ละชั้น หรือกรอกเองช่องขวาสุด</span></h3>
     <table class="edt">
-      <tr><th>ระดับชั้น</th>${PATHS.map(p=>`<th>${p}</th>`).join('')}<th>กำหนดเอง (฿)</th></tr>
+      <tr><th>ระดับชั้น</th>${PATHS.map(p=>`<th>${p}</th>`).join('')}<th>กำหนดเอง (฿/ปี)</th></tr>
       ${LEVELS.map((L,l)=>`
       <tr>
         <td>${L[0]} <span class="small">(${L[1]} ปี)</span></td>
         ${L[2].map((cost,p)=>`<td><button type="button" class="eb" id="eb_${l}_${p}" onclick="selEdu(${l},${p})">รวม ${fmtK(cost)}<small>${fmtK(cost/L[1])} ต่อปี × ${L[1]} ปี</small></button></td>`).join('')}
-        <td><input class="ex" id="ex_${l}" inputmode="numeric" placeholder="กรอกเอง" oninput="selEduCustom(${l})"></td>
+        <td><input class="ex" id="ex_${l}" inputmode="numeric" placeholder="ต่อปี" oninput="selEduCustom(${l})"></td>
       </tr>`).join('')}
     </table>
     <p class="small" style="margin-top:8px">* ป.โท เป็นประมาณการ · ตัวเลขเป็น<b>ค่าเฉลี่ยระดับกลาง ปี 2025</b> (โรงเรียนพรีเมียมสูงกว่านี้ 30–50% — ใช้ช่องกำหนดเองได้) · ยังไม่รวมเงินเฟ้อการศึกษา ~4%/ปี ซึ่งจะคิดละเอียดใน Step 3 · ระบบคิดตาม<b>จำนวนปีที่เหลือเรียนจริง</b>ของลูกแต่ละคน (จากอายุ) — เรียนไปแล้วกี่ปีหักออกให้อัตโนมัติ</p>
@@ -576,7 +856,8 @@ const MODS = [
     </div>
     <div class="grid2">
       <div><label>ค่าใช้จ่ายหลังเกษียณ / เดือน <span class="hint">~70% ของปัจจุบัน · ค่าเงินวันนี้</span></label><div class="baht"><input type="text" data-money id="s1_re" oninput="recalcRet()"></div></div>
-      <div><label>เตรียมไว้แล้ว <span class="hint">PVD · RMF · บำนาญ · เงินออม</span></label><div class="baht"><input type="text" data-money id="s1_have" oninput="recalcRet()"></div></div>
+      <div><label>เงินก้อนที่เตรียมไว้แล้ว <span class="hint">PVD · RMF · เงินออมเพื่อเกษียณ</span></label><div class="baht"><input type="text" data-money id="s1_have" oninput="recalcRet()"></div></div>
+      <div><label>รายได้ที่จะยังมีหลังเกษียณ ต่อปี <span class="hint">บำนาญ · ปันผล · ค่าเช่า — ไม่มีเว้นว่างได้</span></label><div class="baht"><input type="text" data-money id="s1_passive" oninput="recalcRet()"></div></div>
     </div>
     <div class="lump"><div><div class="small">เงินก้อนที่ต้องมี ณ วันเกษียณ</div><b id="retLump">0 ฿</b></div>
       <div class="small" style="max-width:300px">ยังไม่รวมเงินเฟ้อ — จะคิดละเอียดพร้อมผลตอบแทนการลงทุนใน Step 3</div></div>` },
@@ -652,14 +933,26 @@ function calcSys(k){
     case 0: return {need:num('s0_need'), have:num('s0_have'), unit:'฿'};
     case 1: { const ra=num('s1_ra')||60, end=num('s1_end')||85, now=num('s1_age')||num('cage')||35;
               const yrs=Math.max(end-ra,0);
-              return {need:num('s1_re')*12*yrs, have:num('s1_have'), unit:'฿',
-                      extra:`เหลือเวลาออม ${Math.max(ra-now,0)} ปี`}; }
+              const needY=Math.max(num('s1_re')*12-num('s1_passive'),0);   /* v2.3: หัก passive หลังเกษียณ */
+              return {need:needY*yrs, have:num('s1_have'), unit:'฿',
+                      extra:`เหลือเวลาออม ${Math.max(ra-now,0)} ปี`+(num('s1_passive')>0?` · หักรายได้หลังเกษียณ ${fmt(num('s1_passive'))} ฿/ปีแล้ว`:'')}; }
     case 2: return {need:num('s2_need'), have:num('s2_have'), unit:'฿/คืน'};
     case 3: return {need:num('s3_need'), have:num('s3_have'), unit:'฿'};
     case 4: return {need:num('s4_need'), have:num('s4_have'), unit:'฿'};
     case 5: { const base=num('s5_mo')||exp;
               return {need:base*12*(num('s5_yrs')||5)+num('s5_debt'), have:num('s5_liq')+num('s5_life'), unit:'฿'}; }
-    case 6: return {need:exp*6, have:num('cemer'), unit:'฿', extra:'เกณฑ์ 3–6 เท่าของรายจ่าย/เดือน'};
+    /* v2.6 (แก้ความขัดแย้งของตัวเลข): เดิมใบผลตรวจใช้ค่าคร่าว ๆ จากหน้าแรกเสมอ
+       พอกรอกงบการเงินละเอียดแล้ว หน้าเดียวกันจะขึ้น 2 คำตอบที่ไม่ตรงกัน
+       (เช่น "เงินสำรอง 63%" บนใบผลตรวจ แต่ "7.4 เท่า ✓ ผ่าน" ในหน้างบการเงิน)
+       ตอนนี้ถ้ามีงบการเงินแล้ว ใช้ตัวเลขจริงจากงบ และบอกที่มาให้ชัด */
+    case 6: {
+      if(typeof finFilled==='function' && finFilled()){
+        const liq=finLiquid(), out=finOutflowM();
+        if(out>0) return {need:out*6, have:liq, unit:'฿',
+          extra:'คิดจากงบการเงินที่กรอกละเอียดแล้ว (สภาพคล่อง '+fmt(liq)+' ฿ ÷ รายจ่ายจริง '+fmt(out)+' ฿/เดือน = '+(liq/out).toFixed(1)+' เท่า) · เกณฑ์ 3–6 เท่า'};
+      }
+      return {need:exp*6, have:num('cemer'), unit:'฿', extra:'เกณฑ์ 3–6 เท่าของรายจ่าย/เดือน · ตัวเลขคร่าว ๆ จากหน้าแรก'};
+    }
   }
 }
 function sysWeight(k){
@@ -679,7 +972,7 @@ MODS.forEach(m=>{
 function togglePick(id){
   const i=order.indexOf(id);
   if(i>=0) order.splice(i,1); else order.push(id);
-  renderPicks();
+  renderPicks(); saveLocal();
 }
 function renderPicks(){
   MODS.forEach(m=>{
@@ -695,22 +988,105 @@ const custRankOf = k => { // อันดับที่ลูกค้าให
   const i=order.indexOf(m.id); return i>=0? i+1 : 0; };
 
 /* ---------------- value persistence (ย้อนกลับแก้ได้ ไม่หาย) ---------------- */
-const VALS={};
-document.addEventListener('input',e=>{ if(e.target.id) VALS[e.target.id]=e.target.value; });
+document.addEventListener('input',e=>{ if(e.target.id){ VALS[e.target.id]=e.target.value; saveSoon(); } });
 function restoreVals(root){
   root.querySelectorAll('input,textarea,select').forEach(el=>{
     if(el.id && VALS[el.id]!==undefined) el.value=VALS[el.id];
   });
 }
 
+/* ═══ v2.3: auto-save ลงเครื่องนี้ ═══
+   เดิมข้อมูลอยู่ในหน่วยความจำหน้าเว็บล้วน ๆ — เผลอรีเฟรช/ปิดแท็บระหว่างนัด = หายทั้งหมด
+   ตอนนี้เก็บลง localStorage ของเครื่องที่ตรวจ (ไม่ส่งออกไปไหน) และกู้คืนได้เมื่อเปิดใหม่
+   หมายเหตุ: เก็บได้ทีละ 1 คน — คลังลูกค้าจริงอยู่ที่ Money MRI (ดูสเปก 3 ขั้น 2 นัด) */
+const LS_KEY='s41_doctor_v23';
+let CID='';                 /* รหัสลูกค้า ฝังในไฟล์ .json เพื่อให้ส่งซ้ำ = อัปเดตคนเดิมใน Money MRI */
+let CURSCR='scr_intro';
+let _saveTimer=null, _tagTimer=null;
+
+function newCid(){
+  const d=new Date(), p=n=>String(n).padStart(2,'0');
+  return 'c_'+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'_'+Math.random().toString(36).slice(2,8);
+}
+function paintSaveTag(){
+  const t=document.getElementById('savetag'); if(!t) return;
+  t.classList.add('on'); clearTimeout(_tagTimer);
+  _tagTimer=setTimeout(()=>t.classList.remove('on'),1400);
+}
+function saveLocal(){
+  try{
+    if(!CID) CID=newCid();
+    localStorage.setItem(LS_KEY, JSON.stringify({
+      v:'2.4', cid:CID, savedAt:Date.now(),
+      vals:VALS, order:order, eduSel:eduSel, risk:RISK, scr:CURSCR
+    }));
+    paintSaveTag();
+    return true;
+  }catch(e){ console.warn('[S41] save failed',e); return false; }
+}
+function saveSoon(){ clearTimeout(_saveTimer); _saveTimer=setTimeout(saveLocal,400); }
+function loadLocal(){
+  try{
+    const raw=localStorage.getItem(LS_KEY); if(!raw) return null;
+    const d=JSON.parse(raw);
+    if(!d||!d.vals||Object.keys(d.vals).length===0) return null;
+    return d;
+  }catch(e){ return null; }
+}
+function clearLocal(){ try{ localStorage.removeItem(LS_KEY); }catch(e){} }
+function resetAll(){
+  if(!confirm('เริ่มตรวจคนใหม่?\n\nข้อมูลของคนปัจจุบันจะถูกล้างออกจากเครื่องนี้\nถ้ายังไม่ได้บันทึกไฟล์ .json ให้กดยกเลิกแล้วบันทึกก่อนนะคะ')) return;
+  clearLocal(); location.reload();
+}
+
+/* ---- แถบ "ทำต่อจากเดิม" ตอนเปิดหน้าใหม่ ---- */
+let _draft=null;
+function showResumeBanner(){
+  _draft=loadLocal(); if(!_draft) return;
+  const nm=(_draft.vals&&_draft.vals.cname)?_draft.vals.cname.trim():'';
+  const when=_draft.savedAt? new Date(_draft.savedAt).toLocaleString('th-TH',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'';
+  const host=document.getElementById('resumeHost'); if(!host) return;
+  host.innerHTML='<div class="resume"><div class="rt">✦ มีการตรวจค้างอยู่ในเครื่องนี้</div>'+
+    '<div class="rb">'+(nm?'<b>คุณ'+nm.replace(/</g,'&lt;')+'</b>':'<b>(ยังไม่ได้กรอกชื่อ)</b>')+
+    (when?' · บันทึกล่าสุด '+when:'')+'<br>ทำต่อจากที่ค้างไว้ หรือเริ่มตรวจคนใหม่?</div>'+
+    '<div class="rbtn"><button class="pri" onclick="doResume()">▶ ทำต่อจากเดิม</button>'+
+    '<button onclick="dismissResume()">เริ่มตรวจคนใหม่ (ล้างข้อมูลเดิม)</button></div></div>';
+}
+function dismissResume(){
+  if(!confirm('เริ่มตรวจคนใหม่?\n\nข้อมูลที่ค้างอยู่จะถูกล้างออกจากเครื่องนี้ กู้คืนไม่ได้')) return;
+  clearLocal(); _draft=null;
+  const host=document.getElementById('resumeHost'); if(host) host.innerHTML='';
+}
+function doResume(){
+  if(!_draft) return;
+  const d=_draft;
+  Object.assign(VALS, d.vals||{});
+  CID = d.cid || newCid();
+  order = Array.isArray(d.order)? d.order.slice() : [];
+  eduSel = d.eduSel || {};
+  RISK = (d.risk && typeof d.risk==='object') ? d.risk : {a:{},x4:[]};
+  if(!RISK.a) RISK.a={};
+  if(!Array.isArray(RISK.x4)) RISK.x4=[];
+  restoreVals(document);
+  renderPicks();
+  buildRisk(); paintRisk();
+  const host=document.getElementById('resumeHost'); if(host) host.innerHTML='';
+  _draft=null;
+  const t=d.scr||'scr_intro';
+  if(t==='scr_intro'||t==='scr_pick'){ show(t); return; }
+  if(!order.length){ show('scr_intro'); return; }
+  startModules();                       /* สร้างหน้าแผนขึ้นมาใหม่ก่อน */
+  if(t==='scr_wrap'){ navMod(flow.length); return; }
+  if(t==='scr_risk'){ navMod(flow.length); showResult(); goRisk(); return; }
+  if(t==='scr_R'){ navMod(flow.length); showResult(); return; }
+  if(t==='scr_fin'){ navMod(flow.length); showResult(); goFin(); return; }
+  if(flow.includes(t)) show(t);
+}
+
 /* ---------------- education: เส้นทางร่วมกัน + ข้อมูลรายลูก ---------------- */
 let eduSel={};   // eduSel[l] = 0-3 (path) | -1 (กรอกเอง) — เส้นทางเดียว ใช้กับลูกทุกคน
-function buildKids(){
-  const n=parseInt(document.getElementById('kidCount').value)||1;
-  const host=document.getElementById('kidHost'); if(!host) return;
-  host.innerHTML='';
-  for(let c=1;c<=n;c++){
-    host.insertAdjacentHTML('beforeend',`
+function kidCard(c){
+  return `
     <div class="kid">
       <div class="kh"><span class="kn">${c}</span> ลูกคนที่ ${c}
         <span class="small" style="font-weight:400;margin-left:auto" id="krem${c}"></span></div>
@@ -724,19 +1100,32 @@ function buildKids(){
         <div><label>เตรียมเรื่องการศึกษาของลูกคนนี้ไว้อย่างไรบ้าง</label><input type="text" id="k${c}_prep"></div>
       </div>
       <div class="kidtotal">ทุนที่ต้องเตรียมสำหรับคนนี้: <b id="kt${c}">0 ฿</b></div>
-    </div>`);
+    </div>`;
+}
+/* v2.3: เพิ่ม/ลดการ์ดลูกแบบทีละใบ ไม่ล้างทั้งบล็อกเหมือนเดิม
+   ของเดิม host.innerHTML='' ทำลายช่องที่กำลังพิมพ์อยู่ทิ้ง — ถ้าที่ปรึกษาพิมพ์จำนวนลูก
+   แล้วคลิกเข้าช่อง "ชื่อเล่น" ทันที เหตุการณ์ change จะยิงตอนคลิก ช่องถูกสร้างใหม่
+   โฟกัสหลุด และตัวอักษรที่พิมพ์ไปหายทั้งหมด (เจอตอนทดสอบ 15/08) */
+function buildKids(){
+  const host=document.getElementById('kidHost'); if(!host) return;
+  const n=Math.max(parseInt(document.getElementById('kidCount').value)||0,0);
+  const cur=host.querySelectorAll('.kid').length;
+  if(n>cur){
+    for(let c=cur+1;c<=n;c++) host.insertAdjacentHTML('beforeend',kidCard(c));
+    restoreVals(host);
+  }else if(n<cur){
+    for(let i=cur;i>n;i--) host.querySelector('.kid:last-child')?.remove();
   }
-  restoreVals(host);
   applyEduSel(); recalcEdu();
 }
 function selEdu(l,p){
   eduSel[l] = (eduSel[l]===p)? undefined : p;          // แตะซ้ำ = ยกเลิก
   if(eduSel[l]!==undefined){ const ex=document.getElementById('ex_'+l); if(ex){ ex.value=''; VALS[ex.id]=''; } }
-  applyEduSel(); recalcEdu();
+  applyEduSel(); recalcEdu(); saveLocal();
 }
 function selEduCustom(l){
   eduSel[l] = num('ex_'+l)>0 ? -1 : undefined;
-  applyEduSel(); recalcEdu();
+  applyEduSel(); recalcEdu(); saveSoon();
 }
 function applyEduSel(){
   LEVELS.forEach((L,l)=>L[2].forEach((_,p)=>{
@@ -746,7 +1135,7 @@ function applyEduSel(){
 }
 function levelCost(l){
   const sel=eduSel[l];
-  if(sel===-1) return num('ex_'+l);
+  if(sel===-1) return num('ex_'+l)*LEVELS[l][1];   /* v2.3: ช่องกำหนดเอง = ต่อปี × จำนวนปีของชั้น */
   if(sel!==undefined) return LEVELS[l][2][sel];
   return 0;
 }
@@ -798,7 +1187,7 @@ function recalcRet(){
   const s=document.getElementById('tlSave'), u=document.getElementById('tlUse'), lp=document.getElementById('retLump');
   if(s) s.textContent=(now?save:'—')+' ปี';
   if(u) u.textContent=use+' ปี';
-  if(lp) lp.textContent=fmt(num('s1_re')*12*use)+' ฿';
+  if(lp) lp.textContent=fmt(Math.max(num('s1_re')*12-num('s1_passive'),0)*use)+' ฿';
   /* แท่งเทียบ เก็บเงิน vs ใช้เงิน */
   const mx=Math.max(save,use,1);
   const cs=document.getElementById('cmpS'), cu=document.getElementById('cmpU');
@@ -886,7 +1275,7 @@ function prepWrap(){
   const top=MODS.find(m=>m.id===order[0]);
   if(top){
     const nm=top.title.replace('แผน','');
-    document.getElementById('lq_prio').textContent=`อันดับ 1 ของคุณคือ "${nm}" — อะไรทำให้เรื่องนี้สำคัญกับคุณที่สุด และถ้ายังไม่ได้จัดการใน 1–2 ปีนี้ กังวลอะไรที่สุด`;
+    document.getElementById('lq_prio').textContent=`อันดับ 1 ของคุณคือ "${nm}" — เล่าให้ฟังหน่อยค่ะ มีเหตุการณ์หรือความคิดอะไร ที่ทำให้เรื่องนี้กลายเป็นเรื่องสำคัญของคุณช่วงนี้`;
   }
 }
 /* ---------------- navigation ---------------- */
@@ -894,6 +1283,7 @@ function show(id){
   document.querySelectorAll('.scr').forEach(e=>e.classList.add('hide'));
   document.getElementById(id).classList.remove('hide');
   window.scrollTo({top:0,behavior:'smooth'});
+  CURSCR=id; saveSoon();          /* v2.3: จำหน้าที่ค้างไว้ด้วย */
 }
 function toPick(){ show('scr_pick'); }
 
@@ -909,6 +1299,192 @@ function liveCalc(k){
       (r.have<r.need?` · ยังขาด ≈ ${fmt(r.need-r.have)} ${r.unit}`:' · ครบแล้ว 🎉') +
       (r.extra?` · ${r.extra}`:'')
     : 'กรอกตัวเลขแล้วผลจะขยับให้ลูกค้าเห็นทันที';
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   v2.4 · แบบประเมินความเสี่ยงที่ยอมรับได้ (Suitability Test มาตรฐาน ก.ล.ต. 10 ข้อ)
+   ─ ทำท้ายนัดที่ 1 ก่อนออกใบผลตรวจ · ข้ามได้
+   ─ คะแนน: ก=1 ข=2 ค=3 ง=4 · ข้อ 4 เลือกได้หลายข้อ ใช้คะแนนข้อสูงสุด
+   ─ ระดับ: <15=1 · 15–21=2 · 22–29=3 · 30–36=4 · ≥37=5
+   ─ ผลใช้ตั้ง portfolio.preRetire ใน Money MRI (สมมติฐานผลตอบแทนของแผน)
+   ═══════════════════════════════════════════════════════════════════ */
+const RISKQ=[
+ {q:'ปัจจุบันคุณอายุ',opts:['ตั้งแต่ 60 ปีขึ้นไป','45 – 59 ปี','35 – 44 ปี','น้อยกว่า 35 ปี']},
+ {q:'ภาระทางการเงินและค่าใช้จ่ายประจำ (ผ่อนบ้าน · ผ่อนรถ · ค่าใช้จ่ายส่วนตัว · เลี้ยงดูครอบครัว) คิดเป็นสัดส่วนเท่าใดของรายได้',
+  opts:['มากกว่า 75% ของรายได้','ระหว่าง 50% – 75%','ระหว่าง 25% – 50%','น้อยกว่า 25% ของรายได้']},
+ {q:'สถานภาพทางการเงินในปัจจุบันของคุณ',
+  opts:['มีทรัพย์สินน้อยกว่าหนี้สิน','มีทรัพย์สินเท่ากับหนี้สิน','มีทรัพย์สินมากกว่าหนี้สิน',
+        'มั่นใจว่ามีเงินออม/เงินลงทุนเพียงพอสำหรับชีวิตหลังเกษียณแล้ว']},
+ {q:'คุณเคยมีประสบการณ์ หรือมีความรู้ในการลงทุนกลุ่มใดบ้าง',hint:'เลือกได้มากกว่า 1 ข้อ — ระบบใช้ข้อที่เสี่ยงสูงสุดคิดคะแนน',multi:true,
+  opts:['เงินฝากธนาคาร','พันธบัตรรัฐบาล หรือกองทุนรวมพันธบัตรรัฐบาล','หุ้นกู้ หรือกองทุนรวมตราสารหนี้','หุ้นสามัญ กองทุนรวมหุ้น หรือสินทรัพย์เสี่ยงสูงอื่น']},
+ {q:'ระยะเวลาที่คาดว่าจะไม่จำเป็นต้องใช้เงินลงทุนก้อนนี้',
+  opts:['ไม่เกิน 1 ปี','1 – 3 ปี','3 – 5 ปี','มากกว่า 5 ปี']},
+ {q:'วัตถุประสงค์หลักในการลงทุนของคุณ',
+  opts:['เงินต้นต้องปลอดภัย ได้ผลตอบแทนสม่ำเสมอแม้จะต่ำ','เน้นผลตอบแทนสม่ำเสมอ ยอมเสียเงินต้นได้บ้าง',
+        'เน้นผลตอบแทนสูงขึ้น รับความเสี่ยงเงินต้นได้มากขึ้น','เน้นผลตอบแทนสูงสุดระยะยาว ยอมเสียเงินต้นส่วนใหญ่ได้']},
+ {q:'คุณเต็มใจลงทุนในกลุ่มการลงทุนแบบไหนมากที่สุด',
+  opts:['โอกาสได้ 2.5% โดยไม่ขาดทุนเลย','โอกาสได้สูงสุด 7% แต่ขาดทุนได้ถึง 1%',
+        'โอกาสได้สูงสุด 15% แต่ขาดทุนได้ถึง 5%','โอกาสได้สูงสุด 25% แต่ขาดทุนได้ถึง 15%']},
+ {q:'ถ้าลงทุนในทรัพย์สินที่โอกาสได้ผลตอบแทนมาก แต่มีโอกาสขาดทุนสูงด้วย คุณรู้สึกอย่างไร',
+  opts:['กังวลและตื่นตระหนก กลัวขาดทุน','ไม่สบายใจ แต่พอเข้าใจได้บ้าง',
+        'เข้าใจและรับความผันผวนได้ระดับหนึ่ง','ไม่กังวล และหวังผลตอบแทนที่สูงขึ้น']},
+ {q:'คุณจะรู้สึกกังวล / รับไม่ได้ เมื่อมูลค่าเงินลงทุนปรับตัวลดลงเท่าใด',
+  opts:['5% หรือน้อยกว่า','มากกว่า 5% – 10%','มากกว่า 10% – 20%','มากกว่า 20% ขึ้นไป']},
+ {q:'ปีที่แล้วลงทุนไป 100,000 บาท ปีนี้มูลค่าลดเหลือ 85,000 บาท คุณจะทำอย่างไร',
+  opts:['ตกใจ และอยากขายส่วนที่เหลือทิ้ง','กังวลใจ ปรับบางส่วนไปลงทุนที่เสี่ยงน้อยลง',
+        'อดทนถือต่อได้ รอมูลค่าปรับตัวกลับมา','ยังมั่นใจ ลงทุนเพิ่มแบบเดิมเพื่อเฉลี่ยต้นทุน']},
+];
+/* ระดับ 1–5: ชื่อ · นิยาม · สัดส่วนการลงทุนแนะนำ (แนวทางแนบท้ายแบบประเมินมาตรฐาน) · การตั้งพอร์ตใน MRI */
+const RISKLV=[
+ {name:'เสี่ยงต่ำ',range:'ต่ำกว่า 15 คะแนน',
+  desc:'ต้องการเงินต้นปลอดภัยเป็นหลัก รับความผันผวนได้น้อยมาก ผลตอบแทนสม่ำเสมอแม้ไม่สูง',
+  alloc:[['เงินฝาก / ตราสารหนี้ระยะสั้น','60% ขึ้นไป'],['ตราสารหนี้ภาครัฐ / หุ้นกู้','ไม่เกิน 40%'],['หุ้น / กองทุนหุ้น','ไม่เกิน 10%'],['การลงทุนทางเลือก','ไม่เกิน 5%']],
+  mri:'conservative'},
+ {name:'เสี่ยงปานกลางค่อนข้างต่ำ',range:'15 – 21 คะแนน',
+  desc:'รับความผันผวนของราคาได้บ้าง เน้นปกป้องเงินต้น แลกกับโอกาสผลตอบแทนที่สูงกว่าเงินฝาก',
+  alloc:[['เงินฝาก / ตราสารหนี้ระยะสั้น','20% ขึ้นไป'],['ตราสารหนี้ภาครัฐ / หุ้นกู้','ไม่เกิน 70%'],['หุ้น / กองทุนหุ้น','ไม่เกิน 20%'],['การลงทุนทางเลือก','ไม่เกิน 10%']],
+  mri:'conservative'},
+ {name:'เสี่ยงปานกลางค่อนข้างสูง',range:'22 – 29 คะแนน',
+  desc:'รับความผันผวนได้ปานกลาง ยอมรับการขาดทุนระยะสั้นได้บ้าง เพื่อโอกาสเติบโตระยะยาว',
+  alloc:[['เงินฝาก / ตราสารหนี้ระยะสั้น','10% ขึ้นไป'],['ตราสารหนี้ภาครัฐ / หุ้นกู้','ไม่เกิน 60%'],['หุ้น / กองทุนหุ้น','ไม่เกิน 30%'],['การลงทุนทางเลือก','ไม่เกิน 10%']],
+  mri:'moderate'},
+ {name:'เสี่ยงสูง',range:'30 – 36 คะแนน',
+  desc:'รับความผันผวนได้สูง ยอมขาดทุนเงินต้นได้บ้าง เพื่อโอกาสผลตอบแทนที่สูงขึ้นชัดเจน',
+  alloc:[['เงินฝาก / ตราสารหนี้ระยะสั้น','5% ขึ้นไป'],['ตราสารหนี้ภาครัฐ / หุ้นกู้','ไม่เกิน 40%'],['หุ้น / กองทุนหุ้น','ไม่เกิน 40%'],['การลงทุนทางเลือก','ไม่เกิน 20%']],
+  mri:'aggressive'},
+ {name:'เสี่ยงสูงมาก',range:'37 คะแนนขึ้นไป',
+  desc:'มุ่งผลตอบแทนสูงสุดระยะยาว รับการขาดทุนเงินต้นส่วนใหญ่ได้ เข้าใจความผันผวนของตลาดดี',
+  alloc:[['เงินฝาก / ตราสารหนี้ระยะสั้น','5% ขึ้นไป'],['ตราสารหนี้ภาครัฐ / หุ้นกู้','ไม่เกิน 30%'],['หุ้น / กองทุนหุ้น','60% ขึ้นไปได้'],['การลงทุนทางเลือก','ไม่เกิน 30%']],
+  mri:'aggressive'},
+];
+let RISK={a:{},x4:[]};   /* a[qi]=0..3 คำตอบรายข้อ · x4=รายการที่ติ๊กของข้อ 4 (multi) */
+
+function buildRisk(){
+  const host=document.getElementById('riskHost'); if(!host||host.dataset.built) return;
+  host.innerHTML=RISKQ.map((Q,qi)=>`
+    <div class="rq" id="rq${qi}">
+      <div class="rqh"><span class="rqn">${qi+1}</span>
+        <span>${Q.q}${Q.hint?` <span class="rqhint">· ${Q.hint}</span>`:''}</span></div>
+      <div class="ropts">${Q.opts.map((o,oi)=>
+        `<button type="button" class="ro" id="ro${qi}_${oi}" onclick="answerRisk(${qi},${oi})">${o}</button>`).join('')}</div>
+    </div>`).join('');
+  host.dataset.built='1';
+}
+function answerRisk(qi,oi){
+  if(RISKQ[qi].multi){
+    const i=RISK.x4.indexOf(oi);
+    if(i>=0) RISK.x4.splice(i,1); else RISK.x4.push(oi);
+    RISK.a[qi] = RISK.x4.length ? Math.max(...RISK.x4) : undefined;
+    if(RISK.a[qi]===undefined) delete RISK.a[qi];
+  }else{
+    if(RISK.a[qi]===oi) delete RISK.a[qi];      /* แตะซ้ำ = ยกเลิก */
+    else RISK.a[qi]=oi;
+  }
+  paintRisk(); saveLocal();
+}
+function paintRisk(){
+  RISKQ.forEach((Q,qi)=>{
+    Q.opts.forEach((_,oi)=>{
+      const b=document.getElementById(`ro${qi}_${oi}`); if(!b) return;
+      b.classList.toggle('on', Q.multi ? RISK.x4.includes(oi) : RISK.a[qi]===oi);
+    });
+    const card=document.getElementById('rq'+qi);
+    if(card) card.classList.toggle('done', RISK.a[qi]!==undefined);
+  });
+  const done=riskAnswered();
+  const el=document.getElementById('riskDone'); if(el) el.textContent=done;
+  const lv=document.getElementById('riskLive');
+  if(lv) lv.textContent = done===10 ? `${riskScore()} คะแนน → ระดับ ${riskLevel()+1} · ${RISKLV[riskLevel()].name}` : '';
+}
+function riskAnswered(){ return Object.keys(RISK.a).length; }
+function riskScore(){ let s=0; Object.values(RISK.a).forEach(v=>s+=v+1); return s; }
+function riskLevel(){ const s=riskScore();
+  return s<15?0 : s<=21?1 : s<=29?2 : s<=36?3 : 4; }   /* index 0–4 = ระดับ 1–5 */
+
+function goRisk(){
+  buildRisk();
+  /* เติมข้อ 1 (อายุ) จากหน้าแรกให้อัตโนมัติ ถ้ายังไม่ได้ตอบ — แก้ได้ */
+  if(RISK.a[0]===undefined){
+    const a=num('cage');
+    if(a>0){ RISK.a[0] = a>=60?0 : a>=45?1 : a>=35?2 : 3; }
+  }
+  paintRisk();
+  show('scr_risk');
+}
+/* v2.5: risk เป็น "ตรวจละเอียดเพิ่ม" แล้ว — ออกจากหน้านี้เมื่อไหร่ก็ได้ คำตอบไม่หาย */
+function finishRisk(){
+  if(riskAnswered()>0 && riskAnswered()<10 &&
+     !confirm('ตอบไว้ '+riskAnswered()+'/10 ข้อ ยังไม่ครบ\n\nกลับไปใบผลตรวจเลย? คำตอบที่ตอบแล้วเก็บไว้ให้ กลับมาทำต่อได้ทุกเมื่อ')) return;
+  backToResult();
+}
+/* กลับใบผลตรวจแบบอัปเดตทุกอย่างที่เพิ่งทำเพิ่ม */
+function backToResult(){
+  /* v2.6: คำนวณใบผลตรวจใหม่ทั้งใบ — กรอกงบการเงิน/ทำแบบประเมินเพิ่มแล้ว ตัวเลขต้องขยับตาม
+     เดิมเรียกแค่ 3 ฟังก์ชันย่อย ทำให้คะแนน · ผลรายระบบ · พีระมิด ยังเป็นของก่อนกรอกงบ */
+  showResult();
+  renderRiskResult();
+  updateMoreStatus();
+  buildPrintCta();
+}
+/* สถานะบนการ์ด "ตรวจละเอียดเพิ่ม" — ที่ปรึกษาเห็นได้ทันทีว่าทำอะไรไปแล้วบ้าง */
+function updateMoreStatus(){
+  const fin=document.getElementById('stFin'), fc=document.getElementById('mcFin');
+  if(fin&&fc){
+    const done=finFilled();
+    fin.textContent = done? '✓ กรอกแล้ว' : 'ยังไม่ได้ทำ';
+    fc.classList.toggle('done',done);
+  }
+  const rk=document.getElementById('stRisk'), rc=document.getElementById('mcRisk');
+  if(rk&&rc){
+    const n=riskAnswered();
+    rk.textContent = n>=10 ? '✓ ระดับ '+(riskLevel()+1) : n>0 ? 'ทำค้าง '+n+'/10' : 'ยังไม่ได้ทำ';
+    rc.classList.toggle('done',n>=10);
+    rc.classList.toggle('partial',n>0&&n<10);
+  }
+}
+/* ข้อความท้ายกระดาษ — เปลี่ยนตามสิ่งที่ทำจริงวันนี้ ไม่สัญญาการบ้านที่ลูกค้าไม่ได้รับ */
+function buildPrintCta(){
+  const el=document.getElementById('printCta'); if(!el) return;
+  const hw=[];
+  if(!finFilled()) hw.push('กรอกงบดุล/กระแสเงินสดในแบบฟอร์มกระดาษที่แนบไปด้วย');
+  hw.push('ถ่ายรูปหน้าตารางกรมธรรม์ทุกเล่มส่งกลับมาทาง LINE');
+  el.innerHTML =
+    'คุณเพิ่งผ่าน <b>Step 2 · นัดหมอเงิน (Money Doctor Visit)</b> — ใบนี้บอกว่าคุณเสี่ยงตรงไหน '+
+    'แต่ยังไม่ได้บอกว่าเงินเฟ้อจะกัดเป้าหมายอีกเท่าไหร่ ภาษีขอคืนได้กี่บาท และต้องออมเดือนละเท่าไหร่ถึงพอดี<br>'+
+    'ทั้งหมดอยู่ใน <b>Step 3 · สแกนเต็มระบบ Money MRI</b> ซึ่งเราจะคุยกันใน <b>นัดที่ 2</b><br>'+
+    'การบ้านของคุณ: '+hw.join(' + ')+' ค่ะ';
+}
+/* การ์ดผลบนใบผลตรวจ */
+function renderRiskResult(){
+  const host=document.getElementById('riskResHost'), card=document.getElementById('riskCard');
+  if(!host||!card) return;
+  if(riskAnswered()<10){
+    card.classList.remove('hide');
+    host.innerHTML=`<p class="mut" style="margin-top:8px">ยังไม่ได้ทำแบบประเมิน${riskAnswered()>0?` (ตอบไว้ ${riskAnswered()}/10 ข้อ)`:''} —
+      ใช้เวลา ~5 นาที ทำตอนนี้หรือยกไปนัดที่ 2 ก็ได้ค่ะ ผลจะใช้ตั้งสมมติฐานผลตอบแทนของแผนให้พอดีกับใจคุณ</p>
+      <div class="riskgo noprint"><button class="btn btn-main" onclick="goRisk()">📊 เริ่มประเมิน 10 ข้อ →</button></div>`;
+    return;
+  }
+  const li=riskLevel(), L=RISKLV[li], score=riskScore();
+  const segCol=['#6BA89E','#93C4B8','#D4A961','#DDA49C','#C8635A'];
+  host.innerHTML=`
+    <div class="rmeter">${RISKLV.map((R,i)=>`
+      <div class="seg ${i<=li?'lit':''}" style="${i<=li?`background:${segCol[i]}`:''}">
+        <div class="sl" style="${i===li?'font-weight:700;color:var(--ink)':''}">${i+1}${i===li?' ★':''}</div>
+      </div>`).join('')}
+    </div>
+    <div class="riskwrap" style="margin-top:26px">
+      <div class="riskmain">
+        <div class="rlv">ระดับ ${li+1} · ${L.name}</div>
+        <div class="rds"><b>${score} คะแนน</b> (${L.range}) — ${L.desc}</div>
+        <div class="risknote">ใช้เป็นสมมติฐานผลตอบแทนของแผนที่หมอเงินจะเตรียมในนัดที่ 2 ·
+        ระดับนี้ประเมินจากความรู้สึกวันนี้ ทบทวนใหม่ได้ทุกปีหรือเมื่อชีวิตเปลี่ยน</div>
+      </div>
+      <div class="riskalloc">
+        <div class="rat">สัดส่วนการลงทุนเบื้องต้นที่เหมาะกับระดับนี้</div>
+        ${L.alloc.map(([a,v])=>`<div class="rar"><span>${a}</span><b>${v}</b></div>`).join('')}
+      </div>
+    </div>`;
 }
 
 /* ---------------- result ---------------- */
@@ -1003,28 +1579,540 @@ function showResult(){
           <div class="rd">${why}<br>ช่องว่างที่ควรอุด: <span class="amt">≈ ${fmt(row.gap)} ${row.r.unit}</span></div>
         </div>`;}).join('');
 
+  renderPyramid();
+  renderRiskResult();
+  updateMoreStatus();   /* v2.5: สถานะการ์ดตรวจละเอียด */
+  buildPrintCta();
+
   /* budget */
   const bud=num('cbudget');
   document.getElementById('budgetVal').textContent = bud>0 ? fmt(bud)+' ฿ / เดือน' : '—';
 
-  /* customer voice */
-  const VOICES=[
-    ['t_viewplan','มุมมองต่อการวางแผนการเงิน'],['t_proud','ความสำเร็จที่ภูมิใจที่สุด'],
-    ['t_ret_view','ภาพเกษียณในฝัน'],
-    ['t_h_gene','ประวัติสุขภาพครอบครัว'],
-    ['t_p_resp','ภาระที่ดูแลอยู่'],['t_midgoal','เป้าหมาย 2–10 ปีข้างหน้า'],['t_prio','ทำไมอันดับ 1 ถึงสำคัญที่สุด และสิ่งที่กังวลหากยังไม่จัดการ'],
-  ];
-  /* เสียงของลูกแต่ละคน */
-  const kidQ=[];
+  /* v2.5.1: บล็อก "เสียงของคุณจากบทสนทนาวันนี้" ถูกตัดออกจากใบผลตรวจแล้ว
+     คำตอบชวนคุยทุกข้อยังอยู่ครบใน 2 ที่: ภาคผนวก "ข้อมูลที่กรอกทั้งหมด" (ตอนพิมพ์) และ _visit.talk ในไฟล์ .json */
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   v2.3 · พีระมิดการเงิน — ลำดับการตรวจให้ลูกค้าเลือกเอง แต่ "คำวินิจฉัย" หมอเรียงจากฐานขึ้นบน
+   ชั้น 1 ฐาน  : เงินสำรองฉุกเฉิน            (SYS 6)
+   ชั้น 2      : ความคุ้มครอง                (SYS 2,3,4,5)
+   ชั้น 3      : เป้าหมายระยะยาว             (SYS 1,0)
+   ยอด         : ส่งต่อ/มรดก                  (ยังไม่ตรวจใน Step 2)
+   ═══════════════════════════════════════════════════════════════════ */
+const PYR=[
+  {t:'ส่งต่อ · มรดก',      sys:[],       d:'พินัยกรรม · ภาษีมรดก — คุยกันใน Money MRI'},
+  {t:'เป้าหมายระยะยาว',    sys:[1,0],    d:'เกษียณ · ทุนการศึกษาบุตร'},
+  {t:'ความคุ้มครอง',       sys:[2,3,4,5],d:'ค่าห้อง · โรคร้ายแรง · อุบัติเหตุ · หลักประกันรายได้'},
+  {t:'ฐาน · สภาพคล่อง',    sys:[6],      d:'เงินสำรองฉุกเฉิน 3–6 เท่าของรายจ่าย'},
+];
+function pyrLevel(sys){
+  const vals=[];
+  sys.forEach(k=>{ const r=calcSys(k); if(r&&r.need>0) vals.push(Math.min(r.have/r.need*100,100)); });
+  return vals.length? vals.reduce((a,b)=>a+b,0)/vals.length : null;
+}
+function renderPyramid(){
+  const host=document.getElementById('pyrSvg'); if(!host) return;
+  /* ชั้นที่มีแผนอันดับ 1 ของลูกค้าอยู่ */
+  const topSys = order.length? (MODS.find(m=>m.id===order[0])||{}).sys||[] : [];
+  const W=430,H=272,PAD=8, wTop=54, wBase=205, cx=W/2;
+  const bandH=(H-PAD*2-3*7)/4;
+  const lv=PYR.map(L=>({...L,p:pyrLevel(L.sys)}));
+  let svg=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="พีระมิดการเงิน">`;
+  lv.forEach((L,i)=>{
+    const y0=PAD+i*(bandH+7), y1=y0+bandH;
+    const f=(y)=>wTop+(wBase-wTop)*((y-PAD)/(H-PAD*2));
+    const a=f(y0), bw=f(y1);
+    const col = L.p===null? '#D8D2C4' : colorOf(L.p).replace('var(--sage)','#6BA89E').replace('var(--gold)','#D4A961').replace('var(--carrier)','#C8635A');
+    const fill= L.p===null? '#F2EFE6'
+      : (L.p>=80?'rgba(107,168,158,.20)':L.p>=50?'rgba(212,169,97,.22)':'rgba(200,99,90,.18)');
+    const star = L.sys.some(k=>topSys.includes(k)) ? ' ★' : '';
+    svg+=`<polygon points="${cx-a},${y0} ${cx+a},${y0} ${cx+bw},${y1} ${cx-bw},${y1}"
+      fill="${fill}" stroke="${col}" stroke-width="2" stroke-linejoin="round"/>`;
+    svg+=`<text x="${cx}" y="${y0+bandH/2-1}" text-anchor="middle" font-size="13" font-weight="600"
+      font-family="IBM Plex Sans Thai,sans-serif" fill="#2A2A2A">${L.t}${star}</text>`;
+    svg+=`<text x="${cx}" y="${y0+bandH/2+15}" text-anchor="middle" font-size="12.5" font-weight="700"
+      font-family="Cormorant Garamond,serif" fill="${col}">${L.p===null?'ยังไม่ได้ตรวจ':'พร้อม '+Math.round(L.p)+'%'}</text>`;
+  });
+  svg+='</svg>';
+  host.innerHTML=svg;
+
+  /* คำอธิบายข้าง ๆ */
+  const leg=document.getElementById('pyrLeg');
+  if(leg) leg.innerHTML = lv.map(L=>{
+    const col = L.p===null? 'var(--faint)' : colorOf(L.p);
+    const tag = L.p===null? 'ยังไม่ได้ตรวจวันนี้' : tagOf(L.p)[0]+' · '+Math.round(L.p)+'%';
+    const star = L.sys.some(k=>topSys.includes(k)) ? ' <span style="color:var(--carrier)">★ อันดับ 1 ที่คุณเลือก</span>' : '';
+    return `<div class="pl"><span class="pd" style="background:${col}"></span>
+      <span><b>${L.t}${star}</b><span style="color:var(--muted)">${L.d} — <span style="color:${col};font-weight:600">${tag}</span></span></span></div>`;
+  }).join('');
+
+  /* คำชี้ของหมอ — ไล่จากฐานขึ้นบน หาชั้นล่างสุดที่ยังอ่อน */
+  const note=document.getElementById('pyrNote'); if(!note) return;
+  const bottomUp=[...lv].reverse();                     /* ฐาน → ยอด */
+  const weak=bottomUp.find(L=>L.p!==null && L.p<50);
+  const mid =bottomUp.find(L=>L.p!==null && L.p>=50 && L.p<80);
+  const topName = order.length? (MODS.find(m=>m.id===order[0])||{}).title||'' : '';
+  let msg;
+  if(weak){
+    const above=lv.filter(L=>L.p!==null && lv.indexOf(L)<lv.indexOf(weak));
+    msg=`ชั้น <b>“${weak.t}”</b> ยังพร้อมเพียง ${Math.round(weak.p)}% — นี่คือชั้นล่างสุดที่ยังไม่แน่น `+
+        (above.length?`ถ้ายังไม่อุดตรงนี้ก่อน แผนชั้นบน${topName?` (รวมถึง “${topName}” ที่คุณให้อันดับ 1)`:''} จะตั้งอยู่บนฐานที่ยังโยกอยู่ `:'')+
+        `— เกิดเหตุขึ้นมาต้องดึงเงินจากเป้าหมายอื่นมาใช้`;
+  }else if(mid){
+    msg=`ฐานถือว่าใช้ได้ ชั้น <b>“${mid.t}”</b> อยู่ที่ ${Math.round(mid.p)}% — เสริมอีกนิดให้ถึง 80% แล้วค่อยเร่งชั้นบนได้เต็มที่`;
+  }else{
+    const any=lv.some(L=>L.p!==null);
+    msg= any? `ทุกชั้นที่ตรวจวันนี้อยู่ในเกณฑ์ดี — ขั้นต่อไปคือดูว่าเงินจะพอใช้ถึงอายุเท่าไหร่ และวางแผนส่งต่อ ซึ่งอยู่ใน Money MRI`
+            : `วันนี้ยังไม่ได้ระบุตัวเลขของชั้นไหนเลย — เติมข้อมูลแล้วพีระมิดจะขึ้นสีให้เห็นทันที`;
+  }
+  note.innerHTML=`<div class="pn">✦ หมอเงินอ่านพีระมิด (จากฐานขึ้นบน)</div>${msg}`;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   v2.3 · งบดุล + งบกระแสเงินสด
+   ─ ชื่อช่อง/ลำดับ ตรงกับหน้า II ของ Money MRI v3.x ทุกบรรทัด
+   ─ per: 'm' = กรอกต่อเดือน · 'y' = กรอกต่อปี (โค้ดหาร 12 ให้ตอน export) · 'x' = ยอดคงเหลือ
+     เหตุผล: MRI เก็บ cashflow เป็น "ต่อเดือน" ทุกช่อง ยกเว้น income.bonus ที่เป็น "ต่อปี"
+     แต่คนจำเบี้ยประกันรถ/ภาษี/ท่องเที่ยว/RMF เป็นรายปี — จึงให้กรอกตามที่คนคิด แล้วแปลงในโค้ด
+   ─ snap = path ใน Money MRI (ใช้ตอนสร้างไฟล์ .json)
+   ═══════════════════════════════════════════════════════════════════ */
+const FIN_BS=[
+ {e:'💧', t:'ทรัพย์สิน — สภาพคล่อง', u:'ยอดคงเหลือวันนี้', rows:[
+   ['fa_savings','บัญชีเงินฝากออมทรัพย์','x','assets.liquid.savings'],
+   ['fa_fixedDep','บัญชีเงินฝากประจำ','x','assets.liquid.fixedDep'],
+   ['fa_moneyFund','กองทุนรวมตลาดเงิน','x','assets.liquid.moneyFund'],
+ ]},
+ {e:'📈', t:'ทรัพย์สิน — ลงทุน', u:'ยอดคงเหลือวันนี้', rows:[
+   ['fa_bond','พันธบัตร','x','assets.invest.bond'],
+   ['fa_stock','หุ้นสามัญ','x','assets.invest.stock'],
+   ['fa_mutualFund','กองทุนรวม','x','assets.invest.mutualFund'],
+   ['fa_rmf','กองทุน RMF','x','assets.invest.rmf'],
+   ['fa_pvd','กองทุนสำรองเลี้ยงชีพ (PVD)','x','assets.invest.pvd'],
+   ['fa_insCash','มูลค่าเงินสดกรมธรรม์ฯ','x','assets.invest.insCash'],
+   ['fa_gold','ทองคำแท่ง','x','assets.invest.gold'],
+ ]},
+ {e:'🏠', t:'ทรัพย์สิน — ส่วนตัว', u:'มูลค่าตลาดวันนี้', rows:[
+   ['fa_jewelry','เครื่องประดับ','x','assets.personal.jewelry'],
+   ['fa_car','รถยนต์','x','assets.personal.car'],
+   ['fa_property','บ้าน / คอนโด','x','assets.personal.property'],
+ ]},
+ {e:'💳', t:'หนี้สินระยะสั้น', u:'ยอดคงค้างวันนี้', rows:[
+   ['fl_utility','ค่าสาธารณูปโภคค้างจ่าย','x','liab.short.utility'],
+   ['fl_creditCard','ยอดคงค้างบัตรเครดิต','x','liab.short.creditCard'],
+   ['fl_otherShort','เงินกู้ระยะสั้นอื่น ๆ','x','liab.short.otherShort'],
+ ]},
+ {e:'🏦', t:'หนี้สินระยะยาว', u:'ยอดคงค้างวันนี้', rows:[
+   ['fl_carLoan','คงค้างกู้ซื้อรถยนต์','x','liab.long.carLoan'],
+   ['fl_homeLoan','คงค้างกู้ซื้อบ้าน','x','liab.long.homeLoan'],
+   ['fl_otherLong','หนี้สินระยะยาวอื่น ๆ','x','liab.long.otherLong'],
+ ]},
+];
+const FIN_CF=[
+ {e:'📥', t:'กระแสเงินสดรับ', u:'ดูหน่วยท้ายชื่อ', rows:[
+   ['fi_salary','เงินเดือน / รายได้หลัก','m','special.salary'],
+   ['fi_bonus','โบนัส','y','cashflow.income.bonus'],
+   ['fi_interest','ดอกเบี้ยรับ','m','cashflow.income.interest'],
+   ['fi_rental','รายได้ค่าเช่า','m','cashflow.income.rental'],
+   ['fi_other','รายได้อื่น ๆ','m','cashflow.income.other'],
+ ]},
+ {e:'📌', t:'กระแสเงินสดจ่ายคงที่', u:'ดูหน่วยท้ายชื่อ', rows:[
+   ['ff_homeLoanPay','เงินงวดผ่อนบ้าน','m','cashflow.fixed.homeLoanPay'],
+   ['ff_carLoanPay','เงินงวดผ่อนรถยนต์','m','cashflow.fixed.carLoanPay'],
+   ['ff_creditCardPay','เงินงวดผ่อนบัตรเครดิต','m','cashflow.fixed.creditCardPay'],
+   ['ff_lifeIns','เบี้ยประกันชีวิต/สุขภาพ รวมทุกเล่ม','y','cashflow.fixed.lifeIns'],
+   ['ff_carIns','เบี้ยประกันรถยนต์','y','cashflow.fixed.carIns'],
+   ['ff_condoFee','ค่าส่วนกลางคอนโด','m','cashflow.fixed.condoFee'],
+   ['ff_socialSec','ประกันสังคม','m','cashflow.fixed.socialSec'],
+   ['ff_pvdContrib','เงินสะสมกองทุนสำรองเลี้ยงชีพ','m','cashflow.fixed.pvdContrib'],
+ ]},
+ {e:'🛒', t:'กระแสเงินสดจ่ายผันแปร', u:'ดูหน่วยท้ายชื่อ', rows:[
+   ['fv_food','ค่าอาหาร','m','cashflow.var.food'],
+   ['fv_utility','ค่าสาธารณูปโภค (ไฟ/น้ำ/อื่น)','m','cashflow.var.utility'],
+   ['fv_phone','ค่าโทรศัพท์','m','cashflow.var.phone'],
+   ['fv_transport','ค่าใช้จ่ายในการเดินทาง','m','cashflow.var.transport'],
+   ['fv_personalCare','เสื้อผ้า / ดูแลตนเอง','m','cashflow.var.personalCare'],
+   ['fv_family','เงินให้ครอบครัว / เลี้ยงดูลูก-พ่อแม่','m','special.family'],
+   ['fv_medical','ค่ารักษาพยาบาลที่จ่ายเอง','y','cashflow.var.medical'],
+   ['fv_tax','ภาษีเงินได้','y','cashflow.var.tax'],
+   ['fv_recreation','สันทนาการ / ท่องเที่ยว','y','cashflow.var.recreation'],
+   ['fv_charity','ค่าทำบุญ','y','cashflow.var.charity'],
+   ['fv_otherPersonal','ค่าใช้จ่ายส่วนตัวอื่น ๆ','m','cashflow.var.otherPersonal'],
+   ['fv_living','ค่าใช้จ่ายอื่น ๆ ที่ไม่เข้าหมวดข้างบน','m','cashflow.var.living'],
+ ]},
+ {e:'💰', t:'กระแสเงินสดเพื่อการออม / ลงทุน', u:'ดูหน่วยท้ายชื่อ', rows:[
+   ['fs_normal','เงินออมปกติ','m','cashflow.savings.normal'],
+   ['fs_retire','เงินออมเพื่อวัยเกษียณ','m','cashflow.savings.retire'],
+   ['fs_rmf','เงินออม RMF / SSF','y','cashflow.savings.rmf'],
+   ['fs_tesg','เงินออม Thai ESG','y','cashflow.savings.tesg'],
+ ]},
+];
+const FIN=[...FIN_BS,...FIN_CF];
+const UNIT={m:'บาท/เดือน', y:'บาท/ปี', x:'บาท'};
+/* คืนค่าเป็น "ต่อเดือน" เสมอ เพื่อใช้คำนวณสรุปและ map ลง Money MRI */
+function finMonthly(id,per){ const v=num(id); return per==='y' ? v/12 : v; }
+function finRaw(id){ return num(id); }
+
+function buildFin(){
+  const host=document.getElementById('finHost'); if(!host||host.dataset.built) return;
+  const secHtml=sec=>
+    `<div class="fsec"><div class="fsec-h">${sec.e} ${sec.t}<span class="u">${sec.u}</span></div>`+
+    sec.rows.map(([id,label,per])=>
+      `<div class="frow">
+         <div class="fl">${label} <span class="fu">· ${UNIT[per]}</span></div>
+         <div class="fu" id="cv_${id}" style="width:86px;text-align:right"></div>
+         <input type="text" id="${id}" inputmode="numeric" oninput="finCalc()">
+       </div>`).join('')+`</div>`;
+  host.innerHTML=
+    `<div class="fcols">
+       <div><div class="fcol-t">📒 งบดุล<span>มีอะไร · เป็นหนี้อะไร — ยอด ณ วันนี้</span></div>${FIN_BS.map(secHtml).join('')}</div>
+       <div><div class="fcol-t">💸 งบกระแสเงินสด<span>เงินเข้า − เงินออก</span></div>${FIN_CF.map(secHtml).join('')}</div>
+     </div>`;
+  host.querySelectorAll('input').forEach(money);
+  host.dataset.built='1';
+  restoreVals(host);
+  /* เติมเงินเดือนจากหน้าแรกให้อัตโนมัติ (แก้ทับได้) */
+  const sal=document.getElementById('fi_salary');
+  if(sal && !sal.value && num('cinc')>0){ sal.value=fmt(num('cinc')); VALS['fi_salary']=sal.value; }
+  finCalc();
+}
+function goFin(){ buildFin(); show('scr_fin'); }
+
+function finCalc(){
+  let assets=0, liab=0, inM=0, fixM=0, varM=0, savM=0, liquid=0, debtPay=0;
+  FIN.forEach(sec=>sec.rows.forEach(([id,label,per,snap])=>{
+    const m=finMonthly(id,per);
+    const cv=document.getElementById('cv_'+id);
+    if(cv) cv.textContent = (per==='y'&&num(id)>0) ? '≈ '+fmt(m)+'/ด.' : '';
+    if(snap==='special.salary'){ return; }                       /* รวมทีหลัง กันนับซ้ำกับหน้าแรก */
+    if(snap==='special.family'){ varM+=m; return; }
+    if(snap.startsWith('assets')){ assets+=num(id); if(snap.includes('liquid')) liquid+=num(id); return; }
+    if(snap.startsWith('liab')){ liab+=num(id); return; }
+    if(snap.includes('cashflow.income')) { inM+=m; return; }
+    if(snap.includes('cashflow.fixed'))  { fixM+=m; if(/LoanPay|creditCardPay/.test(snap)) debtPay+=m; return; }
+    if(snap.includes('cashflow.var'))    { varM+=m; return; }
+    if(snap.includes('cashflow.savings')){ savM+=m; return; }
+  }));
+  const salary=num('fi_salary')||num('cinc');
+  const totalIn = salary + inM;
+  const totalOut= fixM + varM;
+  const free    = totalIn - totalOut - savM;
+  const nw      = assets - liab;
+  const savRate = totalIn>0 ? savM/totalIn*100 : 0;
+  const dti     = totalIn>0 ? debtPay/totalIn*100 : 0;
+  const emMonths= totalOut>0 ? liquid/totalOut : 0;
+
+  const k=(cls,l,v,d)=>`<div class="k ${cls}"><div class="kl">${l}</div><div class="kv">${v}</div><div class="kd">${d}</div></div>`;
+  const kp=document.getElementById('finKpi'); if(!kp) return;
+  kp.innerHTML =
+    k(nw>=0?'g':'b','ความมั่งคั่งสุทธิ', fmt(nw)+' ฿', 'ทรัพย์สิน '+fmt(assets)+' − หนี้ '+fmt(liab))+
+    k(free>=0?'g':'b','เงินเหลือ / เดือน', fmt(free)+' ฿', 'รับ '+fmt(totalIn)+' − จ่าย '+fmt(totalOut)+' − ออม '+fmt(savM))+
+    k(savRate>=20?'g':savRate>=10?'w':'b','อัตราการออม', savRate.toFixed(0)+'%', 'เกณฑ์ดี ≥ 20%')+
+    k(dti<=35?'g':dti<=45?'w':'b','ภาระหนี้ต่อรายได้', dti.toFixed(0)+'%', 'เกณฑ์ปลอดภัย < 35%')+
+    k(emMonths>=6?'g':emMonths>=3?'w':'b','เงินสำรองฉุกเฉิน', emMonths.toFixed(1)+' เท่า', 'เกณฑ์ 3–6 เท่าของรายจ่าย');
+  /* v2.6: อัตราการออมสูงแต่เงินเหลือติดลบ = กำลังควักเงินเก็บ/ก่อหนี้มาออม — ต้องบอกให้ชัด
+     ไม่งั้นการ์ด "อัตราการออม 24% ✓ เกณฑ์ดี" สีเขียว จะขัดกับ "เงินเหลือ −28,583 ฿" สีแดงบรรทัดข้าง ๆ */
+  let warn=document.getElementById('finWarn');
+  if(free<0 && savM>0){
+    if(!warn){ warn=document.createElement('div'); warn.id='finWarn';
+      warn.style.cssText='background:#F7E8E6;border:1px solid var(--carrier-soft);border-radius:12px;padding:11px 16px;margin-top:12px;font-size:12.5px;line-height:1.7;color:#8A3A32';
+      kp.parentNode.insertBefore(warn, kp.nextSibling); }
+    warn.innerHTML='⚠ <b>ตัวเลขสองบรรทัดนี้ขัดกัน — ต้องคุยกับลูกค้า</b><br>'+
+      'ออมอยู่เดือนละ <b>'+fmt(savM)+' ฿</b> (อัตราการออม '+savRate.toFixed(0)+'% ดูดีมาก) แต่กระแสเงินสดจริงติดลบเดือนละ <b>'+fmt(-free)+' ฿</b><br>'+
+      'แปลว่าเงินที่ออมไม่ได้มาจากรายได้ที่เหลือ แต่มาจากเงินเก็บเดิมหรือหนี้ — ถ้าไม่แก้ อัตราการออมนี้จะไปต่อไม่ได้ '+
+      '<span class="small" style="color:#8A3A32">(เช็กว่ากรอกครบ/ตรงหน่วยไหม โบนัสอาจยังไม่ได้ใส่ หรือรายจ่ายบางช่องกรอกซ้ำ)</span>';
+  } else if(warn){ warn.remove(); }
+  saveSoon();
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   v2.3 · สร้าง "ไฟล์ลูกค้า .json" รูปแบบเดียวกับ Money MRI v3.x
+   นำเข้าที่ 👥 ห้องสมุดลูกค้า → นำเข้าไฟล์ ได้ทันที ไม่ต้องกรอกซ้ำ
+   ⚠ นำเข้า "ครั้งเดียว" หลังนัดที่ 1 — หลังจากนั้นทุกอย่างพิมพ์ลง MRI
+      (MRI นำเข้าแบบเขียนทับทั้งก้อน ไม่ merge — นำเข้าซ้ำ = งานที่กรอกใน MRI หาย)
+   หน่วย: cashflow ทุกช่องเก็บเป็น "ต่อเดือน" ยกเว้น income.bonus ที่เก็บเป็น "ต่อปี"
+   ═══════════════════════════════════════════════════════════════════ */
+function finFilled(){
+  return FIN.some(sec=>sec.rows.some(([id])=>num(id)>0));
+}
+/* สภาพคล่องจริง = เงินฝากออมทรัพย์ + ฝากประจำ + กองทุนตลาดเงิน (ถอนได้เร็ว) */
+function finLiquid(){ return num('fa_savings')+num('fa_fixedDep')+num('fa_moneyFund'); }
+/* รายจ่ายจริงต่อเดือน = จ่ายคงที่ + จ่ายผันแปร (แปลงช่องรายปีเป็นรายเดือนแล้ว · ไม่รวมเงินออม) */
+function finOutflowM(){
+  let t=0;
+  FIN.forEach(sec=>sec.rows.forEach(([id,label,per,snap])=>{
+    if(snap.indexOf('cashflow.fixed')>=0 || snap.indexOf('cashflow.var')>=0 || snap==='special.family') t+=finMonthly(id,per);
+  }));
+  return t;
+}
+function buildClientFile(){
+  const age  = num('cage')||35;
+  const ra   = num('s1_ra')||60;
+  const life = num('s1_end')||90;
+  const nm   = txt('cname')||'ลูกค้าใหม่';
+  const hasFin = finFilled();
+
+  /* ---- โครงงบดุล/กระแสเงินสด ตามรูปแบบ Money MRI ---- */
+  const detail={
+    assets:{
+      liquid:{savings:0,fixedDep:0,moneyFund:0}, liquidExtra:[],
+      invest:{bond:0,stock:0,mutualFund:0,rmf:0,pvd:0,insCash:0,gold:0}, investExtra:[],
+      personal:{jewelry:0,car:0,property:0}, personalExtra:[]
+    },
+    liab:{ short:{utility:0,creditCard:0,otherShort:0}, long:{carLoan:0,homeLoan:0,otherLong:0} },
+    cashflow:{
+      income:{bonus:0,interest:0,rental:0,other:0}, incomeExtra:[],
+      fixed:{homeLoanPay:0,carLoanPay:0,creditCardPay:0,lifeIns:0,carIns:0,condoFee:0,socialSec:0,pvdContrib:0}, fixedExtra:[],
+      var:{living:0,food:0,utility:0,phone:0,medical:0,tax:0,transport:0,personalCare:0,otherPersonal:0,recreation:0,charity:0}, varExtra:[],
+      savings:{normal:0,retire:0,rmf:0,tesg:0}, savingExtra:[]
+    }
+  };
+  const est=[];   /* รายการที่เป็นค่าประมาณ — เตือนที่ปรึกษาให้ยืนยันอีกที */
+
+  function setPath(obj,path,val){
+    const parts=path.split('.'); let o=obj;
+    for(let i=0;i<parts.length-1;i++) o=o[parts[i]];
+    o[parts[parts.length-1]]=val;
+  }
+  if(hasFin){
+    FIN.forEach(sec=>sec.rows.forEach(([id,label,per,snap])=>{
+      const raw=num(id); if(!raw) return;
+      if(snap==='special.salary') return;               /* เข้า carriers.incomes ไม่ใช่งบกระแส */
+      if(snap==='special.family'){                       /* ยังไม่แยกรายคน → varExtra + โน้ตให้ที่ปรึกษา */
+        detail.cashflow.varExtra.push({id:'xv-fam', name:'เงินให้ครอบครัว / เลี้ยงดูลูก-พ่อแม่ (จากวันตรวจ — ยังไม่แยกรายคน)', monthly:raw, inf:3});
+        est.push('เงินให้ครอบครัว '+fmt(raw)+' ฿/เดือน อยู่ใน varExtra — เมื่อแยกเข้าผู้พึ่งพิงรายคนใน MRI แล้ว ให้ลบรายการนี้ กันนับซ้ำ');
+        return;
+      }
+      /* bonus เก็บเป็นรายปีตามสเปค MRI · ช่องรายปีอื่นแปลงเป็นรายเดือน */
+      const v = (snap==='cashflow.income.bonus') ? raw : (per==='y' ? raw/12 : raw);
+      setPath(detail, snap, Math.round(v*100)/100);
+    }));
+    if(num('ff_lifeIns')>0) est.push('เบี้ยประกัน '+fmt(num('ff_lifeIns'))+' ฿/ปี มาจากช่องรวมวันตรวจ — เมื่อทำทะเบียนกรมธรรม์ใน MRI ครบแล้ว ให้ตั้งช่อง "เบี้ยประกันชีวิต" ในงบกระแสเป็น 0 กันนับซ้ำ');
+  }else{
+    /* ยังไม่ได้กรอกงบการเงิน — ใช้ตัวเลขคร่าว ๆ จากหน้าตรวจไปก่อน ที่ปรึกษาเติมทีหลังใน MRI */
+    if(num('cemer')>0){ detail.assets.liquid.savings=num('cemer'); est.push('เงินฝาก = เงินสำรองฉุกเฉินจากหน้าตรวจ'); }
+    if(num('s5_liq')>0){ detail.assets.liquid.savings=Math.max(detail.assets.liquid.savings,num('s5_liq')); est.push('เงินฝาก = เงินเก็บสภาพคล่องจากแผนคุ้มครองรายได้'); }
+    if(num('cexp')>0){ detail.cashflow.var.living=num('cexp'); est.push('ค่าครองชีพรวม = ค่าใช้จ่ายครอบครัว/เดือน จากหน้าตรวจ (รวมค่าผ่อนอยู่ด้วย)'); }
+    if(num('s5_debt')>0){ detail.liab.long.otherLong=num('s5_debt'); est.push('หนี้สินระยะยาวอื่น ๆ = หนี้สินคงเหลือทั้งหมดจากแผนคุ้มครองรายได้ (ยังไม่ได้แยกก้อน)'); }
+    if(num('s1_have')>0){ detail.assets.invest.pvd=num('s1_have'); est.push('PVD = เงินเตรียมเกษียณจากหน้าตรวจ (ยังไม่ได้แยกประเภท)'); }
+  }
+
+  /* ---- ผู้วางแผน + รายได้ ---- */
+  const salaryM=num('fi_salary')||num('cinc');
+  const incomes=[];
+  /* v2.6: เงินเดือนโตปีละ 3% เท่ากับเงินเฟ้อ — เดิมตั้ง growth:0 ทั้งที่ค่าครองชีพทบ 3%/ปี
+     ผลคือแผนสมมติว่ารายได้จริงของลูกค้าลดลง 3% ทุกปีติดกัน 20 ปี → แผนดูขาดมือเกินความเป็นจริงมาก */
+  if(salaryM>0) incomes.push({ id:'i1', ico:'💼', name:'เงินเดือน / รายได้หลัก', monthly:salaryM,
+      startAge:age, endAge:Math.max(ra-1,age), growth:3, color:'#C8635A' });
+  if(num('s1_passive')>0){
+    incomes.push({ id:'i2', ico:'🏖️', name:'รายได้หลังเกษียณ (บำนาญ/ปันผล — จากวันตรวจ)', monthly:Math.round(num('s1_passive')/12*100)/100,
+      startAge:ra, endAge:life, growth:0, color:'#6BA89E' });
+    est.push('รายได้หลังเกษียณ '+fmt(num('s1_passive'))+' ฿/ปี — ยืนยันแหล่งที่มา/ระยะเวลากับลูกค้าใน MRI');
+  }
+  const carriers=[{ id:'c-primary', name:nm, age, life, retireAge:ra, retireMode:'items', incomes }];
+
+  /* ---- ผู้พึ่งพิง: บุตรจากแผนการศึกษา (ค่าเลี้ยงดูยังไม่ได้เก็บ — กรอกใน MRI) ---- */
+  const dependents=[];
   const nk=parseInt(document.getElementById('kidCount')?.value)||0;
   for(let c=1;c<=nk;c++){
-    const nm=txt(`k${c}_name`)||`ลูกคนที่ ${c}`;
-    if(txt(`k${c}_dream`)) kidQ.push([`k${c}_dream`,`อาชีพในฝันของ${nm}`]);
-    if(txt(`k${c}_fav`))   kidQ.push([`k${c}_fav`,`สิ่งที่${nm}ชอบ`]);
+    const kn=txt('k'+c+'_name'), ka=num('k'+c+'_age');
+    if(!kn && !ka) continue;
+    dependents.push({ id:'d-k'+c, parent:'c-primary', name:kn||('บุตรคนที่ '+c),
+      age:ka||0, kind:'child', monthly:0, endAge:25 });
   }
-  const vh=[...VOICES.slice(0,2),...kidQ,...VOICES.slice(2)].filter(([id])=>txt(id)).map(([id,l])=>
-    `<div class="quote"><div class="ql">${l}</div><div class="qv">“${txt(id)}”</div></div>`).join('');
-  document.getElementById('voiceHost').innerHTML = vh || '<p class="small">—</p>';
+  if(dependents.length) est.push('ค่าเลี้ยงดูบุตรรายคน ยังเป็น 0 — กรอกใน Money MRI (ค่าเทอมตั้งเป็นเป้าหมาย 🎓 ให้แล้ว)');
+  if(num('cdep')>dependents.length) est.push('หน้าตรวจระบุผู้อยู่ในความดูแล '+num('cdep')+' คน แต่มีรายละเอียดเฉพาะบุตร '+dependents.length+' คน — เพิ่มพ่อแม่/คนอื่นใน MRI');
+
+  /* ═══ v2.5.5: ส่งแผนเกษียณ + เส้นทางการศึกษา เข้าโครงของ MRI ตรง ๆ ═══
+     ให้เปิด MRI มาแล้วหน้าเกษียณ/ทุนการศึกษาขึ้นตัวเลขเดียวกับใบผลตรวจนัด 1 ทันที ไม่ต้องคีย์ซ้ำ */
+
+  /* เกษียณ: MRI เก็บ "อยากใช้/เดือน ราคาวันนี้" ที่ carrier.retireExpense — ตรงกับ s1_re เป๊ะ
+     ⚠ ต้องตั้ง retireMode:'custom' ด้วย — ไม่งั้นเครื่องคิดเกษียณของ MRI ใช้โหมด items (แบ่งจากค่าครองชีพ)
+       แล้วเมินตัวเลขที่ลูกค้าบอกในนัด 1 · รายได้หลังเกษียณเข้า pensionMonthly (ช่องที่สูตรเกษียณใช้จริง)
+       ควบคู่กับ income timeline ที่ใส่ไว้แล้ว (คนละเครื่องคิด ใช้คนละช่อง ไม่นับซ้ำ) */
+  if(num('s1_re')>0){ carriers[0].retireExpense = num('s1_re'); carriers[0].retireMode='custom'; }
+  if(num('s1_passive')>0) carriers[0].pensionMonthly = Math.round(num('s1_passive')/12*100)/100;
+
+  /* การศึกษา: ส่งเป็น "กำหนดเอง ฿/ปี" รายชั้นรายลูก (STATE.eduPlan ของ MRI)
+     — เลี่ยงปัญหาตารางอ้างอิงสองระบบไม่เท่ากัน และรองรับ ต่างประเทศ/ป.โท ที่ MRI ไม่มีคอลัมน์
+     + สร้างเป้าหมาย 🎓 ลง Timeline ด้วย schema เดียวกับ eduSyncGoals ของ MRI (id ต้อง hash แบบเดียวกัน
+       เพื่อให้ MRI resync แล้วได้เป้าเดิม ไม่เกิดซ้ำ) */
+  const eduPlan={}; const eduGoals=[];
+  const mriEduGoalId=(kidId,lvl)=>{ const str='E'+kidId+'|'+lvl; let h=0;
+    for(let i=0;i<str.length;i++){ h=(h*31+str.charCodeAt(i))>>>0; } return 900000000+(h%99000000); };
+  /* MRI: [ชื่อชั้น, จำนวนปี, อายุเริ่ม] — ตรงกับ EDU_LEVELS/EDU_START ใน MRI v3.6+ · ป.โท ไม่มีใน MRI ใส่เป็นเป้าหมายแยก */
+  const MRI_EDU=[['อนุบาล',3,3],['ประถม',6,6],['มัธยม',6,12],['ป.ตรี',4,18]];
+  if(dependents.length && Object.values(eduSel).some(v=>v!==undefined)){
+    dependents.forEach(d=>{
+      const kAge=+d.age||0; const plan={pick:{},custom:{}};
+      MRI_EDU.forEach(([lvl,yrs,start],i)=>{
+        const total=levelCost(i); if(total<=0) return;
+        const perYear=Math.round(total/LEVELS[i][1]);
+        plan.pick[lvl]='c'; plan.custom[lvl]=perYear;
+        const rem=Math.max(0, Math.min(yrs, start+yrs-Math.max(kAge,start)));
+        if(rem<=0) return;
+        eduGoals.push({ id:mriEduGoalId(d.id,lvl), name:'ค่าเทอม '+lvl, ico:'🎓',
+          amt:-(perYear*rem), age:Math.round(age+Math.max(0,start-kAge)), eduYears:rem,
+          parent:d.id, split:false, eduAuto:true, eduKid:String(d.id) });
+      });
+      /* ป.โท (เริ่มอายุ 22 · 2 ปี) — MRI v3.7.1 มีชั้นนี้ในตารางแล้ว ส่งแบบเดียวกับชั้นอื่น */
+      const mTotal=levelCost(4);
+      if(mTotal>0){
+        const perYear=Math.round(mTotal/LEVELS[4][1]);
+        plan.pick['ป.โท']='c'; plan.custom['ป.โท']=perYear;
+        const rem=Math.max(0, Math.min(2, 24-Math.max(kAge,22)));
+        if(rem>0) eduGoals.push({ id:mriEduGoalId(d.id,'ป.โท'), name:'ค่าเทอม ป.โท', ico:'🎓',
+          amt:-(perYear*rem), age:Math.round(age+Math.max(0,22-kAge)), eduYears:rem,
+          parent:d.id, split:false, eduAuto:true, eduKid:String(d.id) });
+      }
+      eduPlan[d.id]=plan;
+    });
+    if(eduGoals.length) est.push('เป้าหมายค่าเทอม 🎓 สร้างจากนัด 1 แล้ว (แบบ "กำหนดเอง ฿/ปี" ตามที่ลูกค้าเลือก) — ปรับได้ที่หน้าทุนการศึกษาบุตร');
+  }
+
+  /* คุ้มครอง: ค่าห้อง/รพ. + ทุน CI เป้าหมาย + ทุนชีวิตที่มี → snap.protection ของ MRI
+     (lifeCov เป็นค่าตั้งต้น — ทะเบียนกรมธรรม์จะคำนวณทับเองเมื่อกรอกครบ ตรงตามที่ออกแบบ)
+     ⚠ ห้ามใส่ retireFund — ตัวเลขเกษียณที่เตรียมแล้วอยู่ในงบดุล (PVD/RMF) แล้ว ใส่ซ้ำจะนับสองรอบในสูตรเกษียณ */
+  const protection={ lifeCov:num('s5_life')||0, retireFund:0 };
+  if(txt('s2_hosp')) protection.hospital=txt('s2_hosp');
+  if(num('s2_need')>0) protection.roomRate=num('s2_need');
+  if(num('s3_need')>0) protection.ciTarget=num('s3_need');
+  /* v2.6: ส่ง "ทุนที่ลูกค้ามีอยู่แล้ว" ไปด้วย — เดิมตัวเลขนี้หายระหว่าง Step 2 → Step 3
+     MRI อ่าน ciCov/paCov/healthMax จาก snap.protection เมื่อทะเบียนกรมธรรม์ยังว่าง
+     พอทำทะเบียนกรมธรรม์ครบ ตัวเลขจากทะเบียนจะคำนวณทับให้เอง (ตามที่ MRI ออกแบบไว้) */
+  if(num('s3_have')>0) protection.ciCov=num('s3_have');
+  if(num('s4_have')>0) protection.paCov=num('s4_have');
+  if(num('s2_have')>0) protection.roomRateHave=num('s2_have');
+  if(num('s3_have')>0||num('s4_have')>0||num('s2_have')>0)
+    est.push('ทุนที่มีอยู่แล้วจากนัด 1 (โรคร้าย '+fmt(num('s3_have'))+' · อุบัติเหตุ '+fmt(num('s4_have'))+' · ค่าห้อง '+fmt(num('s2_have'))+' ฿/คืน) ใส่ไว้ให้แล้ว — เมื่อทำทะเบียนกรมธรรม์ครบ ทะเบียนจะคำนวณทับให้เอง');
+
+  /* ---- v2.4: ระดับความเสี่ยง → ตั้งพอร์ตก่อนเกษียณใน MRI ---- */
+  const riskDone = riskAnswered()>=10;
+  let portfolio = { levels:{conservative:3.5,moderate:4.5,aggressive:6}, preRetire:'moderate', postRetire:'conservative' };
+  let riskProfile = null;
+  if(riskDone){
+    const li=riskLevel(), L=RISKLV[li];
+    portfolio.preRetire = L.mri;
+    riskProfile = {
+      tool:'แบบประเมินความเสี่ยงมาตรฐาน 10 ข้อ (Suitability)',
+      date:new Date().toISOString().slice(0,10),
+      score:riskScore(), level:li+1, name:L.name,
+      answers:RISKQ.map((Q,qi)=>({ q:qi+1, pick: Q.multi ? RISK.x4.slice().sort().map(v=>'กขคง'[v]).join(',') : 'กขคง'[RISK.a[qi]] })),
+      mriPortfolio:L.mri
+    };
+    est.push('ระดับความเสี่ยง '+(li+1)+' ('+L.name+') → ตั้งพอร์ตก่อนเกษียณเป็น "'+L.mri+'" แล้ว — ทบทวนผลตอบแทนที่ใช้จริงใน MRI อีกครั้ง');
+  }else{
+    est.push('ยังไม่ได้ทำแบบประเมินความเสี่ยง'+(riskAnswered()>0?' (ตอบไว้ '+riskAnswered()+'/10 ข้อ)':'')+' — พอร์ตใน MRI เป็นค่าเริ่มต้น moderate ทำแบบประเมินเพิ่มในนัดที่ 2 ก่อนคุยแผนลงทุน');
+  }
+
+  /* ---- บันทึกการตรวจ (ติดไปกับไฟล์ให้ที่ปรึกษาอ่าน) ---- */
+  const gaps={};
+  SYS.forEach((s,k)=>{ const r=calcSys(k); if(r&&r.need>0)
+    gaps[s.th]={ need:Math.round(r.need), have:Math.round(r.have), gap:Math.max(Math.round(r.need-r.have),0), unit:r.unit }; });
+  const talk={};
+  [['t_retirehere','เกษียณที่ทำงานปัจจุบันไหม'],['t_hobby','เวลาว่างชอบทำอะไร'],
+   ['t_proud','ความสำเร็จที่ภูมิใจ'],['t_viewplan','มุมมองต่อการวางแผนการเงิน'],
+   ['t_ret_view','ภาพเกษียณในฝัน'],['t_h_wel','สวัสดิการ/ประกันที่มี'],['t_h_gene','ประวัติโรคในครอบครัว'],
+   ['t_a_view','ความเสี่ยงอุบัติเหตุ'],['t_p_resp','ต้องอุปการะใครบ้าง'],['t_p_years','ต้องดูแลอีกกี่ปี'],
+   ['t_midgoal','เป้าหมาย 2–10 ปี'],['t_prio','ทำไมอันดับ 1 สำคัญที่สุด']
+  ].forEach(([id,l])=>{ if(txt(id)) talk[l]=txt(id); });
+
+  const visit={
+    source:'S41 Money Doctor Visit v2.6',
+    visitDate:new Date().toISOString().slice(0,10),
+    advisor:txt('aname')||'',
+    goalPriority: order.map(id=>{const m=MODS.find(x=>x.id===id);return m?m.title:id;}),
+    budgetMonthly:num('cbudget')||0,
+    lifeInsuranceSum:num('s5_life')||0,
+    educationFundNeeded:num('s0_need')||0,
+    riskProfile,
+    gaps, talk,
+    estimates:est,
+    note:'ทะเบียนกรมธรรม์ยังว่าง — ที่ปรึกษากรอกจากรูปถ่ายหน้าตารางกรมธรรม์ใน Money MRI'
+  };
+
+  return {
+    app:'S41 Signature 41 Planner', version:'3.8', savedAt:new Date().toISOString(),
+    s41:{ clientId:CID||newCid(), name:nm },
+    state:{
+      axisMin:Math.max(age-1,0), axisMax:life+2, snapAge:age, inflation:3,
+      planMode:'combined', splitRatio:50,
+      uiMode:'advance',   /* v2.5.5: คนที่ import คือที่ปรึกษาเสมอ — เปิดมาเป็นมุมมองที่ปรึกษาเลย (สลับเป็นมุมมองลูกค้าได้ปุ่มเดียวตอนนัด 2) */
+      /* v2.6: preRet/postRet ผูกกับพอร์ตที่เลือกจากผลประเมินความเสี่ยง ไม่ใช่ค่าตายตัว
+         (ถ้าตั้งตายตัว MRI จะเอาค่านี้ไปทับพอร์ต แล้วผลประเมินความเสี่ยงจะไม่มีผลอะไรเลย) */
+      assume:{ salaryG:3, inf:3, eduInf:5, medInf:8,
+               preRet:portfolio.levels[portfolio.preRetire], postRet:portfolio.levels[portfolio.postRetire],
+               sdPort:({conservative:5.6,moderate:8.8,aggressive:12})[portfolio.preRetire]||8.8 },
+      portfolio,
+      ports:[], carriers, dependents, goals:eduGoals, eduPlan, navLog:[],
+      snap:{ policies:[], detail, protection },
+      _visit:visit
+    },
+    _visit:visit
+  };
+}
+function saveClientFile(){
+  let data;
+  try{ data=buildClientFile(); }
+  catch(e){ alert('สร้างไฟล์ไม่สำเร็จ: '+e.message); return; }
+  const fn='S41_MoneyMRI_'+(CID||'client')+'.json';
+  try{
+    const blob=new Blob([JSON.stringify(data,null,1)],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url; a.download=fn; a.rel='noopener';
+    a.style.display='none'; document.body.appendChild(a); a.click();
+    setTimeout(()=>{ try{document.body.removeChild(a);}catch(e){} URL.revokeObjectURL(url); },4000);
+    setJsonStatus('✓ บันทึกไฟล์ '+fn+' แล้ว — นำเข้าที่ Money MRI → ห้องสมุดลูกค้า → นำเข้าไฟล์',true);
+  }catch(e){
+    setJsonStatus('✗ บันทึกไม่สำเร็จ ('+e.message+') — ลองใหม่ หรือใช้เบราว์เซอร์ปกติแทนเบราว์เซอร์ในแอป',false);
+  }
+}
+function setJsonStatus(msg,ok){
+  document.querySelectorAll('.jsonStatus').forEach(el=>{
+    el.textContent=msg;
+    const dark=el.closest('.next3');
+    el.style.color= ok? (dark?'#A8D8CD':'var(--sage)') : (dark?'#F0B9B3':'var(--carrier)');
+  });
+}
+
+/* ═══ v2.3: ปรินต์ฟอร์มเปล่าให้ลูกค้าเขียนมือกลับบ้าน ═══
+   ใช้เมื่อวันนี้ลูกค้าไม่ได้เอาเอกสารมา — เขียนมือที่บ้าน ถ่ายรูปส่ง LINE
+   แล้วที่ปรึกษาพิมพ์ลง Money MRI เอง (ไม่ต้องนำเข้าไฟล์ซ้ำ)
+   หน่วยพิมพ์กำกับทุกช่อง เพราะสลับเดือน/ปี คือสาเหตุอันดับหนึ่งของตัวเลขผิด */
+function buildBlankFin(){
+  const host=document.getElementById('blankFin'); if(!host) return;
+  const today=new Date().toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'});
+  const nm=txt('cname')||'';
+  let h='<div class="bf-h"><div><div class="bf-t">งบการเงินของคุณ — กรอกที่บ้าน</div>'+
+    '<div class="bf-s">Money Doctor Visit · Signature 41 · เขียนเสร็จแล้วถ่ายรูปส่งกลับทาง LINE ได้เลยค่ะ</div></div>'+
+    '<div class="bf-id">ชื่อ <b>'+(nm?fdEsc(nm):'________________')+'</b><br>วันที่ตรวจ '+today+
+    '<br>รหัส '+(CID||'—')+'</div></div>';
+
+  h+='<div class="bf-chk"><b>เอกสารที่ควรมีข้างตัวตอนกรอก</b> — ①&nbsp;แอปธนาคาร/สมุดบัญชี (ยอดเงินฝาก) '+
+     '② ใบแจ้งยอดหนี้ล่าสุด หรือแอปธนาคาร (ยอดคงเหลือ + ค่างวด) ③ ใบสรุปกองทุน/RMF ④ บิลค่าใช้จ่ายประจำเดือน<br>'+
+     '<b>ไม่ต้องกรอกทุกช่อง</b> — ช่องไหนไม่มีเว้นว่างไว้ได้เลย · ตัวเลขคร่าว ๆ ก็พอ ไม่ต้องเป๊ะถึงหลักบาท<br>'+
+     '<b>⚠ ดูหน่วยท้ายชื่อทุกช่องนะคะ</b> — บางช่องเป็น <b>ต่อเดือน</b> บางช่องเป็น <b>ต่อปี</b></div>';
+
+  h+='<div class="bf-cols">';
+  FIN.forEach(sec=>{
+    const rows=sec.rows;
+    if(!rows.length) return;
+    h+='<div class="bf-sec"><div class="bf-sech">'+sec.e+' '+sec.t+'</div>'+
+      rows.map(([id,label,per])=>
+        '<div class="bf-r"><span class="l">'+label+'</span>'+
+        '<span class="u">'+UNIT[per]+'</span><span class="box"></span></div>').join('')+
+      '</div>';
+  });
+  h+='</div>';
+
+  h+='<div class="bf-foot"><b>ประกัน</b> — กรอกยอดเบี้ยรวมได้ในช่องข้างบน และรบกวน<b>ถ่ายรูปหน้าตารางกรมธรรม์ทุกเล่ม</b>ส่งมาด้วยนะคะ ที่ปรึกษาจะทำทะเบียนละเอียดให้เอง</div>';
+  host.innerHTML=h;
+}
+function printBlankFin(){
+  buildBlankFin();
+  document.body.classList.remove('print-full');
+  document.body.classList.add('print-blank');
+  window.print();
+  setTimeout(()=>document.body.classList.remove('print-blank'),400);
 }
 
 /* ═══ v2.2: พิมพ์ข้อมูลที่กรอกทั้งหมด — สร้างภาคผนวกแนบท้ายใบผลตรวจ ═══
@@ -1081,7 +2169,7 @@ function buildFullData(){
           kv('ทุนที่ต้องเตรียมสำหรับคนนี้',document.getElementById('kt'+c)?.textContent||'—')+`</div>`;
       }
       const path=LEVELS.map((L,l)=>{const s=eduSel[l];if(s===undefined)return '';
-        return kv(L[0].replace('*',''), s===-1? fmt(num('ex_'+l))+' ฿ (กำหนดเอง)' : PATHS[s]+' · รวม '+fmt(L[2][s])+' ฿');}).join('');
+        return kv(L[0].replace('*',''), s===-1? fmt(num('ex_'+l))+' ฿/ปี (กำหนดเอง)' : PATHS[s]+' · รวม '+fmt(L[2][s])+' ฿');}).join('');
       b+=(path?'<div class="fd-sub">เส้นทางการศึกษาที่ตั้งเป้า (ใช้ร่วมกันทุกคน)</div>'+grid(path):kv('เส้นทางการศึกษา','ยังไม่ได้เลือก'));
       b+=grid(kv('ทุนการศึกษาที่ต้องมีรวมทุกคน',mv('s0_need'))+kv('เตรียมไว้แล้วรวม (เงินออม + ประกันเพื่อลูก)',mv('s0_have')))+ready(0);
     }
@@ -1091,8 +2179,9 @@ function buildFullData(){
       b+=q('คิดอย่างไรกับ "การวางแผนเกษียณ" · ภาพเกษียณในฝันเป็นแบบไหน','t_ret_view')+
         grid(kv('อายุปัจจุบัน',now?now+' ปี':'—')+kv('อายุที่จะเกษียณ',ra+' ปี')+
              kv('อายุสิ้นสุดกองทุน',end+' ปี')+kv('เวลาเก็บเงิน / เวลาใช้เงิน',(now?Math.max(ra-now,0):'—')+' ปี / '+use+' ปี')+
-             kv('ค่าใช้จ่ายหลังเกษียณ / เดือน',mv('s1_re'))+kv('เตรียมไว้แล้ว (PVD · RMF · บำนาญ · เงินออม)',mv('s1_have')))+
-        kv('เงินก้อนที่ต้องมี ณ วันเกษียณ (ยังไม่รวมเงินเฟ้อ)',num('s1_re')?fmt(num('s1_re')*12*use)+' ฿':'—')+ready(1);
+             kv('ค่าใช้จ่ายหลังเกษียณ / เดือน',mv('s1_re'))+kv('เงินก้อนที่เตรียมไว้แล้ว (PVD · RMF · เงินออม)',mv('s1_have'))+
+             kv('รายได้หลังเกษียณ (บำนาญ/ปันผล/ค่าเช่า) ต่อปี',mv('s1_passive')))+
+        kv('เงินก้อนที่ต้องมี ณ วันเกษียณ (ยังไม่รวมเงินเฟ้อ)',num('s1_re')?fmt(Math.max(num('s1_re')*12-num('s1_passive'),0)*use)+' ฿':'—')+ready(1);
     }
     if(id==='hlt'){
       b+=q('ปัจจุบันใช้สวัสดิการอะไรอยู่ · มีประกันสุขภาพอยู่แล้วเท่าไร แบบไหน','t_h_wel')+
@@ -1119,11 +2208,30 @@ function buildFullData(){
     h+=sec('อันดับ '+(i+1)+' · '+m.title,b);
   });
 
+  /* — v2.4: แบบประเมินความเสี่ยง — */
+  if(riskAnswered()>0){
+    const done=riskAnswered()>=10;
+    let rb='';
+    if(done){
+      const li=riskLevel(), L=RISKLV[li];
+      rb+=grid(kv('คะแนนรวม',riskScore()+' คะแนน')+kv('ระดับความเสี่ยงที่ยอมรับได้','ระดับ '+(li+1)+' · '+L.name));
+    }else{
+      rb+=kv('สถานะ','ตอบไว้ '+riskAnswered()+'/10 ข้อ — ทำต่อในนัดที่ 2');
+    }
+    rb+='<div class="fd-sub">คำตอบรายข้อ</div>'+grid(
+      RISKQ.map((Q,qi)=>{
+        const pick = Q.multi ? (RISK.x4.length? RISK.x4.slice().sort().map(v=>Q.opts[v]).join(' · ') : '')
+                             : (RISK.a[qi]!==undefined? Q.opts[RISK.a[qi]] : '');
+        return kv('ข้อ '+(qi+1), pick||'—');
+      }).join(''));
+    h+=sec('แบบประเมินความเสี่ยงที่ยอมรับได้ (10 ข้อ)',rb);
+  }
+
   /* — สรุปก่อนดูผล — (ไม่รวมช่องส่งต่อความห่วงใย ตามที่สัญญาว่าไม่ขึ้นในใบผลตรวจ) */
   h+=sec('ก่อนดูผล · สรุปความรู้สึก',
-    q('ใน 2–10 ปีข้างหน้า มีเป้าหมายอะไรอีกบ้าง','t_midgoal')+
-    q('อะไรทำให้แผนอันดับ 1 สำคัญที่สุด และสิ่งที่กังวลหากยังไม่จัดการ','t_prio')+
-    kv('งบวางแผนที่คิดไว้ / เดือน',mv('cbudget')));
+    q('ใน 2–10 ปีข้างหน้า มีเป้าหมายอะไรอีกบ้าง และใช้เงินประมาณเท่าไหร่','t_midgoal')+
+    q('ที่มาของเรื่องอันดับ 1 — ทำไมถึงสำคัญช่วงนี้','t_prio')+
+    kv('ระดับที่สบายใจ / เดือน',mv('cbudget')));
 
   host.innerHTML=h;
 }
@@ -1135,6 +2243,7 @@ function doPrint(){
 }
 /* รองรับสั่งพิมพ์จากเมนูเบราว์เซอร์ (Ctrl+P) ด้วย — เคารพช่องติ๊กเหมือนกัน */
 window.addEventListener('beforeprint',()=>{
+  if(document.body.classList.contains('print-blank')) return;   /* v2.3: กำลังพิมพ์ฟอร์มเปล่า */
   const onResult=!document.getElementById('scr_R').classList.contains('hide');
   const full=onResult && !!document.getElementById('pfAll')?.checked;
   if(full) buildFullData();
@@ -1143,6 +2252,10 @@ window.addEventListener('beforeprint',()=>{
 
 /* init money inputs on static screens */
 ['cinc','cexp','cemer','cbudget'].forEach(id=>money(document.getElementById(id)));
+
+/* v2.3: เปิดหน้ามา — ถ้ามีการตรวจค้างอยู่ ให้ถามก่อนว่าจะทำต่อหรือเริ่มใหม่ */
+showResumeBanner();
+if(!loadLocal()) CID=newCid();
 </script>
 </body>
 </html>
