@@ -1546,7 +1546,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.8</b></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.8.1</b></div>
 </aside>
 
 <main id="main">
@@ -3004,7 +3004,7 @@ function syncSnapAggregates(){
   const cid0=carriers[0]&&carriers[0].id;
   STATE.snap._depPolPremM=0;
   // รีเซ็ตทุนคุ้มครองรายคนทุกครั้ง แล้วค่อยรวมจากกรมธรรม์
-  carriers.forEach(c=>{ c._cov={life:0,health:0,ci:0,tpd:0,pa:0}; });
+  carriers.forEach(c=>{ c._cov={life:0,health:0,ci:0,tpd:0,pa:0,paMed:0}; });   /* v3.8.1: paMed = วงเงินค่ารักษาพยาบาลจากอุบัติเหตุ */
   const covOf=id=>{ const c=carriers.find(x=>x.id===id); return c?c._cov:null; };
   if(pols.length){
     let surrender=0,carrierPrem=0,depPrem=0,payoutAnnual=0;
@@ -3016,6 +3016,7 @@ function syncSnapAggregates(){
         cov.life+=Number(p.life)||0; cov.health+=Number(p.health)||0;
         cov.ci+=(Number(p.ciMid)||0)+(Number(p.ciSevere)||0)+(Number(p.ciCrit)||0)+(Number(p.ci)||0);
         cov.tpd+=(Number(p.care)||0)+(Number(p.tpd)||0); cov.pa+=(Number(p.paDeath)||0)+(Number(p.pa)||0);
+        cov.paMed+=(Number(p.accMed)||0);   /* v3.8.1: ค่ารักษาพยาบาลอุบัติเหตุ แยกจากทุนชีวิตแบบอุบัติเหตุ */
       } else { depPrem+=prem; }              // กรมธรรม์ของผู้พึ่งพิง → เบี้ย = ภาระอุปการะ
     });
     A.insVal   += surrender;            // มูลค่าเวนคืน → สินทรัพย์ลงทุน
@@ -3024,14 +3025,14 @@ function syncSnapAggregates(){
     STATE.snap._depPolPremM = depPrem/12;  // เบี้ยของผู้พึ่งพิง → ภาระอุปการะ
     if(!STATE.snap.protection) STATE.snap.protection={};
     const P=STATE.snap.protection;
-    const agg=carriers.reduce((s,c)=>{const v=c._cov||{};s.life+=v.life||0;s.health+=v.health||0;s.ci+=v.ci||0;s.tpd+=v.tpd||0;s.pa+=v.pa||0;return s;},{life:0,health:0,ci:0,tpd:0,pa:0});
-    P.lifeCov=agg.life; P.healthMax=agg.health; P.ciCov=agg.ci; P.tpdCov=agg.tpd; P.paCov=agg.pa; P._fromPolicies=true;  // ยอดรวม (เผื่อส่วนที่อ่านค่ารวม)
+    const agg=carriers.reduce((s,c)=>{const v=c._cov||{};s.life+=v.life||0;s.health+=v.health||0;s.ci+=v.ci||0;s.tpd+=v.tpd||0;s.pa+=v.pa||0;s.paMed+=v.paMed||0;return s;},{life:0,health:0,ci:0,tpd:0,pa:0,paMed:0});
+    P.lifeCov=agg.life; P.healthMax=agg.health; P.ciCov=agg.ci; P.tpdCov=agg.tpd; P.paCov=agg.pa; P.paMedMax=agg.paMed; P._fromPolicies=true;  // ยอดรวม (เผื่อส่วนที่อ่านค่ารวม)
     P._surrender=surrender; P._premium=carrierPrem+depPrem; P._payout=payoutAnnual; P._depPrem=depPrem;
   } else if(STATE.snap.protection){
     STATE.snap.protection._fromPolicies=false;
     // โหมดคนเดียว ไม่มีกรมธรรม์ → ผู้วางแผนคนแรกใช้ค่า "มีแล้ว" ที่กรอกเองในหน้า Protection
     const P=STATE.snap.protection, c0=carriers[0];
-    if(c0) c0._cov={life:+P.lifeCov||0, health:+P.healthMax||0, ci:+P.ciCov||0, tpd:+P.tpdCov||0, pa:+P.paCov||0};
+    if(c0) c0._cov={life:+P.lifeCov||0, health:+P.healthMax||0, ci:+P.ciCov||0, tpd:+P.tpdCov||0, pa:+P.paCov||0, paMed:+P.paMedMax||0};
   }
 }
 
@@ -5569,7 +5570,10 @@ function renderGoals(){
       <td><input class="y y-num gx-in" value="${commafy(Math.abs(g.amt))}" onchange="setGoalField(${g.id},'amt',this.value)" title="มูลค่าวันนี้"></td>
       <td><input class="y y-num gx-age" value="${Math.round(ownerAgeFromPlanAge(g.parent, g.age))}" onchange="setGoalField(${g.id},'age',this.value)" title="อายุของ ${goalOwnerName(g.parent)} ตอนใช้เงิน"></td>
       <td>${isExp?mB(fv):'+'+mB(fv)}</td>
-      <td class="gx-save">${pmt>0?f0(pmt)+'/ด.':'—'}</td>
+      <td class="gx-save">${(_gr&&_gr.due&&_gr.gap>0)
+        ? '<span style="color:var(--carrier-2);font-weight:600">ถึงกำหนดแล้ว</span>'+
+          (_gr.cashMonthly>0?`<small style="display:block;font-weight:400;color:var(--muted);line-height:1.3">จ่ายจริง ~${f0(_gr.cashMonthly)}/ด. × ${_gr.spanYears} ปี</small>`:'')
+        : (pmt>0?f0(pmt)+'/ด.':'—')}</td>
       <td class="gx-act">
         <button onclick="moveGoal(${g.id},-1)" ${gi===0?'disabled style=opacity:.3':''} title="เลื่อนขึ้น">↑</button>
         <button onclick="moveGoal(${g.id},1)" ${gi===gs.length-1?'disabled style=opacity:.3':''} title="เลื่อนลง">↓</button>
@@ -5581,7 +5585,8 @@ function renderGoals(){
   grid.innerHTML=`<div class="glx-wrap"><table class="goal-tbl">
     <thead><tr><th>#</th><th>เป้าหมาย</th><th>มูลค่าวันนี้</th><th>อายุ</th><th>มูลค่าวันใช้</th><th>ออม/เดือน</th><th></th></tr></thead>
     <tbody>${rows}</tbody></table></div>
-    <div class="note" style="margin-top:8px">เกษียณคือเป้าหมายหลัก (อันดับ 1) · ใช้ปุ่ม ↑↓ จัดลำดับเป้าหมายอื่นตามความสำคัญ — เงินจะถูกจัดสรรให้อันดับต้นก่อน · "ออม/เดือน" = เงินที่ต้องเก็บเพิ่มถ้าเริ่มจากศูนย์ (ผลตอบแทน ${preRet}%/ปี)</div>`;
+    <div class="note" style="margin-top:8px">เกษียณคือเป้าหมายหลัก (อันดับ 1) · ใช้ปุ่ม ↑↓ จัดลำดับเป้าหมายอื่นตามความสำคัญ — เงินจะถูกจัดสรรให้อันดับต้นก่อน · "ออม/เดือน" = เงินที่ต้องเก็บเพิ่มถ้าเริ่มจากศูนย์ (ผลตอบแทน ${preRet}%/ปี)<br>
+    เป้าหมายที่ขึ้นว่า <b>"ถึงกำหนดแล้ว"</b> คือชั้นเรียนที่ลูกกำลังเรียนอยู่ตอนนี้ — ไม่มียอดออมต่อเดือนเพราะไม่เหลือเวลาเก็บแล้ว ตัวเลขที่แสดงคือ<b>ค่าเทอมจริงที่ต้องจ่ายจากกระแสเงินสด</b>เฉลี่ยต่อเดือนตลอดช่วงชั้นนั้น</div>`;
 }
 /* แก้ค่าในตารางเป้าหมาย (มูลค่าวันนี้ / อายุ) */
 function setGoalField(id, k, raw){
@@ -7119,8 +7124,18 @@ const HENG = (function(){
         else { const prem=Number(p.premium)||0; if(prem>0) expense+=prem; }
       });
       let lump=0;
+      /* v3.8.1 (แก้สูตร): ค่าเทอมทั้งช่วงชั้น (eduYears 3-6 ปี) เดิมถูกหักออกจากพอร์ต "ก้อนเดียวในปีเดียว"
+         เช่น ค่าเทอมประถม 6 ปี 680,191 บาท ถูกหักทั้งหมดในปีแรก ทั้งที่จริงจ่ายปีละ ~113,000 ตลอด 6 ปี
+         ผลคือแผนโชว์ว่าเงินหมดตั้งแต่ปีแรก ๆ ทั้งที่ความจริงยังไปต่อได้ — ตอนนี้ทยอยหักตามปีการศึกษาจริง */
       (STATE.goals||[]).forEach(go=>{
-        if((go.age||0)===age){ const fv=goalFV(go); lump+=fv; lumps.push({age, name:go.name, amt:fv}); }
+        const gAge=go.age||0, nSpan=Math.max(1, Math.round(Number(go.eduYears)||1));
+        if(nSpan>1){
+          if(age>=gAge && age<gAge+nSpan){
+            const per=Math.abs(go.amt||0)/nSpan;
+            const amt=per*Math.pow(1+goalInf(go)/100, y);   /* y = จำนวนปีนับจากวันนี้ → เงินเฟ้อทบถึงปีที่จ่ายจริง */
+            lump+=amt; lumps.push({age, name:go.name+' (ปีที่ '+(age-gAge+1)+'/'+nSpan+')', amt});
+          }
+        } else if(gAge===age){ const fv=goalFV(go); lump+=fv; lumps.push({age, name:go.name, amt:fv}); }
       });
       const net=income-expense-lump;
       balance = balance*(1+ret) + net;
@@ -7187,7 +7202,11 @@ const HENG = (function(){
       { const _seenL=new Set(); (STATE.dependents||[]).forEach(d=>{ if(d.link){ if(_seenL.has(d.link)) return; _seenL.add(d.link); } const dAge=(d.age||0)+y, end=d.life||d.endAge||0; if(dAge<=end) expense+=(d.monthly||0)*12; }); }
       if(mode==='ci' && age===eventAge) expense += ciCost;     // ค่ารักษาก้อนใหญ่
       let lump=0, goalsThisYear=[];
-      (STATE.goals||[]).forEach(go=>{ if((go.age||0)===age){ const fv=goalFV(go); lump+=fv; goalsThisYear.push(go); } });
+      /* v3.8.1: ทยอยหักค่าเทอมตามปีการศึกษาเหมือนตารางกระแสเงินสดหลัก */
+      (STATE.goals||[]).forEach(go=>{ const gAge=go.age||0, nSpan=Math.max(1, Math.round(Number(go.eduYears)||1));
+        if(nSpan>1){ if(age>=gAge && age<gAge+nSpan){
+            lump+=(Math.abs(go.amt||0)/nSpan)*Math.pow(1+goalInf(go)/100, y); goalsThisYear.push(go); } }
+        else if(gAge===age){ lump+=goalFV(go); goalsThisYear.push(go); } });
       const net=income-expense-lump;
       balance=balance*(1+ret)+net;
       if(balance<0 && depleteAge===null) depleteAge=age;
@@ -7321,13 +7340,20 @@ const HENG = (function(){
     const missing=[]; if(!existing) missing.push('ciCov');
     return {need, existing, gap:Math.max(0,need-existing), usedDefault:(tRaw===undefined), missing, premium:Math.max(0,need-existing)*0.006};
   }
-  /* ทุนที่ 5 — อุบัติเหตุ (PA): ทางเลือก หากมีความเสี่ยง — แผนแนะนำ ทุน 1 ลบ. + ค่ารักษา 1 แสน (เบี้ย ~3-5 พัน/ปี) */
+  /* ทุนที่ 5 — อุบัติเหตุ (PA)
+     v3.8.1: วัดที่ "วงเงินค่ารักษาพยาบาลจากอุบัติเหตุ" ไม่ใช่ทุนประกันชีวิตแบบอุบัติเหตุ
+     เหตุผล: อุบัติเหตุที่เกิดจริงเกือบทั้งหมดคือบาดเจ็บแล้วต้องรักษา (แขนขาหัก · เย็บแผล · กายภาพ)
+     ไม่ใช่เสียชีวิต — และหน้านัดหมอเงิน (Step 2) ก็ถามเป็น "วงเงินค่ารักษาต่อครั้ง" อยู่แล้ว
+     ส่วนทุนชีวิตกรณีอุบัติเหตุ ถูกนับรวมอยู่ในทุนประกันชีวิต (ชั้นที่ 1) แล้ว ไม่ต้องนับซ้ำ */
   function pa(c){
-    const need=PROT_DEFAULTS.paCoverage;     // ทุนแนะนำ 1,000,000
-    const medical=PROT_DEFAULTS.paMedical;   // ค่ารักษาพยาบาลอุบัติเหตุ 100,000
-    const existing=(c._cov&&c._cov.pa)||0;                                    // ทุน PA เดิม (รายคน)
-    const missing=[]; if(!existing) missing.push('paCov');
-    return {need, medical, existing, gap:Math.max(0,need-existing), optional:true, missing, premium:4000};
+    const tRaw=protRaw('paMedTarget');
+    const need=(tRaw===undefined||isNaN(tRaw))?PROT_DEFAULTS.paMedical:tRaw;   // วงเงินค่ารักษา/ครั้ง
+    const existing=(c&&c._cov&&c._cov.paMed)||protRaw('paMedMax')||0;
+    const deathCov=(c&&c._cov&&c._cov.pa)||0;                                 // ทุนชีวิตแบบอุบัติเหตุ (แสดงประกอบ)
+    const missing=[]; if(!existing) missing.push('paMedMax');
+    const gap=Math.max(0,need-existing);
+    return {need, medical:need, existing, deathCov, gap, optional:true, missing,
+            usedDefault:(tRaw===undefined||isNaN(tRaw)), premium:Math.round(gap*0.02)};
   }
   function coverages(c){ return {life:needs(c), tpd:tpd(c), health:health(c), ci:ci(c), pa:pa(c)}; }
 
@@ -7860,15 +7886,27 @@ function goalRows(){
       act:gap>0?'ลงทุนเพิ่ม '+fmt0(pmt)+'/ด.':'พอแล้ว ✓', ok:gap<=0, goalId:'retire'}); }
   // เป้าหมายแต่ละอัน — เรียงตามลำดับความสำคัญ · "มีแล้ว" = สินทรัพย์ที่เลือกเป้าหมายนี้ไว้
   (STATE.goals||[]).filter(g=>g.amt<0).slice().sort((a,b)=>(a.rank||0)-(b.rank||0)).forEach(g=>{
-    const key=String(g.id), fv=goalFV(g), years=Math.max(1,(g.age||0)-curAge);
+    const key=String(g.id), fv=goalFV(g);
+    /* v3.8.1 (แก้บั๊กที่อ้อยเจอ 16/08): เป้าหมายที่ "ถึงกำหนดแล้ว" (เหลือ 0 ปี เช่น ค่าเทอมชั้นที่ลูกกำลังเรียนอยู่)
+       เดิมโดน Math.max(1, ...) บังคับเป็น 1 ปี → กลายเป็น "ต้องออมเงินทั้งก้อนให้ครบใน 12 เดือน"
+       ค่าเทอมประถม 6 ปี 680,191 บาท เลยโชว์เป็น "ออม 55,523/เดือน" ซึ่งไม่ใช่ยอดออม และทำให้ยอดรวมทั้งแผนเพี้ยนตาม
+       ของจริงคือเงินก้อนนี้ทยอยจ่ายไปตลอดช่วงชั้น ไม่ใช่เงินที่ยังมีเวลาเก็บ */
+    const yrsTo=(g.age||0)-curAge;
+    const due=yrsTo<=0;
+    const nSpan=Math.max(1, Math.round(Number(g.eduYears)||1));
+    const years=Math.max(1,yrsTo), gYears=Math.max(0,yrsTo);
     const ret=(grp[key]&&grp[key].value>0)?pRet(key):goalDefRet(g);
-    const gf=Math.pow(1+ret/100,years);
+    const gf=Math.pow(1+ret/100,gYears);
     const tied=pVal(key), alloc=0;
     const pv0=tied, have=pv0*gf, gap=Math.max(0,fv-have);
-    const pmt=gap>0?HENG.pmtSinkingMonthly(gap,ret,years*12):0;
-    const reqRet=pv0>0?(Math.pow(fv/pv0,1/years)-1)*100:null;
-    rows.push({name:(g.ico||'🎯')+' '+goalDisplayName(g), need:fv, have, gap, reqRet, assumed:ret, pmt:gap>0?pmt:0, tied, alloc,
-      act:gap>0?'ลงทุนเพิ่ม '+fmt0(pmt)+'/ด.':'พอแล้ว ✓', ok:gap<=0, goalId:g.id,
+    const pmt=(!due&&gap>0)?HENG.pmtSinkingMonthly(gap,ret,yrsTo*12):0;
+    const cashMonthly=due?(gap/(nSpan*12)):0;   /* ภาระจริงที่ต้องจ่ายจากกระแสเงินสด เฉลี่ยต่อเดือนตลอดช่วงชั้น */
+    const reqRet=(!due&&pv0>0)?(Math.pow(fv/pv0,1/years)-1)*100:null;
+    rows.push({name:(g.ico||'🎯')+' '+goalDisplayName(g), need:fv, have, gap, reqRet, assumed:ret, pmt, tied, alloc,
+      act: gap<=0 ? 'พอแล้ว ✓'
+         : due ? ('ถึงกำหนดแล้ว · จ่ายจริง ~'+fmt0(cashMonthly)+'/ด. ตลอด '+nSpan+' ปี')
+               : ('ลงทุนเพิ่ม '+fmt0(pmt)+'/ด.'),
+      ok:gap<=0, due, spanYears:nSpan, cashMonthly, goalId:g.id,
       kind:(typeof goalType==='function'?goalType(g):'gen')}); });   /* v3.8: ติดชนิดเป้าหมายไว้ ไม่ต้องเดาจากชื่อทีหลัง */
   // ความคุ้มครอง
   const sum=fn=>STATE.carriers.reduce((s,c)=>{try{return s+(fn(c)||0)}catch(e){return s}},0);
@@ -7878,7 +7916,9 @@ function goalRows(){
     {name:'🛡 ประกันสุขภาพ', need:sum(c=>HENG.health(c).need), have:sum(c=>HENG.health(c).existing), gap:sum(c=>HENG.health(c).gap), act:g=>g>0?'ทำสุขภาพเหมาจ่าย '+ (HENG.health(STATE.carriers[0]).need/1e6).toFixed(0)+' ลบ.':'ครอบคลุม ✓'},
     {name:'🛡 โรคร้าย (CI)', need:sum(c=>HENG.ci(c).need), have:sum(c=>HENG.ci(c).existing), gap:sum(c=>HENG.ci(c).gap), act:g=>g>0?'ซื้อ CI เบี้ย ~'+fmt0(sum(c=>HENG.ci(c).premium||0))+'/ปี':'ครอบคลุม ✓'}
   ];
-  prot.forEach(p=> rows.push({name:p.name, need:p.need, have:p.have, gap:p.gap, act:p.act(p.gap), ok:p.gap<=0}));
+  /* v3.8.1: ยังไม่ได้ตั้งวงเงินที่ควรมี (need=0) ไม่ใช่ "ครอบคลุมแล้ว" — ขึ้น "–" และไม่นับว่าผ่าน */
+  prot.forEach(p=> rows.push({name:p.name, need:p.need, have:p.have, gap:p.gap,
+    act:(p.need>0? p.act(p.gap) : '–  ยังไม่ได้ตั้งวงเงินที่ควรมี'), ok:(p.need>0 && p.gap<=0), unset:!(p.need>0)}));
   return rows;
 }
 function actionSummaryHTML(){
@@ -7967,7 +8007,9 @@ function domainReadiness(){
   if(!(STATE.carriers||[]).length) return {domains:[], overall:0, feasible:true, depleteAge:null, targetAge:0};
   const f=computeFinancials();
   const clamp=p=>Math.max(0,Math.min(100,Math.round(p)));
-  const pctOf=(have,need)=> !(need>0)?100:clamp(have/need*100);
+  /* v3.8.1: เดิมไม่มีเป้าหมาย (need=0) คืน 100% → ใบสรุปขึ้นแถบเขียวเต็มเหมือนพร้อมสมบูรณ์
+     ทั้งที่ความจริงคือ "ยังไม่ได้ประเมิน" — คืน null แล้วให้หน้าจอแสดง "–" แทน */
+  const pctOf=(have,need)=> !(need>0)?null:clamp(have/need*100);
   let rows=[]; try{ rows=goalRows(); }catch(e){}
   const agg=re=>{ const rs=(rows||[]).filter(r=>re.test(r.name||'')); return {has:rs.length>0,
     have:rs.reduce((s,r)=>s+(r.have||0),0), need:rs.reduce((s,r)=>s+(r.need||0),0), gap:rs.reduce((s,r)=>s+(r.gap||0),0)}; };
@@ -8002,15 +8044,15 @@ function domainReadiness(){
   try{ pf=HENG.proForma(); }catch(e){}
   const domains=[
     {key:'emergency', icon:'💧', label:'สำรองฉุกเฉิน', pct:pctOf(emHave,emNeed), have:emHave, need:emNeed,
-      note:`มี ${Math.round(liqMonths)} / ${CONFIG.emergencyMonths} เดือน`},
+      note:emNeed>0?`มี ${Math.round(liqMonths)} / ${CONFIG.emergencyMonths} เดือน`:'ยังไม่ได้กรอกค่าใช้จ่าย — ประเมินไม่ได้'},
     {key:'retire', icon:'🏖️', label:'เกษียณ', pct:pctOf(ret.have,ret.need), have:ret.have, need:ret.need,
-      note:'เงินก้อนที่คาดมี เทียบกับที่ต้องมีตอนเกษียณ'},
+      note:ret.need>0?'เงินก้อนที่คาดมี เทียบกับที่ต้องมีตอนเกษียณ':'ยังไม่ได้ตั้งเป้าเกษียณ'},
     {key:'edu', icon:'🎓', label:'การศึกษาบุตร', pct:edu.has?pctOf(edu.have,edu.need):null, have:edu.have, need:edu.need,
       note:edu.has?'ทุนการศึกษาที่เตรียม เทียบกับที่ต้องใช้':'ยังไม่มีเป้าหมายการศึกษา'},
     {key:'protect', icon:'🛡', label:'คุ้มครองชีวิต', pct:pctOf(prot.have,prot.need), have:prot.have, need:prot.need,
-      note:'ทุน + ทรัพย์สินที่มี เทียบกับภาระที่ต้องคุ้มครอง'},
+      note:prot.need>0?'ทุน + ทรัพย์สินที่มี เทียบกับภาระที่ต้องคุ้มครอง':'ยังไม่ได้ประเมินภาระที่ต้องคุ้มครอง'},
     {key:'health', icon:'➕', label:'สุขภาพ / โรคร้าย', pct:pctOf(health.have,health.need), have:health.have, need:health.need,
-      note:'วงเงินคุ้มครองที่มี เทียบกับที่ควรมี'},
+      note:health.need>0?'วงเงินคุ้มครองที่มี เทียบกับที่ควรมี':'ยังไม่ได้ตั้งวงเงินที่ควรมี'},
     {key:'tax', icon:'✂️', label:'วางแผนภาษี', pct:taxPct, have:0, need:0, taxOnly:true,
       note:taxTax<=0?'ไม่มีภาษีที่ต้องจ่าย':(taxSaveMore>0?('ใช้สิทธิลดหย่อนเพิ่มได้ ประหยัดอีก '+Math.round(taxSaveMore).toLocaleString('en-US')+' บ./ปี'):'ใช้สิทธิลดหย่อนครบแล้ว')}
   ];
@@ -8084,17 +8126,22 @@ function renderBudgetOrder(){
   const goalRet=g=>{ try{ const p=g.port&&typeof portById==='function'?portById(g.port):null; return p?portMetrics(p).ret:preRet; }catch(e){ return preRet; } };
   let GR=[]; try{ GR=(typeof goalRows==='function')?goalRows():[]; }catch(e){}   // ใช้ ออม/เดือน ที่หักสินทรัพย์ผูกแล้ว
   const grPmt=id=>{ const r=GR.find(x=>x.goalId===id); return r?(r.pmt||0):null; };
+  const grRow=id=>GR.find(x=>x.goalId===id)||null;
   const items=[];
   cs.forEach(c=>{ let R; try{ R=HENG.retirement(c); }catch(e){ return; } const a=R.planA; const rp=grPmt('retire'); const pm=(rp!=null?rp:(a&&a.monthly)||0);
     items.push({name:'🏖️ เกษียณ'+(cs.length>1?' · '+c.name:''), need:pm, covered:pm<=0}); });
   (STATE.goals||[]).filter(g=>g.amt<0).slice().sort((a,b)=>(a.rank||0)-(b.rank||0)).forEach(g=>{
     const yrs=Math.max(1,(g.age||0)-curAge); let pmt=grPmt(g.id); if(pmt==null){ try{ pmt=HENG.pmtSinkingMonthly(goalFV(g),goalRet(g),yrs*12); }catch(e){ pmt=0; } }
-    items.push({name:(g.ico||'🎯')+' '+goalDisplayName(g), need:pmt, covered:pmt<=0}); });
+    /* v3.8.1: เป้าหมายที่ถึงกำหนดแล้ว pmt=0 แต่ไม่ใช่ "ครอบคลุมแล้ว" — ต้องแยกออกจากกัน ไม่งั้นขึ้นติ๊กถูกทั้งที่ยังต้องจ่าย */
+    const _r=grRow(g.id), _due=!!(_r&&_r.due&&_r.gap>0);
+    items.push({name:(g.ico||'🎯')+' '+goalDisplayName(g), need:pmt, covered:(pmt<=0&&!_due), due:_due,
+      cashMonthly:_r?(_r.cashMonthly||0):0, spanYears:_r?(_r.spanYears||1):1}); });
   const need=items.reduce((s,i)=>s+i.need,0);
   const covered=items.filter(i=>i.covered).length, total=items.length;   /* เป้าหมายที่ทุนที่มีปิดได้แล้ว */
   const budget=Number((typeof getPlan==='function'?getPlan().monthly:0))||0;
   let remain=budget;
   const rows=items.map((it,i)=>{
+    if(it.due) return `<tr><td style="text-align:left"><span class="gc-num" style="display:inline-flex;vertical-align:middle;margin-right:7px">${i+1}</span>${it.name}</td><td style="text-align:right;color:var(--muted)">–</td><td style="text-align:right"><span style="color:var(--carrier-2);font-weight:700">ถึงกำหนดแล้ว</span><small style="display:block;color:var(--muted)">จ่ายจริง ~${f0(it.cashMonthly)}/ด. × ${it.spanYears} ปี</small></td></tr>`;
     if(it.covered) return `<tr><td style="text-align:left"><span class="gc-num" style="display:inline-flex;vertical-align:middle;margin-right:7px">${i+1}</span>${it.name}</td><td style="text-align:right;color:var(--muted)">—</td><td style="text-align:right"><span style="color:var(--sage-2);font-weight:700">ทุนที่มีครอบคลุมแล้ว ✓</span></td></tr>`;
     const alloc=Math.max(0,Math.min(remain,it.need)); remain-=alloc;
     const st = alloc>=it.need-1 ? '<span style="color:var(--sage-2);font-weight:700">ครบ ✓</span>'
@@ -8521,18 +8568,21 @@ function renderProtectCheck(){
       {name:'ทุพพลภาพ (TPD)',   peace:PEACE.tpd,    note:'≥ ทุนประกันชีวิต · หักทรัพย์สินแล้ว', need:(T.netNeed!=null?T.netNeed:T.need), existing:(T.existIns!=null?T.existIns:T.existing), gap:T.gap, field:'tpdCov'},
       {name:'สุขภาพ',           peace:PEACE.health, note:'เหมาจ่าย ≥ 5 ลบ.',              need:Hh.need, existing:Hh.existing, gap:Hh.gap, field:'healthMax'},
       {name:'โรคร้าย (CI)',      peace:PEACE.ci,     note:'รายได้/ปี × 3–5 ปี · ขั้นต่ำ 3 ลบ.', need:Ci.need, existing:Ci.existing, gap:Ci.gap, field:'ciCov'},
-      {name:'อุบัติเหตุ (PA)',   peace:PEACE.pa,     note:'ทุน 1 ลบ. + ค่ารักษา ≥ 1 แสน · ทางเลือก', need:Pa.need, existing:Pa.existing, gap:Pa.gap, field:'paCov', opt:true}
+      {name:'อุบัติเหตุ (PA)',   peace:PEACE.pa,     note:'วงเงินค่ารักษาพยาบาลจากอุบัติเหตุ ต่อครั้ง (แนะนำ ≥ 1 แสน)', need:Pa.need, existing:Pa.existing, gap:Pa.gap, field:'paMedMax', opt:true}
     ];
     const rowHTML=o=>{
-      const st=o.opt?(o.existing>0?'ok':'opt'):(o.gap<=0?'ok':(o.existing>0?'warn':'bad'));
+      /* v3.8.1: ยังไม่ได้ตั้งเป้าหมาย (ต้องการ = 0) ไม่ใช่ "ครบแล้ว" — ต้องขึ้น "–" ไม่ใช่เครื่องหมายถูก
+         ของเดิม gap=0 เพราะไม่มีเป้า แล้วโชว์ ✓ สีเขียว อ่านแล้วเข้าใจผิดว่าคุ้มครองครบแล้ว */
+      const unset=!(o.need>0);
+      const st=unset?'opt':(o.opt?(o.existing>0?'ok':'opt'):(o.gap<=0?'ok':(o.existing>0?'warn':'bad')));
       const haveInp=editable
         ? `<input class="y y-num" inputmode="numeric" value="${getf((STATE.snap&&STATE.snap.protection||{})[o.field])}" placeholder="0" onchange="setProtField('${o.field}',this.value)">`
         : `<input class="y y-num" value="${o.existing?mB(o.existing):''}" readonly title="มาจากทะเบียนกรมธรรม์ (เลือก 'ของใคร')" style="background:#f3f1ea;color:var(--muted)">`;
       return `<div class="pcm-row ${st}">
         <div class="pcm-name" title="${o.note}"><span class="pcm-dot"></span><span>${o.name}<small class="pcm-peace">${o.peace}</small><small class="adv-only">${o.note}</small></span></div>
-        <div class="pcm-c"><span>ต้องการ</span><b>${mB(o.need)}</b></div>
+        <div class="pcm-c"><span>ต้องการ</span><b>${unset?'–':mB(o.need)}</b></div>
         <div class="pcm-c"><span>มีแล้ว</span>${haveInp}</div>
-        <div class="pcm-c"><span>ขาด</span><b class="pcm-gap">${o.gap>0?mB(o.gap):'✓'}</b></div>
+        <div class="pcm-c"><span>ขาด</span><b class="pcm-gap">${unset?'–':(o.gap>0?mB(o.gap):'✓')}</b></div>
       </div>`;
     };
     const nGap=[L.gap,T.gap,Hh.gap,Ci.gap].filter(g=>g>0).length;
@@ -8546,10 +8596,12 @@ function renderProtectCheck(){
   const curHosp=((STATE.snap&&STATE.snap.protection&&STATE.snap.protection.hospital)||'').replace(/"/g,'&quot;');
   const hosp=`<div class="pcm-hosp"><label>🏥 โรงพยาบาลที่ไว้วางใจ</label><input type="text" class="y" value="${curHosp}" placeholder="พิมพ์ชื่อโรงพยาบาล" onchange="setProtText('hospital',this.value)"></div>`;
   const totGap=cs.reduce((n,c)=>{try{return n+[HENG.needs(c).gap,HENG.tpd(c).gap,HENG.health(c).gap,HENG.ci(c).gap].filter(g=>g>0).length}catch(e){return n}},0);
-  const allOk = emOk && totGap===0;
+  /* v3.8.1: ชั้นที่ยังไม่ได้ตั้งวงเงิน ไม่นับว่าผ่าน — ไม่งั้นจะขึ้น "เกราะครบทุกชั้น ✓" ทั้งที่ยังไม่ได้ประเมิน */
+  const totUnset=cs.reduce((n,c)=>{try{return n+[HENG.needs(c).A+HENG.needs(c).B,HENG.tpd(c).need,HENG.health(c).need,HENG.ci(c).need].filter(v=>!(v>0)).length}catch(e){return n}},0);
+  const allOk = emOk && totGap===0 && totUnset===0;
   const head=`<div class="pcm-head">
     <div class="pcm-em ${emOk?'ok':'bad'}">สำรองฉุกเฉิน <b>${Math.round(liqM)}</b> เดือน${emOk?' ✓':' · ควร ≥ '+CONFIG.emergencyMonths}<small class="pcm-peace" style="display:block">${PEACE.emergency}</small></div>
-    <div class="pcm-sum ${allOk?'ok':'warn'}">${allOk?'เกราะครบทุกชั้น ✓':'ยังขาด '+totGap+' ชั้น'}</div>
+    <div class="pcm-sum ${allOk?'ok':'warn'}">${allOk?'เกราะครบทุกชั้น ✓':(totGap>0?'ยังขาด '+totGap+' ชั้น':'')+(totUnset>0?(totGap>0?' · ':'')+'ยังไม่ได้ประเมิน '+totUnset+' ชั้น':'')}</div>
   </div>`;
   let bars=''; try{ const RD=domainReadiness(); const dp=k=>{const d=RD.domains.find(x=>x.key===k);return d?d.pct:null;};
     const bp=dp('protect'), bh=dp('health');
@@ -8664,10 +8716,13 @@ function renderA4Summary(){
     const p=Math.max(0,Math.min(100,Math.round(pct))), col=rcol(pct);
     return `<div class="a4-rrow"><div class="rl">${label}${sub?`<small>${sub}</small>`:''}</div><div class="rt"><i style="width:${Math.max(2,Math.min(100,pct))}%;background:${col}"></i></div><div class="rp" style="color:${col}">${p}%</div></div>`; };
   const domBars=RD.domains.map(d=> rrow(`${d.icon} ${d.label}`, d.taxOnly?d.note:(d.pct!=null?`ต้องการ ${f0(d.need)} · มีแล้ว ${f0(d.have)}`:d.note), d.pct)).join('');
+  /* v3.8.1: rrow() แสดง "–" ให้เองเมื่อ pct เป็น null (ยังไม่ได้ประเมิน) */
   // ── ความคุ้มครอง (จาก goalRows) ──
   let gr=[]; try{ gr=goalRows(); }catch(e){}
   const protRows=gr.filter(r=>/^🛡/.test(r.name||''));
-  const protBars=protRows.map(r=>rrow(r.name, `ต้องการ ${f0(r.need)} · มีแล้ว ${f0(r.have)}${r.gap>0?` · ขาด ${f0(r.gap)}`:''}`, r.need>0?Math.min(100,r.have/r.need*100):100)).join('');
+  const protBars=protRows.map(r=>rrow(r.name,
+      r.need>0?`ต้องการ ${f0(r.need)} · มีแล้ว ${f0(r.have)}${r.gap>0?` · ขาด ${f0(r.gap)}`:''}`:'ยังไม่ได้ตั้งวงเงินที่ควรมี',
+      r.need>0?Math.min(100,r.have/r.need*100):null)).join('');   /* v3.8.1: ไม่มีเป้า = ยังไม่ได้ประเมิน ไม่ใช่ 100% */
   const ocol=rcol(RD.overall);
   const Cr=2*Math.PI*40;
   const ringSm=`<svg viewBox="0 0 96 96" width="96" height="96" style="flex:0 0 auto"><circle cx="48" cy="48" r="40" fill="none" stroke="#EFEADC" stroke-width="9"/><circle cx="48" cy="48" r="40" fill="none" stroke="${ocol}" stroke-width="9" stroke-linecap="round" stroke-dasharray="${Cr.toFixed(1)}" stroke-dashoffset="${(Cr*(1-RD.overall/100)).toFixed(1)}" transform="rotate(-90 48 48)"/><text x="48" y="52" text-anchor="middle" font-size="22" font-weight="800" fill="${ocol}">${RD.overall}%</text></svg>`;
