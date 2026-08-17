@@ -1640,7 +1640,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.8</b></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.9</b></div>
 </aside>
 
 <main id="main">
@@ -5157,7 +5157,11 @@ function saveMember(){
 
   if(MM_CTX.kind === 'carrier'){
     if(MM_CTX.mode === 'add'){
-      STATE.carriers.push({id:'c'+Date.now(), name, age, retire:Math.min(55, endAge-1), life:endAge, income:amt});
+      /* v3.9.9: สร้าง incomes[] ทันที — เดิมเก็บ income เป็นตัวเลขเดี่ยว แล้วสูตร (totalIncomeAtAge)
+         อ่านเฉพาะ incomes[] ทำให้รายได้ของผู้วางแผนที่เพิ่มใหม่ "ไม่ถูกนับ" จนกว่าจะรีโหลดหน้า (migrate ค่อยแปลงให้) */
+      const nc={id:'c'+Date.now(), name, age, life:endAge};
+      nc.incomes = amt>0 ? [{id:'i'+Date.now(), ico:'💼', name:'รายได้', monthly:amt, startAge:age, endAge:Math.min(55, endAge-1), color:'#6BA89E'}] : [];
+      STATE.carriers.push(nc);
     } else {
       const c = STATE.carriers.find(x => x.id === MM_CTX.id);
       if(c){ c.name = name; c.age = age; c.life = endAge; c.income = amt; if(c.retire >= c.life) c.retire = c.life - 1; }
@@ -10238,7 +10242,8 @@ function expLines(){
   for(const k in cv){ const amt=+cv[k]||0; if(amt<=0) continue;
     const meta=vm[k]||{}; out.push({label:XVAR_LB[k]||k, amt, grp:'ค่าใช้จ่ายประจำ',
       note:(meta.endAge>0?('ถึงอายุ '+meta.endAge):'ตลอดแผน')+(meta.inf!=null?' · เงินเฟ้อ '+meta.inf+'%':'')}); }
-  (d.cashflow.varExtra||[]).forEach(x=>{ const amt=+x.monthly||0; if(amt>0) out.push({label:x.name||'รายการอื่น', amt, grp:'ค่าใช้จ่ายประจำ', note:''}); });
+  (d.cashflow.varExtra||[]).forEach(x=>{ const amt=+x.monthly||0; if(amt>0) out.push({label:x.name||'รายการอื่น', amt, grp:'ค่าใช้จ่ายประจำ',
+    note:(Number(x.startAge)>0||Number(x.endAge)>0)?('ช่วงอายุ '+(Number(x.startAge)>0?x.startAge:'ตอนนี้')+'–'+(Number(x.endAge)>0?x.endAge:'ตลอดแผน')):''}); });
   const cfx=d.cashflow.fixed||{};
   for(const k in cfx){ const amt=+cfx[k]||0; if(amt<=0) continue; out.push({label:XFIX_LB[k]||k, amt, grp:'รายจ่ายคงที่/เบี้ยประกัน', note:''}); }
   (d.cashflow.fixedExtra||[]).forEach(x=>{ const amt=+x.monthly||0; if(amt>0) out.push({label:x.name||'รายจ่ายคงที่อื่น', amt, grp:'รายจ่ายคงที่/เบี้ยประกัน', note:''}); });
@@ -10246,6 +10251,10 @@ function expLines(){
   (STATE.dependents||[]).forEach(dep=>{ if(dep.link){ if(seen.has(dep.link)) return; seen.add(dep.link); }
     const amt=+dep.monthly||0; if(amt<=0) return;
     out.push({label:'ดูแล'+(dep.name||'ผู้พึ่งพิง'), amt, grp:'คนที่เราดูแล', note:'ถึงอายุ '+((dep.kind==='child'?dep.endAge:dep.life)||'-')+' ของเขา'}); });
+  /* v3.9.9: อุปการะคนอื่น (supportExtra) ต้องขึ้นในรายงานด้วย — เพิ่มหมวดใหม่ v3.9.8 แล้วหน้านี้ยังไม่รู้จัก */
+  (d.cashflow.supportExtra||[]).forEach(x=>{ const amt=+x.monthly||0; if(amt<=0) return;
+    out.push({label:x.name||'อุปการะคนอื่น', amt, grp:'คนที่เราดูแล',
+      note:(Number(x.startAge)>0||Number(x.endAge)>0)?('ช่วงอายุ '+(Number(x.startAge)>0?x.startAge:'ตอนนี้')+'–'+(Number(x.endAge)>0?x.endAge:'ตลอดแผน')+' ของผู้วางแผน · ไม่นับเป็นค่าใช้จ่ายหลังเกษียณ'):'ไม่นับเป็นค่าใช้จ่ายหลังเกษียณ'}); });
   return out;
 }
 function a4Extras(){
