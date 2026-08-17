@@ -527,6 +527,16 @@ body.pop-open .content{padding-right:calc(min(400px,94vw) + 16px)}
 .pcm-hosp-info{font-size:11.5px;color:var(--muted);margin:-3px 0 12px;line-height:1.5} .pcm-hosp-info b{color:var(--gold-2);font-weight:700}
 .edu-grid{display:grid;grid-template-columns:minmax(76px,auto) repeat(3,1fr);gap:8px;align-items:stretch}
 .edu-grid.g4{grid-template-columns:minmax(72px,auto) repeat(4,1fr)}
+.edu-grid.g5{grid-template-columns:minmax(72px,auto) repeat(4,1fr) minmax(104px,auto)}
+/* v3.8.3: สลับโหมดรายชั้น — จ่ายจากกระแสเงินสด หรือ เก็บเป็นเงินก้อน */
+.edu-mode{display:flex;flex-direction:column;gap:4px;justify-content:center;min-height:58px}
+.edu-mode button{font-family:var(--thai);font-size:11px;line-height:1.25;padding:6px 8px;border:1.5px solid var(--line);
+  border-radius:9px;background:#F7F4EE;color:var(--muted);cursor:pointer;transition:.15s;text-align:center;font-weight:600}
+.edu-mode button:hover{border-color:var(--gold-2)}
+.edu-mode button.on{background:var(--ink,#1C1C2E);border-color:var(--ink,#1C1C2E);color:#fff}
+.edu-mode button.on.cash{background:#8A6D2F;border-color:#8A6D2F}
+.edu-mode small{display:block;font-size:9px;font-weight:400;opacity:.85}
+@media(max-width:560px){.edu-grid.g5{grid-template-columns:minmax(64px,auto) repeat(4,1fr)}.edu-mode{grid-column:1/-1;flex-direction:row;min-height:0}.edu-mode button{flex:1}}
 .edu-cust{font-family:var(--thai);text-align:center;padding:14px 4px;border:1.5px dashed var(--gold-2);border-radius:12px;background:#FCFAF5;color:var(--ink);font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;min-height:58px;width:100%}
 .edu-cust::placeholder{color:var(--faint);font-weight:400;font-size:10.5px}
 .edu-cust:focus{outline:none;box-shadow:inset 0 0 0 1.5px var(--gold-2)}
@@ -1546,7 +1556,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.8.2</b></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.8.3</b></div>
 </aside>
 
 <main id="main">
@@ -9385,6 +9395,22 @@ function eduGoalId(kidId,lvl){ const str='E'+kidId+'|'+lvl; let h=0;
    → เปิดโหมดนี้แล้ว ยอดต่อปีที่กรอกไว้จะถูกนับเป็น "ค่าเรียนพิเศษ" ในงบกระแสเงินสดแทน
      (รายจ่ายผันแปร มีช่วงอายุกำกับ ทบเงินเฟ้อการศึกษา) และไม่สร้างเป้าหมาย 🎓 ให้เลย */
 function eduTutorOnly(kidId){ return !!eduPlanFor(kidId).tutorOnly; }
+/* ═══ v3.8.3 · เลือกวิธีจ่ายค่าเทอมได้ "รายชั้น" ═══
+   goal = ตั้งเป็นเป้าหมายเก็บเงินก้อน — ต้องมีครบ "ตั้งแต่ปีแรกของชั้น" (ฝั่งระมัดระวัง)
+          เช่น ป.โท ปีละ 1 ล้าน 2 ปี → ต้องมี 2 ล้านพร้อมตั้งแต่ปีที่ 1 ไม่ใช่ทยอยเก็บระหว่างเรียน
+   cash = จ่ายจากกระแสเงินสดของแต่ละปี — ลงเป็นรายจ่ายผันแปรตามช่วงอายุ ไม่ต้องเก็บเงินก้อน */
+function eduModeOf(kidId, levelKey){
+  if(eduTutorOnly(kidId)) return 'cash';                 /* ค่าเทอมคนอื่นจ่าย → ทุกชั้นเป็นกระแสเงินสด */
+  const p=eduPlanFor(kidId); if(!p.mode) p.mode={};
+  return p.mode[levelKey]==='cash' ? 'cash' : 'goal';    /* ค่าเริ่มต้น = เก็บเงินก้อน (เหมือนเดิม) */
+}
+function setEduMode(kidId, levelKey, mode){
+  const p=eduPlanFor(kidId); if(!p.mode) p.mode={};
+  p.mode[levelKey] = (mode==='cash') ? 'cash' : 'goal';
+  eduSyncGoals(kidId);
+  if(typeof saveState==='function') saveState();
+  if(typeof render==='function') render();
+}
 function setEduTutorOnly(kidId, on){
   eduPlanFor(kidId).tutorOnly = !!on;
   eduSyncGoals(kidId);
@@ -9398,17 +9424,18 @@ function eduSyncTutorExpense(kidId){
   if(!Array.isArray(dc.varExtra)) dc.varExtra=[];
   const pre='edu-tut-'+kidId+'|';
   dc.varExtra = dc.varExtra.filter(x=>!(x && String(x.id||'').indexOf(pre)===0));
-  if(!eduTutorOnly(kidId)) return 0;
   const kid=(STATE.dependents||[]).find(d=>String(d.id)===String(kidId)); if(!kid) return 0;
   const c=(STATE.carriers||[])[0]||{age:40};
   const cAge=+c.age||40, kAge=+kid.age||0;
   const inf=(typeof AS==='function'&&AS('eduInf')!=null)?AS('eduInf'):CONFIG.eduInflation;
+  const label = eduTutorOnly(kidId) ? 'ค่าเรียนพิเศษ ' : 'ค่าเทอม ';   /* ค่าเทอมคนอื่นจ่าย → เรียกว่าค่าเรียนพิเศษ */
   let n=0;
   EDU_LEVELS.forEach(L=>{
+    if(eduModeOf(kidId,L.k)!=='cash') return;                          /* v3.8.3: เฉพาะชั้นที่เลือก "กระแสเงินสด" */
     const fee=eduFeeOf(kidId,L), rem=eduRemainYrs(kAge,L);
     if(fee<=0||rem<=0) return;
     const st=Math.round(cAge+eduStartsIn(kAge,L));
-    dc.varExtra.push({ id:pre+L.k, name:'ค่าเรียนพิเศษ '+L.k+(kid.name?' · '+kid.name:''),
+    dc.varExtra.push({ id:pre+L.k, name:label+L.k+(kid.name?' · '+kid.name:''),
       monthly: Math.round(fee/12*100)/100, inf, startAge:st, endAge:st+rem-1 });
     n++;
   });
@@ -9419,11 +9446,11 @@ function eduSyncGoals(kidId){
   const c=(STATE.carriers||[])[0]||{age:40};
   const cAge=+c.age||40, kAge=+kid.age||0;
   STATE.goals=(STATE.goals||[]).filter(g=>!(g && g.eduAuto && String(g.eduKid)===String(kidId)));
-  eduSyncTutorExpense(kidId);            /* v3.8.2: ซิงก์บรรทัดค่าเรียนพิเศษทุกครั้งที่เส้นทางเปลี่ยน */
-  if(eduTutorOnly(kidId)) return 0;      /* ค่าเทอมคนอื่นจ่าย → ไม่ตั้งเป็นเป้าหมาย */
+  eduSyncTutorExpense(kidId);            /* ซิงก์บรรทัดกระแสเงินสดทุกครั้งที่เส้นทาง/โหมดเปลี่ยน */
   const shared = !!kid.link && (STATE.carriers||[]).length>=2;
   let made=0;
   EDU_LEVELS.forEach(L=>{
+    if(eduModeOf(kidId,L.k)!=='goal') return;   /* v3.8.3: ชั้นที่เลือกจ่ายจากกระแสเงินสด ไม่ตั้งเป็นเป้าหมาย */
     const fee=eduFeeOf(kidId,L), rem=eduRemainYrs(kAge,L);
     if(fee<=0||rem<=0) return;
     STATE.goals.push({ id:eduGoalId(kidId,L.k), name:'ค่าเทอม '+L.k, ico:'🎓',
@@ -9461,22 +9488,30 @@ function eduSumLine(kidId){
        (e.items||[]).forEach(i=>{ const mine=gs.some(g=>i.name===g.name || i.name===(g.name+' · '+kn));
          if(mine){ fv+=i.fv; if(i.yrs>0) mo+=i.monthly; } });
   }catch(e){}
-  /* v3.8.2: โหมดค่าเรียนพิเศษ — สรุปคนละแบบ เพราะไม่ได้เก็บเป็นเงินก้อน แต่เป็นรายจ่ายประจำ */
-  if(eduTutorOnly(kidId)){
-    const kid=(STATE.dependents||[]).find(d=>String(d.id)===String(kidId))||{};
-    const kA=+kid.age||0;
-    const live=EDU_LEVELS.filter(L=>eduFeeOf(kidId,L)>0 && eduRemainYrs(kA,L)>0);
-    const nowLv=live.find(L=>eduStartsIn(kA,L)===0);
-    const perNow=nowLv?eduFeeOf(kidId,nowLv):0;
-    return '<span style="color:#8A6D2F;font-weight:700">โหมดค่าเรียนพิเศษ — ค่าเทอมคนอื่นจ่าย</span>'+
-      '<small style="display:block;margin-top:4px">ยอดรวมที่ลูกค้าจ่ายเองตลอดเส้นทาง ≈ <b>'+f(t)+'</b> บาท <span style="color:var(--muted)">(ราคาวันนี้)</span>'+
-      (perNow>0?' · ช่วงนี้ปีละ <b>'+f(perNow)+'</b> บาท ≈ '+f(perNow/12)+' บาท/เดือน':'')+'</small>'+
-      '<small style="display:block;margin-top:4px;color:var(--muted)">ใส่ให้แล้ว '+live.length+' บรรทัดใน<b>งบกระแสเงินสด → รายจ่ายผันแปร</b> (ชื่อขึ้นต้นว่า "ค่าเรียนพิเศษ") '+
-      'แต่ละบรรทัดมีช่วงอายุกำกับ ทบเงินเฟ้อการศึกษาให้ · <b>ไม่มีเป้าหมาย 🎓 และไม่มียอดออมต่อเดือน</b> เพราะไม่ต้องเก็บเงินก้อน</small>';
+  /* v3.8.3: สรุปแยกสองฝั่ง — ชั้นที่เก็บเงินก้อน กับ ชั้นที่จ่ายจากกระแสเงินสด (ผสมกันได้) */
+  const kid=(STATE.dependents||[]).find(d=>String(d.id)===String(kidId))||{};
+  const kA=+kid.age||0;
+  const live=EDU_LEVELS.filter(L=>eduFeeOf(kidId,L)>0 && eduRemainYrs(kA,L)>0);
+  const cashLv=live.filter(L=>eduModeOf(kidId,L.k)==='cash');
+  const goalLv=live.filter(L=>eduModeOf(kidId,L.k)==='goal');
+  const cashToday=cashLv.reduce((a,L)=>a+eduFeeOf(kidId,L)*eduRemainYrs(kA,L),0);
+  const nowLv=cashLv.find(L=>eduStartsIn(kA,L)===0);
+  const perNow=nowLv?eduFeeOf(kidId,nowLv):0;
+  const tutor=eduTutorOnly(kidId);
+  let out='รวมค่าเทอมที่เหลือ ≈ <b>'+f(t)+'</b> บาท <small>(ราคาวันนี้)</small>';
+  if(goalLv.length){
+    out+='<small style="display:block;margin-top:5px">🎯 <b>เก็บเป็นเงินก้อน</b> '+goalLv.map(L=>L.k).join(' · ')+
+      ' — ตั้งเป็นเป้าหมาย 🎓 '+gs.length+' รายการ <span style="color:var(--muted)">(ต้องมีเงินครบตั้งแต่ปีแรกของแต่ละชั้น)</span>'+
+      (fv>0?'<br>เมื่อถึงเวลาจริง (รวมเงินเฟ้อการศึกษา '+((typeof AS==='function'&&AS('eduInf')!=null)?AS('eduInf'):((typeof CONFIG!=='undefined'&&CONFIG.eduInflation)||5))+'%/ปี) ≈ <b>'+f(fv)+'</b> บาท'+(mo>0?' · ออมเพิ่มเดือนละ ≈ <b>'+f(mo)+'</b> บาท':''):'')+'</small>';
   }
-  return 'รวมค่าเทอมที่เหลือ ≈ <b>'+f(t)+'</b> บาท <small>(ราคาวันนี้)</small>'+
-    (fv>0?'<small style="display:block;margin-top:4px">เมื่อถึงเวลาจริง (รวมเงินเฟ้อการศึกษา '+((typeof CONFIG!=='undefined'&&CONFIG.eduInflation)||5)+'%/ปี) ≈ '+f(fv)+' บาท'+(mo>0?' · ออมเพิ่มเดือนละ ≈ '+f(mo)+' บาท':'')+'</small>':'')+
-    '<small style="display:block;margin-top:4px;color:var(--muted)">ตั้งเป็นเป้าหมาย 🎓 ให้แล้ว '+gs.length+' รายการ — เห็นบน Timeline และรวมในแผนทุกหน้า</small>';
+  if(cashLv.length){
+    out+='<small style="display:block;margin-top:5px;color:#8A6D2F">💰 <b>จ่ายจากกระแสเงินสด</b> '+cashLv.map(L=>L.k).join(' · ')+
+      ' — รวม ≈ <b>'+f(cashToday)+'</b> บาท (ราคาวันนี้)'+
+      (perNow>0?' · ช่วงนี้ปีละ <b>'+f(perNow)+'</b> ≈ '+f(perNow/12)+' บาท/เดือน':'')+
+      '<br><span style="color:var(--muted)">ลงเป็นรายจ่ายผันแปร'+(tutor?' ชื่อ "ค่าเรียนพิเศษ"':' ชื่อ "ค่าเทอม"')+
+      ' '+cashLv.length+' บรรทัด มีช่วงอายุกำกับ ทบเงินเฟ้อการศึกษาให้ — ไม่มีเป้าหมาย 🎓 และไม่มียอดออมต่อเดือน</span></small>';
+  }
+  return out;
 }
 function renderEduPath(){
   const host=document.getElementById('eduPath'); if(!host) return;
@@ -9484,7 +9519,8 @@ function renderEduPath(){
   const card=document.getElementById('eduPathCard'); if(card) card.style.display=kids.length?'':'none';
   if(!kids.length){ host.innerHTML=''; return; }
   const f=n=>Math.round(n).toLocaleString('en-US');
-  const head=EDU_TYPES.map(t=>'<div class="edu-th">'+t+'</div>').join('')+'<div class="edu-th">กรอกเอง</div>';
+  const head=EDU_TYPES.map(t=>'<div class="edu-th">'+t+'</div>').join('')+'<div class="edu-th">กรอกเอง</div>'+
+    '<div class="edu-th" title="เลือกได้ทีละชั้น ว่าจะจ่ายจากรายได้แต่ละปี หรือเก็บเป็นเงินก้อนล่วงหน้า">จ่ายแบบไหน</div>';
   host.innerHTML = kids.map(k=>{
     const kAge=+k.age||0;
     const live=EDU_LEVELS.filter(L=>eduRemainYrs(kAge,L)>0);
@@ -9501,7 +9537,15 @@ function renderEduPath(){
       const cv=p.custom[L.k]||'', con=p.pick[L.k]==='c';
       const cust='<input type="text" inputmode="numeric" data-k="'+k.id+'" data-lvl="'+L.k+'" class="edu-cust'+(con?' on':'')+'" value="'+cv+'" placeholder="บ./ปี"'+
                  ' oninput="setEduPathCustom(\''+k.id+'\',\''+L.k+'\',this.value,this)" onchange="render()">';
-      return '<div class="edu-rl">'+L.k+'<small>'+when+'</small></div>'+cells+cust;
+      /* v3.8.3: ปุ่มเลือกวิธีจ่ายรายชั้น — ท้ายแถวของแต่ละระดับ */
+      const md=eduModeOf(k.id,L.k), lock=eduTutorOnly(k.id);
+      const mode='<div class="edu-mode">'+
+        '<button type="button" class="'+(md==='goal'?'on':'')+'"'+(lock?' disabled style="opacity:.4;cursor:not-allowed"':'')+
+          ' onclick="setEduMode(\''+k.id+'\',\''+L.k+'\',\'goal\')" title="ตั้งเป็นเป้าหมาย — ต้องมีเงินครบตั้งแต่ปีแรกของชั้นนี้">🎯 เก็บเงินก้อน<small>ครบตั้งแต่ปีแรก</small></button>'+
+        '<button type="button" class="'+(md==='cash'?'on cash':'')+'"'+(lock?' disabled style="opacity:.4;cursor:not-allowed"':'')+
+          ' onclick="setEduMode(\''+k.id+'\',\''+L.k+'\',\'cash\')" title="จ่ายจากรายได้ของแต่ละปี ไม่ต้องเก็บเงินก้อน">💰 กระแสเงินสด<small>จ่ายปีต่อปี</small></button>'+
+      '</div>';
+      return '<div class="edu-rl">'+L.k+'<small>'+when+'</small></div>'+cells+cust+mode;
     }).join('');
     const tOn=eduTutorOnly(k.id);
     const tSwitch='<label style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;user-select:none;'+
@@ -9515,7 +9559,7 @@ function renderEduPath(){
       '<div style="font-size:14.5px;font-weight:700">'+(k.name||'บุตร')+'</div>'+
       '<div style="font-size:12px;color:var(--muted)">ตอนนี้อายุ '+kAge+' · เหลืออีก '+live.reduce((a,L)=>a+eduRemainYrs(kAge,L),0)+' ปีการศึกษา</div></div>'+
       tSwitch+
-      '<div class="edu-grid g4"><div class="edu-corner"></div>'+head+rows+'</div>'+
+      '<div class="edu-grid g5"><div class="edu-corner"></div>'+head+rows+'</div>'+
       '<div class="edu-total" id="eduSum-'+k.id+'">'+eduSumLine(k.id)+'</div></div>';
   }).join('');
   host.innerHTML += '<div class="note">ค่าเทอมเป็นราคาต่อปีของวันนี้ · ระบบตั้งเงินก้อนไว้ที่ "ปีแรกของแต่ละระดับ" เพื่อให้เตรียมพร้อมก่อนถึงเวลาจริง · แก้ไขรายเป้าหมายได้ที่หน้าเป้าหมาย</div>'+
