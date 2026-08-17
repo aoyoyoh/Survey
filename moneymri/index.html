@@ -423,6 +423,7 @@ body.pop-open .content{padding-right:calc(min(400px,94vw) + 16px)}
 .pcm-tier button.on{background:#EAF4EE;border-color:#6BA89E;color:#3F6B52;font-weight:600}
 .ratio .rm{font-size:9.5px;color:var(--muted);line-height:1.35;margin-top:2px}
 .ratio .rres{font-size:10.5px;font-weight:700;margin-top:3px}
+.ratio .rcap{font-size:10.5px;color:var(--ink-2);line-height:1.45;margin-top:3px}
 .ratio.ok .rres{color:var(--sage-2)} .ratio.warn .rres{color:var(--gold-2)} .ratio.bad .rres{color:var(--carrier-2)}
 .y.locked,input.locked{background:#F4F4F2;color:var(--muted);cursor:not-allowed}
 /* loan calculator */
@@ -1639,7 +1640,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.7</b></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.8</b></div>
 </aside>
 
 <main id="main">
@@ -1870,6 +1871,8 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
           <div id="varExtraList"></div>
           <div style="padding:5px 0"><button class="add-btn" onclick="addExtra('var')"><b>+</b> เพิ่มรายจ่ายผันแปรอื่น</button></div>
           <div class="line it"><div class="lbl">อุปการะครอบครัว <span class="hint">พ่อแม่ · เล่าเรียนบุตร · ค่าใช้จ่ายบุตร — จากผู้พึ่งพิง</span></div><input class="y y-num sm" id="snap-cf-depExpense" value="0" title="แก้ได้ที่นี่ · เฉลี่ยกลับไปยังผู้พึ่งพิงตามสัดส่วน" onchange="setSnapDepY(this.value)"></div>
+          <div id="supportExtraList"></div>
+          <div style="padding:5px 0"><button class="add-btn" onclick="addExtra('support')"><b>+</b> เพิ่มการอุปการะอื่น <span class="hint">มีช่วงเวลาของตัวเอง · ไม่นับเป็นค่าใช้จ่ายหลังเกษียณ</span></button></div>
           <div class="sec-h sav">กระแสเงินสดเพื่อการออม / ลงทุน</div>
           <div class="line it"><div class="lbl">เงินออมปกติ</div><input class="y y-num sm" data-snap="detail.cashflow.savings.normal" value="0"></div>
           <div class="line it"><div class="lbl">เงินออมเพื่อวัยเกษียณ</div><input class="y y-num sm" data-snap="detail.cashflow.savings.retire" value="0"></div>
@@ -2147,6 +2150,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
       .ret-chk.offed{background:var(--line-2);border-style:dashed;opacity:.62}
       .ret-chk.offed .rc-l,.ret-chk.offed .rc-m{text-decoration:line-through;color:var(--faint)}
       .rt-meter{padding:10px 2px;border-bottom:1px solid var(--line-2)}
+.rt-cap{font-size:11.5px;color:var(--ink-2);margin-top:5px;line-height:1.5}
       .rt-meter:last-child{border-bottom:none}
       .rt-h{display:flex;align-items:baseline;gap:10px}
       .rt-h b{flex:1;font-size:13.5px;font-weight:600;color:var(--ink)}
@@ -3180,6 +3184,7 @@ function syncSnapAggregates(){
   C.tax         = (+cv.tax||0);                                                       // ภาษี = ผันแปร (ตามเล่ม)
   C.household   = (+cv.living||0)+(+cv.food||0)+(+cv.utility||0)+(+cv.phone||0)+(+cv.medical||0)+(+cv.transport||0)+(+cv.personalCare||0)+(+cv.otherPersonal||0)+(+cv.recreation||0)+(+cv.charity||0)+sumExtraNow(dc.varExtra);
   C.savings     = SUMobj(csv) + sumExtraNow(dc.savingExtra);   /* v3.9: เคารพช่วงอายุเช่นเดียวกัน */
+  C.supportOther= sumExtraNow(dc.supportExtra);                 /* v3.9.8: อุปการะคนอื่น — แยกจากฐานค่าใช้จ่ายหลังเกษียณ */
   // ── ทะเบียนกรมธรรม์ → ไหลเข้างบ + ทุนคุ้มครอง "รายคน" (กรอกครั้งเดียวที่หน้า Protection) ──
   const pols=Array.isArray(STATE.snap.policies)?STATE.snap.policies:[];
   const carriers=STATE.carriers||[];
@@ -3682,9 +3687,10 @@ function computeFinancials(){
   const tax         = N(cf.tax);
   const savings     = N(cf.savings);
 
+  const supportOther = N(cf.supportOther);        // อุปการะคนอื่น (v3.9.8)
   const totalIn  = totalCarrierIncome + otherIncome;
   const fixedEx  = debtService + insurance + fixedOther;  // คงที่: หนี้ + เบี้ยประกัน + ส่วนกลาง/ปกส./PVD
-  const varEx    = household + tax + depExpense;           // ผันแปร: กินอยู่ + ภาษี + อุปการะครอบครัว
+  const varEx    = household + tax + depExpense + supportOther;   // ผันแปร: กินอยู่ + ภาษี + อุปการะ
   const totalEx  = fixedEx + varEx;
   const surplus  = totalIn - totalEx;
   const freeCash = surplus - savings;
@@ -3726,7 +3732,7 @@ function computeFinancials(){
   return {
     totalCarrierIncome, otherIncome, totalIn,
     depExpense, household, debtService, mortgagePay, insurance, fixedOther, tax, savings, hasLoans,
-    fixedEx, varEx, totalEx, surplus, freeCash,
+    fixedEx, varEx, totalEx, surplus, freeCash, supportOther,
     assets:a, liab:l, liabHome, liabCar, liquidAssets, investAssets, personalAssets,
     shortLiab, longLiab, totalAssets, totalLiab, netWorth,
     protection:p, annualIncome,
@@ -3934,6 +3940,30 @@ function renderP2Snapshot(){
   // กลุ่ม 3 · การออม & ลงทุน
   setR('snap-r-sav',  r.savingRate*100,  '%',    v=>v>=10, v=>v>=5,   'เกณฑ์ > 10%');
   setR('snap-r-inv',  r.invToNW*100,     '%',    v=>v>=50, v=>v>=30,  'เกณฑ์ > 50%');
+  /* v3.9.8: caption สั้น แปลความหมายตามผลที่คำนวณได้ — เห็นทั้งมุมมองลูกค้าและที่ปรึกษา */
+  const capR=(id,txt)=>{ const c=document.getElementById(id); if(!c) return;
+    let el=c.querySelector('.rcap');
+    if(!el){ el=document.createElement('div'); el.className='rcap';
+      const anchor=c.querySelector('.rres'); anchor?anchor.before(el):c.appendChild(el); }
+    el.textContent=txt; };
+  const n0=v=>Math.round(v).toLocaleString('en-US');
+  capR('snap-r-liq1', !isFinite(r.liqCurrent)?'ไม่มีหนี้ระยะสั้นให้กังวล'
+    : r.liqCurrent>=1?'เงินสดพร้อมใช้ปิดหนี้ระยะสั้นได้ '+(Math.round(r.liqCurrent*10)/10)+' รอบ'
+    : 'เงินสดพร้อมใช้ยังไม่พอปิดหนี้ระยะสั้น');
+  capR('snap-r-liq2', r.liquidity<1.5?'รายได้หยุดเมื่อไหร่ อยู่ได้ไม่ถึง 2 เดือน'
+    : r.liquidity<3?'รายได้หยุด อยู่ได้ ~'+n0(r.liquidity)+' เดือน — ควรถึง 3 เดือนเป็นอย่างน้อย'
+    : r.liquidity<=6?'รายได้หยุด อยู่ได้ ~'+n0(r.liquidity)+' เดือน — อยู่ในช่วงพอดี'
+    : 'สำรองไว้ '+n0(r.liquidity)+' เดือน — เกินจำเป็น ส่วนเกินนำไปลงทุนได้');
+  capR('snap-r-liq3', 'เงินพร้อมใช้คิดเป็น '+n0(r.liqToNW*100)+'% ของความมั่งคั่งทั้งหมด');
+  capR('snap-r-da', r.debtToAsset<=0?'ไม่มีหนี้สิน — ทรัพย์สินเป็นของเราเต็มจำนวน'
+    : 'ทรัพย์สินทุก 100 บาท มีหนี้ปนอยู่ '+n0(r.debtToAsset*100)+' บาท');
+  capR('snap-r-dsr', r.dsRatio<=0?'ไม่มีภาระผ่อนหนี้'
+    : 'รายได้ทุก 100 บาท ถูกใช้ผ่อนหนี้ '+n0(r.dsRatio*100)+' บาท'+(r.dsRatio>=0.45?' — หนักเกินไป':''));
+  capR('snap-r-dsrn', r.dsrNonMort<=0?'ไม่มีหนี้นอกเหนือจากบ้าน'
+    : 'ผ่อนหนี้ที่ไม่ใช่บ้าน '+n0(r.dsrNonMort*100)+'% ของรายได้'+(r.dsrNonMort>=0.2?' — ควรเคลียร์ก่อน มักดอกเบี้ยแพง':''));
+  capR('snap-r-sav', r.savingRate<=0?'ตอนนี้ยังไม่มีเงินเหลือเก็บ'
+    : 'รายได้ทุก 100 บาท เก็บออมได้ '+n0(r.savingRate*100)+' บาท');
+  capR('snap-r-inv', 'ความมั่งคั่งทุก 100 บาท เป็นสินทรัพย์ที่ทำงานสร้างผลตอบแทน '+n0(r.invToNW*100)+' บาท');
 }
 
 /* ═══ เครื่องคำนวณผ่อนบ้าน/ผ่อนรถ — UI ═══ */
@@ -4052,10 +4082,10 @@ function extraActiveNow(arr){
     const en=Number(x.endAge)>0?Number(x.endAge):9999;
     return (now>=st && now<=en) ? s+m : s; },0);
 }
-function _extraArr(kind){ if(!STATE.snap) STATE.snap={}; if(!STATE.snap.detail) STATE.snap.detail=makeDetail(); const dc=STATE.snap.detail.cashflow; ['incomeExtra','savingExtra','fixedExtra','varExtra'].forEach(k=>{ if(!Array.isArray(dc[k])) dc[k]=[]; }); return kind==='income'?dc.incomeExtra:kind==='fixed'?dc.fixedExtra:kind==='var'?dc.varExtra:dc.savingExtra; }
+function _extraArr(kind){ if(!STATE.snap) STATE.snap={}; if(!STATE.snap.detail) STATE.snap.detail=makeDetail(); const dc=STATE.snap.detail.cashflow; ['incomeExtra','savingExtra','fixedExtra','varExtra','supportExtra'].forEach(k=>{ if(!Array.isArray(dc[k])) dc[k]=[]; }); return kind==='income'?dc.incomeExtra:kind==='fixed'?dc.fixedExtra:kind==='var'?dc.varExtra:kind==='support'?dc.supportExtra:dc.savingExtra; }
 function addExtra(kind){
   const arr=_extraArr(kind);
-  const nm={income:'รายได้อื่น',saving:'เงินออมอื่น',fixed:'รายจ่ายคงที่อื่น','var':'รายจ่ายผันแปรอื่น'};
+  const nm={income:'รายได้อื่น',saving:'เงินออมอื่น',fixed:'รายจ่ายคงที่อื่น','var':'รายจ่ายผันแปรอื่น',support:'อุปการะ...'};
   const it={id:'x'+Date.now()+Math.random().toString(36).slice(2,5), name:(nm[kind]||'รายการอื่น'), monthly:0};
   if(kind==='income') it.growth=0;
   arr.push(it);
@@ -4122,6 +4152,7 @@ function renderCashflowExtras(){
   mk('saving','savingExtraList','ชื่อเงินออม');
   mk('fixed','fixedExtraList','ชื่อรายจ่าย');
   mk('var','varExtraList','ชื่อรายจ่าย');
+  mk('support','supportExtraList','อุปการะใคร · เรื่องอะไร');
 }
 /* ─── สินทรัพย์อื่น ๆ นอกช่องมาตรฐาน (dynamic list): kind = 'liquid'|'invest'|'personal' ─── */
 function _assetExtraArr(kind){
@@ -5645,7 +5676,7 @@ function delPin(id){
   /* v3.8.7: เป้าหมายการศึกษาเป็นของที่ระบบสร้างเอง — ถ้าผู้ใช้กดลบ ต้องจำไว้ ไม่งั้นโหลดใหม่แล้วโผล่มาอีก */
   try{ const g=(STATE.goals||[]).find(x=>x.id===id);
     if(g && g.eduAuto && g.eduKid){ const pl=eduPlanFor(g.eduKid); if(!pl.off) pl.off={};
-      const lv=String(g.name||'').replace(/^ค่าเทอม\s*/,'').trim(); if(lv) pl.off[lv]=true; }
+      const lv=String(g.name||'').replace(/^ค่าเทอม\s*/,'').replace(/\s*\(50%\)$/,'').trim(); if(lv) pl.off[lv]=true; }
   }catch(e){}
   STATE.goals = STATE.goals.filter(x => x.id !== id);
   closePop(); render(); saveState();
@@ -7420,6 +7451,14 @@ const HENG = (function(){
            (แก้ 08/08/2026 — เดิมคิดเป็นยอดคงที่ตลอด 40 ปี ทำให้ประเมินภาระต่ำกว่าจริงมาก) */
         if(dAge<=end) expense+=(d.monthly||0)*12*Math.pow(1+inf(), y);
       }); }
+      /* v3.9.8: อุปการะคนอื่น — เดินตามช่วงอายุ/เงินเฟ้อของรายการเอง เหมือนผู้พึ่งพิง
+         ไม่ถูกแทนที่ด้วยตัวเลขค่าใช้จ่ายหลังเกษียณ และไม่อยู่ในฐาน 70% */
+      ((STATE.snap.detail&&STATE.snap.detail.cashflow.supportExtra)||[]).forEach(x=>{
+        const amt=Number(x&&x.monthly)||0; if(amt<=0) return;
+        const st=Number(x.startAge)>0?Number(x.startAge):0, en=Number(x.endAge)>0?Number(x.endAge):9999;
+        if(age<st || age>en) return;
+        const xi=((x.inf!=null&&x.inf!=='')?Number(x.inf):(Number(STATE.inflation)||CONFIG.inflation))/100;
+        expense += amt*12*Math.pow(1+xi, y); });
       expense+=insPremium;
       // เบี้ยกรมธรรม์จริง (ตามอายุ) → ค่าใช้จ่าย · มี pf = ใช้ช่วงอายุ (หยุดเมื่อครบชำระ) · ไม่มี = หักเบี้ยทุกปี
       ((STATE.snap&&STATE.snap.policies)||[]).forEach(p=>{
@@ -7516,6 +7555,12 @@ const HENG = (function(){
       income += spNav*spRedeem;      /* เงินจ่ายคืนจากพอร์ต Passive Income — ยังได้รับแม้เกิดเหตุ */
       let expense=living;
       { const _seenL=new Set(); (STATE.dependents||[]).forEach(d=>{ if(d.link){ if(_seenL.has(d.link)) return; _seenL.add(d.link); } const dAge=(d.age||0)+y, end=d.life||d.endAge||0; if(dAge<=end) expense+=(d.monthly||0)*12; }); }
+      ((STATE.snap.detail&&STATE.snap.detail.cashflow.supportExtra)||[]).forEach(x=>{
+        const amt=Number(x&&x.monthly)||0; if(amt<=0) return;
+        const st=Number(x.startAge)>0?Number(x.startAge):0, en=Number(x.endAge)>0?Number(x.endAge):9999;
+        if(age<st || age>en) return;
+        const xi=((x.inf!=null&&x.inf!=='')?Number(x.inf):(Number(STATE.inflation)||CONFIG.inflation))/100;
+        expense += amt*12*Math.pow(1+xi, y); });
       if(mode==='ci' && age===eventAge) expense += ciCost;     // ค่ารักษาก้อนใหญ่
       let lump=0, goalsThisYear=[];
       /* v3.8.1: ทยอยหักค่าเทอมตามปีการศึกษาเหมือนตารางกระแสเงินสดหลัก */
@@ -9211,7 +9256,7 @@ function renderA4Summary(){
     <table class="a4-gtbl"><tbody>
       <tr><td>รายรับรวม</td><td style="text-align:right">${f0(f.totalIn)}</td></tr>
       <tr><td>รายจ่ายคงที่ <span style="color:#999;font-size:9.5px">ผ่อนหนี้ · เบี้ยประกัน · ส่วนกลาง/ปกส./PVD</span></td><td style="text-align:right">${f0(f.fixedEx)}</td></tr>
-      <tr><td>รายจ่ายผันแปร <span style="color:#999;font-size:9.5px">กินอยู่ · ภาษี · อุปการะครอบครัว</span></td><td style="text-align:right">${f0(f.varEx)}</td></tr>
+      <tr><td>รายจ่ายผันแปร <span style="color:#999;font-size:9.5px">กินอยู่ · ภาษี · อุปการะ</span></td><td style="text-align:right">${f0(f.varEx)}</td></tr>
       <tr><td><b>รายจ่ายรวม</b></td><td style="text-align:right"><b>${f0(f.totalEx)}</b></td></tr>
       <tr><td>เงินออม/ลงทุน</td><td style="text-align:right">${f0(savM)}</td></tr>
       <tr><td><b>เงินเหลืออิสระ</b></td><td style="text-align:right;font-weight:800;color:${f.freeCash>=0?'#3F6B52':'#B5453E'}">${fSign(f.freeCash)}</td></tr>
@@ -9636,15 +9681,36 @@ function renderHealth(){
   const box=document.getElementById('hRatios'); if(!box) return;
   if(!(STATE.carriers||[]).length){ box.innerHTML='<div class="note">กรอกข้อมูลที่ Life Path และ Snapshot ก่อนค่ะ</div>'; return; }
   const C=XC(); const f=computeFinancials(); const r=f.ratios;
+  /* v3.9.8: caption แปลผลตามค่าที่ได้จริง — ประโยคเดียว เข้าใจได้โดยไม่ต้องรู้จักอัตราส่วน */
+  const n0=v=>Math.round(v).toLocaleString('en-US');
+  const cap={
+    liq1:!isFinite(r.liqCurrent)?'ไม่มีหนี้ระยะสั้นให้กังวล'
+      : r.liqCurrent>=1?'เงินสดพร้อมใช้ปิดหนี้ระยะสั้นได้ '+(Math.round(r.liqCurrent*10)/10)+' รอบ'
+      : 'เงินสดพร้อมใช้ยังไม่พอปิดหนี้ระยะสั้น',
+    liq2:r.liquidity<1.5?'รายได้หยุดเมื่อไหร่ อยู่ได้ไม่ถึง 2 เดือน'
+      : r.liquidity<3?'รายได้หยุด อยู่ได้ ~'+n0(r.liquidity)+' เดือน — ควรถึง 3 เดือนเป็นอย่างน้อย'
+      : r.liquidity<=6?'รายได้หยุด อยู่ได้ ~'+n0(r.liquidity)+' เดือน — อยู่ในช่วงพอดี'
+      : 'สำรองไว้ '+n0(r.liquidity)+' เดือน — เกินจำเป็น ส่วนเกินนำไปลงทุนได้',
+    liq3:'เงินพร้อมใช้คิดเป็น '+n0(r.liqToNW*100)+'% ของความมั่งคั่งทั้งหมด',
+    da:r.debtToAsset<=0?'ไม่มีหนี้สิน — ทรัพย์สินเป็นของเราเต็มจำนวน'
+      : 'ทรัพย์สินทุก 100 บาท มีหนี้ปนอยู่ '+n0(r.debtToAsset*100)+' บาท',
+    dsr:r.dsRatio<=0?'ไม่มีภาระผ่อนหนี้'
+      : 'รายได้ทุก 100 บาท ถูกใช้ผ่อนหนี้ '+n0(r.dsRatio*100)+' บาท'+(r.dsRatio>=0.45?' — หนักเกินไป':''),
+    dsrn:r.dsrNonMort<=0?'ไม่มีหนี้นอกเหนือจากบ้าน'
+      : 'ผ่อนหนี้ที่ไม่ใช่บ้าน '+n0(r.dsrNonMort*100)+'% ของรายได้'+(r.dsrNonMort>=0.2?' — ควรเคลียร์ก่อน มักดอกเบี้ยแพง':''),
+    sav:r.savingRate<=0?'ตอนนี้ยังไม่มีเงินเหลือเก็บ'
+      : 'รายได้ทุก 100 บาท เก็บออมได้ '+n0(r.savingRate*100)+' บาท',
+    inv:'ความมั่งคั่งทุก 100 บาท เป็นสินทรัพย์ที่ทำงานสร้างผลตอบแทน '+n0(r.invToNW*100)+' บาท'
+  };
   const rows=[
-    {l:'สภาพคล่อง (สินทรัพย์คล่อง ÷ หนี้สั้น)', v:r.liqCurrent, disp:r.liqCurrent===Infinity?'ไม่มีหนี้สั้น':r.liqCurrent.toFixed(1)+' เท่า', tgt:1, max:3, ok:r.liqCurrent>=1, note:'ควร ≥ 1 เท่า'},
-    {l:'เงินสำรองฉุกเฉิน', v:r.liquidity, disp:r.liquidity.toFixed(1)+' เดือน', tgt:6, max:12, ok:r.liquidity>=3, note:'ควรมี 3–6 เดือนของค่าใช้จ่าย'},
-    {l:'สินทรัพย์คล่อง ต่อ ความมั่งคั่งสุทธิ', v:r.liqToNW*100, disp:(r.liqToNW*100).toFixed(0)+'%', tgt:15, max:60, ok:r.liqToNW>=0.15, note:'ควร ≥ 15%'},
-    {l:'หนี้สิน ต่อ สินทรัพย์', v:r.debtToAsset*100, disp:(r.debtToAsset*100).toFixed(0)+'%', tgt:50, max:100, ok:r.debtToAsset<0.5, inv:true, note:'ควร < 50%'},
-    {l:'ภาระผ่อนหนี้ ต่อ รายได้ (DSR)', v:r.dsRatio*100, disp:(r.dsRatio*100).toFixed(0)+'%', tgt:35, max:70, ok:r.dsRatio<0.35, inv:true, note:'ควร < 35–45%'},
-    {l:'ผ่อนหนี้ไม่รวมบ้าน ต่อ รายได้', v:r.dsrNonMort*100, disp:(r.dsrNonMort*100).toFixed(0)+'%', tgt:15, max:40, ok:r.dsrNonMort<0.15, inv:true, note:'ควร < 15–20%'},
-    {l:'อัตราการออม', v:r.savingRate*100, disp:(r.savingRate*100).toFixed(0)+'%', tgt:10, max:60, ok:r.savingRate>=0.10, note:'ควร ≥ 10% ของรายได้'},
-    {l:'สินทรัพย์ลงทุน ต่อ ความมั่งคั่งสุทธิ', v:r.invToNW*100, disp:(r.invToNW*100).toFixed(0)+'%', tgt:50, max:100, ok:r.invToNW>=0.5, note:'ควร ≥ 50% — เงินที่ทำงานแทนเรา'},
+    {l:'สภาพคล่อง (สินทรัพย์คล่อง ÷ หนี้สั้น)', v:r.liqCurrent, disp:r.liqCurrent===Infinity?'ไม่มีหนี้สั้น':r.liqCurrent.toFixed(1)+' เท่า', tgt:1, max:3, ok:r.liqCurrent>=1, note:'ควร ≥ 1 เท่า', cap:cap.liq1},
+    {l:'เงินสำรองฉุกเฉิน', v:r.liquidity, disp:r.liquidity.toFixed(1)+' เดือน', tgt:6, max:12, ok:r.liquidity>=3, note:'ควรมี 3–6 เดือนของค่าใช้จ่าย', cap:cap.liq2},
+    {l:'สินทรัพย์คล่อง ต่อ ความมั่งคั่งสุทธิ', v:r.liqToNW*100, disp:(r.liqToNW*100).toFixed(0)+'%', tgt:15, max:60, ok:r.liqToNW>=0.15, note:'ควร ≥ 15%', cap:cap.liq3},
+    {l:'หนี้สิน ต่อ สินทรัพย์', v:r.debtToAsset*100, disp:(r.debtToAsset*100).toFixed(0)+'%', tgt:50, max:100, ok:r.debtToAsset<0.5, inv:true, note:'ควร < 50%', cap:cap.da},
+    {l:'ภาระผ่อนหนี้ ต่อ รายได้ (DSR)', v:r.dsRatio*100, disp:(r.dsRatio*100).toFixed(0)+'%', tgt:35, max:70, ok:r.dsRatio<0.35, inv:true, note:'ควร < 35–45%', cap:cap.dsr},
+    {l:'ผ่อนหนี้ไม่รวมบ้าน ต่อ รายได้', v:r.dsrNonMort*100, disp:(r.dsrNonMort*100).toFixed(0)+'%', tgt:15, max:40, ok:r.dsrNonMort<0.15, inv:true, note:'ควร < 15–20%', cap:cap.dsrn},
+    {l:'อัตราการออม', v:r.savingRate*100, disp:(r.savingRate*100).toFixed(0)+'%', tgt:10, max:60, ok:r.savingRate>=0.10, note:'ควร ≥ 10% ของรายได้', cap:cap.sav},
+    {l:'สินทรัพย์ลงทุน ต่อ ความมั่งคั่งสุทธิ', v:r.invToNW*100, disp:(r.invToNW*100).toFixed(0)+'%', tgt:50, max:100, ok:r.invToNW>=0.5, note:'ควร ≥ 50% — เงินที่ทำงานแทนเรา', cap:cap.inv},
   ];
   box.innerHTML=rows.map(x=>{
     const vv=x.v===Infinity? x.max : Math.min(x.max, Math.max(0,x.v));
@@ -9653,6 +9719,7 @@ function renderHealth(){
       '<span class="val">'+x.disp+'</span><span class="rt-pill '+(x.ok?'ok':'no')+'">'+(x.ok?'ผ่าน':'ควรปรับ')+'</span></div>'+
       '<div class="rt-track"><div class="rt-fill" style="width:'+w.toFixed(1)+'%;background:'+(x.ok?C.sage:C.carrier)+'"></div>'+
       '<div class="rt-tgt" style="left:'+t.toFixed(1)+'%"></div></div>'+
+      '<div class="rt-cap">'+x.cap+'</div>'+
       '<div class="rt-note">'+x.note+'</div></div>';
   }).join('');
 }
@@ -9896,9 +9963,18 @@ function eduFeeOf(kidId,L){ const p=eduPlanFor(kidId), c=p.pick[L.k];
   if(c==='c') return +p.custom[L.k]||0;
   if(c!=null&&c>=0) return +(EDU_FEE[L.k]||[])[c]||0;
   return 0; }
+/* v3.9.8 · แบ่งครึ่งค่าใช้จ่ายลูกกับคู่สมรส (กรณีคู่สมรสไม่ได้เป็นผู้วางแผนในไฟล์นี้)
+   เปิดแล้วแผนนับค่าเทอม 50% — มีผลทั้งเป้าหมายเงินก้อน · บรรทัดปีต่อปี · ทุนประกันชีวิต */
+function eduShare(kidId){ return eduPlanFor(kidId).split50 ? 0.5 : 1; }
+function setEduSplit50(kidId,on){
+  eduPlanFor(kidId).split50 = !!on;
+  eduSyncGoals(kidId);
+  if(typeof saveState==='function') saveState();
+  if(typeof render==='function') render();
+}
 function eduPathTotal(kidId){
   const kid=(STATE.dependents||[]).find(d=>String(d.id)===String(kidId)); if(!kid) return 0;
-  let t=0; EDU_LEVELS.forEach(L=>{ t+=eduFeeOf(kidId,L)*eduRemainYrs(kid.age,L); }); return t;
+  let t=0; EDU_LEVELS.forEach(L=>{ t+=eduFeeOf(kidId,L)*eduRemainYrs(kid.age,L); }); return t*eduShare(kidId);
 }
 /* id คงที่ต่อ (เด็ก × ระดับ) และเป็นตัวเลขเสมอ — เพราะปุ่มแก้ไขส่ง id ดิบเข้า editGoal() */
 function eduGoalId(kidId,lvl){ const str='E'+kidId+'|'+lvl; let h=0;
@@ -9943,8 +10019,8 @@ function eduSyncTutorExpense(kidId){
     const fee=eduFeeOf(kidId,L), rem=eduRemainYrs(kAge,L);
     if(fee<=0||rem<=0) return;
     const st=Math.round(cAge+eduStartsIn(kAge,L));
-    dc.varExtra.push({ id:pre+L.k, name:label+L.k+(kid.name?' · '+kid.name:''),
-      monthly: Math.round(fee/12*100)/100, inf, startAge:st, endAge:st+rem-1 });
+    dc.varExtra.push({ id:pre+L.k, name:label+L.k+(kid.name?' · '+kid.name:'')+(eduShare(kidId)<1?' (50%)':''),
+      monthly: Math.round(fee*eduShare(kidId)/12*100)/100, inf, startAge:st, endAge:st+rem-1 });
     n++;
   });
   return n;
@@ -9963,8 +10039,8 @@ function eduSyncGoals(kidId){
     const fee=eduFeeOf(kidId,L), rem=eduRemainYrs(kAge,L);
     if(fee<=0||rem<=0) return;
     const _gAge=Math.round(cAge+eduStartsIn(kAge,L));
-    STATE.goals.push({ id:eduGoalId(kidId,L.k), name:'ค่าเทอม '+L.k, ico:'🎓',
-      amt:-(fee*rem), age:_gAge, eduYears:rem,
+    STATE.goals.push({ id:eduGoalId(kidId,L.k), name:'ค่าเทอม '+L.k+(eduShare(kidId)<1?' (50%)':''), ico:'🎓',
+      amt:-(fee*rem*eduShare(kidId)), age:_gAge, eduYears:rem,
       rank:500+_gAge,                       /* v3.8.6: เรียงตามลำดับเวลา — ใครถึงกำหนดก่อนอยู่บนก่อน */
       parent:kid.id, split:shared, eduAuto:true, eduKid:String(kidId) });
     made++;
@@ -10007,9 +10083,10 @@ function eduSumLine(kidId){
   const live=EDU_LEVELS.filter(L=>eduFeeOf(kidId,L)>0 && eduRemainYrs(kA,L)>0);
   const cashLv=live.filter(L=>eduModeOf(kidId,L.k)==='cash');
   const goalLv=live.filter(L=>eduModeOf(kidId,L.k)==='goal');
-  const cashToday=cashLv.reduce((a,L)=>a+eduFeeOf(kidId,L)*eduRemainYrs(kA,L),0);
+  const _sh=eduShare(kidId);
+  const cashToday=cashLv.reduce((a,L)=>a+eduFeeOf(kidId,L)*eduRemainYrs(kA,L),0)*_sh;
   const nowLv=cashLv.find(L=>eduStartsIn(kA,L)===0);
-  const perNow=nowLv?eduFeeOf(kidId,nowLv):0;
+  const perNow=(nowLv?eduFeeOf(kidId,nowLv):0)*_sh;
   let out='รวมค่าเทอมที่เหลือ ≈ <b>'+f(t)+'</b> บาท <small>(ราคาวันนี้)</small>';
   if(goalLv.length){
     out+='<small style="display:block;margin-top:5px">🎯 <b>เก็บเป็นเงินก้อน</b> '+goalLv.map(L=>L.k).join(' · ')+
@@ -10062,7 +10139,10 @@ function renderEduPath(){
     return '<div style="margin-bottom:22px">'+
       '<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:10px">'+
       '<div style="font-size:14.5px;font-weight:700">'+(k.name||'บุตร')+'</div>'+
-      '<div style="font-size:12px;color:var(--muted)">ตอนนี้อายุ '+kAge+' · เหลืออีก '+live.reduce((a,L)=>a+eduRemainYrs(kAge,L),0)+' ปีการศึกษา</div></div>'+
+      '<div style="font-size:12px;color:var(--muted)">ตอนนี้อายุ '+kAge+' · เหลืออีก '+live.reduce((a,L)=>a+eduRemainYrs(kAge,L),0)+' ปีการศึกษา</div>'+
+      '<label style="margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-2);cursor:pointer;user-select:none">'+
+        '<input type="checkbox" '+(eduShare(k.id)<1?'checked':'')+' onchange="setEduSplit50(\''+k.id+'\',this.checked)" style="accent-color:var(--gold-2)">'+
+        'แบ่งครึ่งกับคู่สมรส'+(eduShare(k.id)<1?' <b style="color:var(--gold-2)">· แผนนับ 50%</b>':'')+'</label></div>'+
       '<div class="edu-grid g5"><div class="edu-corner"></div>'+head+rows+'</div>'+
       '<div class="edu-legend"><b>เงินก้อน</b> = ตั้งเป็นเป้าหมาย 🎓 มีเงินครบตั้งแต่ปีแรกของชั้นนั้น · <b>ปีต่อปี</b> = จ่ายจากกระแสเงินสด ลงเป็นรายจ่ายผันแปร</div>'+
       '<div class="edu-total" id="eduSum-'+k.id+'">'+eduSumLine(k.id)+'</div></div>';
