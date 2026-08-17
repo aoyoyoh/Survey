@@ -1559,7 +1559,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.8.8</b></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.8.9</b></div>
 </aside>
 
 <main id="main">
@@ -4152,6 +4152,14 @@ function openVisitNotes(){
 }
 function render(){
   try{ paintVisitBtn(); }catch(e){}
+  /* v3.8.9: หน้า VI ทุนการศึกษาบุตร แสดงเฉพาะเมื่อกรอกว่ามีบุตร — ซ่อน/แสดงเมนูทันทีทุกครั้งที่ข้อมูลเปลี่ยน
+     และถ้ากำลังยืนอยู่บนหน้านั้นตอนลบบุตรคนสุดท้าย เด้งกลับหน้า Life Path */
+  try{
+    const hasKids=(typeof eduKids==='function')&&eduKids().length>0;
+    const nav=document.getElementById('navEdu'); if(nav) nav.style.display=hasKids?'':'none';
+    if(!hasKids){ const pe=document.getElementById('pEdu');
+      if(pe&&pe.classList.contains('on')&&typeof goPage==='function') setTimeout(()=>goPage('p1'),0); }
+  }catch(e){}
   /* sync รายการย่อย detail → aggregate ที่ engine ใช้ */
   try { syncSnapAggregates(); } catch(e){}
   /* sync ยอดหนี้คงเหลือ + เงินงวด จากเครื่องคำนวณผ่อน → STATE (ถ้ามีสัญญากู้) */
