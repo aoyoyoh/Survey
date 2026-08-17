@@ -1640,7 +1640,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.9</b></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.10</b></div>
 </aside>
 
 <main id="main">
@@ -5986,6 +5986,9 @@ function saveAnnualSnapshot(){
   };
   setSnapshots(snaps);
   renderSnapshotList();
+  /* v3.9.10: ต้อง saveState() ด้วย — ระเบียนห้องสมุดลูกค้า (clientStore) ถ่ายสำเนา snapshots ตอน saveState เท่านั้น
+     เดิมกด 📸 แล้วปิดแท็บ → เปิดใหม่ boot เอา snapshots ชุดเก่าจากระเบียนมาทับ → Snapshot ประจำปีหายเงียบ ๆ */
+  if(typeof saveState==='function') saveState();
   // Toast
   const ind = document.getElementById('saveInd');
   if(ind){
@@ -6001,6 +6004,7 @@ function deleteSnapshot(year){
   delete snaps[year];
   setSnapshots(snaps);
   renderSnapshotList();
+  if(typeof saveState==='function') saveState();   /* v3.9.10: กัน snapshot ที่ลบแล้วฟื้นคืนตอนเปิดหน้าใหม่ */
 }
 
 function restoreSnapshot(year){
