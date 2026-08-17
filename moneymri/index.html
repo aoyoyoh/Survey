@@ -1556,7 +1556,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.8.3</b></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.8.4</b></div>
 </aside>
 
 <main id="main">
@@ -3871,6 +3871,15 @@ function setMainIncome(field, raw){
   render();
 }
 /* ─── รายการไดนามิก: รายได้อื่น ๆ + เงินออมอื่น ๆ (แก้ชื่อ/เพิ่ม/ลบได้) ─── */
+/* v3.8.4: รวมเฉพาะรายการที่อยู่ในช่วงอายุปัจจุบัน — รายการที่ยังไม่เริ่ม/จบไปแล้ว ไม่ใช่ค่าใช้จ่ายวันนี้ */
+function extraActiveNow(arr){
+  if(!Array.isArray(arr)) return 0;
+  const c=(STATE.carriers||[])[0]||{}; const now=Number(c.age)||Number(STATE.snapAge)||0;
+  return arr.reduce((s,x)=>{ const m=Number(x&&x.monthly)||0; if(!(m>0)) return s;
+    const st=Number(x.startAge)>0?Number(x.startAge):0;
+    const en=Number(x.endAge)>0?Number(x.endAge):9999;
+    return (now>=st && now<=en) ? s+m : s; },0);
+}
 function _extraArr(kind){ if(!STATE.snap) STATE.snap={}; if(!STATE.snap.detail) STATE.snap.detail=makeDetail(); const dc=STATE.snap.detail.cashflow; ['incomeExtra','savingExtra','fixedExtra','varExtra'].forEach(k=>{ if(!Array.isArray(dc[k])) dc[k]=[]; }); return kind==='income'?dc.incomeExtra:kind==='fixed'?dc.fixedExtra:kind==='var'?dc.varExtra:dc.savingExtra; }
 function addExtra(kind){
   const arr=_extraArr(kind);
@@ -7054,7 +7063,7 @@ const HENG = (function(){
     // ค่าครองชีพหลังเกษียณที่ต้องการ (ถ้าระบุ) — รวมทุกคน · ใช้แทนค่าครองชีพปัจจุบันเมื่อถึงวัยเกษียณ
     const varNowM = (function(){ const d=STATE.snap&&STATE.snap.detail; if(!d) return (STATE.snap?.cashflow?.household||0);
       let t=0; const cv=d.cashflow.var||{}; for(const k in cv) t+=Number(cv[k])||0;
-      (d.cashflow.varExtra||[]).forEach(x=>{ t+=Number(x&&x.monthly)||0; }); return t||((STATE.snap?.cashflow?.household)||0); })();
+      t+=extraActiveNow(d.cashflow.varExtra); return t||((STATE.snap?.cashflow?.household)||0); })();
     /* โหมดค่าใช้จ่ายหลังเกษียณ: auto70 (ค่าเริ่มต้น = 70% ของค่าใช้จ่ายปัจจุบัน) · custom (ใส่เอง) · items (ใช้รายการรายจ่ายรายบรรทัดเดิม) */
     const retireMonthlyTotal = carriers.reduce((s,c)=>{
       const mode = c.retireMode || (c.retireExpense>0 ? 'custom' : 'auto70');
@@ -7213,7 +7222,12 @@ const HENG = (function(){
       else {
         const cv=(STATE.snap.detail&&STATE.snap.detail.cashflow.var)||{}, vm=(STATE.snap.detail&&STATE.snap.detail.cashflow.varMeta)||{};
         let vsum=0; for(const k in cv) vsum+=Number(cv[k])||0;
-        if(vsum>0){ living=0; for(const k in cv){ const amt=Number(cv[k])||0; if(amt<=0)continue; const m=vm[k]||{}; const itemInf=(m.inf!=null&&m.inf!==''?Number(m.inf):(Number(STATE.inflation)||CONFIG.inflation))/100; const endA=Number(m.endAge)>0?Number(m.endAge):9999; if(age<=endA) living+=amt*12*Math.pow(1+itemInf,y); } ((STATE.snap.detail&&STATE.snap.detail.cashflow.varExtra)||[]).forEach(x=>{ const amt=Number(x&&x.monthly)||0; if(amt>0) living+=amt*12*Math.pow(1+(Number(STATE.inflation)||CONFIG.inflation)/100,y); }); }
+        if(vsum>0){ living=0; for(const k in cv){ const amt=Number(cv[k])||0; if(amt<=0)continue; const m=vm[k]||{}; const itemInf=(m.inf!=null&&m.inf!==''?Number(m.inf):(Number(STATE.inflation)||CONFIG.inflation))/100; const endA=Number(m.endAge)>0?Number(m.endAge):9999; if(age<=endA) living+=amt*12*Math.pow(1+itemInf,y); } ((STATE.snap.detail&&STATE.snap.detail.cashflow.varExtra)||[]).forEach(x=>{ const amt=Number(x&&x.monthly)||0; if(amt<=0) return;
+          /* v3.8.4: เคารพช่วงอายุ + เงินเฟ้อของรายการเอง (เดิมคิดทุกปีด้วยเงินเฟ้อกลาง — ค่าเทอมบุตรจึงบวมทั้งแผน) */
+          const xs=Number(x.startAge)>0?Number(x.startAge):0, xe=Number(x.endAge)>0?Number(x.endAge):9999;
+          if(age<xs||age>xe) return;
+          const xi=(x.inf!=null&&x.inf!=='')?Number(x.inf)/100:((Number(STATE.inflation)||CONFIG.inflation)/100);
+          living+=amt*12*Math.pow(1+xi,y); }); }
         else { living=household*12*Math.pow(1+inf(),y); }
       }
       let expense=living;
@@ -9250,7 +9264,7 @@ function renderHealth(){
 /* ── pRet · เกษียณ ── */
 function retVarNowM(){ const d=STATE.snap&&STATE.snap.detail; if(!d) return 0;
   let t=0; const cv=d.cashflow.var||{}; for(const k in cv) t+=Number(cv[k])||0;
-  (d.cashflow.varExtra||[]).forEach(x=>{ t+=Number(x&&x.monthly)||0; }); return t; }
+  t+=extraActiveNow(d.cashflow.varExtra); return t; }   /* v3.8.4: ไม่รวมรายการที่ยังไม่เริ่ม/จบไปแล้ว เช่น ค่าเทอมบุตร */
 function setRetMode(mode){ const c=STATE.carriers[0]; if(!c) return;
   c.retireMode=mode;
   if(mode==='custom'&&!(c.retireExpense>0)) c.retireExpense=Math.round(0.7*retVarNowM());
@@ -9428,7 +9442,7 @@ function eduSyncTutorExpense(kidId){
   const c=(STATE.carriers||[])[0]||{age:40};
   const cAge=+c.age||40, kAge=+kid.age||0;
   const inf=(typeof AS==='function'&&AS('eduInf')!=null)?AS('eduInf'):CONFIG.eduInflation;
-  const label = eduTutorOnly(kidId) ? 'ค่าเรียนพิเศษ ' : 'ค่าเทอม ';   /* ค่าเทอมคนอื่นจ่าย → เรียกว่าค่าเรียนพิเศษ */
+  const label = eduTutorOnly(kidId) ? 'ค่าเรียนพิเศษบุตร · ' : 'ค่าเทอมบุตร · ';   /* ค่าเทอมคนอื่นจ่าย → เรียกว่าค่าเรียนพิเศษ */
   let n=0;
   EDU_LEVELS.forEach(L=>{
     if(eduModeOf(kidId,L.k)!=='cash') return;                          /* v3.8.3: เฉพาะชั้นที่เลือก "กระแสเงินสด" */
@@ -9508,7 +9522,7 @@ function eduSumLine(kidId){
     out+='<small style="display:block;margin-top:5px;color:#8A6D2F">💰 <b>จ่ายจากกระแสเงินสด</b> '+cashLv.map(L=>L.k).join(' · ')+
       ' — รวม ≈ <b>'+f(cashToday)+'</b> บาท (ราคาวันนี้)'+
       (perNow>0?' · ช่วงนี้ปีละ <b>'+f(perNow)+'</b> ≈ '+f(perNow/12)+' บาท/เดือน':'')+
-      '<br><span style="color:var(--muted)">ลงเป็นรายจ่ายผันแปร'+(tutor?' ชื่อ "ค่าเรียนพิเศษ"':' ชื่อ "ค่าเทอม"')+
+      '<br><span style="color:var(--muted)">ลงเป็นรายจ่ายผันแปร'+(tutor?' ชื่อ "ค่าเรียนพิเศษบุตร"':' ชื่อ "ค่าเทอมบุตร"')+
       ' '+cashLv.length+' บรรทัด มีช่วงอายุกำกับ ทบเงินเฟ้อการศึกษาให้ — ไม่มีเป้าหมาย 🎓 และไม่มียอดออมต่อเดือน</span></small>';
   }
   return out;
