@@ -1559,7 +1559,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.8.7</b></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.8.8</b></div>
 </aside>
 
 <main id="main">
@@ -5632,6 +5632,34 @@ function renderGoals(){
   grid.innerHTML=`<div class="glx-wrap"><table class="goal-tbl">
     <thead><tr><th>#</th><th>เป้าหมาย</th><th>มูลค่าวันนี้</th><th>อายุ</th><th>มูลค่าวันใช้</th><th>ออม/เดือน</th><th></th></tr></thead>
     <tbody>${rows}</tbody></table></div>
+    ${(()=>{ /* v3.8.8: มีบุตรแต่ไม่มีเป้าหมายการศึกษา — บอกสาเหตุตรง ๆ ว่าทำไม */
+      try{
+        const kids=(typeof eduKids==='function')?eduKids():[];
+        if(!kids.length) return '';
+        const hasEduGoal=(STATE.goals||[]).some(g=>g.amt<0 && (typeof goalType==='function'?goalType(g)==='edu':g.ico==='🎓'));
+        if(hasEduGoal) return '';
+        const why=kids.map(k=>{
+          const nm=k.name||'บุตร';
+          if(typeof eduTutorOnly==='function' && eduTutorOnly(k.id))
+            return '<b>'+nm+'</b> — เปิดสวิตช์ "ค่าเทอมมีคนอื่นจ่าย" ไว้ ค่าเทอมจึงไปอยู่ในรายจ่ายผันแปร ไม่ตั้งเป็นเป้าหมาย';
+          const live=EDU_LEVELS.filter(L=>eduRemainYrs(k.age,L)>0);
+          const paid=live.filter(L=>eduFeeOf(k.id,L)>0);
+          if(!paid.length) return '<b>'+nm+'</b> — ยังไม่ได้เลือกค่าเทอมสักชั้น (รัฐ/เอกชน/อินเตอร์/กรอกเอง)';
+          const pl=eduPlanFor(k.id);
+          const off=paid.filter(L=>pl.off&&pl.off[L.k]).map(L=>L.k);
+          const cash=paid.filter(L=>eduModeOf(k.id,L.k)==='cash'&&!(pl.off&&pl.off[L.k])).map(L=>L.k);
+          const bits=[];
+          if(cash.length) bits.push('ชั้น '+cash.join(' · ')+' เลือกเป็น <b>ปีต่อปี</b> (อยู่ในรายจ่ายผันแปร)');
+          if(off.length)  bits.push('ชั้น '+off.join(' · ')+' เคย<b>กดลบเป้าทิ้ง</b> — กดเลือกโหมดใหม่เพื่อเรียกคืน');
+          return '<b>'+nm+'</b> — '+(bits.join(' · ')||'ไม่มีชั้นที่ต้องเก็บเป็นเงินก้อน');
+        }).join('<br>');
+        return `<div style="margin-top:10px;font-size:12px;line-height:1.7;color:var(--ink-2);background:#FBF8EE;border:1px solid var(--line);border-left:3px solid var(--carrier);border-radius:8px;padding:10px 13px">
+          <b>ยังไม่มีเป้าหมายการศึกษา 🎓 ในรายการนี้</b> — เพราะ:<br>${why}<br>
+          <span style="color:var(--muted)">เป้าหมายการศึกษาสร้างจากหน้า <b>เส้นทางการศึกษา</b> โดยอัตโนมัติ — เลือกค่าเทอมแล้วติ๊ก <b>"เงินก้อน"</b> ที่คอลัมน์ "จ่ายแบบไหน" เป้าจะขึ้นที่นี่ทันที</span>
+          <span style="display:block;margin-top:6px"><a href="javascript:goPage('pEdu')" style="color:var(--gold-2);font-weight:600">ไปหน้าเส้นทางการศึกษา →</a></span>
+        </div>`;
+      }catch(e){ return ''; }
+    })()}
     ${(()=>{ const st=goalRows.eduPoolStart||0; if(!(st>0)) return '';
       const left=goalRows.eduPoolLeft||0, used=st-left;
       return `<div style="margin-top:10px;font-size:12px;line-height:1.65;color:var(--ink-2);background:#FBF8EE;border:1px solid var(--line);border-left:3px solid var(--gold-2);border-radius:8px;padding:9px 12px">
