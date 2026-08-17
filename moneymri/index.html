@@ -1559,7 +1559,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.8.6</b></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.8.7</b></div>
 </aside>
 
 <main id="main">
@@ -2821,6 +2821,11 @@ function migrate(s){
   if(!Array.isArray(s.snap.detail.assets.investExtra))   s.snap.detail.assets.investExtra=[];
   if(!Array.isArray(s.snap.detail.assets.personalExtra)) s.snap.detail.assets.personalExtra=[];
   syncFromDetail(s);
+  /* v3.8.7: สร้างเป้าหมาย 🎓 จากเส้นทางการศึกษาให้อัตโนมัติทุกครั้งที่โหลด/นำเข้าไฟล์
+     เดิม eduSyncAll() ถูกเรียกเฉพาะตอนกดในหน้าการศึกษาเท่านั้น — เปิดไฟล์ลูกค้าเก่ามาแล้วเป้าไม่ขึ้น */
+  try{ const save=(typeof STATE!=='undefined')?STATE:null;
+       STATE=s; try{ if(typeof eduSyncAll==='function') eduSyncAll(); } finally { if(save!==null) STATE=save; }
+  }catch(e){}
   return s;
 }
 /* sync ที่รับ state object (ใช้ใน migrate ก่อน STATE ถูก assign) */
@@ -5429,6 +5434,11 @@ function savePin(id){
   closePop(); render(); saveState();
 }
 function delPin(id){
+  /* v3.8.7: เป้าหมายการศึกษาเป็นของที่ระบบสร้างเอง — ถ้าผู้ใช้กดลบ ต้องจำไว้ ไม่งั้นโหลดใหม่แล้วโผล่มาอีก */
+  try{ const g=(STATE.goals||[]).find(x=>x.id===id);
+    if(g && g.eduAuto && g.eduKid){ const pl=eduPlanFor(g.eduKid); if(!pl.off) pl.off={};
+      const lv=String(g.name||'').replace(/^ค่าเทอม\s*/,'').trim(); if(lv) pl.off[lv]=true; }
+  }catch(e){}
   STATE.goals = STATE.goals.filter(x => x.id !== id);
   closePop(); render(); saveState();
 }
@@ -5501,7 +5511,7 @@ function goalIconKey(g){
 function goalPillar(g){ const t=goalType(g); return t==='edu'?'edu':t==='med'?'health':'invest'; }
 /* picker 7 ไอคอน · เกษียณมาก่อน */
 const GOAL_PICKS=[
-  {k:'edu',      n:'การศึกษาบุตร', ico:'🎓', amt:-2000000, yrs:15},
+  {k:'edu',      n:'การศึกษาบุตร', ico:'🎓', amt:-2000000, yrs:15, page:'pEdu'},
   {k:'house',    n:'ซื้อบ้าน',      ico:'🏠', amt:-3000000, yrs:5},
   {k:'car',      n:'ซื้อรถ',        ico:'🚗', amt:-1000000, yrs:3},
   {k:'travel',   n:'ท่องเที่ยว',    ico:'✈️', amt:-200000,  yrs:1},
@@ -5513,7 +5523,12 @@ function openRetirePick(){ const c=(STATE.carriers||[])[0]; if(!c){ alert('เ�
 function renderGoalPicker(){
   const box=document.getElementById('goalPicker'); if(!box) return;
   let html=`<div class="gpick" onclick="openRetirePick()">${goalSvg('retire')}<span>เกษียณ</span></div>`;
-  html+=GOAL_PICKS.map(p=>`<div class="gpick" onclick="quickGoal('${p.ico}','${p.n}',${p.amt},${p.yrs})">${goalSvg(p.k)}<span>${p.n}</span></div>`).join('');
+  html+=GOAL_PICKS.map(p=>{
+    /* v3.8.7: การศึกษาบุตรเป็นเป้าที่ระบบสร้างจาก "เส้นทางการศึกษา" — พาไปกรอกที่หน้านั้น ไม่ใช่เป้าเปล่า */
+    const go=(p.page&&typeof eduKids==='function'&&eduKids().length)
+      ? `goPage('${p.page}')` : `quickGoal('${p.ico}','${p.n}',${p.amt},${p.yrs})`;
+    return `<div class="gpick" onclick="${go}">${goalSvg(p.k)}<span>${p.n}</span></div>`;
+  }).join('');
   html+=`<div class="gpick" onclick="addGoal()">${goalSvg('add')}<span>อื่นๆ</span></div>`;
   box.innerHTML=html;
 }
@@ -9453,6 +9468,7 @@ function eduModeOf(kidId, levelKey){
 }
 function setEduMode(kidId, levelKey, mode){
   const p=eduPlanFor(kidId); if(!p.mode) p.mode={};
+  if(p.off) delete p.off[levelKey];            /* v3.8.7: เลือกโหมดใหม่ = ยกเลิกการลบเป้าที่เคยกดไว้ */
   p.mode[levelKey] = (mode==='cash') ? 'cash' : 'goal';
   eduSyncGoals(kidId);
   if(typeof saveState==='function') saveState();
@@ -9498,6 +9514,7 @@ function eduSyncGoals(kidId){
   let made=0;
   EDU_LEVELS.forEach(L=>{
     if(eduModeOf(kidId,L.k)!=='goal') return;   /* v3.8.3: ชั้นที่เลือกจ่ายจากกระแสเงินสด ไม่ตั้งเป็นเป้าหมาย */
+    { const _pl=eduPlanFor(kidId); if(_pl.off && _pl.off[L.k]) return; }   /* v3.8.7: ผู้ใช้กดลบเป้านี้ไว้เอง */
     const fee=eduFeeOf(kidId,L), rem=eduRemainYrs(kAge,L);
     if(fee<=0||rem<=0) return;
     const _gAge=Math.round(cAge+eduStartsIn(kAge,L));
@@ -9512,6 +9529,7 @@ function eduSyncGoals(kidId){
 function eduSyncAll(){ let n=0; try{ eduKids().forEach(k=>{ n+=eduSyncGoals(k.id)||0; }); }catch(e){} return n; }
 function setEduPath(kidId,level,col){
   const p=eduPlanFor(kidId);
+  if(p.off) delete p.off[level];               /* v3.8.7 */
   p.pick[level]=(p.pick[level]===col?null:col);
   if(p.pick[level]!=null) p.custom[level]=0;
   eduSyncGoals(kidId); if(typeof saveState==='function')saveState();
@@ -9519,6 +9537,7 @@ function setEduPath(kidId,level,col){
 }
 function setEduPathCustom(kidId,level,val,el){
   const p=eduPlanFor(kidId), n=parseInt(String(val).replace(/[^0-9]/g,''))||0;
+  if(p.off) delete p.off[level];               /* v3.8.7 */
   p.custom[level]=n; p.pick[level]= n>0?'c':null;
   eduSyncGoals(kidId); if(typeof saveState==='function')saveState();
   /* ระหว่างพิมพ์: อัปเดตแค่บรรทัดสรุป จะได้ไม่หลุด focus */
