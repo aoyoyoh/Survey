@@ -1640,7 +1640,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.10</b></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.11</b></div>
 </aside>
 
 <main id="main">
@@ -10261,6 +10261,43 @@ function expLines(){
       note:(Number(x.startAge)>0||Number(x.endAge)>0)?('ช่วงอายุ '+(Number(x.startAge)>0?x.startAge:'ตอนนี้')+'–'+(Number(x.endAge)>0?x.endAge:'ตลอดแผน')+' ของผู้วางแผน · ไม่นับเป็นค่าใช้จ่ายหลังเกษียณ'):'ไม่นับเป็นค่าใช้จ่ายหลังเกษียณ'}); });
   return out;
 }
+/* v3.9.11: กราฟ "จริง เทียบ คาดการณ์" แบบซูมเฉพาะช่วงที่บันทึก NAV — ลงหน้ารายงานด้วย
+   (เดิมกราฟนี้มีเฉพาะหน้าจอ Portfolio · ในรายงานมีแต่กราฟทั้งชีวิตซึ่ง actual 1–2 ปีเล็กจนมองไม่เห็น) */
+function navMonSvgA4(){
+  if(typeof calcNavMon!=='function') return '';
+  const m=calcNavMon(); if(m.empty||m.log.length<2) return '';
+  const W=700,H=200,L=56,R=64,T=14,B=26,pw=W-L-R,ph=H-T-B;
+  const t0=m.log[0].t, t1=Math.max(m.log[m.log.length-1].t, t0+864e5);
+  const all=[...m.log.map(e=>+e.nav),...m.costS.map(e=>e.v),...m.expS.map(e=>e.v)];
+  /* ซูมแกนตั้งไปที่ช่วงค่าจริง (ไม่เริ่มที่ 0) — จุดประสงค์ของกราฟนี้คือให้เห็น "ส่วนต่าง" จริง vs คาดการณ์ */
+  const rawMax=Math.max(...all,1), rawMin=Math.min(...all);
+  const pad=Math.max((rawMax-rawMin)*0.18, rawMax*0.01);
+  const vmax=rawMax+pad, vmin=Math.max(0, rawMin-pad);
+  const X=t=>L+(t-t0)/(t1-t0)*pw, Y=v=>T+(vmax-v)/(vmax-vmin)*ph;
+  const nmD=t=>new Date(t).toLocaleDateString('th-TH',{month:'short',year:'2-digit'});
+  let g='';
+  for(let i=0;i<=3;i++){ const v=vmin+(vmax-vmin)*i/3,y=Y(v);
+    g+='<line x1="'+L+'" y1="'+y.toFixed(1)+'" x2="'+(L+pw)+'" y2="'+y.toFixed(1)+'" stroke="#EDE8DC" stroke-width="1"/>'+
+       '<text x="'+(L-7)+'" y="'+(y+3.5).toFixed(1)+'" text-anchor="end" font-size="9.5" fill="#999">'+xM(v)+'</text>'; }
+  const stp=Math.ceil(m.log.length/5);
+  m.log.forEach((e,i)=>{ if(i%stp===0||i===m.log.length-1)
+    g+='<text x="'+X(e.t).toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle" font-size="9.5" fill="#999">'+nmD(e.t)+'</text>'; });
+  const path=(arr,get)=>arr.map((e,i)=>(i?'L':'M')+X(e.t).toFixed(1)+','+Y(get(e)).toFixed(1)).join('');
+  g+='<path d="'+path(m.costS,e=>e.v)+'" fill="none" stroke="#C9C2B2" stroke-width="1.6"/>';
+  g+='<path d="'+path(m.expS,e=>e.v)+'" fill="none" stroke="#4A4A4A" stroke-width="1.8" stroke-dasharray="5 3"/>';
+  g+='<path d="'+path(m.log,e=>+e.nav)+'" fill="none" stroke="#C8635A" stroke-width="2.4"/>';
+  m.log.forEach(e=>{ g+='<circle cx="'+X(e.t).toFixed(1)+'" cy="'+Y(+e.nav).toFixed(1)+'" r="3.4" fill="#C8635A" stroke="#fff" stroke-width="1.4"/>'; });
+  const le=m.log[m.log.length-1], lx=Math.min(X(le.t)+6, L+pw+52);
+  g+='<text x="'+lx.toFixed(1)+'" y="'+(Y(+le.nav)+3).toFixed(1)+'" font-size="10" font-weight="700" fill="#C8635A">'+xM(le.nav)+'</text>';
+  g+='<text x="'+lx.toFixed(1)+'" y="'+(Y(m.expLast)+3).toFixed(1)+'" font-size="9.5" fill="#4A4A4A">'+xM(m.expLast)+'</text>';
+  const ahead=m.diffPlan>=0;
+  const irrTxt=m.irr==null?'—':((m.irr>=0?'+':'−')+Math.abs(m.irr*100).toFixed(2)+'%');
+  return '<div class="a4-sec" style="margin-top:16px">จริง เทียบ คาดการณ์ — เฉพาะช่วงที่บันทึกจริง (ซูม)</div>'+
+    '<div style="margin:5px 0 2px"><svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block">'+g+'</svg></div>'+
+    '<div style="font-size:9.5px;color:#888">━ จริง (NAV ที่บันทึก) · ╌ คาดการณ์ตามแผน '+m.pre+'%/ปี · ━ เงินต้นสะสม (สีจาง)</div>'+
+    '<div style="font-size:10.5px;margin-top:5px;color:'+(ahead?'#508B82':'#B05048')+';font-weight:600">'+
+      (ahead?'✓ โตกว่าแผน +':'! ตามหลังแผน −')+xF(Math.abs(Math.round(m.diffPlan)))+' บาท · ผลตอบแทนจริง (IRR) '+irrTxt+'/ปี เทียบเป้า '+m.pre+'%/ปี</div>';
+}
 function a4Extras(){
   const host=document.getElementById('a4Summary'); if(!host||!(STATE.carriers||[]).length) return;
   const base=execSeries(); const ch=execChart(base);
@@ -10289,6 +10326,7 @@ function a4Extras(){
       '<div class="a4-sec" style="margin-top:14px">เส้นทางความมั่งคั่ง — ที่ทำได้จริง เทียบ แผน</div>'+
       '<div style="margin:6px 0 4px">'+ch.svg.replace('id="x-svg"','').replace(/<div class="x-tip"[^>]*><\/div>/,'')+'</div>'+
       '<div style="font-size:9.5px;color:#888">เส้นทอง = มูลค่าจริงจากการบันทึก NAV · เส้นเข้ม = เส้นทางตามแผน · ◆ = เป้าหมายก้อนใหญ่</div>'+
+      navMonSvgA4()+
       navRows+
     '</div>'+
     '<div class="a4-sheet">'+
@@ -10722,3 +10760,4 @@ function renderLibrary(){
 })();
 </script>
 </body>
+
