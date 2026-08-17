@@ -1559,7 +1559,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.8.5</b></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.8.6</b></div>
 </aside>
 
 <main id="main">
@@ -5596,7 +5596,9 @@ function renderGoals(){
     n++;
     rows+=`<tr>
       <td><span class="gx-num">${n}</span></td>
-      <td class="gx-name"><span class="gx-nm">${goalSvg(goalIconKey(g))}${(typeof goalDisplayName==='function'?goalDisplayName(g):g.name)}</span></td>
+      <td class="gx-name"><span class="gx-nm">${goalSvg(goalIconKey(g))}${(typeof goalDisplayName==='function'?goalDisplayName(g):g.name)}</span>${
+        (_gr&&_gr.poolFV>0)?`<small style="display:block;font-size:10.5px;color:var(--gold-2);line-height:1.4;margin-top:1px">↳ ใช้เงินก้อนการศึกษา ${mB(_gr.poolFV)}${_gr.gap>0?' · ยังขาด '+mB(_gr.gap):' · ครบแล้ว ✓'}</small>`:''
+      }</td>
       <td><input class="y y-num gx-in" value="${commafy(Math.abs(g.amt))}" onchange="setGoalField(${g.id},'amt',this.value)" title="มูลค่าวันนี้"></td>
       <td><input class="y y-num gx-age" value="${Math.round(ownerAgeFromPlanAge(g.parent, g.age))}" onchange="setGoalField(${g.id},'age',this.value)" title="อายุของ ${goalOwnerName(g.parent)} ตอนใช้เงิน"></td>
       <td>${isExp?mB(fv):'+'+mB(fv)}</td>
@@ -5615,6 +5617,13 @@ function renderGoals(){
   grid.innerHTML=`<div class="glx-wrap"><table class="goal-tbl">
     <thead><tr><th>#</th><th>เป้าหมาย</th><th>มูลค่าวันนี้</th><th>อายุ</th><th>มูลค่าวันใช้</th><th>ออม/เดือน</th><th></th></tr></thead>
     <tbody>${rows}</tbody></table></div>
+    ${(()=>{ const st=goalRows.eduPoolStart||0; if(!(st>0)) return '';
+      const left=goalRows.eduPoolLeft||0, used=st-left;
+      return `<div style="margin-top:10px;font-size:12px;line-height:1.65;color:var(--ink-2);background:#FBF8EE;border:1px solid var(--line);border-left:3px solid var(--gold-2);border-radius:8px;padding:9px 12px">
+        <b>เงินก้อนที่ติดป้าย "เพื่อการศึกษา" ${mB(st)} บาท</b> (ผลตอบแทน ${(goalRows.eduPoolRet||0).toFixed(1)}%/ปี) —
+        ระบบเติมให้เป้าหมาย 🎓 <b>ตามลำดับเวลา</b> เป้าที่ถึงกำหนดก่อนได้ก่อนจนครบ แล้วส่วนที่เหลือไหลไปเป้าถัดไป<br>
+        ใช้ไปแล้ว <b>${mB(used)}</b> · ${left>0?'เหลือ <b>'+mB(left)+'</b> (เตรียมไว้เกินความจำเป็นของเป้าการศึกษา — ย้ายไปพอร์ตอื่นได้)':'ใช้หมดแล้ว — เป้าที่ยังขาดต้องออมเพิ่มตามคอลัมน์ขวา'}
+      </div>`; })()}
     <div class="note" style="margin-top:8px">เกษียณคือเป้าหมายหลัก (อันดับ 1) · ใช้ปุ่ม ↑↓ จัดลำดับเป้าหมายอื่นตามความสำคัญ — เงินจะถูกจัดสรรให้อันดับต้นก่อน · "ออม/เดือน" = เงินที่ต้องเก็บเพิ่มถ้าเริ่มจากศูนย์ (ผลตอบแทน ${preRet}%/ปี)<br>
     เป้าหมายที่ขึ้นว่า <b>"ถึงกำหนดแล้ว"</b> คือชั้นเรียนที่ลูกกำลังเรียนอยู่ตอนนี้ — ไม่มียอดออมต่อเดือนเพราะไม่เหลือเวลาเก็บแล้ว ตัวเลขที่แสดงคือ<b>ค่าเทอมจริงที่ต้องจ่ายจากกระแสเงินสด</b>เฉลี่ยต่อเดือนตลอดช่วงชั้นนั้น</div>`;
 }
@@ -7919,6 +7928,25 @@ function goalRows(){
     const reqRet=pv0>0?(Math.pow(fv/pv0,1/years)-1)*100:null;
     rows.push({name:'🏖️ เกษียณ', need:fv, have, gap, reqRet, assumed:ret, pmt:gap>0?pmt:0, tied, alloc,
       act:gap>0?'ลงทุนเพิ่ม '+fmt0(pmt)+'/ด.':'พอแล้ว ✓', ok:gap<=0, goalId:'retire'}); }
+  /* ═══ v3.8.6 · เงินก้อนที่ติดป้าย "เพื่อการศึกษา" ไหลเข้าเป้าหมาย 🎓 ตามลำดับเวลา ═══
+     เดิมเงินที่เลือก port='edu' ไม่ถูกนับเข้าเป้าหมายไหนเลย (นับเฉพาะที่ผูกกับ goal.id ตรง ๆ)
+     ตอนนี้: เรียงเป้าหมายการศึกษาตามปีที่ต้องใช้เงิน แล้วเติมให้ครบทีละเป้าจากเป้าที่ถึงก่อน
+     ส่วนที่เหลือค่อยไหลไปเป้าถัดไป — ถ้าเหลือ แปลว่าเตรียมเกินความจำเป็น */
+  let eduPool=pVal('edu'), eduPoolStart=eduPool; const eduPoolRet=pRet('edu');
+  const _eduTake={};
+  (STATE.goals||[]).filter(g=>g.amt<0 && (typeof goalType==='function'?goalType(g)==='edu':g.ico==='🎓'))
+    .slice().sort((a,b)=>(a.age||0)-(b.age||0) || String(a.id).localeCompare(String(b.id)))
+    .forEach((g,i)=>{
+      if(eduPool<=0) return;
+      const k=String(g.id), gY=Math.max(0,(g.age||0)-curAge);
+      const ownRet=(grp[k]&&grp[k].value>0)?pRet(k):goalDefRet(g);
+      const own=pVal(k)*Math.pow(1+ownRet/100,gY);
+      const gfE=Math.pow(1+eduPoolRet/100,gY);
+      const pvNeed=Math.max(0,(goalFV(g)-own)/gfE);
+      const take=Math.min(eduPool,pvNeed); eduPool-=take;
+      if(take>0) _eduTake[k]={pv:take, fv:take*gfE, order:i+1, ret:eduPoolRet};
+    });
+  try{ goalRows.eduPoolStart=eduPoolStart; goalRows.eduPoolLeft=eduPool; goalRows.eduPoolRet=eduPoolRet; }catch(e){}
   // เป้าหมายแต่ละอัน — เรียงตามลำดับความสำคัญ · "มีแล้ว" = สินทรัพย์ที่เลือกเป้าหมายนี้ไว้
   (STATE.goals||[]).filter(g=>g.amt<0).slice().sort((a,b)=>(a.rank||0)-(b.rank||0)).forEach(g=>{
     const key=String(g.id), fv=goalFV(g);
@@ -7932,16 +7960,18 @@ function goalRows(){
     const years=Math.max(1,yrsTo), gYears=Math.max(0,yrsTo);
     const ret=(grp[key]&&grp[key].value>0)?pRet(key):goalDefRet(g);
     const gf=Math.pow(1+ret/100,gYears);
-    const tied=pVal(key), alloc=0;
-    const pv0=tied, have=pv0*gf, gap=Math.max(0,fv-have);
+    const _pool=_eduTake[key]||null;                       /* v3.8.6: ส่วนที่ได้จากเงินก้อนการศึกษา */
+    const tied=pVal(key), alloc=_pool?_pool.pv:0;
+    const pv0=tied, have=pv0*gf+(_pool?_pool.fv:0), gap=Math.max(0,fv-have);
     const pmt=(!due&&gap>0)?HENG.pmtSinkingMonthly(gap,ret,yrsTo*12):0;
     const cashMonthly=due?(gap/(nSpan*12)):0;   /* ภาระจริงที่ต้องจ่ายจากกระแสเงินสด เฉลี่ยต่อเดือนตลอดช่วงชั้น */
     const reqRet=(!due&&pv0>0)?(Math.pow(fv/pv0,1/years)-1)*100:null;
     rows.push({name:(g.ico||'🎯')+' '+goalDisplayName(g), need:fv, have, gap, reqRet, assumed:ret, pmt, tied, alloc,
-      act: gap<=0 ? 'พอแล้ว ✓'
+      act: (_pool?'ใช้เงินก้อนการศึกษา '+fmt0(_pool.fv)+' · ':'')+(gap<=0 ? 'พอแล้ว ✓'
          : due ? ('ถึงกำหนดแล้ว · จ่ายจริง ~'+fmt0(cashMonthly)+'/ด. ตลอด '+nSpan+' ปี')
-               : ('ลงทุนเพิ่ม '+fmt0(pmt)+'/ด.'),
+               : ('ลงทุนเพิ่ม '+fmt0(pmt)+'/ด.')),
       ok:gap<=0, due, spanYears:nSpan, cashMonthly, goalId:g.id,
+      poolFV:_pool?_pool.fv:0, poolPV:_pool?_pool.pv:0, poolOrder:_pool?_pool.order:0,
       kind:(typeof goalType==='function'?goalType(g):'gen')}); });   /* v3.8: ติดชนิดเป้าหมายไว้ ไม่ต้องเดาจากชื่อทีหลัง */
   // ความคุ้มครอง
   const sum=fn=>STATE.carriers.reduce((s,c)=>{try{return s+(fn(c)||0)}catch(e){return s}},0);
@@ -9470,8 +9500,10 @@ function eduSyncGoals(kidId){
     if(eduModeOf(kidId,L.k)!=='goal') return;   /* v3.8.3: ชั้นที่เลือกจ่ายจากกระแสเงินสด ไม่ตั้งเป็นเป้าหมาย */
     const fee=eduFeeOf(kidId,L), rem=eduRemainYrs(kAge,L);
     if(fee<=0||rem<=0) return;
+    const _gAge=Math.round(cAge+eduStartsIn(kAge,L));
     STATE.goals.push({ id:eduGoalId(kidId,L.k), name:'ค่าเทอม '+L.k, ico:'🎓',
-      amt:-(fee*rem), age:Math.round(cAge+eduStartsIn(kAge,L)), eduYears:rem,
+      amt:-(fee*rem), age:_gAge, eduYears:rem,
+      rank:500+_gAge,                       /* v3.8.6: เรียงตามลำดับเวลา — ใครถึงกำหนดก่อนอยู่บนก่อน */
       parent:kid.id, split:shared, eduAuto:true, eduKid:String(kidId) });
     made++;
   });
