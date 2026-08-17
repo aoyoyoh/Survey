@@ -527,16 +527,19 @@ body.pop-open .content{padding-right:calc(min(400px,94vw) + 16px)}
 .pcm-hosp-info{font-size:11.5px;color:var(--muted);margin:-3px 0 12px;line-height:1.5} .pcm-hosp-info b{color:var(--gold-2);font-weight:700}
 .edu-grid{display:grid;grid-template-columns:minmax(76px,auto) repeat(3,1fr);gap:8px;align-items:stretch}
 .edu-grid.g4{grid-template-columns:minmax(72px,auto) repeat(4,1fr)}
-.edu-grid.g5{grid-template-columns:minmax(72px,auto) repeat(4,1fr) minmax(104px,auto)}
-/* v3.8.3: สลับโหมดรายชั้น — จ่ายจากกระแสเงินสด หรือ เก็บเป็นเงินก้อน */
-.edu-mode{display:flex;flex-direction:column;gap:4px;justify-content:center;min-height:58px}
-.edu-mode button{font-family:var(--thai);font-size:11px;line-height:1.25;padding:6px 8px;border:1.5px solid var(--line);
-  border-radius:9px;background:#F7F4EE;color:var(--muted);cursor:pointer;transition:.15s;text-align:center;font-weight:600}
-.edu-mode button:hover{border-color:var(--gold-2)}
-.edu-mode button.on{background:var(--ink,#1C1C2E);border-color:var(--ink,#1C1C2E);color:#fff}
-.edu-mode button.on.cash{background:#8A6D2F;border-color:#8A6D2F}
-.edu-mode small{display:block;font-size:9px;font-weight:400;opacity:.85}
-@media(max-width:560px){.edu-grid.g5{grid-template-columns:minmax(64px,auto) repeat(4,1fr)}.edu-mode{grid-column:1/-1;flex-direction:row;min-height:0}.edu-mode button{flex:1}}
+.edu-grid.g5{grid-template-columns:minmax(72px,auto) repeat(4,1fr) minmax(122px,auto)}
+/* v3.8.5: สลับโหมดรายชั้น — segmented pill เล็ก ๆ ให้ตารางโล่ง */
+.edu-mode{display:flex;align-items:center;justify-content:center;min-height:58px}
+.edu-mode.lock{opacity:.32;pointer-events:none}
+.edu-seg{display:inline-flex;padding:2px;gap:2px;border:1px solid var(--line);border-radius:999px;background:#F7F4EE}
+.edu-seg button{font-family:var(--thai);font-size:11px;font-weight:600;line-height:1;padding:6px 11px;border:0;
+  border-radius:999px;background:transparent;color:var(--faint);cursor:pointer;transition:.15s;white-space:nowrap}
+.edu-seg button:hover:not(.on){color:var(--ink)}
+.edu-seg button.on{background:var(--ink,#1C1C2E);color:#fff}
+.edu-seg button.on.cash{background:#8A6D2F}
+.edu-legend{font-size:10.5px;color:var(--faint);text-align:right;margin-top:6px;line-height:1.6}
+.edu-legend b{font-weight:600;color:var(--muted)}
+@media(max-width:560px){.edu-grid.g5{grid-template-columns:minmax(64px,auto) repeat(4,1fr)}.edu-mode{grid-column:1/-1;min-height:0;margin:2px 0 4px}.edu-legend{text-align:left}}
 .edu-cust{font-family:var(--thai);text-align:center;padding:14px 4px;border:1.5px dashed var(--gold-2);border-radius:12px;background:#FCFAF5;color:var(--ink);font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;min-height:58px;width:100%}
 .edu-cust::placeholder{color:var(--faint);font-weight:400;font-size:10.5px}
 .edu-cust:focus{outline:none;box-shadow:inset 0 0 0 1.5px var(--gold-2)}
@@ -1556,7 +1559,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.8.4</b></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.8.5</b></div>
 </aside>
 
 <main id="main">
@@ -9553,12 +9556,12 @@ function renderEduPath(){
                  ' oninput="setEduPathCustom(\''+k.id+'\',\''+L.k+'\',this.value,this)" onchange="render()">';
       /* v3.8.3: ปุ่มเลือกวิธีจ่ายรายชั้น — ท้ายแถวของแต่ละระดับ */
       const md=eduModeOf(k.id,L.k), lock=eduTutorOnly(k.id);
-      const mode='<div class="edu-mode">'+
-        '<button type="button" class="'+(md==='goal'?'on':'')+'"'+(lock?' disabled style="opacity:.4;cursor:not-allowed"':'')+
-          ' onclick="setEduMode(\''+k.id+'\',\''+L.k+'\',\'goal\')" title="ตั้งเป็นเป้าหมาย — ต้องมีเงินครบตั้งแต่ปีแรกของชั้นนี้">🎯 เก็บเงินก้อน<small>ครบตั้งแต่ปีแรก</small></button>'+
-        '<button type="button" class="'+(md==='cash'?'on cash':'')+'"'+(lock?' disabled style="opacity:.4;cursor:not-allowed"':'')+
-          ' onclick="setEduMode(\''+k.id+'\',\''+L.k+'\',\'cash\')" title="จ่ายจากรายได้ของแต่ละปี ไม่ต้องเก็บเงินก้อน">💰 กระแสเงินสด<small>จ่ายปีต่อปี</small></button>'+
-      '</div>';
+      const mode='<div class="edu-mode'+(lock?' lock':'')+'"><div class="edu-seg">'+
+        '<button type="button" class="'+(md==='goal'?'on':'')+'"'+(lock?' disabled':'')+
+          ' onclick="setEduMode(\''+k.id+'\',\''+L.k+'\',\'goal\')" title="เก็บเป็นเงินก้อน — ตั้งเป็นเป้าหมาย 🎓 ต้องมีเงินครบตั้งแต่ปีแรกของชั้นนี้">เงินก้อน</button>'+
+        '<button type="button" class="'+(md==='cash'?'on cash':'')+'"'+(lock?' disabled':'')+
+          ' onclick="setEduMode(\''+k.id+'\',\''+L.k+'\',\'cash\')" title="จ่ายปีต่อปีจากรายได้ — ลงเป็นรายจ่ายผันแปร ไม่ต้องเก็บเงินก้อน">ปีต่อปี</button>'+
+      '</div></div>';
       return '<div class="edu-rl">'+L.k+'<small>'+when+'</small></div>'+cells+cust+mode;
     }).join('');
     const tOn=eduTutorOnly(k.id);
@@ -9574,6 +9577,7 @@ function renderEduPath(){
       '<div style="font-size:12px;color:var(--muted)">ตอนนี้อายุ '+kAge+' · เหลืออีก '+live.reduce((a,L)=>a+eduRemainYrs(kAge,L),0)+' ปีการศึกษา</div></div>'+
       tSwitch+
       '<div class="edu-grid g5"><div class="edu-corner"></div>'+head+rows+'</div>'+
+      '<div class="edu-legend"><b>เงินก้อน</b> = ตั้งเป็นเป้าหมาย 🎓 มีเงินครบตั้งแต่ปีแรกของชั้นนั้น · <b>ปีต่อปี</b> = จ่ายจากกระแสเงินสด ลงเป็นรายจ่ายผันแปร</div>'+
       '<div class="edu-total" id="eduSum-'+k.id+'">'+eduSumLine(k.id)+'</div></div>';
   }).join('');
   host.innerHTML += '<div class="note">ค่าเทอมเป็นราคาต่อปีของวันนี้ · ระบบตั้งเงินก้อนไว้ที่ "ปีแรกของแต่ละระดับ" เพื่อให้เตรียมพร้อมก่อนถึงเวลาจริง · แก้ไขรายเป้าหมายได้ที่หน้าเป้าหมาย</div>'+
