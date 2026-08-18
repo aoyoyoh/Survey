@@ -748,7 +748,7 @@ input:focus,select:focus{border-color:var(--gold);background:#fff}
   <div id="blankFin"></div>
 
   <div style="text-align:center;font-size:10.5px;color:var(--faint);margin-top:26px">
-    Money Doctor Visit™ · © 2026 Signature 41 — Customized for One · สงวนลิขสิทธิ์ · v2.6.1
+    Money Doctor Visit™ · © 2026 Signature 41 — Customized for One · สงวนลิขสิทธิ์ · v2.6.2
   </div>
 
 </div>
@@ -1908,7 +1908,10 @@ function buildClientFile(){
       startAge:ra, endAge:life, growth:0, color:'#6BA89E' });
     est.push('รายได้หลังเกษียณ '+fmt(num('s1_passive'))+' ฿/ปี — ยืนยันแหล่งที่มา/ระยะเวลากับลูกค้าใน MRI');
   }
-  const carriers=[{ id:'c-primary', name:nm, age, life, retireAge:ra, retireMode:'items', incomes }];
+  /* v2.6.2: ค่าตั้งต้นเป็น 'auto70' ให้ตรงกับ Money MRI (70% ของค่าใช้จ่ายรวม)
+     เดิมส่ง 'items' ซึ่งใน MRI v3.9+ แปลว่า "ผลรวมรายการรายจ่ายที่ติ๊กไว้" — ถ้ายังไม่ได้กรอกงบกระแสเงินสด
+     จะได้ 0 แล้วแผนขึ้นว่าเงินพอทั้งที่ยังไม่มีข้อมูล · ถ้าลูกค้าระบุยอดในนัด จะถูกเปลี่ยนเป็น 'custom' ด้านล่าง */
+  const carriers=[{ id:'c-primary', name:nm, age, life, retireAge:ra, retireMode:'auto70', incomes }];
 
   /* ---- ผู้พึ่งพิง: บุตรจากแผนการศึกษา (ค่าเลี้ยงดูยังไม่ได้เก็บ — กรอกใน MRI) ---- */
   const dependents=[];
@@ -1980,7 +1983,7 @@ function buildClientFile(){
      MRI อ่าน ciCov/paCov/healthMax จาก snap.protection เมื่อทะเบียนกรมธรรม์ยังว่าง
      พอทำทะเบียนกรมธรรม์ครบ ตัวเลขจากทะเบียนจะคำนวณทับให้เอง (ตามที่ MRI ออกแบบไว้) */
   if(num('s3_have')>0) protection.ciCov=num('s3_have');
-  /* v2.6.1: อุบัติเหตุ — หน้านี้ถามเป็น "วงเงินค่ารักษาต่อครั้ง" อยู่แล้ว
+  /* v2.6.2: อุบัติเหตุ — หน้านี้ถามเป็น "วงเงินค่ารักษาต่อครั้ง" อยู่แล้ว
      จึงส่งเข้าช่องค่ารักษาพยาบาลของ Money MRI (paMedTarget/paMedMax) ไม่ใช่ทุนประกันชีวิตแบบอุบัติเหตุ */
   if(num('s4_need')>0) protection.paMedTarget=num('s4_need');
   if(num('s4_have')>0) protection.paMedMax=num('s4_have');
@@ -1990,7 +1993,8 @@ function buildClientFile(){
 
   /* ---- v2.4: ระดับความเสี่ยง → ตั้งพอร์ตก่อนเกษียณใน MRI ---- */
   const riskDone = riskAnswered()>=10;
-  let portfolio = { levels:{conservative:3.5,moderate:4.5,aggressive:6}, preRetire:'moderate', postRetire:'conservative' };
+  /* v2.6.2: ชุดตัวเลขเดียวกับพอร์ตแนะนำของ Money MRI (เสี่ยงต่ำ 3 · ปานกลาง 5 · เสี่ยงสูง 7) */
+  let portfolio = { levels:{conservative:3,moderate:5,aggressive:7}, preRetire:'moderate', postRetire:'conservative' };
   let riskProfile = null;
   if(riskDone){
     const li=riskLevel(), L=RISKLV[li];
@@ -2020,7 +2024,7 @@ function buildClientFile(){
   ].forEach(([id,l])=>{ if(txt(id)) talk[l]=txt(id); });
 
   const visit={
-    source:'S41 Money Doctor Visit v2.6.1',
+    source:'S41 Money Doctor Visit v2.6.2',
     visitDate:new Date().toISOString().slice(0,10),
     advisor:txt('aname')||'',
     goalPriority: order.map(id=>{const m=MODS.find(x=>x.id===id);return m?m.title:id;}),
@@ -2044,7 +2048,7 @@ function buildClientFile(){
          (ถ้าตั้งตายตัว MRI จะเอาค่านี้ไปทับพอร์ต แล้วผลประเมินความเสี่ยงจะไม่มีผลอะไรเลย) */
       assume:{ salaryG:3, inf:3, eduInf:5, medInf:8,
                preRet:portfolio.levels[portfolio.preRetire], postRet:portfolio.levels[portfolio.postRetire],
-               sdPort:({conservative:5.6,moderate:8.8,aggressive:12})[portfolio.preRetire]||8.8 },
+               sdPort:({conservative:4.2,moderate:8.9,aggressive:13.8})[portfolio.preRetire]||8.9 },
       portfolio,
       ports:[], carriers, dependents, goals:eduGoals, eduPlan, navLog:[],
       snap:{ policies:[], detail, protection },
