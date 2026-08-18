@@ -1640,7 +1640,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.11</b></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.12</b></div>
 </aside>
 
 <main id="main">
@@ -10736,24 +10736,18 @@ function renderLibrary(){
     setTimeout(async ()=>{
       await restoreFolder();
       const lib=libRead();
-      if(lib.activeId){
-        const data=clientRead(lib.activeId);
-        if(data&&data.state&&(data.state.carriers||[]).length){
-          STATE=migrate(data.state);
-          if(typeof setSnapshots==='function') setSnapshots(data.snapshots||{});
-          try{ closeModal('mWelcome'); }catch(e){}
-          render(); if(typeof renderSnapshotList==='function') try{ renderSnapshotList(); }catch(e){}
-        }
-      } else {
-        /* ไม่มีลูกค้าที่เปิดอยู่ = ต้องเป็นหน้าว่างเสมอ
-           (ล้าง "เงา" ที่ init() เดิมอาจ render จากข้อมูลรุ่นก่อนก่อนโมดูลนี้ทำงาน) */
-        if((STATE.carriers||[]).length){
-          STATE=JSON.parse(JSON.stringify(EMPTY_STATE));
-          if(typeof setSnapshots==='function') setSnapshots({});
-          render(); if(typeof renderSnapshotList==='function') try{ renderSnapshotList(); }catch(e){}
-        }
-        if(lib.clients.length){ try{ closeModal('mWelcome'); }catch(e){} openLibrary(); }
+      /* ═══ v3.9.12 (privacy — ตามข้อกำหนด 17/08): เปิดเว็บ = หน้าว่างเสมอ ทุกครั้ง ═══
+         เดิมเปิดมาแล้วโชว์ลูกค้าคนล่าสุดเต็มจอทันที — ถ้าเปิดต่อหน้าลูกค้าคนใหม่ ข้อมูลคนเก่าหลุด
+         ตอนนี้: ปลด active + ล้างจอ + ล้าง snapshot ค้างจอ · ข้อมูลไม่หายเพราะทุกการแก้ auto-save
+         ลงระเบียนในเครื่องแล้ว (libSaveActive) — เครื่องเดิมเปิดกลับได้จากห้องสมุดลูกค้า/นำเข้าไฟล์ */
+      if(lib.activeId){ lib.activeId=null; libWrite(lib); }
+      if((STATE.carriers||[]).length){
+        STATE=JSON.parse(JSON.stringify(EMPTY_STATE));
+        render(); if(typeof renderSnapshotList==='function') try{ renderSnapshotList(); }catch(e){}
       }
+      if(typeof setSnapshots==='function') setSnapshots({});   /* snapshot ประจำปีของคนเก่า ต้องไม่ค้างจอ (สำเนาจริงอยู่ในระเบียนลูกค้า) */
+      if(window._S41_PREFILL){ paintSaveInd(); return; }        /* มาจากลิงก์ Survey — อย่าเปิดห้องสมุดทับหน้า Welcome ของ lead */
+      if(lib.clients.length){ try{ closeModal('mWelcome'); }catch(e){} openLibrary(); }
       paintSaveInd();
     }, 120);
   });
