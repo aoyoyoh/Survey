@@ -1640,7 +1640,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.19</b></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.20</b></div>
 </aside>
 
 <main id="main">
@@ -5977,12 +5977,19 @@ function updateKPIs(){
    ═══════════════════════════════════════════════ */
 const SNAP_KEY = 's41_snapshots_v4';
 
+/* v3.9.20: snapshots ต้องเป็น object {ปี: {...}} เสมอ — ไฟล์ที่สร้างจากภายนอกบางไฟล์ส่ง `snapshots: []` (array)
+   → saveAnnualSnapshot เซ็ต index บน array แล้ว renderSnapshotList พัง (null.summary) · รับ array ที่มี year ด้วย */
+function normSnapshots(s){
+  if(!s || typeof s!=='object') return {};
+  if(Array.isArray(s)){ const o={}; s.forEach(x=>{ if(x&&x.year) o[x.year]=x; }); return o; }
+  return s;
+}
 function getSnapshots(){
-  try { return JSON.parse(localStorage.getItem(SNAP_KEY) || '{}'); }
+  try { return normSnapshots(JSON.parse(localStorage.getItem(SNAP_KEY) || '{}')); }
   catch(e){ return {}; }
 }
 function setSnapshots(snaps){
-  try { localStorage.setItem(SNAP_KEY, JSON.stringify(snaps)); } catch(e){}
+  try { localStorage.setItem(SNAP_KEY, JSON.stringify(normSnapshots(snaps))); } catch(e){}
 }
 
 function saveAnnualSnapshot(){
@@ -8259,37 +8266,7 @@ function renderHolistic(){
   setT('h-cost-edu', pf.eduMonthly>0? fmt0(pf.eduMonthly)+' /ด.' : '—');
   setT('h-cost-ret', pf.retMonthly>0? fmt0(pf.retMonthly)+' /ด.' : '—');
   setT('h-cost-ins', pf.insPremium>0? fmt0(pf.insPremium)+' /ปี' : 'พอแล้ว');
-  const rb=document.getElementById('h-retire'); if(rb){
-    rb.innerHTML = (domPct('retire')!=null?pctBar(domPct('retire'),{label:'ความพร้อมเกษียณ (เงินก้อนที่คาดมี ÷ ที่ต้องมี)'}):'') + carriers.map(c=>{
-      const R=HENG.retirement(c);
-      const a=R.planA, b=R.planB;
-      const aOk=a.gap<=0;
-      const ws=`<div class="na-ws">
-        <div class="na-h">วิธีคิดเงินเกษียณ</div>
-        <div class="na-row"><span>ค่าใช้จ่าย/ปี ณ วันเกษียณ <small>ปรับเงินเฟ้อ ${a.yToRet} ปี</small></span><span>${fmt0(a.needAtRet)}</span></div>
-        <div class="na-row sub"><span>① เงินก้อนที่ต้องมีตอนเกษียณ <small>ใช้ ${a.retireYears} ปี</small></span><span>${fmt0(a.target)}</span></div>
-        <div class="na-grp">② แหล่งเงินที่คาดจะมี ณ วันเกษียณ</div>
-        <div class="na-row"><span>สินทรัพย์ลงทุนที่จะเติบโต</span><span>${fmt0(a.investAtRet)}</span></div>
-        <div class="na-row"><span>ทุนเกษียณสะสม (PVD/กบข./อื่น)</span><span>${fmt0(a.retireFund)}</span></div>
-        <div class="na-row"><span>มูลค่าบำนาญหลังเกษียณ</span><span>${fmt0(a.pensionPV)}</span></div>
-        <div class="na-row"><span>เงินคืน/ครบสัญญาจากกรมธรรม์ <small>ก่อนเกษียณทบถึงวันเกษียณ ${fmt0(a.policyPre||0)} · หลังเกษียณคิดลด ${fmt0(a.policyPost||0)}</small></span><span>${fmt0(a.policyPV||0)}</span></div>
-        <div class="na-row sub"><span>รวมแหล่งเงิน</span><span>${fmt0(a.expected)}</span></div>
-        <div class="na-row"><span>③ ส่วนที่ขาด <small>① − ②</small></span><span>${fmt0(a.gap)}</span></div>
-        <div class="na-row tot"><span>④ ต้องออมเพิ่ม</span><span>${a.gap>0?fmt0(a.monthly)+' /เดือน':'พอแล้ว ✓'}</span></div>
-      </div>`;
-      return `<div class="h-person">
-        <div class="h-person-h">${c.name} · เป้าเกษียณอายุ ${a.retAge}</div>
-        ${aOk
-          ? `<div class="h-good">✓ สินทรัพย์ที่คาดมีพอแล้ว — ออมเพิ่มเพื่อความมั่นใจได้</div>`
-          : `<div class="h-ab">
-               <div class="h-ab-c sel"><div class="h-ab-k">แผน A · เกษียณ ${a.retAge}</div><div class="h-ab-v">${fmt0(a.monthly)}</div><div class="h-ab-u">บาท/เดือน</div></div>
-               <div class="h-ab-c"><div class="h-ab-k">แผน B · เกษียณ ${b.retAge}</div><div class="h-ab-v">${fmt0(b.monthly)}</div><div class="h-ab-u">บาท/เดือน</div></div>
-             </div>
-             <div class="h-note">ต้องเตรียมเงินเกษียณราว <b>${mB(a.target)}</b> · ยังขาด <b>${mB(a.gap)}</b> — เลือกแผน B ถ้าผ่อนต่อเดือนได้สบายกว่า</div>`}
-        ${ws}
-      </div>`;
-    }).join('');
-  }
+  /* v3.9.20: บล็อก #h-retire ('วิธีคิดเงินเกษียณ') ย้ายไปหน้าเกษียณ → retWorksheetHTML() — element นี้ไม่มีใน HTML แล้ว */
   const eb=document.getElementById('h-edu'); if(eb){
     const E=HENG.education();
     const eduBar=(domPct('edu')!=null && E.items.length)?pctBar(domPct('edu'),{label:'ความพร้อมทุนการศึกษา (เตรียมไว้ ÷ ต้องใช้)'}):'';
@@ -9961,16 +9938,23 @@ function renderRetPage(){
   }
   /* แหล่งเงินหลังเกษียณ + เงินก้อนที่ต้องมี (ย้ายมาจากการ์ดบน — ให้ลำดับอ่านเป็น กราฟ → ค่าใช้จ่าย → แหล่งเงิน → เงินก้อน) */
   const passY=Math.round((Number(c.pensionMonthly)||0)*12);
-  let invest=null; try{ invest=investableTotal(computeFinancials()); }catch(e){}
+  /* v3.9.20: เงินก้อนที่เตรียมไว้ = ฐานเดียวกับ projection/การ์ดเกษียณ (v3.9.17–18) —
+     ไม่รวมมูลค่าเวนคืนของเล่มที่มีตารางเงินรับ (cf) เพราะเงินก้อนนั้นนับใน "เงินจากกรมธรรม์" แล้ว (กันนับซ้ำ) */
+  let invest=null, svCf=0; try{ const _f=computeFinancials(); const _inv=investableTotal(_f);
+    svCf=((STATE.snap&&STATE.snap.policies)||[]).reduce((t,p)=>t+((Array.isArray(p.cf)&&p.cf.length)?(Number(p.surrender)||0):0),0);
+    invest=Math.max(0,_inv-svCf); }catch(e){}
   const simple=Math.max(effM*12-passY,0)*useY;
-  let real=null; try{ real=HENG.retirement(c).planA.target; }catch(e){}
+  let real=null, RA=null; try{ RA=HENG.retirement(c).planA; real=RA.target; }catch(e){}
   const f=n=>Math.round(Number(n)||0).toLocaleString('en-US');
+  const polPV=RA?Math.round(RA.policyPV||0):0, penPV=RA?Math.round(RA.pensionPV||0):0;
   const fldsSum=
    '<div class="rv-flds" style="margin-top:14px">'+
-    '<div class="rv-f"><label>เงินก้อนที่เตรียมไว้แล้ว <small>มาจากงบดุล (หน้า Snapshot) — แก้ที่ต้นทาง</small></label>'+
+    '<div class="rv-f"><label>เงินก้อนที่เตรียมไว้แล้ว <small>มาจากงบดุล (หน้า Snapshot) — แก้ที่ต้นทาง'+(svCf>0?' · ไม่รวมมูลค่าเวนคืน '+f(svCf)+' ของเล่มที่มีเงินคืน (นับในเงินจากกรมธรรม์แล้ว)':'')+'</small></label>'+
       '<div class="ro">'+(invest==null?'—':f(invest)+' ฿')+'</div></div>'+
-    '<div class="rv-f"><label>รายได้ที่จะยังมีหลังเกษียณ ต่อปี <small>บำนาญ · ปันผล · ค่าเช่า</small></label>'+
+    '<div class="rv-f"><label>รายได้ที่จะยังมีหลังเกษียณ ต่อปี <small>บำนาญ · ปันผล · ค่าเช่า'+(penPV>0?' · คิดเป็นมูลค่า ณ วันเกษียณ '+f(penPV):'')+'</small></label>'+
       '<input value="'+(passY?f(passY):'')+'" placeholder="ไม่มีเว้นว่างได้" onchange="setRetVisit(\'passiveY\',this.value)"></div>'+
+    (polPV>0?'<div class="rv-f" style="grid-column:1/-1"><label>เงินคืน/ครบสัญญา/บำนาญจากกรมธรรม์ ณ วันเกษียณ <small>จากทะเบียนกรมธรรม์ (หน้า Protection · ปุ่ม 🎯) — ก่อนเกษียณทบผลตอบแทนถึงวันเกษียณ '+f(RA.policyPre||0)+' · หลังเกษียณคิดลดกลับมา '+f(RA.policyPost||0)+'</small></label>'+
+      '<div class="ro">'+f(polPV)+' ฿</div></div>':'')+
    '</div>'+
    '<div class="rv-sum">'+
     '<div class="rv-box rv-then"><div class="rv-k">เงินก้อนที่ต้องมี — แบบประมาณเบื้องต้น<br><small>ยังไม่รวมเงินเฟ้อ</small></div><div class="rv-n">'+f(simple)+' ฿</div></div>'+
@@ -10004,7 +9988,29 @@ function renderRetPage(){
     '<div class="bigrow">'+
     '<div class="bigcard"><div class="k">พอร์ต ณ วันหยุดงาน (อายุ '+retA+')</div><div class="bignum">'+xM(atRet?atRet.balance:0)+'</div><div class="n">'+xF(atRet?atRet.balance:0)+' บาท</div></div>'+
     '<div class="bigcard"><div class="k">จุดต่ำสุดหลังเกษียณ</div><div class="bignum">'+(minRow?xM(minRow.balance):'—')+'</div><div class="n">'+(minRow?('ช่วงอายุ '+minRow.age):'')+'</div></div>'+
-    '<div class="bigcard"><div class="k">ปลายแผน (อายุ '+life+')</div><div class="bignum" style="color:'+(ok?C.sage:C.carrier)+'">'+(ok?xM(lastR?lastR.balance:0):'0')+'</div><div class="n">'+(ok?'ส่งต่อให้คนข้างหลังได้':'ต้องปรับแผน')+'</div></div></div>';
+    '<div class="bigcard"><div class="k">ปลายแผน (อายุ '+life+')</div><div class="bignum" style="color:'+(ok?C.sage:C.carrier)+'">'+(ok?xM(lastR?lastR.balance:0):'0')+'</div><div class="n">'+(ok?'ส่งต่อให้คนข้างหลังได้':'ต้องปรับแผน')+'</div></div></div>'+
+    retWorksheetHTML(c);
+}
+/* v3.9.20: ตาราง "วิธีคิดเงินเกษียณ" (① ต้องมี ② แหล่งเงิน ③ ขาด ④ ต้องออม) — ย้ายมาจากโค้ด #h-retire ใน renderHolistic
+   ซึ่งไม่มี element รองรับตั้งแต่ย้ายหน้า (dead code) ทำให้แถวเงินจากกรมธรรม์/บำนาญที่เพิ่มใน v3.9.18 ไม่เคยขึ้นจอ */
+function retWorksheetHTML(c){
+  let R=null; try{ R=HENG.retirement(c); }catch(e){ return ''; }
+  const a=R.planA, b=R.planB, f=n=>Math.round(Math.max(0,Number(n)||0)).toLocaleString('en-US');
+  return '<div class="na-ws" style="margin-top:14px">'+
+    '<div class="na-h">วิธีคิดเงินเกษียณ · '+(c.name||'')+' เกษียณ '+a.retAge+' ใช้ถึง '+(a.retAge+a.retireYears)+'</div>'+
+    '<div class="na-row"><span>ค่าใช้จ่าย/ปี ณ วันเกษียณ <small>ปรับเงินเฟ้อ '+a.yToRet+' ปี</small></span><span>'+f(a.needAtRet)+'</span></div>'+
+    '<div class="na-row sub"><span>① เงินก้อนที่ต้องมีตอนเกษียณ <small>ใช้ '+a.retireYears+' ปี</small></span><span>'+f(a.target)+'</span></div>'+
+    '<div class="na-grp">② แหล่งเงินที่คาดจะมี ณ วันเกษียณ</div>'+
+    '<div class="na-row"><span>เงินก้อนที่เตรียมไว้ เติบโตถึงวันเกษียณ</span><span>'+f(a.investAtRet)+'</span></div>'+
+    (a.retireFund>0?'<div class="na-row"><span>ทุนเกษียณสะสม (PVD/กบข./อื่น)</span><span>'+f(a.retireFund)+'</span></div>':'')+
+    (a.pensionPV>0?'<div class="na-row"><span>มูลค่าบำนาญหลังเกษียณ <small>บำนาญคงที่ คิดลด ณ วันเกษียณ</small></span><span>'+f(a.pensionPV)+'</span></div>':'')+
+    (a.policyPV>0?'<div class="na-row"><span>เงินคืน/ครบสัญญา/บำนาญจากกรมธรรม์ <small>ก่อนเกษียณ '+f(a.policyPre)+' · หลังเกษียณ '+f(a.policyPost)+'</small></span><span>'+f(a.policyPV)+'</span></div>':'')+
+    '<div class="na-row sub"><span>รวมแหล่งเงิน</span><span>'+f(a.expected)+'</span></div>'+
+    '<div class="na-row"><span>③ ส่วนที่ขาด <small>① − ②</small></span><span>'+f(a.gap)+'</span></div>'+
+    '<div class="na-row tot"><span>④ ต้องออมเพิ่ม <small>ทบต้นถึงวันเกษียณ · เพิ่มตามเงินเดือน</small></span><span>'+(a.gap>0?f(a.monthly)+' /เดือน':'พอแล้ว ✓')+'</span></div>'+
+    (a.gap>0&&b?'<div class="na-row"><span>ถ้าเลื่อนเกษียณเป็น '+b.retAge+'</span><span>'+(b.gap>0?f(b.monthly)+' /เดือน':'พอแล้ว ✓')+'</span></div>':'')+
+    '<div class="note" style="margin-top:6px">ตารางนี้คิดแบบเงินก้อน ณ วันเกษียณ (เป้าออม) · ส่วนผลลัพธ์ด้านบนคิดปีต่อปีรวมทุกเป้าหมาย (จึงบอกอายุที่เงินหมดได้)</div>'+
+  '</div>';
 }
 
 /* ── เส้นทางการศึกษาต่อคน · ตั้งค่าที่หน้านี้ แล้วสร้างเป้าหมาย 🎓 ให้อัตโนมัติ ──
