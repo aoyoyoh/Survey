@@ -1640,7 +1640,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.13</b></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.14</b></div>
 </aside>
 
 <main id="main">
@@ -6045,6 +6045,7 @@ function renderSnapshotList(){
 /* ─── Backup: Export / Import JSON ─── */
 function exportJSON(){
   const data = {
+    stage: 'step3',   /* v3.9.14: ป้ายบอกว่าไฟล์นี้มาจาก Step 3 (ไฟล์หมอเงินเป็น stage:'step2') */
     version: 'v3',
     exportedAt: new Date().toISOString(),
     state: STATE,
@@ -6054,9 +6055,11 @@ function exportJSON(){
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  const date = new Date().toISOString().slice(0,10);
-  const carriers = STATE.carriers.map(c => c.name).join('-') || 'empty';
-  a.download = `S41_${carriers}_${date}.json`;
+  /* v3.9.14: S41_Step3_<ชื่อ>_<ปี-เดือน-วัน>.json — วันที่ตามเวลาเครื่อง (เดิมใช้ UTC หลังเที่ยงคืนไทยได้วันเก่า) */
+  const _d = new Date(), _p = n => String(n).padStart(2,'0');
+  const date = _d.getFullYear()+'-'+_p(_d.getMonth()+1)+'-'+_p(_d.getDate());
+  const carriers = String(STATE.carriers.map(c => c.name).join('-') || 'empty').replace(/[\\/:*?"<>|]/g,'').replace(/\s+/g,'_').slice(0,40) || 'empty';
+  a.download = `S41_Step3_${carriers}_${date}.json`;
   document.body.appendChild(a);
   a.click();
   setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
@@ -10397,7 +10400,7 @@ const safeFile = s => String(s||'client').replace(/[\\/:*?"<>|]/g,'').replace(/\
 
 /* ── payload เดียวกับ Export เดิม (ไฟล์เก่า/ใหม่เปิดข้ามกันได้) ── */
 function clientPayload(id, name){
-  return { version:'v3', exportedAt: nowISO(), s41:{ clientId:id, name },
+  return { stage:'step3', version:'v3', exportedAt: nowISO(), s41:{ clientId:id, name },
            state: STATE, snapshots: (typeof getSnapshots==='function'? getSnapshots():{}) };
 }
 function clientStore(id, payload){ try{ localStorage.setItem(CLI_KEY(id), JSON.stringify(payload)); }catch(e){ console.warn('client store failed',e); } }
@@ -10471,7 +10474,7 @@ async function folderWriteNow(){
   const lib=libRead(); const rec=lib.clients.find(c=>c.id===lib.activeId); if(!rec) return false;
   try{
     if(await folderPerm(DIR_HANDLE,false)!=='granted'){ FOLDER_ERR='need-permission'; paintSaveInd(); return false; }
-    const want='S41_'+safeFile(rec.name)+'_'+rec.id+'.json';
+    const want='S41_Step3_'+safeFile(rec.name)+'_'+rec.id+'.json';   /* v3.9.14: ใส่ Step3 ในชื่อ — ไฟล์เดิมชื่อ S41_<ชื่อ>_<id> จะถูกเปลี่ยนชื่อให้ตอนบันทึกครั้งถัดไป */
     const fh=await DIR_HANDLE.getFileHandle(want,{create:true});
     const w=await fh.createWritable();
     await w.write(JSON.stringify(clientPayload(rec.id, rec.name), null, 2));
