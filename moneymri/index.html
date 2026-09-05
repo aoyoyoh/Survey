@@ -1640,7 +1640,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.12</b></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.13</b></div>
 </aside>
 
 <main id="main">
@@ -4892,7 +4892,7 @@ function saveOnboardDeps(){
     document.querySelectorAll('#child-rows .person-row').forEach((r, i) => {
       const name = r.querySelector('[data-pf="name"]').value.trim() || `ลูก ${i+1}`;
       const age = parseInt(r.querySelector('[data-pf="age"]').value) || 8;
-      const amt = parseInt(r.querySelector('[data-pf="amt"]').value) || 15000;
+      const amt = parseInt(String(r.querySelector('[data-pf="amt"]').value).replace(/[^\d.]/g,'')) || 15000;
       const linkId = share ? 'L' + Date.now() + '-' + i : null;
       const baseDep = {
         id: 'd' + Date.now() + '-c' + i, parent: primary.id,
@@ -4912,7 +4912,7 @@ function saveOnboardDeps(){
     document.querySelectorAll('#parent-rows .person-row').forEach((r, i) => {
       const name = r.querySelector('[data-pf="name"]').value.trim() || `พ่อ-แม่ ${i+1}`;
       const age = parseInt(r.querySelector('[data-pf="age"]').value) || 65;
-      const amt = parseInt(r.querySelector('[data-pf="amt"]').value) || 20000;
+      const amt = parseInt(String(r.querySelector('[data-pf="amt"]').value).replace(/[^\d.]/g,'')) || 20000;
       STATE.dependents.push({
         id: 'd' + Date.now() + '-p' + i, parent: primary.id,
         name, age, kind: 'parent', life: 85, monthly: amt
@@ -4925,7 +4925,7 @@ function saveOnboardDeps(){
     document.querySelectorAll('#other-rows .person-row').forEach((r, i) => {
       const name = r.querySelector('[data-pf="name"]').value.trim() || `ญาติ ${i+1}`;
       const age = parseInt(r.querySelector('[data-pf="age"]').value) || 30;
-      const amt = parseInt(r.querySelector('[data-pf="amt"]').value) || 10000;
+      const amt = parseInt(String(r.querySelector('[data-pf="amt"]').value).replace(/[^\d.]/g,'')) || 10000;
       STATE.dependents.push({
         id: 'd' + Date.now() + '-o' + i, parent: primary.id,
         name, age, kind: 'parent', life: 80, monthly: amt
@@ -4970,7 +4970,7 @@ function addQuickDep(addAnother){
   if(!name){ alert('กรุณากรอกชื่อ'); return; }
   const age = parseInt(document.getElementById('qd-age').value) || 0;
   const end = parseInt(document.getElementById('qd-end').value) || 0;
-  const amt = parseInt(document.getElementById('qd-amt').value) || 0;
+  const amt = parseInt(String(document.getElementById('qd-amt').value).replace(/[^\d.]/g,'')) || 0;
   const isChild = age < 22;
   const share = STATE.carriers.length > 1 ? parseInt(document.querySelector('input[name="qd-share"]:checked').value) : 100;
   // Always assign first dep to the first carrier; share=50 mirrors to second
@@ -5153,7 +5153,7 @@ function saveMember(){
   if(!name){ alert('กรุณากรอกชื่อ'); return; }
   const age = parseInt(document.getElementById('mm-age').value) || 0;
   const endAge = parseInt(document.getElementById('mm-end').value) || 0;
-  const amt = parseInt(document.getElementById('mm-amt').value) || 0;
+  const amt = parseInt(String(document.getElementById('mm-amt').value).replace(/[^\d.]/g,'')) || 0;
 
   if(MM_CTX.kind === 'carrier'){
     if(MM_CTX.mode === 'add'){
@@ -5506,7 +5506,7 @@ function readIncomesFromList(listId){
       const v = el.value.toString().replace(/,/g,'').trim();
       return v;
     };
-    const monthly = parseInt(get('monthly')) || 0;
+    const monthly = parseInt(String(get('monthly')).replace(/[^\d.]/g,'')) || 0;
     if(monthly === 0 && !get('name')) return; // skip empty rows
     const startAge = parseInt(get('startAge')) || 35;
     const endRaw = get('endAge');
