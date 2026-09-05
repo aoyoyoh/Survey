@@ -748,7 +748,7 @@ input:focus,select:focus{border-color:var(--gold);background:#fff}
   <div id="blankFin"></div>
 
   <div style="text-align:center;font-size:10.5px;color:var(--faint);margin-top:26px">
-    Money Doctor Visit™ · © 2026 Signature 41 — Customized for One · สงวนลิขสิทธิ์ · v2.6.2
+    Money Doctor Visit™ · © 2026 Signature 41 — Customized for One · สงวนลิขสิทธิ์ · v2.6.3
   </div>
 
 </div>
@@ -2024,7 +2024,7 @@ function buildClientFile(){
   ].forEach(([id,l])=>{ if(txt(id)) talk[l]=txt(id); });
 
   const visit={
-    source:'S41 Money Doctor Visit v2.6.2',
+    source:'S41 Money Doctor Visit v2.6.3',
     visitDate:new Date().toISOString().slice(0,10),
     advisor:txt('aname')||'',
     goalPriority: order.map(id=>{const m=MODS.find(x=>x.id===id);return m?m.title:id;}),
@@ -2038,6 +2038,7 @@ function buildClientFile(){
   };
 
   return {
+    stage:'step2',   /* v2.6.3: ป้ายบอกว่าไฟล์นี้มาจาก Step 2 หมอเงิน (Step 3 บันทึกเป็น stage:'step3') */
     app:'S41 Signature 41 Planner', version:'3.8.1', savedAt:new Date().toISOString(),
     s41:{ clientId:CID||newCid(), name:nm },
     state:{
@@ -2057,11 +2058,18 @@ function buildClientFile(){
     _visit:visit
   };
 }
+/* v2.6.3: S41_Step2_<ชื่อลูกค้า>_<ปี-เดือน-วัน>.json — ตัดอักขระที่ใช้ตั้งชื่อไฟล์ไม่ได้ · วันที่ตามเวลาเครื่อง */
+function step2FileName(name){
+  const safe=String(name||'ลูกค้าใหม่').replace(/[\\/:*?"<>|]/g,'').replace(/\s+/g,'_').slice(0,40)||'ลูกค้าใหม่';
+  const d=new Date(), p=n=>String(n).padStart(2,'0');
+  return 'S41_Step2_'+safe+'_'+d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'.json';
+}
 function saveClientFile(){
   let data;
   try{ data=buildClientFile(); }
   catch(e){ alert('สร้างไฟล์ไม่สำเร็จ: '+e.message); return; }
-  const fn='S41_MoneyMRI_'+(CID||'client')+'.json';
+  /* v2.6.3: ชื่อไฟล์บอกขั้นตอน + ชื่อลูกค้า + วันที่ (เดิม S41_MoneyMRI_<รหัส>.json แยกไม่ออกจากไฟล์ Step 3) */
+  const fn=step2FileName((data.s41&&data.s41.name)||txt('cname'));
   try{
     const blob=new Blob([JSON.stringify(data,null,1)],{type:'application/json'});
     const url=URL.createObjectURL(blob);
