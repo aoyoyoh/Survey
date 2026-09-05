@@ -1640,7 +1640,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.14</b></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.19</b></div>
 </aside>
 
 <main id="main">
@@ -1844,12 +1844,14 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
           <div class="line it"><div class="lbl">ดอกเบี้ยรับ</div><input class="y y-num sm" data-snap="detail.cashflow.income.interest" value="0"></div>
           <div class="line it"><div class="lbl">รายได้ค่าเช่า</div><input class="y y-num sm" data-snap="detail.cashflow.income.rental" value="0"></div>
           <div id="incomeExtraList"></div>
+          <div class="line it" id="polPayRow" hidden><div class="lbl">เงินรับจากกรมธรรม์ <span class="hint">เงินคืน/ครบสัญญา/บำนาญ ที่รับในปีนี้ · จากทะเบียน</span></div><input class="y y-num sm locked" id="snap-cf-polPay" value="0" readonly title="รวมเงินรับ/ปี จากทะเบียนกรมธรรม์ (ตารางเงินรับตามอายุ ณ อายุปัจจุบัน) — แก้ที่หน้า Protection"></div>
           <div style="padding:5px 0"><button class="add-btn" onclick="addExtra('income')"><b>+</b> เพิ่มรายได้อื่น</button></div>
           <div class="sec-h ex">กระแสเงินสดจ่ายคงที่ <span class="sec-sum">รวม <b id="snap-cf-fixedEx">0</b></span></div>
           <div class="line it"><div class="lbl">เงินงวดผ่อนบ้าน</div><input class="y y-num sm" id="snap-d-homeLoanPay" data-snap="detail.cashflow.fixed.homeLoanPay" value="0"></div>
           <div class="line it"><div class="lbl">เงินงวดผ่อนรถยนต์</div><input class="y y-num sm" id="snap-d-carLoanPay" data-snap="detail.cashflow.fixed.carLoanPay" value="0"></div>
           <div class="line it"><div class="lbl">เงินงวดผ่อนบัตรเครดิต</div><input class="y y-num sm" data-snap="detail.cashflow.fixed.creditCardPay" value="0"></div>
-          <div class="line it"><div class="lbl">เบี้ยประกันชีวิต</div><input class="y y-num sm" data-snap="detail.cashflow.fixed.lifeIns" value="0"></div>
+          <div class="line it"><div class="lbl">เบี้ยประกันชีวิต <span class="hint">กรอกเองเฉพาะเล่มที่ไม่อยู่ในทะเบียน</span></div><input class="y y-num sm" data-snap="detail.cashflow.fixed.lifeIns" value="0"></div>
+          <div class="line it" id="polPremRow" hidden><div class="lbl">เบี้ยประกันจากทะเบียนกรมธรรม์ <span class="hint">ของผู้วางแผน · แก้ที่หน้า Protection</span></div><input class="y y-num sm locked" id="snap-cf-polPrem" value="0" readonly title="รวมเบี้ย/ปี จากทะเบียนกรมธรรม์ (เฉพาะเล่มของผู้วางแผน) — แก้ที่หน้า Protection"></div>
           <div class="line it"><div class="lbl">เบี้ยประกันรถยนต์</div><input class="y y-num sm" data-snap="detail.cashflow.fixed.carIns" value="0"></div>
           <div class="line it"><div class="lbl">ค่าส่วนกลางคอนโด</div><input class="y y-num sm" data-snap="detail.cashflow.fixed.condoFee" value="0"></div>
           <div class="line it"><div class="lbl">ประกันสังคม</div><input class="y y-num sm" data-snap="detail.cashflow.fixed.socialSec" value="0"></div>
@@ -1870,7 +1872,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
           <div class="line it"><div class="lbl">ค่าทำบุญ</div><input class="y y-num sm" data-snap="detail.cashflow.var.charity" value="0"></div>
           <div id="varExtraList"></div>
           <div style="padding:5px 0"><button class="add-btn" onclick="addExtra('var')"><b>+</b> เพิ่มรายจ่ายผันแปรอื่น</button></div>
-          <div class="line it"><div class="lbl">อุปการะครอบครัว <span class="hint">พ่อแม่ · เล่าเรียนบุตร · ค่าใช้จ่ายบุตร — จากผู้พึ่งพิง</span></div><input class="y y-num sm" id="snap-cf-depExpense" value="0" title="แก้ได้ที่นี่ · เฉลี่ยกลับไปยังผู้พึ่งพิงตามสัดส่วน" onchange="setSnapDepY(this.value)"></div>
+          <div class="line it"><div class="lbl">อุปการะครอบครัว <span class="hint">พ่อแม่ · เล่าเรียนบุตร · ค่าใช้จ่ายบุตร — จากผู้พึ่งพิง · รวมเบี้ยกรมธรรม์ของผู้พึ่งพิง</span></div><input class="y y-num sm" id="snap-cf-depExpense" value="0" title="แก้ได้ที่นี่ · เฉลี่ยกลับไปยังผู้พึ่งพิงตามสัดส่วน" onchange="setSnapDepY(this.value)"></div>
           <div id="supportExtraList"></div>
           <div style="padding:5px 0"><button class="add-btn" onclick="addExtra('support')"><b>+</b> เพิ่มการอุปการะอื่น <span class="hint">มีช่วงเวลาของตัวเอง · ไม่นับเป็นค่าใช้จ่ายหลังเกษียณ</span></button></div>
           <div class="sec-h sav">กระแสเงินสดเพื่อการออม / ลงทุน</div>
@@ -3140,6 +3142,13 @@ function syncByCarrierToDetail(){
   ['living','food','utility','phone','medical','tax','transport','personalCare','otherPersonal','recreation','charity'].forEach(k=> d.cashflow.var[k]=sumCf('var',k));
   ['normal','retire','edu','rmf','tesg'].forEach(k=> d.cashflow.savings[k]=sumCf('savings',k));
 }
+/* v3.9.18: เงินรับจากกรมธรรม์ (เงินคืน/ครบสัญญา/บำนาญ) "เข้ากระเป๋าผู้วางแผน → เป็นเงินเกษียณ" หรือไม่
+   ค่าตั้งต้น: เล่มของผู้วางแผน = ใช่ · เล่มของผู้พึ่งพิง = ไม่ (เงินครบสัญญาเป็นของลูก) · กดปุ่ม 🎯 ในทะเบียนเพื่อสลับ (เก็บที่ p.toPlan)
+   ใช้ร่วมกัน 3 ที่: งบปีนี้ (รายรับ) · กราฟ projection (รายรับตามอายุ) · การ์ดเกษียณ (แหล่งเงิน ณ วันเกษียณ) — เบี้ย (pf) ยังเป็นรายจ่ายของผู้วางแผนเสมอ */
+function polToPlan(p){ if(p && p.toPlan!==undefined && p.toPlan!==null) return !!p.toPlan; const oid=p&&p.owner; if(!oid) return true; return !!(STATE.carriers||[]).find(c=>c.id===oid); }
+function togglePolicyToPlan(i){ const p=((STATE.snap&&STATE.snap.policies)||[])[i]; if(!p) return; p.toPlan=!polToPlan(p); if(typeof saveState==='function')saveState(); render(); if(typeof renderProtectCheck==='function')renderProtectCheck(); }
+/* เงินรับตามอายุของเล่มหนึ่ง ระหว่างอายุ a0..a1 (รวมปลาย) → [{age,amt}] */
+function polCfEvents(p,a0,a1){ const out=[]; const base=Number(p&&p.life)||0; (Array.isArray(p&&p.cf)?p.cf:[]).forEach(r=>{ const from=Number(r.from)||0,to=Number(r.to)||0,ev=Math.max(1,Number(r.every)||1); const amt=r.pct?base*(Number(r.pct)||0)/100:(Number(r.amt)||0); if(!(amt>0&&from)) return; for(let a=Math.max(a0,from);a<=Math.min(a1,to);a++){ if((a-from)%ev===0) out.push({age:a,amt}); } }); return out; }
 function syncSnapAggregates(){
   const d = STATE.snap && STATE.snap.detail; if(!d) return;
   syncByCarrierToDetail();
@@ -3195,7 +3204,15 @@ function syncSnapAggregates(){
   const covOf=id=>{ const c=carriers.find(x=>x.id===id); return c?c._cov:null; };
   if(pols.length){
     let surrender=0,carrierPrem=0,depPrem=0,payoutAnnual=0;
-    pols.forEach(p=>{ surrender+=(Number(p.surrender)||0); payoutAnnual+=(Number(p.annuity)||0)+(Number(p.saving)||0); const prem=Number(p.premium)||0;   /* เวนคืน→สินทรัพย์ · สะสมทรัพย์+บำนาญ = เงินรับ/ปี→รายรับ */
+    /* v3.9.16: งบปีนี้ใช้ตารางตามอายุของแต่ละเล่มเมื่อมี — เบี้ยจาก pf ณ อายุปัจจุบัน · เงินรับจาก cf ณ อายุปัจจุบัน
+       (เล่มที่ไม่มีตาราง ใช้ช่อง premium / saving+annuity เหมือนเดิม) → ตัวเลขปีนี้ตรงกับ Timeline/projection เสมอ ไม่ต้องแก้มือทุกปี */
+    const _atAge=(rows,base)=>rows.reduce((s,r)=>{ const from=Number(r.from)||0,to=Number(r.to)||0,ev=Math.max(1,Number(r.every)||1);
+      const amt=r.pct?base*(Number(r.pct)||0)/100:(Number(r.amt)||0);
+      return (amt>0 && from && _ageNow>=from && (to===0||_ageNow<=to) && ((_ageNow-from)%ev===0)) ? s+amt : s; },0);
+    pols.forEach(p=>{ surrender+=(Number(p.surrender)||0);
+      const cfRows=Array.isArray(p.cf)?p.cf:[], pfRows=Array.isArray(p.pf)?p.pf:[];
+      if(polToPlan(p)) payoutAnnual += cfRows.length ? _atAge(cfRows, Number(p.life)||0) : ((Number(p.annuity)||0)+(Number(p.saving)||0));   /* v3.9.18: เล่มของผู้พึ่งพิงไม่เข้ารายรับ (เว้นแต่กด 🎯) */
+      const prem = pfRows.length ? _atAge(pfRows, 0) : (Number(p.premium)||0);   /* เวนคืน→สินทรัพย์ · สะสมทรัพย์+บำนาญ = เงินรับ/ปี→รายรับ */
       // "ของใคร": ว่าง → ผู้วางแผนคนแรก · id ผู้วางแผน → คนนั้น · id ผู้พึ่งพิง → ภาระอุปการะ
       const oid=(!p.owner)?cid0:p.owner;
       const cov=covOf(oid);
@@ -3892,6 +3909,11 @@ function renderP2Snapshot(){
   /* subtotal + total (คำนวณ) */
   setT('snap-cf-totalIn',  fmt0(f.totalIn*12));
   setT('snap-cf-fixedEx',  fmt0(f.fixedEx*12));
+  /* v3.9.15: เบี้ยจากทะเบียนกรมธรรม์เคยถูกรวมในยอด "รวม" ของรายจ่ายคงที่ แต่ไม่มีบรรทัดให้เห็น → ยอดรวมไม่เท่าผลบวกของแถวที่เห็น */
+  { const P=(STATE.snap&&STATE.snap.protection)||{}; const yr=Math.max(0,(Number(P._premium)||0)-(Number(P._depPrem)||0));
+    const row=document.getElementById('polPremRow'); if(row){ row.hidden=!(yr>0); setI('snap-cf-polPrem', Math.round(yr)); } }
+  { const P=(STATE.snap&&STATE.snap.protection)||{}; const yr=Math.max(0,Number(P._payout)||0);
+    const row=document.getElementById('polPayRow'); if(row){ row.hidden=!(yr>0); setI('snap-cf-polPay', Math.round(yr)); } }
   setT('snap-cf-varEx',    fmt0(f.varEx*12));
   setT('snap-cf-surplus',  fmt0(f.freeCash*12));
   setT('snap-as-liquid',   fmt0(f.liquidAssets));
@@ -7194,20 +7216,33 @@ const HENG = (function(){
     const livingAnnual = retEffExpenseM(c, Math.max(1,carriers.length))*12;
     const g=salG(), r=portR(c), postR=consR();
     const f=computeFinancials();
-    const investable=(investableTotal(f))/Math.max(1,carriers.length);
+    /* v3.9.18: การ์ดเกษียณใช้ฐานเดียวกับกราฟ projection —
+       (ก) กันนับซ้ำ: มูลค่าเวนคืนของเล่มที่มีตารางเงินรับ (cf) ไม่นับเป็นสินทรัพย์ตั้งต้น (เพราะเงินก้อนนั้นมาใน (ข) แล้ว)
+       (ข) เงินคืน/ครบสัญญา/บำนาญจากกรมธรรม์ที่เข้ากระเป๋าผู้วางแผน = แหล่งเงินเกษียณ: ก่อนเกษียณทบด้วยผลตอบแทนพอร์ตถึงวันเกษียณ · หลังเกษียณคิดลดกลับมา ณ วันเกษียณ */
+    const _pols=((STATE.snap&&STATE.snap.policies)||[]);
+    const _cid0=(carriers[0]||{}).id;
+    const _mine=p=>{ const oid=p.owner||_cid0; return oid===c.id && polToPlan(p); };
+    const _svCf=_pols.reduce((t,p)=>t+((Array.isArray(p.cf)&&p.cf.length)?(Number(p.surrender)||0):0),0);
+    const investable=Math.max(0,investableTotal(f)-_svCf)/Math.max(1,carriers.length);
     const retireFundShare=(f.protection.retireFund||0)/Math.max(1,carriers.length);
     const pensionMonthly=Number(c.pensionMonthly)||0;   // บำนาญหลังเกษียณ/เดือน (ประกันสังคม ฯลฯ)
+    const _age0=Number(c.age)||0, _lifeA=Number(c.life)||CONFIG.lifeExp;
+    function policyAtRet(retAge){ let pre=0, post=0;
+      _pols.filter(_mine).forEach(p=>polCfEvents(p,_age0,_lifeA).forEach(e=>{
+        if(e.age<=retAge) pre+=e.amt*Math.pow(1+r,retAge-e.age); else post+=e.amt/Math.pow(1+postR,e.age-retAge); }));
+      return {pre,post,total:pre+post}; }
     function plan(retAge){
+      const pol=policyAtRet(retAge);
       const yToRet=Math.max(0, retAge-(c.age||0));
       const retireYears=Math.max(1,(c.life||CONFIG.lifeExp)-retAge);
       const needAtRet=livingAnnual*Math.pow(1+inf(),yToRet);                       // ค่าใช้จ่าย/ปี ณ วันเกษียณ
       const target=pvGrowingAnnuityDue(needAtRet, inf(), postR, retireYears);       // เงินก้อนที่ต้องมี
       const investAtRet=investable*Math.pow(1+r,yToRet);                            // สินทรัพย์ลงทุนที่จะโตถึงวันเกษียณ
       const pensionPV=pensionMonthly>0 ? pvGrowingAnnuityDue(pensionMonthly*12, 0, postR, retireYears) : 0; // มูลค่าบำนาญ (คงที่)
-      const expected=investAtRet+retireFundShare+pensionPV;                         // แหล่งเงินที่คาดมี
+      const expected=investAtRet+retireFundShare+pensionPV+pol.total;               // แหล่งเงินที่คาดมี (v3.9.18: + เงินจากกรมธรรม์)
       const gap=Math.max(0,target-expected);
       const pmtYr=pmtGrowingAnnuityFV(gap, g, r, yToRet);
-      return {retAge, yToRet, retireYears, needAtRet, target, investAtRet, retireFund:retireFundShare, pensionPV, expected, gap, monthly:pmtYr/12};
+      return {retAge, yToRet, retireYears, needAtRet, target, investAtRet, retireFund:retireFundShare, pensionPV, policyPV:pol.total, policyPre:pol.pre, policyPost:pol.post, expected, gap, monthly:pmtYr/12};
     }
     const baseAge=calcRetireAge(c);
     return {planA:plan(baseAge), planB:plan(baseAge+5), retAge:baseAge, ret:r};
@@ -7289,19 +7324,17 @@ const HENG = (function(){
     const cin=(STATE.snap&&STATE.snap.detail&&STATE.snap.detail.cashflow&&STATE.snap.detail.cashflow.income)||{};
     const sv=(STATE.snap&&STATE.snap.detail&&STATE.snap.detail.cashflow&&STATE.snap.detail.cashflow.savings)||{};
     const sources=[];
-    sources.push({type:'40(1)', amt:annualIncome, label:'เงินเดือน/รายได้หลัก'});
+    /* v3.9.19: โบนัสเป็นเงินได้ 40(1) จากนายจ้างเดียวกัน → รวมเป็นแหล่งเดียว (Aoy: "เงินเดือนมีแหล่งเดียว") ไม่แยกแถวให้สับสน */
+    const _bonus0=isPrimary?Math.round(+((STATE.snap&&STATE.snap.detail&&STATE.snap.detail.cashflow&&STATE.snap.detail.cashflow.income&&STATE.snap.detail.cashflow.income.bonus)||0)):0;
+    sources.push({type:'40(1)', amt:annualIncome+_bonus0, label:_bonus0>0?'เงินเดือน + โบนัส':'เงินเดือน/รายได้หลัก'});
     /* v3.8: โบนัสเป็นเงินได้ 40(1) เต็มจำนวน แต่เดิมไม่เคยถูกดึงเข้าหน้าภาษีเลย
        (งบกระแสเก็บโบนัสเป็น "ต่อปี" อยู่แล้ว) — เคสทดสอบโบนัส 400,000 ทำให้ภาษีต่ำกว่าจริง 100,000 บาท/ปี */
-    if(isPrimary){
-      const bonus=Math.round(+((STATE.snap&&STATE.snap.detail&&STATE.snap.detail.cashflow&&STATE.snap.detail.cashflow.income&&STATE.snap.detail.cashflow.income.bonus)||0));
-      if(bonus>0) sources.push({type:'40(1)', amt:bonus, label:'โบนัส'});
-    }
     if(isPrimary){ // รายได้รอง + ค่าลดหย่อนครัวเรือน → ผูกกับผู้วางแผนคนแรก เพื่อไม่นับซ้ำเวลาแยกรายคน
       const rental=Math.round((+cin.rental||0)*12); if(rental>0) sources.push({type:'40(5)', amt:rental, label:'ค่าเช่า'});
       const interest=Math.round((+cin.interest||0)*12); if(interest>0) sources.push({type:'40(4)', amt:interest, label:'ดอกเบี้ย/ปันผล'});
       const other=Math.round((+cin.other||0)*12); if(other>0) sources.push({type:'40(8)', amt:other, label:'รายได้อื่น'});
     }
-    return { income:annualIncome, sources, spouse:false,
+    return { income:annualIncome+_bonus0, sources, spouse:false,   /* v3.9.19: income = เงินเดือน+โบนัส ให้ตรงกับ sources */
       children: isPrimary?deps.filter(d=>d.kind==='child').length:0, parents: isPrimary?deps.filter(d=>d.kind==='parent').length:0, disabled:0,
       lifeIns: isPrimary?Math.round((+fx.lifeIns||0)*12):0, healthIns:0, parentHealthIns:0, pensionIns:0,
       /* v3.8: ดึงเงินออม RMF/SSF และ Thai ESG ที่ลูกค้าซื้ออยู่แล้วจากงบกระแสมาลดหย่อนให้ด้วย
@@ -7380,8 +7413,12 @@ const HENG = (function(){
     /* พอร์ต Passive Income แยกเป็นอีกก้อน: จ่ายคืน x% ของ NAV ทุกปี → นับเป็นรายรับ
        ส่วนที่เหลือ y% ทบเข้า NAV · ไม่ถูกดึงมาใช้จ่าย เพราะถือไว้เพื่อกระแสเงินสด */
     const _pc=passiveCfg(), pRedeem=(Number(_pc.redeem)||0)/100, pGrow=(Number(_pc.growth)||0)/100;
-    let pNav=Math.min(passiveNavTotal(), investableTotal(f));
-    let spend=investableTotal(f)-pNav;
+    /* v3.9.17: กันนับซ้ำมูลค่าเวนคืน — เล่มที่มีตารางเงินรับตามอายุ (cf: เงินคืน/ครบสัญญา) จะได้เงินก้อนนั้นใน projection อยู่แล้ว
+       มูลค่าเวนคืนของเล่มนั้นจึงไม่ควรถูกนับเป็นเงินตั้งต้นที่โตด้วยผลตอบแทนพอร์ตอีกชั้น (งบดุล/ทรัพย์สินสุทธิยังนับเต็มตามเดิม) */
+    const _svWithCf=((STATE.snap&&STATE.snap.policies)||[]).reduce((t,p)=>t+((Array.isArray(p.cf)&&p.cf.length)?(Number(p.surrender)||0):0),0);
+    const _inv0=Math.max(0, investableTotal(f)-_svWithCf);
+    let pNav=Math.min(passiveNavTotal(), _inv0);
+    let spend=_inv0-pNav;
     let balance=spend+pNav;
     const startBalance=balance;
     const edu=education();
@@ -7407,7 +7444,8 @@ const HENG = (function(){
           if(age<st || age>en) return;
           const g=(Number(it.growth)||0)/100; income += amt*12*Math.pow(1+g, y); }); }
       // กระแสเงินสดจากกรมธรรม์ (ปันผล/บำนาญ/เงินคืน) — บวกเป็นรายรับ ณ อายุที่จ่าย จนถึงอายุที่ระบุ
-      ((STATE.snap&&STATE.snap.policies)||[]).forEach(p=>{ const base=Number(p.life)||0;
+      ((STATE.snap&&STATE.snap.policies)||[]).forEach(p=>{ if(!polToPlan(p)) return;   /* v3.9.18 */
+        const base=Number(p.life)||0;
         (p.cf||[]).forEach(r=>{ const from=Number(r.from)||0,to=Number(r.to)||0,ev=Math.max(1,Number(r.every)||1);
           const amt=r.pct?base*(Number(r.pct)||0)/100:(Number(r.amt)||0);
           if(amt>0 && from && age>=from && age<=to && ((age-from)%ev===0)) income+=amt; }); });
@@ -7818,7 +7856,11 @@ function setTax(field, raw){
 }
 function resetTaxAuto(){ const c=taxSel(); if(c){ if(!STATE.taxByCarrier)STATE.taxByCarrier={}; STATE.taxByCarrier[c.id]=HENG.taxAuto(c); } else STATE.tax=HENG.taxAuto(); if(typeof saveState==='function') saveState(); if(taxFlowOn()){ render(); } renderTax(); }
 /* ── เงินได้ 40(1-8) — รายการแหล่งรายได้ (รายคน) ── */
-function taxSources(){ const t=tstate(); if(!Array.isArray(t.sources)) t.sources=(HENG.taxAuto(taxSel()).sources||[]); return t.sources; }
+function taxSources(){ const t=tstate(); if(!Array.isArray(t.sources)) t.sources=(HENG.taxAuto(taxSel()).sources||[]);
+  /* v3.9.19: ไฟล์เก่าเก็บ "โบนัส" เป็นแถว 40(1) แยก → รวมเข้าแถวเงินเดือน (แหล่งเดียวกัน ค่าใช้จ่ายหักรวมกันอยู่แล้ว) */
+  const bi=t.sources.findIndex(x=>x&&x.type==='40(1)'&&x.label==='โบนัส');
+  if(bi>=0){ const mi=t.sources.findIndex((x,i)=>i!==bi&&x&&x.type==='40(1)'); if(mi>=0){ t.sources[mi].amt=(Number(t.sources[mi].amt)||0)+(Number(t.sources[bi].amt)||0); t.sources[mi].label='เงินเดือน + โบนัส'; t.sources.splice(bi,1); if(typeof saveState==='function') saveState(); } }
+  return t.sources; }
 function addTaxSource(){ taxSources().push({type:'40(8)', amt:0, label:''}); if(typeof saveState==='function')saveState(); renderTax(); }
 function delTaxSource(i){ const s=taxSources(); s.splice(i,1); if(typeof saveState==='function')saveState(); renderTax(); }
 function setTaxSource(i,field,raw){ const s=taxSources(); if(!s[i])return;
@@ -7850,6 +7892,7 @@ function renderTax(){
   if(!(STATE.carriers||[]).length){ box.innerHTML='<div class="card"><div style="padding:16px;color:var(--faint);font-style:italic">กรอกข้อมูลที่หน้า I · Life Path ก่อน เพื่อดึงรายได้มาคำนวณภาษีค่ะ</div></div>'; return; }
   const cs=STATE.carriers||[];
   const cur=taxSel();
+  try{ taxSources(); }catch(e){}   /* v3.9.19: normalize แถวเงินเดือน/โบนัสของไฟล์เก่าก่อน render */
   const P=HENG.taxPlan(cur), t=P.t, b=P.base;
   const f0=n=>Math.round(Math.max(0,n||0)).toLocaleString('en-US');
   const pc=r=>Math.round(r*100)+'%';
@@ -7860,10 +7903,15 @@ function renderTax(){
   // ── เงินได้แยกประเภท 40(1-8) ──
   const SRC=(Array.isArray(t.sources)&&t.sources.length)?t.sources:((HENG.taxAuto(cur).sources)||[]);
   const typeOpts=sel=>TAX_TYPES.map(x=>`<option value="${x.k}" ${x.k===sel?'selected':''}>${x.n}</option>`).join('');
+  /* v3.9.19: ค่าใช้จ่ายรายแถวของกลุ่มเงินเดือน (40(1)/(2)) = ส่วนแบ่งของเพดานรวม 100,000 ตามสัดส่วน — เดิมคิดแยกแถว ทำให้ผลรวมรายแถว (เช่น 100,000+40,000) ไม่เท่ายอดที่ใช้จริง (100,000) */
+  const _salTot=SRC.reduce((a,x)=>{ const r=TAX_TYPE_EXP[x.type]||TAX_TYPE_EXP['40(8)']; return a+((r.group==='sal')?Math.max(0,Number(x.amt)||0):0); },0);
+  const _salExp=Math.min(_salTot*0.5,100000);
+  const rowExp=x=>{ const r=TAX_TYPE_EXP[x.type]||TAX_TYPE_EXP['40(8)']; const amt=Math.max(0,Number(x.amt)||0); return (r.group==='sal')?(_salTot>0?_salExp*amt/_salTot:0):srcExpense(x); };
+  const _salRows=SRC.filter(x=>(TAX_TYPE_EXP[x.type]||{}).group==='sal').length;
   const srcRows=SRC.map((s,i)=>`<div class="tx-src">
     <select class="y-sel" onchange="setTaxSource(${i},'type',this.value)">${typeOpts(s.type)}</select>
     <input class="y y-num" value="${commafy(Math.round(Number(s.amt)||0))}" onchange="setTaxSource(${i},'amt',this.value)" title="บาท/ปี">
-    <span class="tx-srcexp">หัก ${f0(srcExpense(s))}</span>
+    <span class="tx-srcexp" title="${(TAX_TYPE_EXP[s.type]||{}).group==='sal'?'40(1)+(2) หักค่าใช้จ่าย 50% รวมกันไม่เกิน 100,000':''}">หัก ${f0(rowExp(s))}${((TAX_TYPE_EXP[s.type]||{}).group==='sal'&&_salRows>1)?' <small>(รวมกลุ่ม ≤100,000)</small>':''}</span>
     <button class="pf-del" onclick="delTaxSource(${i})" title="ลบ">×</button>
   </div>`).join('');
   const srcTot=taxExpense(SRC);
@@ -8224,6 +8272,7 @@ function renderHolistic(){
         <div class="na-row"><span>สินทรัพย์ลงทุนที่จะเติบโต</span><span>${fmt0(a.investAtRet)}</span></div>
         <div class="na-row"><span>ทุนเกษียณสะสม (PVD/กบข./อื่น)</span><span>${fmt0(a.retireFund)}</span></div>
         <div class="na-row"><span>มูลค่าบำนาญหลังเกษียณ</span><span>${fmt0(a.pensionPV)}</span></div>
+        <div class="na-row"><span>เงินคืน/ครบสัญญาจากกรมธรรม์ <small>ก่อนเกษียณทบถึงวันเกษียณ ${fmt0(a.policyPre||0)} · หลังเกษียณคิดลด ${fmt0(a.policyPost||0)}</small></span><span>${fmt0(a.policyPV||0)}</span></div>
         <div class="na-row sub"><span>รวมแหล่งเงิน</span><span>${fmt0(a.expected)}</span></div>
         <div class="na-row"><span>③ ส่วนที่ขาด <small>① − ②</small></span><span>${fmt0(a.gap)}</span></div>
         <div class="na-row tot"><span>④ ต้องออมเพิ่ม</span><span>${a.gap>0?fmt0(a.monthly)+' /เดือน':'พอแล้ว ✓'}</span></div>
@@ -8937,15 +8986,15 @@ function renderPolicies(){
     return h;
   };
   const own=(i)=>`<select class="y-sel" onchange="setPolicy(${i},'owner',this.value)">${depOpts(arr[i].owner)}</select>`;
-  const rowFor=i=>`<tr>
+  const rowFor=i=>{ const p=arr[i]||{}; return `<tr>
     <td>${tin(i,'company','บริษัท')}</td><td>${tin(i,'name','แบบประกันหลัก')}</td><td>${tin(i,'no','เลขที่')}</td>
     <td>${tin(i,'saleAge','อายุ')}</td><td>${tin(i,'start','วว/ดด/ปป')}</td><td>${tin(i,'payUntil','วว/ดด/ปป')}</td><td>${tin(i,'maturity','วว/ดด/ปป')}</td><td>${own(i)}</td>
     <td class="pol-life">${nin(i,'life')}</td><td>${nin(i,'premium')}</td>
     <td class="g-hos">${nin(i,'health')}</td><td class="g-hos">${nin(i,'accMed')}</td>
     <td class="g-comp">${nin(i,'hospCash')}</td><td class="g-comp">${nin(i,'hospCancer')}</td><td class="g-comp">${nin(i,'ciMid')}</td><td class="g-comp">${nin(i,'ciSevere')}</td><td class="g-comp">${nin(i,'paDeath')}</td>
     <td class="g-sav">${nin(i,'saving')}</td><td class="g-sav">${nin(i,'annuity')}</td><td>${nin(i,'surrender')}</td>
-    <td style="white-space:nowrap"><button class="pf-del" onclick="togglePolicyPF(${i})" title="เบี้ยจ่าย ตามอายุ (→ ค่าใช้จ่าย)">💸</button><button class="pf-del" onclick="togglePolicyCF(${i})" title="เงินรับ ปันผล/เงินคืน/บำนาญ (→ รายรับ)">💧</button><button class="pf-del" onclick="delPolicy(${i})" title="ลบ">×</button></td>
-  </tr>${POLPF_OPEN[i]?pfEditor(i):''}${POLCF_OPEN[i]?cfEditor(i):''}`;
+    <td style="white-space:nowrap"><button class="pf-del" onclick="togglePolicyPF(${i})" title="เบี้ยจ่าย ตามอายุ (→ ค่าใช้จ่าย)">💸</button><button class="pf-del" onclick="togglePolicyCF(${i})" title="เงินรับ ปันผล/เงินคืน/บำนาญ (→ รายรับ)">💧</button><button class="pf-del" onclick="togglePolicyToPlan(${i})" style="${polToPlan(p)?'':'opacity:.35'}" title="${polToPlan(p)?'เงินรับของเล่มนี้เข้ากระเป๋าผู้วางแผน → นับเป็นเงินเกษียณ (กดเพื่อยกเว้น)':'เงินรับของเล่มนี้ไม่นับเข้าแผนผู้วางแผน เช่น เป็นของลูก (กดเพื่อนับ)'}">🎯</button><button class="pf-del" onclick="delPolicy(${i})" title="ลบ">×</button></td>
+  </tr>${POLPF_OPEN[i]?pfEditor(i):''}${POLCF_OPEN[i]?cfEditor(i):''}`; };
   /* ── จัดกลุ่มตาม "ของใคร" + รวมยอดท้ายกลุ่ม — เปลี่ยนเจ้าของเมื่อไร แถวย้ายกลุ่ม+ยอดขยับให้เอง ── */
   const cs0=STATE.carriers||[];
   const keyOf=p=>String((p.owner==null||p.owner==='')?((cs0[0]&&cs0[0].id)||''):p.owner);
@@ -10254,6 +10303,10 @@ function expLines(){
   const cfx=d.cashflow.fixed||{};
   for(const k in cfx){ const amt=+cfx[k]||0; if(amt<=0) continue; out.push({label:XFIX_LB[k]||k, amt, grp:'รายจ่ายคงที่/เบี้ยประกัน', note:''}); }
   (d.cashflow.fixedExtra||[]).forEach(x=>{ const amt=+x.monthly||0; if(amt>0) out.push({label:x.name||'รายจ่ายคงที่อื่น', amt, grp:'รายจ่ายคงที่/เบี้ยประกัน', note:''}); });
+  /* v3.9.15: เบี้ยจากทะเบียนกรมธรรม์ต้องขึ้นในรายงานด้วย (เดิมอยู่ในยอดรวมแต่ไม่มีบรรทัด) */
+  { const P=(STATE.snap&&STATE.snap.protection)||{}; const dep=Number(P._depPrem)||0, own=Math.max(0,(Number(P._premium)||0)-dep);
+    if(own>0) out.push({label:'เบี้ยประกันจากทะเบียนกรมธรรม์', amt:own/12, grp:'รายจ่ายคงที่/เบี้ยประกัน', note:'ตามตารางเบี้ยรายเล่ม · หยุดเมื่อครบชำระ'});
+    if(dep>0) out.push({label:'เบี้ยกรมธรรม์ของผู้พึ่งพิง', amt:dep/12, grp:'คนที่เราดูแล', note:'จากทะเบียนกรมธรรม์'}); }
   const seen=new Set();
   (STATE.dependents||[]).forEach(dep=>{ if(dep.link){ if(seen.has(dep.link)) return; seen.add(dep.link); }
     const amt=+dep.monthly||0; if(amt<=0) return;
