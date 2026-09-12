@@ -1774,7 +1774,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.54</b> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.55</b> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</div>
 </aside>
 
 <main id="main">
@@ -10595,7 +10595,7 @@ function a4AssumeSheet(){
     <table class="a4-gtbl"><tbody>${assume}</tbody></table>
     ${sr!=null?`<div class="a4-note" style="margin-top:11px"><b>โอกาสที่แผนสำเร็จ ${sr}%</b> — จำลอง 2,000 รอบโดยให้ผลตอบแทนพอร์ตแกว่งตามความผันผวนจริง ไม่ใช่โตเท่ากันทุกปีแบบในตาราง · ตัวเลขในตารางทุกหน้าเป็นเส้นทางกลาง ไม่ใช่คำรับประกัน</div>`:''}
   </div>`+`<div class="a4-sheet">
-    <div class="a4-ptitle"><span class="n">ข</span><span class="t">ขอบเขตของแผน — สิ่งที่ยังไม่ได้กันไว้</span>${a4SrcBadge('planGaps')}<span class="ref">ภาคผนวก · ไม่ใช่หน้าในเครื่องมือ</span></div>
+    <div class="a4-ptitle"><span class="n">ข</span><span class="t">ขอบเขตของแผน — สิ่งที่ยังไม่ได้กันไว้</span><span class="ref">ภาคผนวก · ไม่ใช่หน้าในเครื่องมือ</span></div>
     ${planGapHTML()}
     <div class="a4-note" style="margin-top:11px">หน้านี้ไม่ได้แปลว่าแผนไม่ดี แต่แปลว่าแผนมีขอบเขต ทุกแผนการเงินมีขอบเขตเสมอ
       สิ่งที่อันตรายคือการไม่รู้ว่าขอบอยู่ตรงไหน · รายการนี้ทบทวนทุกปีพร้อมแผน และเติมทีละข้อเมื่อมีข้อมูลจริง</div>
@@ -11923,7 +11923,7 @@ function renderA4Summary(){
       ${a.how?`<div style="color:#6B6355;font-size:10.5px;line-height:1.55;margin-top:1px">${String(a.how).replace(/</g,'&lt;')}</div>`:''}</td>
       <td style="text-align:right;white-space:nowrap;color:#B5453E;font-weight:600;font-size:10.5px;vertical-align:top">${String(a.when||'').replace(/</g,'&lt;')}</td></tr>`).join('');
   const sheetAct=actRows?`<div class="a4-sheet">
-    <div class="a4-ptitle"><span class="n">X</span><span class="t">แผนการเงินองค์รวม & แผนลงมือ</span>${a4SrcBadge('planActions')}<span class="ref">หน้า X ในเครื่องมือ</span></div>
+    <div class="a4-ptitle"><span class="n">X</span><span class="t">แผนการเงินองค์รวม & แผนลงมือ</span><span class="ref">หน้า X ในเครื่องมือ</span></div>
     ${apRows?`<div class="a4-sec" style="margin-top:-2px">ลำดับความสำคัญจากฐานพีระมิด</div>${apRows}`:''}
     <div class="a4-sec">แผนลงมือ · สิ่งที่ต้องทำต่อ</div>
     <div class="a4-note" style="margin:-2px 0 ${(Array.isArray(STATE.planActions)?STATE.planActions.length:0)>=13?'5px':'9px'}">เรียงตามลำดับที่ควรทำ · ติ๊กช่องซ้ายเมื่อทำแล้ว · ข้อที่มีกำหนดเวลาสีแดงคือข้อที่เลื่อนไม่ได้</div>
