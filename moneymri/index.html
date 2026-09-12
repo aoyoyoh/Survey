@@ -1076,9 +1076,18 @@ nav.pages .jstep .jt small{font-size:9px;color:var(--faint);letter-spacing:.02em
 .a4-batbl td.sub{color:#8A8272;font-size:8.8px;line-height:1.45;padding-top:0;padding-bottom:4px;border-bottom:1px solid #F3EFE3}
 .a4-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
 .a4-rt{width:100%;border-collapse:collapse;font-size:9.6px}
-.a4-rt th{padding:3px 6px;border-bottom:1px solid #D9D2C0;text-align:left;font-size:8.8px;letter-spacing:.05em;color:#9A8E6E;text-transform:uppercase}
+.a4-rt th{padding:3px 6px;border-bottom:1px solid #D9D2C0;text-align:left;font-size:8.8px;letter-spacing:.05em;color:#9A8E6E;text-transform:uppercase;vertical-align:bottom}
+/* v3.9.52: หัวคอลัมน์ตัวเลขเคยชิดซ้ายขณะที่ตัวเลขชิดขวา — หัวที่ตัดบรรทัดจึงดูไม่ตรงกับเลขข้างล่าง */
+.a4-rt th.n{text-align:right}
 .a4-rt td{padding:4px 6px;border-bottom:1px solid #F3EFE3;vertical-align:top}
 .a4-rt td.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;font-weight:700}
+.a4-rt tr.own td{background:#FAF8F1;font-size:8.8px;letter-spacing:.06em;color:#9A8E6E;font-weight:700;text-transform:uppercase;padding-top:6px;border-bottom:1px solid #E5DFCE}
+.a4-rt tr.sum td{background:#F7F4E9;font-weight:700}
+.a4-rt tr.grand td{background:#F1EEDF;font-weight:800;border-top:1.4px solid #C9C0AA}
+.adv-warn{background:#F6EBD2;border:1px solid #E0CC9B;border-radius:8px;padding:8px 12px;color:#8A6E2E;font-size:10.5px;line-height:1.6;font-weight:600}
+.tb-adv{font-size:11.5px;padding:4px 11px;border:1px solid var(--line);border-radius:20px;cursor:pointer;white-space:nowrap;color:var(--ink-2);background:#fff}
+.tb-adv:hover{border-color:var(--gold-2);color:var(--gold-2)}
+.tb-adv.unset{border-color:#E0CC9B;background:#F6EBD2;color:#8A6E2E;font-weight:700}
 .a4-rt .pill{display:inline-block;padding:1px 7px;border-radius:8px;font-size:8.6px;font-weight:700;white-space:nowrap}
 .a4-rt .pill.ok{color:#2F5E48;background:#E2EFE7}
 .a4-rt .pill.warn{color:#8A6E2E;background:#F6EBD2}
@@ -1765,7 +1774,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.51</b> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.53</b> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</div>
 </aside>
 
 <main id="main">
@@ -1778,6 +1787,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
       <div class="zoom-sw" id="zoomSw" title="ขนาดตัวอักษร — จำค่าไว้ในเครื่องนี้">
         <span data-z="1" onclick="setUiZoom(1)">A</span><span data-z="1.25" onclick="setUiZoom(1.25)">A+</span><span data-z="1.5" onclick="setUiZoom(1.5)">A++</span>
       </div>
+      <button class="tb-adv" id="tbAdv" onclick="openAdvisor()" title="ชื่อผู้จัดทำแผนที่จะพิมพ์ลงรายงาน — เก็บไว้ในเครื่องนี้ ไม่ผูกกับลูกค้าคนไหน">ผู้จัดทำแผน</button>
       <a class="back-tl" id="backTL" onclick="goPage('p1')">← กลับ Timeline</a>
       <span class="smallcaps" style="color:var(--faint)" id="todayStamp"></span>
     </div>
@@ -2515,6 +2525,20 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div id="libBody" style="margin-top:14px"></div>
     <div class="m-acts" style="justify-content:flex-end;margin-top:14px">
       <button class="btn" onclick="closeModal('mLibrary')">ปิด</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="mAdvisor" onclick="if(event.target===this)closeModal('mAdvisor')">
+  <div class="modal">
+    <div class="m-eye">Planner Profile · ผู้จัดทำแผน</div>
+    <h2>ชื่อที่จะพิมพ์ลงรายงาน</h2>
+    <div class="m-sub">เก็บไว้ในเครื่องนี้เครื่องเดียว ไม่ผูกกับลูกค้าคนไหน — ตั้งครั้งเดียวใช้กับลูกค้าทุกราย
+      · ถ้าทีมใช้เครื่องคนละเครื่อง แต่ละคนตั้งของตัวเอง</div>
+    <div id="advBody" style="margin-top:14px"></div>
+    <div class="m-acts" style="justify-content:flex-end;margin-top:14px">
+      <button class="btn" onclick="closeModal('mAdvisor')">ยกเลิก</button>
+      <button class="btn btn-pri" onclick="advisorSave()">บันทึก</button>
     </div>
   </div>
 </div>
@@ -10632,7 +10656,8 @@ function a4Furnish(){
     const hd=document.createElement('div'); hd.className='a4-run a4-run-h';
     hd.innerHTML=`<span>แผนการเงิน · คุณ${nm}</span><span>SIGNATURE 41</span>`;
     const ft=document.createElement('div'); ft.className='a4-run a4-run-f';
-    ft.innerHTML=`<span>จัดทำโดย สุชีรา กุลบุศย์ (อ้อย) · ${today}</span><span>หน้า ${i+1} / ${total}</span>`;
+    const _adv=(typeof advisorLine==='function')?advisorLine():'';
+    ft.innerHTML=`<span>${_adv?('จัดทำโดย '+_adv.replace(/[&<>]/g,'')):'<b style="color:#B5453E">⚠ ยังไม่ได้ตั้งชื่อผู้จัดทำแผน</b>'} · ${today}</span><span>หน้า ${i+1} / ${total}</span>`;
     sh.appendChild(hd); sh.appendChild(ft);
   });
 }
@@ -11167,34 +11192,53 @@ function a4PolicyTable(){
     {k:'annuity',h:'บำนาญ รับ/ปี',        g:p=>Number(p.annuity)||0},
     {k:'surrender',h:'มูลค่าเวนคืนวันนี้', g:p=>Number(p.surrender)||0}
   ].filter(col=>pols.some(p=>col.g(p)>0));
-  const tot={prem:0}; COLS.forEach(col=>{ tot[col.k]=0; });
-  const rows=pols.map(p=>{
+  /* v3.9.52: แยกเล่มของผู้วางแผนกับของผู้อยู่ในอุปการะออกจากกัน แล้วรวมยอดแยกกัน
+     เดิมปนกันทั้งตาราง แต่แถวรวมนับเฉพาะของผู้วางแผน — อ่านแล้วบวกไม่ตรงและไม่มีอะไรบอกว่าทำไม */
+  const NC=COLS.length+4;
+  const blank={prem:0}; COLS.forEach(col=>{ blank[col.k]=0; });
+  const mineOf=p=>{ const own=(!p.owner)?cid0:p.owner; return !!(STATE.carriers||[]).find(x=>x.id===own); };
+  const ownerName=p=>{ const own=(!p.owner)?cid0:p.owner;
+    const cc=(STATE.carriers||[]).find(x=>x.id===own); if(cc) return String(cc.name||'ผู้วางแผน');
+    const dd=(STATE.dependents||[]).find(x=>x.id===own); return dd?String(dd.name||'ผู้อยู่ในอุปการะ'):'ผู้อยู่ในอุปการะ'; };
+  const polRow=p=>{
     let prem=0; try{ prem=polPremAtAge(p,a0); }catch(e){ prem=Number(p.premium)||0; }
-    const own=(!p.owner)?cid0:p.owner;
-    const mine=!!(STATE.carriers||[]).find(x=>x.id===own);
-    if(mine){ tot.prem+=prem; COLS.forEach(col=>{ tot[col.k]+=col.g(p); }); }
     const sp=a4Split(p.name);
     const py=yr(p.payUntil), my=yr(p.maturity);
     const done=my&&my<a4BeYear();
-    return `<tr>
+    return {prem, html:`<tr>
       <td><b style="color:#1C1C2E">${A4ESC(sp.head)}</b>
-        <div style="color:#9A8E6E;font-size:8.4px;margin-top:1px">${A4ESC(p.company||'')}${p.no?' · เลขที่ '+A4ESC(p.no):''}${p.saleAge?' · ทำตอนอายุ '+A4ESC(String(p.saleAge)):''}${p.start?' · เริ่ม '+A4ESC(p.start):''}${mine?'':' · <b style="color:#5F7691">ของผู้อยู่ในอุปการะ</b>'}${done?' · <b style="color:#8A3A32">ครบสัญญาแล้ว</b>':''}</div></td>
+        <div style="color:#9A8E6E;font-size:8.4px;margin-top:1px">${A4ESC(p.company||'')}${p.no?' · เลขที่ '+A4ESC(p.no):''}${p.saleAge?' · ทำตอนอายุ '+A4ESC(String(p.saleAge)):''}${p.start?' · เริ่ม '+A4ESC(p.start):''}${done?' · <b style="color:#8A3A32">ครบสัญญาแล้ว</b>':''}</div></td>
       <td class="n">${num(prem)}</td>
       ${COLS.map(col=>`<td class="n">${num(col.g(p))}</td>`).join('')}
       <td class="n" style="font-weight:400;color:#6B6355">${py||'—'}</td>
       <td class="n" style="font-weight:400;color:#6B6355">${my||'—'}</td></tr>`
-      + (sp.tail?`<tr><td class="sub" colspan="${COLS.length+4}">${A4ESC(sp.tail)}</td></tr>`:'');
-  }).join('');
+      + (sp.tail?`<tr><td class="sub" colspan="${NC}">${A4ESC(sp.tail)}</td></tr>`:'')};
+  };
+  const group=(list,label,cls)=>{
+    if(!list.length) return {html:'', tot:Object.assign({},blank)};
+    const t=Object.assign({},blank);
+    const body=list.map(p=>{ const r=polRow(p); t.prem+=r.prem; COLS.forEach(col=>{ t[col.k]+=col.g(p); }); return r.html; }).join('');
+    return {tot:t, html:`<tr class="own"><td colspan="${NC}">${A4ESC(label)}</td></tr>${body}`
+      +`<tr class="${cls}"><td>รวม ${A4ESC(label)}</td><td class="n">${A4N(t.prem)}</td>
+        ${COLS.map(col=>`<td class="n">${A4N(t[col.k])}</td>`).join('')}<td colspan="2"></td></tr>`};
+  };
+  const mineList=pols.filter(mineOf), depList=pols.filter(p=>!mineOf(p));
+  const gMine=group(mineList,'กรมธรรม์ของ'+String(c.name||'ผู้วางแผน'),'sum');
+  const depByOwner={}; depList.forEach(p=>{ const k=ownerName(p); (depByOwner[k]=depByOwner[k]||[]).push(p); });
+  const gDeps=Object.keys(depByOwner).map(k=>group(depByOwner[k],'กรมธรรม์ของ'+k+' (ผู้อยู่ในอุปการะ)','sum'));
+  const tot=Object.assign({},gMine.tot);
+  gDeps.forEach(g=>{ tot.prem+=g.tot.prem; COLS.forEach(col=>{ tot[col.k]+=g.tot[col.k]; }); });
+  const grand=depList.length?`<tr class="grand"><td>รวมทั้งบ้าน (เบี้ยที่จ่ายจริงต่อปี)</td><td class="n">${A4N(tot.prem)}</td>
+      ${COLS.map(col=>`<td class="n">${A4N(tot[col.k])}</td>`).join('')}<td colspan="2"></td></tr>`:'';
   return `<div style="overflow-x:auto"><table class="a4-rt" style="font-size:8.4px"><thead><tr>
       <th>กรมธรรม์</th><th class="n">เบี้ยปีนี้</th>
       ${COLS.map(col=>`<th class="n">${col.h}</th>`).join('')}
       <th class="n">จ่ายถึง</th><th class="n">ครบสัญญา</th></tr></thead>
-    <tbody>${rows}
-    <tr class="hi"><td>รวมของ${A4ESC(c.name||'ผู้วางแผน')}</td><td class="n">${A4N(tot.prem)}</td>
-      ${COLS.map(col=>`<td class="n">${A4N(tot[col.k])}</td>`).join('')}
-      <td colspan="2"></td></tr>
-    </tbody></table></div>
-    <div class="a4-note">คอลัมน์ที่ขึ้นคือประเภทผลประโยชน์ที่<b>มีเล่มใดเล่มหนึ่งใช้จริง</b> — ประเภทที่ทุกเล่มเป็นศูนย์ถูกซ่อนไว้เพื่อให้อ่านง่าย
+    <tbody>${gMine.html}${gDeps.map(g=>g.html).join('')}${grand}</tbody></table></div>
+    <div class="a4-note"><b>ทุนคุ้มครองที่นับเข้าแผนของ${A4ESC(c.name||'ผู้วางแผน')} คือแถวรวมกลุ่มแรกเท่านั้น</b> —
+      เล่มของผู้อยู่ในอุปการะแยกไว้กลุ่มล่าง เพราะทุนเป็นของเขา ไม่ใช่ของผู้วางแผน แต่<b>เบี้ยเป็นรายจ่ายของบ้าน</b>
+      จึงถูกนับในงบกระแสเงินสด (หน้า II บรรทัด “เบี้ยกรมธรรม์ของผู้อยู่ในอุปการะ”)
+      · คอลัมน์ที่ขึ้นคือประเภทผลประโยชน์ที่<b>มีเล่มใดเล่มหนึ่งใช้จริง</b> — ประเภทที่ทุกเล่มเป็นศูนย์ถูกซ่อนไว้เพื่อให้อ่านง่าย
       · เบี้ยปีนี้อ่านจากตารางเบี้ยรายอายุของแต่ละเล่ม เล่มที่เบี้ยขึ้นตามอายุจะไม่เท่ากันทุกปี (ดูภาระเบี้ยตลอดแผนที่หน้า V)
       · ปีที่แสดงเป็น พ.ศ. · ช่อง "—" คือเล่มนั้นไม่มีผลประโยชน์ประเภทนั้น ไม่ใช่ยังไม่ได้กรอก</div>`;
 }
@@ -11207,6 +11251,56 @@ function a4PolicyTable(){
    วิธีแก้: ตอนเปิดรายงาน ช่องไหนยัง "ว่าง" ให้ร่างครั้งเดียวแล้วเขียนลงไฟล์ (saveState)
    ช่องที่มีของอยู่แล้ว "ห้ามแตะ" — ที่ปรึกษาแก้ถ้อยคำไว้ยังอยู่ครบ
    และติดป้ายบนหน้ากระดาษว่าเนื้อหาชุดนั้นเป็นร่างอัตโนมัติ หรือที่ปรึกษาแก้แล้ว */
+
+/* ═══ v3.9.52 · ผู้จัดทำแผน — เก็บในเครื่องของแต่ละคน ไม่ปนกับข้อมูลลูกค้า ═══
+   เดิมชื่อ/ใบอนุญาต/ที่ติดต่อฝังตายในโค้ด 3 จุด (ปก · ท้ายกระดาษทุกหน้า · หน้านักวางแผน)
+   ทีมเอาไปใช้แล้วแก้ไม่ได้ ต้องมาแก้โค้ด — ซึ่งทำไม่ได้จริงในทางปฏิบัติ
+   ค่าเริ่มต้นตั้งใจให้ "ว่าง" ไม่ใช่ชื่ออ้อย เพราะเลขใบอนุญาตคือชื่อคนที่รับผิดชอบคำแนะนำตามกฎหมาย
+   ถ้าใครลืมตั้ง รายงานจะขึ้นแถบเตือนชัด ๆ แทนที่จะพิมพ์ชื่อคนอื่นไปเงียบ ๆ */
+const ADV_KEY='s41_advisor_v1';
+const ADV_FIELDS=[
+  ['name','ชื่อ-นามสกุล (ชื่อเล่น)','ชื่อจริง นามสกุล (ชื่อเล่น)'],
+  ['role','ตำแหน่ง · บริษัท','เช่น ที่ปรึกษาทางการเงินและตัวแทนประกันชีวิต · บริษัท AIA'],
+  ['creds','คุณวุฒิ / สังกัด (ขึ้นบรรทัดใหม่ได้)','เช่น Financial Advisor (FA) — AIA · Finnomena'],
+  ['lic','เลขใบอนุญาต','เช่น ใบอนุญาตประกัน 0000000000 · ผู้แนะนำการลงทุน 000000'],
+  ['contact','ที่ติดต่อ','เช่น โทร 08x-xxx-xxxx · LINE: xxxx · name@email.com']
+];
+function advisorGet(){
+  try{ const raw=localStorage.getItem(ADV_KEY); if(!raw) return null;
+    const o=JSON.parse(raw); return (o&&String(o.name||'').trim())?o:null; }catch(e){ return null; }
+}
+function advisorSet(){ const a=advisorGet(); return !!a; }
+function openAdvisor(){
+  const a=advisorGet()||{};
+  const host=document.getElementById('advBody'); if(!host) return;
+  const esc=v=>String(v==null?'':v).replace(/"/g,'&quot;');
+  host.innerHTML=ADV_FIELDS.map(f=>`<div class="line" style="align-items:flex-start">
+      <div class="lbl" style="flex:0 0 150px">${f[1]}</div>
+      ${f[0]==='creds'
+        ? `<textarea id="adv_${f[0]}" class="y y-text" style="flex:1;min-height:52px;font-family:var(--thai);font-size:12.5px;padding:6px 9px" placeholder="${esc(f[2])}">${String(a[f[0]]||'').replace(/</g,'&lt;')}</textarea>`
+        : `<input id="adv_${f[0]}" class="y y-text" style="flex:1" value="${esc(a[f[0]]||'')}" placeholder="${esc(f[2])}">`}
+    </div>`).join('')
+    +'<div class="note" style="margin-top:9px">ข้อมูลนี้ถูกพิมพ์ลงหน้าปก ท้ายกระดาษทุกหน้า และหน้านักวางแผนของรายงาน '
+    +'· เลขใบอนุญาตคือชื่อผู้รับผิดชอบคำแนะนำตามกฎหมาย ต้องเป็นของคนที่นั่งคุยกับลูกค้าจริง</div>';
+  openModal('mAdvisor');
+}
+function advisorSave(){
+  const o={}; ADV_FIELDS.forEach(f=>{ const el=document.getElementById('adv_'+f[0]); o[f[0]]=el?String(el.value||'').trim():''; });
+  if(!o.name){ alert('ต้องใส่ชื่อผู้จัดทำแผนอย่างน้อยหนึ่งช่องค่ะ'); return; }
+  try{ localStorage.setItem(ADV_KEY, JSON.stringify(o)); }catch(e){ alert('บันทึกไม่สำเร็จ: '+e.message); return; }
+  closeModal('mAdvisor'); advisorPaintBtn();
+}
+function advisorPaintBtn(){
+  const b=document.getElementById('tbAdv'); if(!b) return;
+  const a=advisorGet();
+  b.textContent = a ? String(a.name||'ผู้จัดทำแผน').split('(')[0].trim() : 'ตั้งชื่อผู้จัดทำแผน';
+  b.classList.toggle('unset', !a);
+  b.title = a ? 'ผู้จัดทำแผนที่จะพิมพ์ลงรายงาน — กดเพื่อแก้' : 'ยังไม่ได้ตั้งชื่อผู้จัดทำแผน — รายงานจะขึ้นแถบเตือน';
+}
+/* ชื่อสั้นสำหรับท้ายกระดาษ/ปก */
+function advisorLine(){ const a=advisorGet(); return a?String(a.name||''):''; }
+try{ window.addEventListener('load',()=>{ try{ advisorPaintBtn(); }catch(e){} }); }catch(e){}
+
 function a4SrcBadge(which){
   const k=(which==='planGaps')?(STATE.planGapsSrc||''):(STATE.planActionsSrc||'');
   if(k==='advisor') return '<span class="a4-src adv">ที่ปรึกษาตรวจแล้ว</span>';
@@ -11713,7 +11807,9 @@ function renderA4Summary(){
     <div class="cv-tag">ตรวจสุขภาพการเงินของคุณ — อายุ ${nowAge} ปี · วางแผนถึงอายุ ${life} ปี</div>
     <div class="cv-meta">
       <div><div class="l">จัดทำให้</div><div class="v">${c.name||'ลูกค้า'}</div></div>
-      <div style="text-align:right"><div class="l">โดยนักวางแผนการเงิน</div><div class="v">สุชีรา กุลบุศย์ (อ้อย)<small>${today}</small></div></div>
+      <div style="text-align:right"><div class="l">โดยนักวางแผนการเงิน</div><div class="v">${(function(){
+        const a=(typeof advisorGet==='function')?advisorGet():null;
+        return a?String(a.name||'').replace(/[&<>]/g,''):'<span style="color:#B5453E">— ยังไม่ได้ตั้งชื่อ —</span>'; })()}<small>${today}</small></div></div>
     </div>
   </div></div>`;
 
@@ -11778,9 +11874,10 @@ function renderA4Summary(){
     ${(function(){ try{ return a4ProtBars()||protBars; }catch(e){ console.warn('a4ProtBars',e); return protBars; } })()||'<div class="a4-note">ยังไม่มีข้อมูลความคุ้มครอง</div>'}
     <div class="a4-note" style="margin-top:6px">"ต้องการ" คิดแบบ Needs Approach = ภาระหนี้ + ค่าครองชีพที่คนข้างหลังยังต้องใช้ + ทุนการศึกษาบุตร − ทรัพย์สินและทุนที่มีอยู่แล้ว
       ไม่ใช่การคูณรายได้ตายตัว · ตัวเลขนี้จึงลดลงเองเมื่อหนี้หมดและทรัพย์สินโตขึ้น</div>
-    <div class="a4-sec" style="margin-top:12px">กรมธรรม์ทุกเล่มที่ถืออยู่</div>
-    ${(function(){ try{ return a4PolicyTable(); }catch(e){ console.warn('a4PolicyTable',e); return ''; } })()}
-  </div>`;
+  </div>
+  ${(function(){ try{ const t=a4PolicyTable(); return t?`<div class="a4-sheet">
+      <div class="a4-ptitle"><span class="n">IV</span><span class="t">ทะเบียนกรมธรรม์ทุกเล่มที่ถืออยู่</span><span class="ref">หน้า IV ในเครื่องมือ</span></div>
+      ${t}</div>`:''; }catch(e){ console.warn('a4PolicyTable',e); return ''; } })()}`;
 
   /* ── v3.9.33 · หน้า "ขอให้ตรวจตัวเลขก่อน" — วางไว้ต้นรายงาน เพราะทุกหน้าหลังจากนี้คิดจากตัวเลขชุดนี้ ── */
   const chkBody=(function(){ try{ return planRealityClientHTML(pf, true)||''; }catch(e){ return ''; } })();
@@ -11821,16 +11918,20 @@ function renderA4Summary(){
 
   const sheetPlanner=`<div class="a4-sheet">
     <div class="a4-ptitle"><span class="n">★</span><span class="t">นักวางแผนการเงิน</span></div>
-    <div class="a4-planner">
-      <div>
-        <div class="pp-n">สุชีรา กุลบุศย์ (อ้อย)</div>
-        <div class="pp-r">ที่ปรึกษาทางการเงินและตัวแทนประกันชีวิต · บริษัท AIA<br>
-        Financial Advisor (FA) — AIA · Finnomena<br>
-        IC License (ผู้แนะนำการลงทุนตราสารซับซ้อนประเภท 1) · AFPT<br>
-        ใบอนุญาตประกัน 6501052442 · ผู้แนะนำการลงทุน 126603<br>
-        โทร 0946451956 · LINE: aoyoyoh · aoyoyoh@yahoo.com</div>
-      </div>
-    </div>
+    ${(function(){
+      const a=(typeof advisorGet==='function')?advisorGet():null;
+      const e=v=>String(v==null?'':v).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+      if(!a) return `<div class="adv-warn">⚠ ยังไม่ได้ตั้งชื่อผู้จัดทำแผนในเครื่องนี้ —
+        กดปุ่ม <b>“ตั้งชื่อผู้จัดทำแผน”</b> ที่แถบบนของเครื่องมือ แล้วใส่ชื่อ ตำแหน่ง และเลขใบอนุญาตของตัวเอง
+        <div style="font-weight:400;margin-top:4px">เลขใบอนุญาตคือชื่อผู้รับผิดชอบคำแนะนำตามกฎหมาย
+        จึงต้องเป็นของคนที่นั่งคุยกับลูกค้าจริง เครื่องมือจึงไม่เติมชื่อใครให้อัตโนมัติ</div></div>`;
+      const lines=[a.role, a.creds, a.lic, a.contact].filter(x=>String(x||'').trim())
+        .map(x=>e(x).replace(/\n/g,'<br>')).join('<br>');
+      return `<div class="a4-planner"><div>
+        <div class="pp-n">${e(a.name)}</div>
+        ${lines?`<div class="pp-r">${lines}</div>`:''}
+      </div></div>`;
+    })()}
     <div class="a4-note" style="margin-top:14px">สมมติฐานทั้งหมดที่ใช้ในแผน แยกตามแหล่งที่มา อยู่ในหน้า “สมมติฐาน — ข้อมูลจริง เทียบ สมมติฐาน”</div>
     <div class="a4-note">รายงานนี้เป็นการประมาณการเพื่อการวางแผนการเงินส่วนบุคคล อ้างอิงข้อมูลที่ลูกค้าให้ไว้ · ใช้สมมติฐานผลตอบแทน/เงินเฟ้อคงที่ ไม่ใช่การรับประกันผลตอบแทน ควรทบทวนทุกปีหรือเมื่อสถานะเปลี่ยน · SIGNATURE 41 — Customized for One</div>
     <div class="a4-note" style="margin-top:5px">${(function(){
