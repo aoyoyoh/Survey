@@ -1774,7 +1774,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.55</b> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.56</b> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</div>
 </aside>
 
 <main id="main">
@@ -3411,7 +3411,7 @@ function syncSnapAggregates(){
   const cid0=carriers[0]&&carriers[0].id;
   STATE.snap._depPolPremM=0;
   // รีเซ็ตทุนคุ้มครองรายคนทุกครั้ง แล้วค่อยรวมจากกรมธรรม์
-  carriers.forEach(c=>{ c._cov={life:0,health:0,ci:0,tpd:0,pa:0,paMed:0}; });   /* v3.8.1: paMed = วงเงินค่ารักษาพยาบาลจากอุบัติเหตุ */
+  carriers.forEach(c=>{ c._cov={life:0,health:0,ci:0,tpd:0,pa:0,paMed:0,cancer:0,hospCancer:0}; });   /* v3.8.1: paMed = วงเงินค่ารักษาพยาบาลจากอุบัติเหตุ */
   const covOf=id=>{ const c=carriers.find(x=>x.id===id); return c?c._cov:null; };
   if(pols.length){
     let surrender=0,carrierPrem=0,depPrem=0,payoutAnnual=0;
@@ -3432,6 +3432,9 @@ function syncSnapAggregates(){
         cov.ci+=(Number(p.ciMid)||0)+(Number(p.ciSevere)||0)+(Number(p.ciCrit)||0)+(Number(p.ci)||0);
         cov.tpd+=(Number(p.care)||0)+(Number(p.tpd)||0); cov.pa+=(Number(p.paDeath)||0)+(Number(p.pa)||0);
         cov.paMed+=(Number(p.accMed)||0);   /* v3.8.1: ค่ารักษาพยาบาลอุบัติเหตุ แยกจากทุนชีวิตแบบอุบัติเหตุ */
+        /* v3.9.56: มะเร็งแยกเป็นสองชนิด — ทุนก้อนเดียวตอนตรวจพบ (CB) กับชดเชยรายวันตอนนอน รพ.
+           ไม่รวมเข้า cov.ci เพราะจ่ายเฉพาะมะเร็ง ไม่ใช่โรคร้ายแรงทุกโรค — ถ้ารวมจะทำให้ทุนโรคร้ายดูสูงเกินจริง */
+        cov.cancer+=(Number(p.cancer)||0); cov.hospCancer+=(Number(p.hospCancer)||0);
       } else { depPrem+=prem; }              // กรมธรรม์ของผู้พึ่งพิง → เบี้ย = ภาระอุปการะ
     });
     A.insVal   += surrender;            // มูลค่าเวนคืน → สินทรัพย์ลงทุน
@@ -3440,8 +3443,9 @@ function syncSnapAggregates(){
     STATE.snap._depPolPremM = depPrem/12;  // เบี้ยของผู้พึ่งพิง → ภาระอุปการะ
     if(!STATE.snap.protection) STATE.snap.protection={};
     const P=STATE.snap.protection;
-    const agg=carriers.reduce((s,c)=>{const v=c._cov||{};s.life+=v.life||0;s.health+=v.health||0;s.ci+=v.ci||0;s.tpd+=v.tpd||0;s.pa+=v.pa||0;s.paMed+=v.paMed||0;return s;},{life:0,health:0,ci:0,tpd:0,pa:0,paMed:0});
-    P.lifeCov=agg.life; P.healthMax=agg.health; P.ciCov=agg.ci; P.tpdCov=agg.tpd; P.paCov=agg.pa; P.paMedMax=agg.paMed; P._fromPolicies=true;  // ยอดรวม (เผื่อส่วนที่อ่านค่ารวม)
+    const agg=carriers.reduce((s,c)=>{const v=c._cov||{};s.life+=v.life||0;s.health+=v.health||0;s.ci+=v.ci||0;s.tpd+=v.tpd||0;s.pa+=v.pa||0;s.paMed+=v.paMed||0;s.cancer+=v.cancer||0;s.hospCancer+=v.hospCancer||0;return s;},{life:0,health:0,ci:0,tpd:0,pa:0,paMed:0,cancer:0,hospCancer:0});
+    P.lifeCov=agg.life; P.healthMax=agg.health; P.ciCov=agg.ci; P.tpdCov=agg.tpd; P.paCov=agg.pa; P.paMedMax=agg.paMed;
+    P.cancerCov=agg.cancer; P.cancerDaily=agg.hospCancer; P._fromPolicies=true;  // ยอดรวม (เผื่อส่วนที่อ่านค่ารวม)
     P._surrender=surrender; P._premium=carrierPrem+depPrem; P._payout=payoutAnnual; P._depPrem=depPrem;
   } else if(STATE.snap.protection){
     STATE.snap.protection._fromPolicies=false;
@@ -10199,7 +10203,7 @@ function refreshProtection(){ try{ render(); }catch(e){} try{ renderProtectCheck
 let AIPOL_OPEN=false;
 function toggleAiPolicy(){ AIPOL_OPEN=!AIPOL_OPEN; const el=document.getElementById('aiPolPanel'); if(el) el.style.display=AIPOL_OPEN?'block':'none'; }
 const AI_POLICY_PROMPT=`อ่านรูปหน้าสรุปกรมธรรม์ประกันที่แนบมา แล้วตอบกลับเป็น JSON array เท่านั้น (ไม่ต้องมีคำอธิบาย ไม่ต้องมี markdown) ตามโครงนี้ ทุกกรมธรรม์ที่เห็นในรูป:
-[{"company":"ชื่อบริษัท","name":"ชื่อแบบประกันหลัก","no":"เลขกรมธรรม์","saleAge":"อายุตอนทำ","start":"วันเริ่ม วว/ดด/ปปปป","payUntil":"ครบชำระเบี้ย วว/ดด/ปปปป","maturity":"ครบสัญญา วว/ดด/ปปปป","life":ทุนชีวิต,"premium":เบี้ยต่อปี,"health":วงเงินรักษาพยาบาลต่อปี,"accMed":ค่ารักษาอุบัติเหตุ,"hospCash":ชดเชยนอนรพต่อวัน,"hospCancer":ชดเชยนอนรพมะเร็งต่อวัน,"ciMid":ทุนโรคร้ายแรงระยะต้นถึงปานกลาง,"ciSevere":ทุนโรคร้ายแรงรุนแรง,"paDeath":ทุนเสียชีวิตจากอุบัติเหตุ,"saving":เงินคืนสะสมทรัพย์ที่ได้รับต่อปี,"annuity":บำนาญที่ได้รับต่อปี,"surrender":มูลค่าเวนคืนปัจจุบัน}]
+[{"company":"ชื่อบริษัท","name":"ชื่อแบบประกันหลัก","no":"เลขกรมธรรม์","saleAge":"อายุตอนทำ","start":"วันเริ่ม วว/ดด/ปปปป","payUntil":"ครบชำระเบี้ย วว/ดด/ปปปป","maturity":"ครบสัญญา วว/ดด/ปปปป","life":ทุนชีวิต,"premium":เบี้ยต่อปี,"health":วงเงินรักษาพยาบาลต่อปี,"accMed":ค่ารักษาอุบัติเหตุ,"hospCash":ชดเชยนอนรพต่อวัน,"hospCancer":ชดเชยนอนรพมะเร็งต่อวัน,"cancer":ทุนมะเร็งจ่ายเป็นเงินก้อน,"ciMid":ทุนโรคร้ายแรงระยะต้นถึงปานกลาง,"ciSevere":ทุนโรคร้ายแรงรุนแรง,"paDeath":ทุนเสียชีวิตจากอุบัติเหตุ,"saving":เงินคืนสะสมทรัพย์ที่ได้รับต่อปี,"annuity":บำนาญที่ได้รับต่อปี,"surrender":มูลค่าเวนคืนปัจจุบัน}]
 กติกา: ตัวเลขเป็นบาท ไม่ใส่คอมม่า · ช่องที่ไม่มีข้อมูลในรูปใส่ 0 (ตัวหนังสือใส่ "") · ไม่แน่ใจให้ใส่ 0 อย่าเดา
 เพิ่มเติม: company ให้อนุมานจากชื่อแบบประกันหรือโลโก้ได้ (เช่น ชื่อขึ้นต้น "เอไอเอ" → "AIA") · เอกสารมักแสดงวันที่เป็น เดือน/วัน/ปี ให้สลับเป็น วัน/เดือน/ปี ค.ศ. เสมอ · เลขกรมธรรม์มักอยู่หัวกระดาษ ถ้าไม่มีในรูปใส่ ""`;
 function copyAiPolicyPrompt(btn){
@@ -10216,7 +10220,7 @@ function importAiPolicies(){
   let data;
   try{ data=JSON.parse(t); }catch(e){ alert('อ่านข้อมูลไม่ได้ — ลองบอก AI ว่า "ตอบเป็น JSON อย่างเดียว ไม่ต้องอธิบาย" แล้ววางใหม่'); return; }
   if(!Array.isArray(data)) data=[data];
-  const NUMF=['life','premium','health','accMed','hospCash','hospCancer','ciMid','ciSevere','ciCrit','care','paDeath','saving','annuity','surrender'];
+  const NUMF=['life','premium','health','accMed','hospCash','hospCancer','cancer','ciMid','ciSevere','ciCrit','care','paDeath','saving','annuity','surrender'];
   const TXTF=['company','name','no','saleAge','start','payUntil','maturity'];
   let n=0;
   data.forEach((p,i)=>{ if(!p||typeof p!=='object') return;
@@ -10229,7 +10233,7 @@ function importAiPolicies(){
   AIPOL_OPEN=false; refreshProtection();
   alert(n?`เพิ่ม ${n} กรมธรรม์แล้ว ✓ — อย่าลืมเลือก "ของใคร" ให้แต่ละฉบับ`:'ไม่พบข้อมูลกรมธรรม์ในคำตอบ');
 }
-function addPolicy(){ policiesArr().push({id:Date.now(),company:'AIA',name:'',no:'',saleAge:'',start:'',payUntil:'',maturity:'',owner:'',life:0,premium:0,health:0,accMed:0,hospCash:0,hospCancer:0,ciMid:0,ciSevere:0,ciCrit:0,care:0,paDeath:0,saving:0,annuity:0,surrender:0}); if(typeof saveState==='function')saveState(); refreshProtection(); }
+function addPolicy(){ policiesArr().push({id:Date.now(),company:'AIA',name:'',no:'',saleAge:'',start:'',payUntil:'',maturity:'',owner:'',life:0,premium:0,health:0,accMed:0,hospCash:0,hospCancer:0,cancer:0,ciMid:0,ciSevere:0,ciCrit:0,care:0,paDeath:0,saving:0,annuity:0,surrender:0}); if(typeof saveState==='function')saveState(); refreshProtection(); }
 function delPolicy(i){ policiesArr().splice(i,1); if(typeof saveState==='function')saveState(); refreshProtection(); }
 const POL_TEXT=['company','name','no','saleAge','start','payUntil','maturity','owner'];
 function setPolicy(i,field,raw){ const a=policiesArr(); if(!a[i])return;
@@ -10339,7 +10343,7 @@ function renderPolicies(){
     <td>${tin(i,'saleAge','อายุ')}</td><td>${tin(i,'start','วว/ดด/ปป')}</td><td>${tin(i,'payUntil','วว/ดด/ปป')}</td><td>${tin(i,'maturity','วว/ดด/ปป')}</td><td>${own(i)}</td>
     <td class="pol-life">${nin(i,'life')}</td><td>${nin(i,'premium')}</td>
     <td class="g-hos">${nin(i,'health')}</td><td class="g-hos">${nin(i,'accMed')}</td>
-    <td class="g-comp">${nin(i,'hospCash')}</td><td class="g-comp">${nin(i,'hospCancer')}</td><td class="g-comp">${nin(i,'ciMid')}</td><td class="g-comp">${nin(i,'ciSevere')}</td><td class="g-comp">${nin(i,'paDeath')}</td>
+    <td class="g-comp">${nin(i,'hospCash')}</td><td class="g-comp">${nin(i,'hospCancer')}</td><td class="g-comp">${nin(i,'cancer')}</td><td class="g-comp">${nin(i,'ciMid')}</td><td class="g-comp">${nin(i,'ciSevere')}</td><td class="g-comp">${nin(i,'paDeath')}</td>
     <td class="g-sav">${nin(i,'saving')}</td><td class="g-sav">${nin(i,'annuity')}</td><td>${nin(i,'surrender')}</td>
     <td style="white-space:nowrap"><button class="pf-del" onclick="togglePolicyPF(${i})" title="เบี้ยจ่าย ตามอายุ (→ ค่าใช้จ่าย)">💸</button><button class="pf-del" onclick="togglePolicyCF(${i})" title="เงินรับ ปันผล/เงินคืน/บำนาญ (→ รายรับ)">💧</button><button class="pf-del" onclick="togglePolicyDED(${i})" style="${(Array.isArray(p.ded)&&p.ded.length)?'':'opacity:.45'}" title="${(Array.isArray(p.ded)&&p.ded.length)?'ค่าลดหย่อนภาษีของเล่มนี้ — ระบุแล้ว':'ยังไม่ระบุว่าเบี้ยส่วนไหนลดหย่อนได้ — ตอนนี้เครื่องเดาจากเบี้ยทั้งก้อน (ค่าประมาณ)'}">🧾</button><button class="pf-del" onclick="togglePolicyToPlan(${i})" style="${polToPlan(p)?'':'opacity:.35'}" title="${polToPlan(p)?'เงินรับของเล่มนี้เข้ากระเป๋าผู้วางแผน → นับเป็นเงินเกษียณ (กดเพื่อยกเว้น)':'เงินรับของเล่มนี้ไม่นับเข้าแผนผู้วางแผน เช่น เป็นของลูก (กดเพื่อนับ)'}">🎯</button><button class="pf-del" onclick="delPolicy(${i})" title="ลบ">×</button></td>
   </tr>${POLPF_OPEN[i]?pfEditor(i):''}${POLCF_OPEN[i]?cfEditor(i):''}${POLDED_OPEN[i]?dedEditor(i):''}`; };
@@ -10354,25 +10358,25 @@ function renderPolicies(){
   cs0.forEach(c=>{ const k=String(c.id); if(groups[k]) ordered.push(k); });
   (STATE.dependents||[]).forEach(d=>{ const k=String(d.id); if(groups[k]) ordered.push(k); });
   Object.keys(groups).forEach(k=>{ if(ordered.indexOf(k)<0) ordered.push(k); });
-  const NUMK=['life','premium','health','accMed','hospCash','hospCancer','ciMid','ciSevere','paDeath','saving','annuity','surrender'];
+  const NUMK=['life','premium','health','accMed','hospCash','hospCancer','cancer','ciMid','ciSevere','paDeath','saving','annuity','surrender'];
   let rows='';
   if(ordered.length<=1){ rows=arr.map((p,i)=>rowFor(i)).join(''); }
   else ordered.forEach(k=>{
     const idxs=groups[k];
-    rows+=`<tr class="pol-own"><td colspan="21">${nameOf(k)} · ${idxs.length} กรมธรรม์</td></tr>`;
+    rows+=`<tr class="pol-own"><td colspan="22">${nameOf(k)} · ${idxs.length} กรมธรรม์</td></tr>`;
     idxs.forEach(i=>{ rows+=rowFor(i); });
     const G={}; NUMK.forEach(kk=>G[kk]=idxs.reduce((t,i)=>t+(Number(arr[i][kk])||0),0));
     const gc=kk=>`<td>${G[kk]?f0(G[kk]):'—'}</td>`;
     rows+=`<tr class="pol-gsub"><td colspan="8">รวมของ ${nameOf(k)} · เบี้ยรวม ${f0(G.premium)}/ปี</td>
       <td class="pol-life">${f0(G.life)}</td><td>${f0(G.premium)}</td>
-      ${gc('health')}${gc('accMed')}${gc('hospCash')}${gc('hospCancer')}${gc('ciMid')}${gc('ciSevere')}${gc('paDeath')}${gc('saving')}${gc('annuity')}${gc('surrender')}<td></td></tr>`;
+      ${gc('health')}${gc('accMed')}${gc('hospCash')}${gc('hospCancer')}${gc('cancer')}${gc('ciMid')}${gc('ciSevere')}${gc('paDeath')}${gc('saving')}${gc('annuity')}${gc('surrender')}<td></td></tr>`;
   });
-  const T={life:0,premium:0,health:0,accMed:0,hospCash:0,hospCancer:0,ciMid:0,ciSevere:0,ciCrit:0,care:0,paDeath:0,saving:0,annuity:0,surrender:0};
+  const T={life:0,premium:0,health:0,accMed:0,hospCash:0,hospCancer:0,cancer:0,ciMid:0,ciSevere:0,ciCrit:0,care:0,paDeath:0,saving:0,annuity:0,surrender:0};
   arr.forEach(p=>{ for(const k in T) T[k]+=Number(p[k])||0; });
   const tcell=k=>`<td>${T[k]?f0(T[k]):'—'}</td>`;
   const foot=arr.length?`<tr class="pol-tot"><td colspan="8">รวม ${arr.length} กรมธรรม์</td>
     <td class="pol-life">${f0(T.life)}</td><td>${f0(T.premium)}</td>
-    ${tcell('health')}${tcell('accMed')}${tcell('hospCash')}${tcell('hospCancer')}${tcell('ciMid')}${tcell('ciSevere')}${tcell('paDeath')}${tcell('saving')}${tcell('annuity')}${tcell('surrender')}<td></td></tr>`:'';
+    ${tcell('health')}${tcell('accMed')}${tcell('hospCash')}${tcell('hospCancer')}${tcell('cancer')}${tcell('ciMid')}${tcell('ciSevere')}${tcell('paDeath')}${tcell('saving')}${tcell('annuity')}${tcell('surrender')}<td></td></tr>`:'';
   // ── แถบ "สรุป ณ วันที่" — ให้ตัวแทนเช็คว่าห่างจากครั้งล่าสุดนานแค่ไหน ──
   const sumDate=(STATE.snap&&STATE.snap.policySummaryDate)||'';
   let elapsedHTML='<span style="color:var(--faint);font-style:italic">ยังไม่ได้ระบุวันที่สรุป — กด "วันนี้" เมื่อสรุปให้ลูกค้าแล้ว</span>';
@@ -10398,7 +10402,7 @@ function renderPolicies(){
   box.innerHTML=dateBar+`<div class="pol-wrap"><table class="pol-tbl">
     <thead>
       <tr class="pol-grp"><th colspan="8">ข้อมูลกรมธรรม์</th><th colspan="2">หลัก</th><th colspan="2" class="g-hos">1 · จ่ายโรงพยาบาล</th><th colspan="5" class="g-comp">2 · จ่ายเรา (ค่าชดเชย)</th><th colspan="2" class="g-sav">3 · เงินสะสม (รับ/ปี)</th><th>มูลค่าเวนคืน</th><th></th></tr>
-      <tr class="pol-sub"><th>บริษัท</th><th>แบบประกันหลัก</th><th>เลขที่กรมธรรม์</th><th>ทำตอนอายุ</th><th>เริ่มทำ</th><th>ครบชำระเบี้ยหลัก</th><th>ครบสัญญา</th><th>ของใคร</th><th>ทุนชีวิต</th><th>เบี้ยประกัน</th><th>รักษาพยาบาลทั่วไป</th><th>อุบัติเหตุ (ค่ารักษา)</th><th>ชดเชยนอนรพ</th><th>ชดเชยนอนรพ(มะเร็ง)</th><th>โรคร้ายแรงต้น-ปานกลาง</th><th>โรคร้ายแรงระดับรุนแรง</th><th>อุบัติเหตุ (เสียชีวิต)</th><th>สะสมทรัพย์ (รับ/ปี)</th><th>บำนาญ (รับ/ปี)</th><th>ณ วันนี้ → สินทรัพย์</th><th></th></tr>
+      <tr class="pol-sub"><th>บริษัท</th><th>แบบประกันหลัก</th><th>เลขที่กรมธรรม์</th><th>ทำตอนอายุ</th><th>เริ่มทำ</th><th>ครบชำระเบี้ยหลัก</th><th>ครบสัญญา</th><th>ของใคร</th><th>ทุนชีวิต</th><th>เบี้ยประกัน</th><th>รักษาพยาบาลทั่วไป</th><th>อุบัติเหตุ (ค่ารักษา)</th><th>ชดเชยนอนรพ</th><th>ชดเชยนอนรพ(มะเร็ง) /วัน</th><th>ทุนมะเร็ง (เงินก้อน)</th><th>โรคร้ายแรงต้น-ปานกลาง</th><th>โรคร้ายแรงระดับรุนแรง</th><th>อุบัติเหตุ (เสียชีวิต)</th><th>สะสมทรัพย์ (รับ/ปี)</th><th>บำนาญ (รับ/ปี)</th><th>ณ วันนี้ → สินทรัพย์</th><th></th></tr>
     </thead>
     <tbody>${rows||'<tr><td colspan="21" style="padding:10px;color:var(--faint);font-style:italic">ยังไม่มีกรมธรรม์ — กด + เพื่อเพิ่ม</td></tr>'}</tbody>
     ${foot?`<tfoot>${foot}</tfoot>`:''}
@@ -11201,7 +11205,8 @@ function a4PolicyTable(){
     {k:'health', h:'สุขภาพ (เหมาจ่าย)',   g:p=>Number(p.health)||0},
     {k:'accMed', h:'ค่ารักษาอุบัติเหตุ',  g:p=>Number(p.accMed)||0},
     {k:'hospCash',h:'ชดเชยนอน รพ./วัน',  g:p=>Number(p.hospCash)||0},
-    {k:'hospCancer',h:'ชดเชยมะเร็ง/วัน', g:p=>Number(p.hospCancer)||0},
+    {k:'hospCancer',h:'ชดเชยนอน รพ. มะเร็ง /วัน', g:p=>Number(p.hospCancer)||0},
+    {k:'cancer',  h:'มะเร็ง (เงินก้อน)',    g:p=>Number(p.cancer)||0},
     {k:'ciMid',  h:'โรคร้าย ต้น-กลาง',    g:p=>Number(p.ciMid)||0},
     {k:'ciSevere',h:'โรคร้าย รุนแรง',     g:p=>(Number(p.ciSevere)||0)+(Number(p.ci)||0)},
     {k:'ciCrit', h:'โรคร้าย วิกฤต',       g:p=>Number(p.ciCrit)||0},
@@ -11607,6 +11612,8 @@ function a4BASheet(){
       ${r2('ทุนชีวิต', xM(b.cov.life), xM(a.cov.life), '', a.cov.life>b.cov.life)}
       ${r2('สุขภาพ (เหมาจ่าย)', b.cov.health?xM(b.cov.health):'ไม่มี', a.cov.health?xM(a.cov.health):'ไม่มี', '', a.cov.health>b.cov.health)}
       ${r2('โรคร้ายแรง', xM(b.cov.ci), xM(a.cov.ci), '', a.cov.ci>b.cov.ci)}
+      ${((b.cov.cancer||0)+(a.cov.cancer||0))>0?r2('มะเร็ง (เงินก้อน)', xM(b.cov.cancer||0), xM(a.cov.cancer||0), '', (a.cov.cancer||0)>(b.cov.cancer||0)):''}
+      ${((b.cov.cancerDaily||0)+(a.cov.cancerDaily||0))>0?r2('ชดเชยนอน รพ. ด้วยมะเร็ง /วัน', xF(b.cov.cancerDaily||0), xF(a.cov.cancerDaily||0), '', (a.cov.cancerDaily||0)>(b.cov.cancerDaily||0)):''}
       ${r2('ทุพพลภาพ', xM(b.cov.tpd), xM(a.cov.tpd), '', a.cov.tpd>b.cov.tpd)}
       ${r2('อัตราการออม', (b.savingRate*100).toFixed(1)+'%', (a.savingRate*100).toFixed(1)+'%', '', a.savingRate>b.savingRate)}
       ${r2('ภาษี/ปี', xF(b.tax), xF(a.tax), a.tax<b.tax?('ประหยัด '+xF(b.tax-a.tax)+' บาท/ปี'):'', a.tax<b.tax)}
@@ -13123,7 +13130,8 @@ function baMetrics(){
   const p=(STATE.snap&&STATE.snap.protection)||{}; const cov=c._cov||{}; const last=pf.rows[pf.rows.length-1]||{};
   return { age:+c.age||0, retAge:pf.retAge, life:pf.targetAge, deplete:pf.depleteAge, feasible:pf.feasible, short:pf.shortTotal||0, end:Math.max(0,last.balance||0),
     needM:(ret.planA&&ret.planA.monthly)||0, surplus:f.surplus, income:f.totalIn, savingRate:f.ratios.savingRate, liquidity:f.ratios.liquidity,
-    prem:p._premium||0, tax, cov:{life:cov.life||0,health:cov.health||0,ci:cov.ci||0,tpd:cov.tpd||0}, netWorth:f.netWorth,
+    prem:p._premium||0, tax, cov:{life:cov.life||0,health:cov.health||0,ci:cov.ci||0,tpd:cov.tpd||0,
+      cancer:cov.cancer||0, cancerDaily:cov.hospCancer||0}, netWorth:f.netWorth,
     /* จุดแรก = เงินตั้งต้นวันนี้ · แถว proForma คือยอดปลายปีของอายุนั้น → วางที่ age+1 (ตรงเวลาจริง ใช้เทียบกับ NAV ที่บันทึกได้) */
     rows:[{age:+c.age||0, v:Math.max(0,pf.startBalance||0)}].concat((pf.rows||[]).map(r=>({age:r.age+1,v:Math.max(0,r.balance)}))) };
 }
