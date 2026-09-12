@@ -158,6 +158,9 @@ input:focus,select:focus{border-color:var(--gold);background:#fff}
 .grandtotal{background:var(--yellow);border:1px solid var(--yellow-bd);border-radius:12px;padding:12px 18px;margin-top:14px;
   display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
 .grandtotal b{font-family:var(--serif);font-size:22px}
+/* v2.6.4: ช่องยอดรวมอ่านอย่างเดียว — ต้องดูออกทันทีว่าพิมพ์ทับไม่ได้ แก้ที่การ์ดของลูกด้านบน */
+.grandtotal input[readonly]{background:#FFFDF4;border-style:dashed;border-color:var(--yellow-bd);
+  color:var(--ink);font-weight:600;cursor:default;text-align:right}
 
 /* ---------- retirement timeline ---------- */
 .tl{display:flex;align-items:flex-start;justify-content:center;gap:4px;flex-wrap:wrap;margin:18px 0 6px}
@@ -748,7 +751,7 @@ input:focus,select:focus{border-color:var(--gold);background:#fff}
   <div id="blankFin"></div>
 
   <div style="text-align:center;font-size:10.5px;color:var(--faint);margin-top:26px">
-    Money Doctor Visit™ · © 2026 Signature 41 — Customized for One · สงวนลิขสิทธิ์ · v2.6.3
+    Money Doctor Visit™ · © 2026 Signature 41 — Customized for One · สงวนลิขสิทธิ์ · v2.6.4
   </div>
 
 </div>
@@ -833,8 +836,10 @@ const MODS = [
     <p class="small" style="margin-top:8px">* ป.โท เป็นประมาณการ · ตัวเลขเป็น<b>ค่าเฉลี่ยระดับกลาง ปี 2025</b> (โรงเรียนพรีเมียมสูงกว่านี้ 30–50% — ใช้ช่องกำหนดเองได้) · ยังไม่รวมเงินเฟ้อการศึกษา ~4%/ปี ซึ่งจะคิดละเอียดใน Step 3 · ระบบคิดตาม<b>จำนวนปีที่เหลือเรียนจริง</b>ของลูกแต่ละคน (จากอายุ) — เรียนไปแล้วกี่ปีหักออกให้อัตโนมัติ</p>
     <div class="grandtotal">
       <div><div class="small">ทุนการศึกษาที่ต้องมีรวมทุกคน</div><b id="eduTotal">0 ฿</b></div>
-      <div style="min-width:240px"><label style="margin-top:0">เตรียมไว้แล้วรวม <span class="hint">เงินออม + ประกันเพื่อลูก</span></label>
-        <div class="baht"><input type="text" data-money id="s0_have" oninput="liveCalc(0)"></div></div>
+      <div style="min-width:240px"><label style="margin-top:0">เตรียมไว้แล้วรวม <span class="hint">รวมให้เองจากช่องของลูกแต่ละคน</span></label>
+        <div class="baht"><input type="text" id="s0_have" readonly tabindex="-1"
+          title="รวมอัตโนมัติจากช่อง &quot;เตรียมทุนการศึกษาไว้เท่าไหร่ ?&quot; ของลูกแต่ละคน — แก้ที่การ์ดของลูกด้านบน"></div>
+        <div class="small" id="s0_haveFrom" style="text-align:right;margin-top:4px;line-height:1.4"></div></div>
     </div>
     <input type="hidden" id="s0_need">` },
 
@@ -1085,6 +1090,9 @@ function doResume(){
 
 /* ---------------- education: เส้นทางร่วมกัน + ข้อมูลรายลูก ---------------- */
 let eduSel={};   // eduSel[l] = 0-3 (path) | -1 (กรอกเอง) — เส้นทางเดียว ใช้กับลูกทุกคน
+/* v2.6.4: ผลคำนวณรายลูกจาก recalcEdu() — ใช้ซ้ำตอนสร้างไฟล์ .json จะได้ไม่คิดคนละรอบแล้วไม่ตรงกัน */
+let EDU_KID=[];
+let _haveMigrated=false;   /* v2.6.4: เตือนเรื่องยอด "เตรียมไว้แล้วรวม" ของร่างเก่า ครั้งเดียวต่อรอบเปิดหน้า */
 function kidCard(c){
   return `
     <div class="kid">
@@ -1097,7 +1105,8 @@ function kidCard(c){
       </div>
       <div class="grid2">
         <div><label>วิชาโปรด / สิ่งที่ลูกชอบ</label><input type="text" id="k${c}_fav"></div>
-        <div><label>เตรียมเรื่องการศึกษาของลูกคนนี้ไว้อย่างไรบ้าง</label><input type="text" id="k${c}_prep"></div>
+        <div><label>เตรียมทุนการศึกษาไว้เท่าไหร่ ? <span class="hint">เงินออม + ประกันเพื่อลูก</span></label>
+          <div class="baht"><input type="text" data-money inputmode="numeric" id="k${c}_prep" oninput="recalcEdu()"></div></div>
       </div>
       <div class="kidtotal">ทุนที่ต้องเตรียมสำหรับคนนี้: <b id="kt${c}">0 ฿</b></div>
     </div>`;
@@ -1111,8 +1120,47 @@ function buildKids(){
   const n=Math.max(parseInt(document.getElementById('kidCount').value)||0,0);
   const cur=host.querySelectorAll('.kid').length;
   if(n>cur){
-    for(let c=cur+1;c<=n;c++) host.insertAdjacentHTML('beforeend',kidCard(c));
+    for(let c=cur+1;c<=n;c++){
+      host.insertAdjacentHTML('beforeend',kidCard(c));
+      /* v2.6.4: การ์ดลูกถูกสร้างหลังรอบ money() ใน startModules — ผูกตัวคั่นหลักพันให้ช่องใหม่ตรงนี้เอง */
+      host.querySelector('.kid:last-child')?.querySelectorAll('[data-money]').forEach(money);
+    }
     restoreVals(host);
+    /* v2.6.4: ช่อง k*_prep เดิมเป็นข้อความอิสระ ("เตรียมไว้อย่างไรบ้าง") ตอนนี้เป็นจำนวนเงิน
+       ร่างที่ค้างในเครื่องจากเวอร์ชันก่อนอาจเป็นข้อความ — ถ้าเป็นตัวเลขล้วน (มี , ฿ บาท ได้) แปลงให้
+       ถ้ามีตัวอักษรปน จะไม่เดาตัวเลขให้ แต่ย้ายข้อความออกมาโชว์ ให้ที่ปรึกษาอ่านแล้วกรอกเป็นตัวเลขเอง
+       — เดาเองแล้วได้ "ทำประกันไว้ 1 เล่ม" → 1 บาท จะเข้าไปปนในยอดรวมโดยไม่มีใครรู้ */
+    const moved=[];
+    for(let c=1;c<=n;c++){
+      const el=document.getElementById('k'+c+'_prep'); if(!el) continue;
+      const raw=String(el.value||'').trim(); if(!raw) continue;
+      const pure=/^[\d,\s]*(฿|บาท)?$/.test(raw);
+      const d=raw.replace(/[^\d]/g,'');
+      const nv=(pure&&d)? Number(d).toLocaleString('en-US') : '';
+      if(!pure) moved.push((txt('k'+c+'_name')||('คนที่ '+c))+' — “'+raw+'”');
+      if(el.value!==nv){ el.value=nv; VALS[el.id]=nv; }
+    }
+    /* v2.6.4: ร่างเก่าที่พิมพ์ "เตรียมไว้แล้วรวม" เป็นก้อนเดียว — ตอนนี้ยอดนี้คิดจากรายคนแล้ว
+       ถ้าไม่บอก ยอดเดิมจะถูกทับเป็น 0 เงียบ ๆ ตอนเปิดหน้าขึ้นมา */
+    if(!_haveMigrated){
+      _haveMigrated=true;
+      const ov=VALS['s0_have'], oldHave=ov? (parseFloat(String(ov).replace(/,/g,''))||0) : 0;
+      let sumPrep=0; for(let c=1;c<=n;c++) sumPrep+=num('k'+c+'_prep');
+      if(oldHave>0 && sumPrep===0)
+        moved.push('ยอด "เตรียมไว้แล้วรวม" เดิม '+fmt(oldHave)+' ฿ (เคยกรอกเป็นก้อนเดียว) — แยกใส่รายคนใหม่');
+    }
+    let lg=document.getElementById('eduLegacy');
+    if(moved.length){
+      if(!lg){
+        lg=document.createElement('div'); lg.id='eduLegacy';
+        lg.style.cssText='margin-top:10px;padding:10px 14px;border-radius:10px;background:var(--yellow);'+
+          'border:1px solid var(--yellow-bd);font-size:12.5px;line-height:1.6;color:#8A6A1F;cursor:pointer';
+        lg.title='คลิกเพื่อปิดข้อความนี้';
+        lg.onclick=()=>lg.remove();
+        host.parentNode.insertBefore(lg,host.nextSibling);
+      }
+      lg.textContent='⚠ ย้ายมาจากเวอร์ชันก่อน — ไม่ได้เดาตัวเลขให้ กรอกเป็นจำนวนเงินในช่องของลูกแต่ละคนอีกครั้ง: '+moved.join(' · ');
+    }else if(lg){ lg.remove(); }
   }else if(n<cur){
     for(let i=cur;i>n;i--) host.querySelector('.kid:last-child')?.remove();
   }
@@ -1141,7 +1189,8 @@ function levelCost(l){
 }
 function recalcEdu(){
   const n=parseInt(document.getElementById('kidCount')?.value)||0;
-  let grand=0;
+  let grand=0, prep=0; const prepFrom=[];
+  EDU_KID=[];
   for(let c=1;c<=n;c++){
     const age=num(`k${c}_age`);
     let tot=0; const remain=[];
@@ -1159,9 +1208,22 @@ function recalcEdu(){
     const kr=document.getElementById('krem'+c);
     if(kr) kr.textContent = remain.length? 'นับ: '+remain.join(' · ') : '';
     grand+=tot;
+    /* v2.6.4: "เตรียมไว้แล้วรวม" = ผลรวมช่องของลูกแต่ละคน — ไม่มีช่องพิมพ์ทับอีกแล้ว
+       เดิมเป็นช่องกรอกอิสระ ทำให้ยอดรายคนกับยอดรวมขัดกันได้โดยไม่มีอะไรเตือน */
+    const pv=num(`k${c}_prep`);
+    prep+=pv;
+    if(pv>0) prepFrom.push((txt(`k${c}_name`)||('คนที่ '+c))+' '+fmt(pv));
+    EDU_KID.push({ name:txt(`k${c}_name`)||('บุตรคนที่ '+c), age:age||0,
+                   need:tot, prepared:pv, gap:Math.max(tot-pv,0) });
   }
   const needEl=document.getElementById('s0_need');
   if(needEl){ needEl.value=grand; VALS['s0_need']=String(grand); }
+  const haveEl=document.getElementById('s0_have');
+  const haveStr = prep>0? fmt(prep) : '';
+  if(haveEl) haveEl.value=haveStr;
+  VALS['s0_have']=haveStr;
+  const hf=document.getElementById('s0_haveFrom');
+  if(hf) hf.textContent = prepFrom.length>1 ? prepFrom.join(' + ') : '';
   const gt=document.getElementById('eduTotal'); if(gt) gt.textContent=fmt(grand)+' ฿';
   const wr=document.getElementById('eduWarn');
   if(grand>0){ if(wr) wr.remove(); eduWarned=false; }
@@ -1971,6 +2033,12 @@ function buildClientFile(){
     });
     if(eduGoals.length) est.push('เป้าหมายค่าเทอม 🎓 สร้างจากนัด 1 แล้ว (แบบ "กำหนดเอง ฿/ปี" ตามที่ลูกค้าเลือก) — ปรับได้ที่หน้าทุนการศึกษาบุตร');
   }
+  /* v2.6.4: ทุนที่เตรียมไว้แล้วรายลูก ยังไม่มีเส้นทางส่งเข้า "เงินก้อนการศึกษา" ของ MRI อัตโนมัติ
+     — บันทึกไว้ใน _visit ให้ที่ปรึกษาเห็น แล้วตั้งเองที่หน้าทุนการศึกษาบุตร (อย่าเดาคีย์ใน state) */
+  if(num('s0_have')>0)
+    est.push('ทุนการศึกษาที่เตรียมไว้แล้ว '+fmt(num('s0_have'))+' ฿ (รวมจากช่องของลูกแต่ละคน: '+
+      EDU_KID.filter(k=>k.prepared>0).map(k=>k.name+' '+fmt(k.prepared)).join(' + ')+
+      ') — ยังไม่ได้ส่งเข้า "เงินก้อนการศึกษา" ของ MRI อัตโนมัติ ให้ตั้งเองที่หน้าทุนการศึกษาบุตร');
 
   /* คุ้มครอง: ค่าห้อง/รพ. + ทุน CI เป้าหมาย + ทุนชีวิตที่มี → snap.protection ของ MRI
      (lifeCov เป็นค่าตั้งต้น — ทะเบียนกรมธรรม์จะคำนวณทับเองเมื่อกรอกครบ ตรงตามที่ออกแบบ)
@@ -2024,13 +2092,16 @@ function buildClientFile(){
   ].forEach(([id,l])=>{ if(txt(id)) talk[l]=txt(id); });
 
   const visit={
-    source:'S41 Money Doctor Visit v2.6.3',
+    source:'S41 Money Doctor Visit v2.6.4',
     visitDate:new Date().toISOString().slice(0,10),
     advisor:txt('aname')||'',
     goalPriority: order.map(id=>{const m=MODS.find(x=>x.id===id);return m?m.title:id;}),
     budgetMonthly:num('cbudget')||0,
     lifeInsuranceSum:num('s5_life')||0,
     educationFundNeeded:num('s0_need')||0,
+    /* v2.6.4: ยอดที่เตรียมไว้แล้ว — รวม และแยกรายลูก (มาจากช่องของลูกแต่ละคนชุดเดียวกัน) */
+    educationFundPrepared:num('s0_have')||0,
+    educationByKid:EDU_KID.map(k=>({name:k.name,age:k.age,need:k.need,prepared:k.prepared,gap:k.gap})),
     riskProfile,
     gaps, talk,
     estimates:est,
@@ -2180,13 +2251,13 @@ function buildFullData(){
       for(let c=1;c<=n;c++){
         b+=`<div class="fd-kid"><div class="fd-kidh">ลูกคนที่ ${c}${txt('k'+c+'_name')?' — '+fdEsc(txt('k'+c+'_name')):''}</div>`+
           grid(kv('อายุ',num('k'+c+'_age')?num('k'+c+'_age')+' ปี':'—')+kv('อาชีพในฝันของลูก',tv('k'+c+'_dream'))+
-               kv('วิชาโปรด / สิ่งที่ลูกชอบ',tv('k'+c+'_fav'))+kv('เตรียมเรื่องการศึกษาไว้แล้ว',tv('k'+c+'_prep')))+
+               kv('วิชาโปรด / สิ่งที่ลูกชอบ',tv('k'+c+'_fav'))+kv('เตรียมทุนการศึกษาไว้',mv('k'+c+'_prep')))+
           kv('ทุนที่ต้องเตรียมสำหรับคนนี้',document.getElementById('kt'+c)?.textContent||'—')+`</div>`;
       }
       const path=LEVELS.map((L,l)=>{const s=eduSel[l];if(s===undefined)return '';
         return kv(L[0].replace('*',''), s===-1? fmt(num('ex_'+l))+' ฿/ปี (กำหนดเอง)' : PATHS[s]+' · รวม '+fmt(L[2][s])+' ฿');}).join('');
       b+=(path?'<div class="fd-sub">เส้นทางการศึกษาที่ตั้งเป้า (ใช้ร่วมกันทุกคน)</div>'+grid(path):kv('เส้นทางการศึกษา','ยังไม่ได้เลือก'));
-      b+=grid(kv('ทุนการศึกษาที่ต้องมีรวมทุกคน',mv('s0_need'))+kv('เตรียมไว้แล้วรวม (เงินออม + ประกันเพื่อลูก)',mv('s0_have')))+ready(0);
+      b+=grid(kv('ทุนการศึกษาที่ต้องมีรวมทุกคน',mv('s0_need'))+kv('เตรียมไว้แล้วรวม (เงินออม + ประกันเพื่อลูก · รวมจากรายคน)',mv('s0_have')))+ready(0);
     }
     if(id==='ret'){
       const now=num('s1_age')||num('cage')||0, ra=num('s1_ra')||60, end=num('s1_end')||85;
