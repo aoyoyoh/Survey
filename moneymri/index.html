@@ -1774,7 +1774,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.53</b> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.54</b> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</div>
 </aside>
 
 <main id="main">
@@ -10755,7 +10755,13 @@ function a4GoalTable(){
       <td class="n">${A4N(r.need)}</td>
       <td class="n" style="color:#2F5E48">${A4N(r.have)}</td>
       <td class="n" style="color:${gap>0?'#B5453E':'#2F5E48'}">${gap>0?A4N(gap):'ครบ ✓'}</td>
-      <td class="n">${(r.pmt||0)>0?A4N(r.pmt):'—'}</td></tr>`;
+      <td class="n">${(r.pmt||0)>0?A4N(r.pmt):'—'}</td>
+      <td style="font-size:8.8px">${(function(){ /* v3.9.54: ยุบตารางที่สองเข้ามาเป็นคอลัมน์นี้ */
+        let dep=null; try{ dep=(HENG.proForma()||{}).depleteAge; }catch(e){}
+        if(age==null) return '<span style="color:#9A8E6E">—</span>';
+        const okY=(dep===null||dep===undefined)||(Number(age)<dep);
+        return okY?'<span style="color:#2F5E48">แผนยังมีเงินจ่าย ✓</span>':'<span style="color:#B5453E">เงินไม่พอ ณ ปีนั้น</span>';
+      })()}</td></tr>`;
   }).join('');
   const sumPmt=rows.reduce((t,r)=>t+(Number(r.pmt)||0),0);
   let f=null; try{ f=computeFinancials(); }catch(e){}
@@ -10764,8 +10770,9 @@ function a4GoalTable(){
   let left=budget, cut=-1;
   rows.forEach((r,i)=>{ const p=Number(r.pmt)||0; if(cut>=0) return; if(p<=left){ left-=p; } else { cut=i; } });
   return `<table class="a4-batbl"><thead><tr><th class="n">#</th><th>เป้าหมาย</th><th class="n">อายุที่ถึง</th>
-      <th class="n">มูลค่าวันนี้</th><th class="n">ต้องมี ณ ปีนั้น</th><th class="n">มีแล้ว</th><th class="n">ยังขาด</th><th class="n">ต้องออม/เดือน</th></tr></thead>
-    <tbody>${out}<tr class="hi"><td colspan="7">รวมยอดที่ต้องออมต่อเดือนเพื่อทำทุกเป้าหมายพร้อมกัน</td><td class="n">${A4N(sumPmt)}</td></tr></tbody></table>
+      <th class="n">มูลค่าวันนี้</th><th class="n">ต้องมี ณ ปีนั้น</th><th class="n">มีแล้ว</th><th class="n">ยังขาด</th><th class="n">ต้องออม/เดือน</th>
+      <th>สถานะ ณ ปีที่ถึงเป้า</th></tr></thead>
+    <tbody>${out}<tr class="hi"><td colspan="7">รวมยอดที่ต้องออมต่อเดือนเพื่อทำทุกเป้าหมายพร้อมกัน</td><td class="n">${A4N(sumPmt)}</td><td></td></tr></tbody></table>
     <div class="a4-note">"มูลค่าวันนี้" คือราคาที่กรอกไว้ · "ต้องมี ณ ปีนั้น" คือราคาเดียวกันเมื่อบวกเงินเฟ้อถึงปีที่ใช้จริง ·
       "มีแล้ว" นับเฉพาะสินทรัพย์ที่ที่ปรึกษาติดป้ายไว้ว่าเก็บเพื่อเป้าหมายนั้น เงินก้อนที่ยังเป็นเงินสำรองทั่วไปจะไม่ถูกนับให้อัตโนมัติ
       · งบที่มีจริงตอนนี้ ${A4N(budget)} บาท/เดือน — ${sumPmt<=budget
@@ -10858,7 +10865,7 @@ function a4TaxExtra(){
   return `${srcRows?`<div class="a4-sec" style="margin-top:11px">เงินได้ทั้งปี แยกตามประเภท 40(1)–(8)</div>
     <table class="a4-batbl"><thead><tr><th>ประเภทเงินได้</th><th class="n">จำนวน/ปี</th><th class="n">ค่าใช้จ่ายที่หักได้</th></tr></thead>
       <tbody>${srcRows}<tr class="hi"><td>รวม</td><td class="n">${A4N(b.income)}</td><td class="n">หัก ${A4N(b.expense)}</td></tr></tbody></table>`:''}
-    <div class="a4-sec" style="margin-top:11px">ช่องลดหย่อนที่ยังเหลือ และถ้าลงเต็มจะประหยัดภาษีได้เท่าไหร่</div>
+    <div class="a4-sec" style="margin-top:11px">ช่องลงทุนลดหย่อน — ใช้ไปเท่าไร เหลือเท่าไร และถ้าลงเต็มจะประหยัดภาษีได้เท่าไหร่</div>
     <table class="a4-batbl"><thead><tr><th>ช่องทาง · เงื่อนไข</th><th class="n">ใช้ไปแล้ว</th><th class="n">เพดานที่เหลือ</th>
       <th class="n">ลงเพิ่มได้จริง</th><th class="n">ประหยัดภาษี</th><th class="n">คิดเป็น</th></tr></thead><tbody>${stratRows}</tbody></table>
     <div class="a4-note" style="margin-top:4px">"เพดานที่เหลือ" คือช่องว่างของตัวนั้นเอง · "ลงเพิ่มได้จริง" ถูกตัดด้วยเพดานรวมกลุ่มเกษียณอีกชั้น
@@ -11041,10 +11048,12 @@ function a4SnapCF(f){
   const act=x=>{ const st=Number(x&&x.startAge)>0?Number(x.startAge):0, en=Number(x&&x.endAge)>0?Number(x.endAge):9999;
     return a0>=st&&a0<=en; };
   let out='';
-  const grp=t=>{ out+='<tr class="grp"><td colspan="2">'+t+'</td></tr>'; };
-  const line=(n,v,sub)=>{ out+='<tr><td>'+A4ESC(n)+'</td><td class="n">'+A4N(v)+'</td></tr>'
-    +(sub?'<tr><td class="sub" colspan="2">'+A4ESC(sub)+'</td></tr>':''); };
-  const tot=(n,v,col)=>{ out+='<tr class="hi"><td'+(col?' style="color:'+col+'"':'')+'>'+A4ESC(n)+'</td><td class="n"'+(col?' style="color:'+col+'"':'')+'>'+A4N(v)+'</td></tr>'; };
+  const grp=t=>{ out+='<tr class="grp"><td colspan="3">'+t+'</td></tr>'; };
+  /* v3.9.54: ยุบภาคผนวก ค เข้ามาที่นี่ — ทุกบรรทัดมีช่องขวาเว้นไว้ให้ลูกค้าเขียนยอดจริงทับ */
+  const WR='<td style="width:74px;border-bottom:1px dotted #C9C0AA"></td>';
+  const line=(n,v,sub)=>{ out+='<tr><td>'+A4ESC(n)+'</td><td class="n">'+A4N(v)+'</td>'+WR+'</tr>'
+    +(sub?'<tr><td class="sub" colspan="3">'+A4ESC(sub)+'</td></tr>':''); };
+  const tot=(n,v,col)=>{ out+='<tr class="hi"><td'+(col?' style="color:'+col+'"':'')+'>'+A4ESC(n)+'</td><td class="n"'+(col?' style="color:'+col+'"':'')+'>'+A4N(v)+'</td><td></td></tr>'; };
 
   /* ── รายรับ ── */
   grp('กระแสเงินสดรับ · ต่อเดือน');
@@ -11094,8 +11103,19 @@ function a4SnapCF(f){
       +svPlan.map(b=>A4ESC((SVL[b.k]||b.k)+' อายุ '+b.from+'–'+b.to+' ปีละ '+A4N(b.amt))).join(' · ')+'</td></tr>';
   }
   out+='<tr class="hi"><td style="color:'+(f.surplus>=0?'#3F6B52':'#B5453E')+'">เงินเหลือ → เข้าพอร์ตทุกบาท</td>'
-    +'<td class="n" style="color:'+(f.surplus>=0?'#3F6B52':'#B5453E')+'">'+(f.surplus<0?'−':'')+A4N(f.surplus)+'</td></tr>';
-  return '<table class="a4-batbl"><thead><tr><th>รายการ</th><th class="n">บาท/เดือน</th></tr></thead><tbody>'+out+'</tbody></table>';
+    +'<td class="n" style="color:'+(f.surplus>=0?'#3F6B52':'#B5453E')+'">'+(f.surplus<0?'−':'')+A4N(f.surplus)+'</td><td></td></tr>';
+  /* v3.9.54: บรรทัดที่คนส่วนใหญ่มีจ่ายจริงแต่แผนยังไม่ได้นับ — เดิมอยู่ในภาคผนวก ค แผ่นแยก
+     ต้องพิมพ์ออกมา ไม่งั้นลูกค้าไม่รู้ว่าแผนไม่ได้กันเงินก้อนนี้ไว้ */
+  let blanks=[]; try{ blanks=(expLines()||[]).filter(l=>l&&l.blank); }catch(e){}
+  if(blanks.length){
+    out+='<tr class="grp"><td colspan="3" style="color:#8A3A32">ยังไม่มีในงบ — ถ้ามีจ่ายจริง ช่วยเขียนยอดมา</td></tr>';
+    blanks.forEach(l=>{ out+='<tr><td style="color:#B5453E">'+A4ESC(l.label)
+      +(l.note?'<div style="color:#C98B86;font-size:8.6px;line-height:1.4">'+A4ESC(l.note)+'</div>':'')
+      +'</td><td class="n" style="color:#C98B86;font-weight:400">— ว่าง —</td>'
+      +'<td style="width:74px;border-bottom:1px dotted #B5453E"></td></tr>'; });
+  }
+  return '<table class="a4-batbl"><thead><tr><th>รายการ</th><th class="n">ยอดที่ใช้คำนวณ</th>'
+    +'<th class="n" style="width:74px">ยอดจริง</th></tr></thead><tbody>'+out+'</tbody></table>';
 }
 
 /* ─────────── หน้า III · อัตราส่วนครบ 8 ตัว พร้อมคำแปล ─────────── */
@@ -11394,12 +11414,9 @@ function a4TaxSheet(){
   ded+=row('เบี้ยประกันชีวิต + สุขภาพ (รวมกัน)', b.lifeHealth, cap('เบี้ยประกันชีวิตรวมสุขภาพไม่เกิน'), 'ในนั้นเบี้ยสุขภาพไม่เกิน '+f0(cap('เบี้ยสุขภาพตนเองไม่เกิน')||0));
   if((b.parentHealth||0)>0) ded+=row('เบี้ยสุขภาพบิดามารดา', b.parentHealth, cap('เบี้ยสุขภาพบิดามารดาไม่เกิน'), '');
   ded+=row('เงินสมทบประกันสังคม', b.ss, null, 'ตามเพดานค่าจ้างของปีนั้น');
-  ded+=row('เบี้ยประกันบำนาญ', b.pension, cap('เบี้ยบำนาญไม่เกิน'), 'และไม่เกิน '+(cap('เบี้ยบำนาญร้อยละของเงินได้')||15)+'% ของเงินได้');
-  ded+=row('RMF', b.rmf, cap('RMF ไม่เกิน'), 'และไม่เกิน '+(cap('RMF ร้อยละของเงินได้')||30)+'% ของเงินได้');
-  if((b.ssf||0)>0) ded+=row('SSF', b.ssf, cap('SSF ไม่เกิน'), '');
+  /* v3.9.54: ช่องลงทุนลดหย่อน (บำนาญ/RMF/SSF/ESG) ย้ายไปอยู่ตารางกลยุทธ์ตารางเดียว
+     เดิมโผล่สองตารางบนหน้าเดียวกัน — ตัวเลขเดียวกันอ่านซ้ำสองรอบ */
   if((b.pvd||0)>0) ded+=row('กองทุนสำรองเลี้ยงชีพ (PVD)', b.pvd, cap('PVD ไม่เกิน'), '');
-  ded+=row('<b>รวมกลุ่มเกษียณ (บำนาญ+RMF+SSF+PVD)</b>', b.retireCapped, cap('เพดานรวมกลุ่มเกษียณ'), 'เพดานรวมของทั้งกลุ่ม');
-  if((b.esg||0)>0) ded+=row('Thai ESG', b.esg, cap('ThaiESG ไม่เกิน'), '');
   if((b.mort||0)>0) ded+=row('ดอกเบี้ยกู้ซื้อบ้าน', b.mort, cap('ดอกเบี้ยกู้ซื้อบ้านไม่เกิน'), '');
   if(((b.don||0)+(b.donEdu||0))>0) ded+=row('เงินบริจาค', (b.don||0)+(b.donEdu||0), null, 'เพื่อการศึกษานับสองเท่า');
   /* ภาษีตลอดแผน — ทุก 5 ปี พอให้เห็นจังหวะที่เปลี่ยน */
@@ -11427,7 +11444,7 @@ function a4TaxSheet(){
     </div>
     <div class="a4-note" style="margin-top:4px">ขั้นภาษีสูงสุดที่ชนอยู่ <b>${mr}%</b> — ทุก 100 บาทที่ลดหย่อนเพิ่มได้ ประหยัดภาษี ${mr} บาท
       ${P.plannedAdd>0?` · แผนปีนี้ตั้งใจซื้อเพิ่มอีก ${f0(P.plannedAdd)} บาท ประหยัดภาษีได้ ${f0(P.plannedSaved)} บาท`:''}</div>
-    <div class="a4-sec">ค่าลดหย่อนที่ใช้อยู่ เทียบเพดานของแต่ละช่อง</div>
+    <div class="a4-sec">ค่าลดหย่อนพื้นฐานที่ใช้อยู่ เทียบเพดาน</div>
     <table class="a4-batbl"><thead><tr><th>รายการ</th><th class="n">ที่ใช้อยู่</th><th class="n">เพดาน</th><th>หมายเหตุ</th></tr></thead>
       <tbody>${ded}</tbody></table>
     ${schRows?`<div class="a4-sec" style="margin-top:12px">ภาษีตลอดแผน (แสดงทุก 5 ปี)</div>
@@ -11543,9 +11560,15 @@ function a4BASheet(){
   let d=null; try{ d=baCompute(); }catch(e){ console.warn('baCompute failed',e); }
   const R=Array.isArray(STATE.planReasons)?STATE.planReasons:[];
   if(!d){
-    if(!R.length) return '';
+    /* v3.9.54: ยังไม่ได้ตั้ง Before → ไม่มีกราฟเทียบ ใช้กราฟเส้นทางพอร์ตตลอดแผนแทน
+       (เดิมกราฟนี้อยู่หน้า I ซึ่งซ้ำกับเส้น After เมื่อมี Before แล้ว) */
+    let pj=''; try{ pj=projectionSVG(HENG.proForma())||''; }catch(e){}
+    if(!R.length && !pj) return '';
     return `<div class="a4-sheet">
-      <div class="a4-ptitle"><span class="n">→</span><span class="t">ทำไมแผนนี้จึงปรับแบบนี้</span><span class="ref">หน้า X ในเครื่องมือ</span></div>
+      <div class="a4-ptitle"><span class="n">→</span><span class="t">ผลของแผนนี้</span><span class="ref">หน้า X ในเครื่องมือ</span></div>
+      ${pj?`<div class="a4-sec" style="margin-top:-2px">เส้นทางพอร์ตตลอดแผน</div>${pj}
+        <div class="a4-note">เส้นทอง = มูลค่าพอร์ต · ◆ = ปีที่จ่ายเงินก้อน · แถบล่าง: เขียว = ปีที่เหลือเก็บเข้าพอร์ต · แดง = ปีที่ดึงจากพอร์ตมาใช้</div>
+        <div class="a4-sec" style="margin-top:11px">ทำไมแผนนี้จึงปรับแบบนี้</div>`:''}
       ${R.map((r,i)=>`<div style="display:flex;gap:9px;padding:6px 0;border-bottom:1px solid #F1ECDF">
         <span style="flex:0 0 18px;height:18px;border-radius:50%;background:#1C1C2E;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center">${i+1}</span>
         <div style="font-size:10.5px;line-height:1.55;color:#2A2A2A"><b style="color:#1C1C2E">${baEsc(r.t)}</b>
@@ -11734,15 +11757,10 @@ function renderA4Summary(){
   /* v3.9.46: ย้ายมาอยู่หน้า X ร่วมกับแผนลงมือ — เหลือ 4 ข้อพอให้เห็นลำดับ ไม่แย่งที่แผนลงมือ */
   let AP=[]; try{ AP=(HENG.actionPlan().ordered||[]).slice(0,4); }catch(e){}
   const apRows=AP.map((a,i)=>`<div style="display:flex;gap:9px;align-items:flex-start;padding:6px 0;border-bottom:1px solid #EFEADC"><span style="flex:0 0 18px;height:18px;border-radius:50%;background:#1C1C2E;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center">${i+1}</span><div style="font-size:10.5px;line-height:1.5;color:#2A2A2A">${a.t}${a.b!=null?` <b style="color:#B5453E">(${f0(a.b)}${a.perMonth?' /ด.':' บ.'})</b>`:''}${a.why?`<div style="font-size:9px;color:#888">↳ ${a.why}</div>`:''}</div></div>`).join('');
-  const lifePathBlock=`<div class="a4-sec">เส้นทางชีวิต · คุณอยู่ตรงไหน</div>${svg}`;
-  const sheetPath=`<div class="a4-sheet">
-    ${lifePathBlock}
-    <div class="a4-ptitle" style="margin-top:9px"><span class="n">I</span><span class="t">เส้นทางชีวิตบูรณาการ</span><span class="ref">หน้า I ในเครื่องมือ</span></div>
-    <div class="a4-sec">มูลค่าพอร์ตตลอดแผน</div>
-    ${projSvg||'<div class="a4-note">ยังไม่มีข้อมูลพอ</div>'}
-    <div class="a4-note">เส้นทอง = มูลค่าพอร์ต · ◆ = ปีที่จ่ายเงินก้อน · แถบล่าง: เขียว = ปีที่เหลือเก็บเข้าพอร์ต · แดง = ปีที่ดึงจากพอร์ตมาใช้
-      · ลำดับลงมือและแผนลงมือทั้งชุด อยู่หน้า <b>X แผนการเงินองค์รวม</b> ท้ายเล่ม</div>
-  </div>`;
+  /* v3.9.54: แผ่นนี้ถูกยุบทิ้ง — เส้นเวลาเล็ก "คุณอยู่ตรงไหน" ซ้ำกับไทม์ไลน์ครอบครัวหน้า I
+     และกราฟมูลค่าพอร์ตเป็นเส้นเดียวกับเส้น After ในกราฟ Before→After ท้ายเล่ม
+     เหลือไว้เป็นตัวสำรองกรณีไฟล์ยังไม่ได้ตั้ง Before (กราฟพอร์ตจะไปโผล่ที่หน้าผลของแผนแทน) */
+  const sheetPath='';
 
   /* ── ภาคผนวก: งบดุล/งบกระแส + ratios ── */
   const dd=(STATE.snap&&STATE.snap.detail)||null;
@@ -11754,8 +11772,9 @@ function renderA4Summary(){
   const ratioRow=(l,v,crit,ok2)=>`<tr><td>${l}</td><td style="text-align:right;font-weight:700;color:${ok2?'#3F6B52':'#B5453E'}">${v}</td><td style="text-align:right;color:#888">${crit}</td></tr>`;
   const sheetBalance=`<div class="a4-sheet">
     <div class="a4-ptitle"><span class="n">II</span><span class="t">Snapshot ปัจจุบัน</span><span class="ref">หน้า II ในเครื่องมือ</span></div>
-    <div class="a4-note" style="margin:-3px 0 7px">ทุกบรรทัดคือตัวเลขที่กรอกไว้จริง <b>บรรทัดที่ไม่มีตัวเลขถูกซ่อนไว้</b> —
-      ถ้าเห็นรายการไหนไม่ตรง หรือมีรายการที่ควรมีแต่ไม่เห็น ช่วยบอกกลับมา แผนทั้งฉบับคำนวณจากตารางสองชุดนี้</div>
+    <div class="a4-note" style="margin:-3px 0 7px">ตัวเลขกลางคือยอดที่ใช้คำนวณแผนฉบับนี้ · <b>ช่องขวาเว้นไว้ให้เขียนยอดจริงทับ</b>
+      เขียนเฉพาะบรรทัดที่ไม่ตรง ไม่ต้องเขียนใหม่ทั้งหมด · <b style="color:#B5453E">บรรทัดสีแดงท้ายตารางคือรายการที่แผนยังไม่ได้นับไว้เลย</b>
+      ถ้ามีจ่ายจริงช่วยเขียนยอดมาด้วย — แผนทั้งฉบับคำนวณจากตารางสองชุดนี้</div>
     <div class="a4-2col">
       <div><div class="a4-sec" style="margin-top:0">งบดุล — ณ ปัจจุบัน</div>${(function(){ try{ return a4SnapBS(f); }catch(e){ console.warn('a4SnapBS',e); return ''; } })()}</div>
       <div><div class="a4-sec" style="margin-top:0">งบกระแสเงินสด — ต่อเดือน</div>${(function(){ try{ return a4SnapCF(f); }catch(e){ console.warn('a4SnapCF',e); return ''; } })()}</div>
@@ -11859,10 +11878,9 @@ function renderA4Summary(){
     <div class="a4-sec">เป้าหมายทั้งหมด · เรียงตามลำดับความสำคัญ</div>
     ${(function(){ try{ return a4GoalTable(); }catch(e){ console.warn('a4GoalTable',e); return ''; } })()||
       `<table class="a4-gtbl"><thead><tr><th>เป้าหมาย</th><th>ต้องการ (อนาคต)</th><th>สถานะ</th></tr></thead><tbody>${grows||'<tr><td colspan="3" style="text-align:center;color:#999">ยังไม่มีเป้าหมาย</td></tr>'}</tbody></table>`}
-    <div class="a4-sec" style="margin-top:11px">แผนยังมีเงินจ่ายให้เป้าหมายไหนบ้าง</div>
-    <table class="a4-gtbl"><thead><tr><th>เป้าหมาย</th><th>ต้องการ (อนาคต)</th><th>สถานะ ณ ปีที่ถึงเป้า</th></tr></thead><tbody>${grows||'<tr><td colspan="3" style="text-align:center;color:#999">ยังไม่มีเป้าหมาย</td></tr>'}</tbody></table>
-    <div class="a4-note">ตารางล่างตอบคนละคำถามกับตารางบน — ตารางบนถามว่า "เก็บเงินสำหรับเป้านี้ครบหรือยัง"
-      ส่วนตารางล่างถามว่า "ปีที่ถึงเป้าหมายนั้น แผนยังมีเงินจ่ายอยู่ไหม" ซึ่งดูจากตารางกระแสเงินสดล่วงหน้า
+    <div class="a4-note">"มีแล้ว" นับเฉพาะสินทรัพย์ที่ติดป้ายไว้ว่าเก็บเพื่อเป้าหมายนั้น เงินก้อนที่ยังเป็นเงินสำรองทั่วไปจะไม่ถูกนับให้อัตโนมัติ
+      · ช่อง "สถานะ ณ ปีที่ถึงเป้า" ตอบคนละคำถามกับ "ยังขาด" — ช่องขาดถามว่าเก็บเงินก้อนนั้นครบหรือยัง
+      ส่วนช่องสถานะถามว่าปีที่ถึงกำหนดจ่ายจริง แผนยังมีเงินจ่ายอยู่ไหม (ดูจากตารางกระแสเงินสดล่วงหน้าหน้า V)
       · "ผลตอบแทนขั้นต่ำที่ต้องทำให้ได้" = อัตราที่พอร์ตต้องทำได้เป็นอย่างน้อยเพื่อให้เงินพอตลอดแผน
       · ประมาณการแบบผลตอบแทนคงที่ ไม่รวมความผันผวนตลาด</div>
     ${(function(){ try{ return a4PortBlock(); }catch(e){ console.warn('a4PortBlock',e); return ''; } })()}
@@ -11890,8 +11908,8 @@ function renderA4Summary(){
       <div><span style="font-size:15px;color:#B9B09A">☐</span> ตัวเลขถูกต้องแล้ว ใช้แผนนี้ได้เลย</div>
       <div><span style="font-size:15px;color:#B9B09A">☐</span> มีที่ต้องแก้ — เขียนไว้ด้านล่าง</div>
     </div>
-    <div class="a4-note" style="margin:0 0 6px">รายจ่ายที่ใช้คำนวณ แยกไว้ทีละบรรทัดในภาคผนวก ค (ค่าใช้จ่ายรายบรรทัด)
-      — ช่องขวามือของหน้านั้นเว้นไว้ให้เขียนยอดจริงทับได้เลย ไม่ต้องเขียนใหม่ทั้งหมด เขียนเฉพาะบรรทัดที่ไม่ตรง</div>
+    <div class="a4-note" style="margin:0 0 6px">รายจ่ายที่ใช้คำนวณ แยกไว้ทีละบรรทัดในหน้า <b>II Snapshot ปัจจุบัน</b>
+      — ช่องขวามือของตารางนั้นเว้นไว้ให้เขียนยอดจริงทับได้เลย ไม่ต้องเขียนใหม่ทั้งหมด เขียนเฉพาะบรรทัดที่ไม่ตรง</div>
     <div style="font-size:10.5px;color:#9A8E6E;font-weight:600;margin-bottom:3px">เรื่องอื่นที่อยากบอก / ตัวเลขที่ต้องแก้</div>
     ${rule(8)}
     <div class="a4-note" style="margin-top:9px">ที่ปรึกษาจะคำนวณใหม่ให้ทั้งฉบับเมื่อได้ตัวเลขจริง — ไม่มีค่าใช้จ่ายเพิ่ม และตัวเลขชุดเดิมยังเก็บไว้เทียบได้</div>
@@ -11964,13 +11982,19 @@ function renderA4Summary(){
   /* ลำดับเล่ม: ปก → ภาพรวม → ตรวจตัวเลข → I..XI (เรียงตามหน้าในเครื่องมือ) → ภาคผนวก ก/ข
      ส่วนท้ายเล่ม (X แผนองค์รวม & แผนลงมือ → กราฟ Before→After → นักวางแผน) ถูกเก็บไว้ใน A4_TAIL
      แล้วแปะต่อหลัง a4Extras() เพราะ a4Extras แปะภาคผนวก ค/ง ต่อท้ายเสมอ */
+  /* v3.9.54 · ลำดับเล่มให้เป็นเหตุเป็นผล
+     [1] คุณอยู่ตรงไหน — ภาพรวม · ขอให้ตรวจตัวเลขก่อน
+     [2] สถานะปัจจุบัน — I ชีวิต · II เงิน · III สุขภาพการเงิน · IV ความคุ้มครอง
+     [3] เป้าหมายและแผนรายด้าน — V เกษียณ · VI การศึกษา · VII·VIII เป้าหมาย&พอร์ต · IX ภาษี · XI มรดก
+     [4] ข้อสรุป — ผลของแผนนี้ → ทำไมถึงปรับแบบนี้ → X สิ่งที่ต้องทำต่อ
+     [5] ภาคผนวก — สมมติฐาน · ขอบเขตของแผน  แล้วปิดด้วยหน้านักวางแผน
+     เดิม X แผนลงมืออยู่ก่อนกราฟผลและเหตุผล ทำให้ลูกค้าอ่านว่า "ต้องทำ 14 ข้อ" ก่อนจะรู้ว่าทำแล้วได้อะไรและทำไมต้องทำ */
   host.innerHTML = sheetCover + sheetScore + sheetCheck + sheetPath + sheetFam
     + sheetBalance + sheetPyr
     + sheetProtect + yearSheets.join('')
-    + sheetEdu + sheetGoals + sheetTax + sheetEstate
-    + a4AssumeSheet();   /* ปล่อยให้ตัวจัดหน้าอัตโนมัติตัดสินว่ารวมได้ไหม — ถ้ามีแถบเตือนเพิ่มจะแยกหน้าให้เอง */
+    + sheetEdu + sheetGoals + sheetTax + sheetEstate;
   let sheetBA=''; try{ sheetBA=a4BASheet()||''; }catch(e){ console.warn('a4BASheet failed',e); }
-  A4_TAIL = sheetAct + sheetBA + sheetPlanner;
+  A4_TAIL = sheetBA + sheetAct + a4AssumeSheet() + sheetPlanner;
 }
 </script>
 
@@ -13068,6 +13092,12 @@ function a4Extras(){
       '<td style="width:96px;border-bottom:1px dotted '+(l.blank?'#B5453E':'#C9C0AA')+'"></td></tr>';
   });
   const totalM=lines.reduce((s,l)=>s+(l.blank?0:l.amt),0);
+  /* v3.9.54: ภาคผนวก ง มีความหมายก็ต่อเมื่อมีการบันทึก NAV หรือ Snapshot จริงแล้วเท่านั้น
+     ถ้ายังไม่มี กราฟจะเป็นเส้นแผนเปล่า ๆ ซ้ำกับกราฟ Before→After ท้ายเล่ม — จึงไม่พิมพ์
+     ส่วนภาคผนวก ค ถูกยุบเข้าหน้า II แล้ว (งบกระแสมีช่อง "ยอดจริง" และกลุ่ม "ยังไม่มีในงบ" ในตัว) */
+  let _hasReal=false;
+  try{ _hasReal = ((STATE.navLog||[]).length>0) || (Object.keys((typeof getSnapshots==='function'?getSnapshots():{})||{}).length>0); }catch(e){}
+  if(!_hasReal) return;
   host.insertAdjacentHTML('beforeend',
     '<div class="a4-sheet">'+
       '<div class="a4-h"><div><div class="a4-brand">SIGNATURE 41</div><div class="a4-sub">ภาคผนวก ง · WEALTH PATH · แผน เทียบ ความจริง</div></div>'+
@@ -13077,18 +13107,6 @@ function a4Extras(){
       '<div style="font-size:9.5px;color:#888">เส้นทอง = มูลค่าจริงจากการบันทึก NAV · เส้นเข้ม = เส้นทางตามแผน · ◆ = เป้าหมายก้อนใหญ่</div>'+
       navMonSvgA4()+
       navRows+
-    '</div>'+
-    '<div class="a4-sheet">'+
-      '<div class="a4-h"><div><div class="a4-brand">SIGNATURE 41</div><div class="a4-sub">ภาคผนวก ค · EXPENSES · ค่าใช้จ่ายรายบรรทัด</div></div>'+
-      '<div class="a4-cli" style="font-size:11px;color:#888">รวม '+xF(totalM)+' บาท/เดือน</div></div>'+
-      '<div class="a4-sec" style="margin-top:14px">ค่าใช้จ่ายรายบรรทัด — ช่องขวาเว้นไว้ให้เขียนยอดจริง</div>'+
-      '<div style="font-size:10px;color:#6B6355;margin:0 0 5px;line-height:1.6">ตัวเลขกลางคือยอดที่ใช้คำนวณแผนฉบับนี้ '+
-      'ถ้าบรรทัดไหนไม่ตรงกับที่จ่ายจริง เขียนยอดจริงลงช่องขวาได้เลย · '+
-      '<b style="color:#B5453E">บรรทัดสีแดงที่เขียนว่า “ว่าง” คือบรรทัดที่แผนยังไม่ได้นับค่าใช้จ่ายไว้เลย</b> '+
-      'ถ้ามีจ่ายจริง ช่วยเขียนยอดลงช่องขวาด้วย</div>'+
-      '<table class="a4-gtbl" style="margin-top:2px"><thead><tr><th>รายการ</th>'+
-      '<th style="text-align:right;white-space:nowrap">ยอดที่ใช้คำนวณ</th>'+
-      '<th style="text-align:right;width:96px;white-space:nowrap">ยอดจริง</th></tr></thead>'+expRows+'</table>'+
     '</div>');
 }
 
