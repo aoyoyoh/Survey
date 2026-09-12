@@ -629,6 +629,16 @@ body.pop-open .content{padding-right:calc(min(400px,94vw) + 16px)}
 .pri-in{font-family:var(--thai);font-variant-numeric:tabular-nums;font-size:15px;padding:8px 12px;border:1px solid var(--line);border-radius:9px;width:100%}
 .pri-sum{margin-top:12px;font-size:12.5px;line-height:1.55;padding:10px 12px;border-radius:9px;background:var(--paper,#FBF8F1)}
 .pri-sum.ok{color:var(--sage-2)} .pri-sum.warn{color:var(--carrier-2)} .pri-sum b{font-weight:700}
+.proj-tbl tr.sv-hdr th.rowlbl{color:var(--gold-2);font-size:9.5px;letter-spacing:.04em;padding-top:9px}
+.proj-tbl tr.sv-hdr td{border-bottom:1px solid var(--gold);padding:0;height:9px}
+.proj-tbl tr.sv-row th.rowlbl{color:var(--ink-2);font-weight:500;padding-left:6px}
+.proj-tbl .sv-pen{color:var(--gold);font-size:9px;margin-left:3px}
+.proj-tbl td.sv-c{background:#FCFAF2;cursor:text;outline:none;box-shadow:inset 0 -1px 0 var(--gold);min-width:62px}
+.proj-tbl td.sv-c:hover{background:#FAF5E6}
+.proj-tbl td.sv-c:focus{background:#FFF8E2;box-shadow:inset 0 0 0 2px var(--gold)}
+.proj-tbl tr.sv-tot th.rowlbl,.proj-tbl tr.sv-tot td{background:#FBF9F1;font-weight:700}
+.proj-tbl tr.sv-net th.rowlbl,.proj-tbl tr.sv-net td{background:#F7F6F1}
+.proj-tbl td.sv-over{color:var(--carrier-2)}
 .proj-tbl{font-size:10.5px}
 /* ตารางแนวนอน: ปีอยู่บน · ชื่อรายการตรึงซ้าย */
 .proj-h{border-collapse:separate;border-spacing:0}
@@ -1073,6 +1083,17 @@ nav.pages .jstep .jt small{font-size:9px;color:var(--faint);letter-spacing:.02em
 .a4-batbl td.w{color:#6B6355;font-size:9px}
 .a4-batbl tr.hi td{background:#F7F4E9;font-weight:700}
 .a4-batbl tr.grp td{background:#FAF8F1;font-size:8.8px;letter-spacing:.07em;color:#9A8E6E;font-weight:700;text-transform:uppercase;padding-top:5px}
+.a4-gtbl td.cf-ev{font-size:7.9px;color:#5A5346;line-height:1.35;padding-left:7px}
+.a4-gtbl td.cf-yr{font-size:8px;color:#A79C80;text-align:right;white-space:nowrap}
+.a4-gtbl th:last-child{width:38%}
+.cf-pin{display:inline-block;width:4px;height:4px;border-radius:50%;background:#B89548;margin-right:5px;vertical-align:2px}
+.a4-batbl th.nowc{color:#8A7A4E}
+.a4-batbl td.nowc{background:#FBF8EF;color:#6B6355;font-weight:400;border-left:1px solid #EDE6D4;border-right:1px solid #EDE6D4}
+.a4-batbl td.nowc b{color:#1f3b5e;font-weight:700}
+.a4-batbl tr.hi td.nowc{background:#F2EEDF}
+.a4-batbl .nowx{color:#B9AF93;font-size:8.4px;font-weight:400;letter-spacing:.02em}
+.a4-nc{display:inline-block;margin-left:5px;padding:0 4px;border-radius:3px;font-size:7.4px;font-weight:700;letter-spacing:.04em;vertical-align:1px;background:#EADFC4;color:#7A6327}
+.a4-nc.nw{background:#DCEBE2;color:#2F5A46}
 .a4-batbl td.sub{color:#8A8272;font-size:8.8px;line-height:1.45;padding-top:0;padding-bottom:4px;border-bottom:1px solid #F3EFE3}
 .a4-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
 .a4-rt{width:100%;border-collapse:collapse;font-size:9.6px}
@@ -1774,7 +1795,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.56</b> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.60</b> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</div>
 </aside>
 
 <main id="main">
@@ -3432,7 +3453,7 @@ function syncSnapAggregates(){
         cov.ci+=(Number(p.ciMid)||0)+(Number(p.ciSevere)||0)+(Number(p.ciCrit)||0)+(Number(p.ci)||0);
         cov.tpd+=(Number(p.care)||0)+(Number(p.tpd)||0); cov.pa+=(Number(p.paDeath)||0)+(Number(p.pa)||0);
         cov.paMed+=(Number(p.accMed)||0);   /* v3.8.1: ค่ารักษาพยาบาลอุบัติเหตุ แยกจากทุนชีวิตแบบอุบัติเหตุ */
-        /* v3.9.56: มะเร็งแยกเป็นสองชนิด — ทุนก้อนเดียวตอนตรวจพบ (CB) กับชดเชยรายวันตอนนอน รพ.
+        /* v3.9.60: มะเร็งแยกเป็นสองชนิด — ทุนก้อนเดียวตอนตรวจพบ (CB) กับชดเชยรายวันตอนนอน รพ.
            ไม่รวมเข้า cov.ci เพราะจ่ายเฉพาะมะเร็ง ไม่ใช่โรคร้ายแรงทุกโรค — ถ้ารวมจะทำให้ทุนโรคร้ายดูสูงเกินจริง */
         cov.cancer+=(Number(p.cancer)||0); cov.hospCancer+=(Number(p.hospCancer)||0);
       } else { depPrem+=prem; }              // กรมธรรม์ของผู้พึ่งพิง → เบี้ย = ภาระอุปการะ
@@ -6656,6 +6677,53 @@ function savingPlanAt(k, age){
     if(from && age>=from && (to===0||age<=to)){ t+=Number(r.amt)||0; hit=true; } });
   return hit?t:(arr.some(r=>(r.k||'rmf')===k)?0:null);
 }
+/* v3.9.60 · เขียนยอดออมของ "ปีเดียว" — โมเดลเก็บเป็นช่วงอายุ (from–to) ไม่ใช่รายปี
+   จึงต้องกางเป็นรายปีก่อน เขียนทับปีที่แก้ แล้วบีบกลับเป็นช่วง (รวมปีที่ยอดเท่ากันติดกัน)
+   ถ้าไม่บีบกลับ ไฟล์จะบวมเป็น 40 ช่วงและอ่านไม่รู้เรื่อง
+   สำคัญ: ถ้ายังไม่เคยมีแผนของ k เลย ต้องใช้ "ยอดแบนจากช่องกรอก ×12" เป็นฐานของทุกปี
+   ไม่งั้นพอพิมพ์ปีเดียว ปีที่เหลือจะกลายเป็นศูนย์เงียบ ๆ ซึ่งทำให้แผนพังโดยไม่มีอะไรเตือน */
+function savingPlanSet(k, age, amt){
+  try{
+    const c=(STATE.carriers||[])[0]||{}; const a0=Number(c.age)||0, life=Number(c.life)||90;
+    const a=Math.round(Number(age)||0); if(!(a>=a0&&a<=life)) return false;
+    if(!STATE.snap) STATE.snap={}; if(!STATE.snap.detail) STATE.snap.detail=makeDetail();
+    const dc=STATE.snap.detail.cashflow;
+    if(!Array.isArray(dc.savingsPlan)) dc.savingsPlan=[];
+    const arr=dc.savingsPlan;
+    const has=arr.some(r=>(r.k||'rmf')===k);
+    const flat=(Number((dc.savings||{})[k])||0)*12;
+    const map={};
+    for(let y=a0;y<=life;y++){ const v=savingPlanAt(k,y); map[y]=has?(Number(v)||0):flat; }
+    map[a]=Math.max(0, Math.round(Number(amt)||0));
+    const out=arr.filter(r=>(r.k||'rmf')!==k);
+    let run=null;
+    for(let y=a0;y<=life+1;y++){
+      const v=(y<=life)?map[y]:null;
+      if(run && (v===null || v!==run.amt)){ if(run.amt>0) out.push({k:k, from:run.from, to:y-1, amt:run.amt}); run=null; }
+      if(v!==null && !run) run={from:y, amt:v};
+    }
+    dc.savingsPlan=out;
+    if(typeof saveState==='function') saveState();
+    return true;
+  }catch(e){ console.warn('savingPlanSet',e); return false; }
+}
+function savPlanCell(el){
+  try{
+    const k=el.getAttribute('data-k'), age=el.getAttribute('data-age');
+    const raw=String(el.textContent||'').replace(/[,\s ]/g,'').trim();
+    if(raw!=='' && !/^\d+(\.\d+)?$/.test(raw)){ if(typeof render==='function') render(); return; }
+    const v=raw===''?0:Number(raw);
+    try{ const bx=document.getElementById('h-projection'); const sc=bx&&bx.firstElementChild;
+         PROJ_SCROLL=sc?sc.scrollLeft:0; PROJ_KEEP=true; }catch(e){}
+    if(!savingPlanSet(k,age,v)){ PROJ_KEEP=false; return; }
+    /* render() ไม่ได้วาดตารางนี้ — renderHolistic ถูกเรียกเฉพาะตอนเข้าหน้า p10
+       ถ้าไม่เรียกเอง ตารางจะค้างของเก่าไว้ทั้งที่ไฟล์เปลี่ยนแล้ว = โกหกบนจอ */
+    try{ if(typeof render==='function') render(); }catch(e){ console.warn('render',e); }
+    try{ if(typeof renderHolistic==='function') renderHolistic(); }catch(e){ console.warn('renderHolistic',e); }
+    PROJ_KEEP=false;
+  }catch(e){ console.warn('savPlanCell',e); }
+}
+let PROJ_SCROLL=0, PROJ_KEEP=false;
 function taxAutoOn(){ return !(STATE.assume && STATE.assume.taxAuto===false); }
 
 
@@ -8254,7 +8322,8 @@ const HENG = (function(){
       const other=Math.round((+cin.other||0)*12); if(other>0) sources.push({type:'40(8)', amt:other, label:'รายได้อื่น'});
     }
     return { income:annualIncome+_bonus0, sources, spouse:false,   /* v3.9.19: income = เงินเดือน+โบนัส ให้ตรงกับ sources */
-      children: isPrimary?deps.filter(d=>d.kind==='child').length:0, parents: isPrimary?deps.filter(d=>d.kind==='parent').length:0, disabled:0,
+      /* v3.9.60: นับเฉพาะผู้พึ่งพิงของผู้วางแผนคนนี้ */
+      children: depsOf(deps,c.id,isPrimary,'child').length, parents: depsOf(deps,c.id,isPrimary,'parent').length, disabled:0,
       lifeIns: isPrimary?Math.round((+fx.lifeIns||0)*12):0, healthIns:0, parentHealthIns:0, pensionIns:0,
       /* v3.8: ดึงเงินออม RMF/SSF และ Thai ESG ที่ลูกค้าซื้ออยู่แล้วจากงบกระแสมาลดหย่อนให้ด้วย
          เดิมตั้งเป็น 0 เสมอ → หน้าภาษีคำนวณภาษีสูงเกินจริง แล้วยังไปแนะนำให้ซื้อ RMF เพิ่มทั้งที่ซื้อเต็มอยู่แล้ว */
@@ -8359,9 +8428,9 @@ const HENG = (function(){
     const _kFree=RD('บุตรไม่ต้องกำลังศึกษาถ้าอายุไม่เกิน', snapYearCE()+543+y)||20;
     const kidTo=d=>{ const t=Number(d&&d.taxTo)||0; if(t>0) return Math.min(_kMax,t);
       const e=Number(d&&(d.endAge||d.life))||0; return Math.min(_kMax, Math.max(_kFree, e||_kMax)); };
-    const kids=isPrimary?deps.filter(d=>{ const dAge=(Number(d.age)||0)+y;
-        return (d.kind==='child'||!d.kind) && dAge<=kidTo(d); }).length:0;
-    const par=isPrimary?deps.filter(d=>d.kind==='parent').length:0;
+    /* v3.9.60: นับเฉพาะบุตรของผู้วางแผนคนนี้ */
+    const kids=depsOf(deps,c.id,isPrimary,'child').filter(d=>((Number(d.age)||0)+y)<=kidTo(d)).length;
+    const par=depsOf(deps,c.id,isPrimary,'parent').length;
     /* รวมแถวประเภทเดียวกันเป็นแถวเดียว — เงินเดือน+โบนัส+งานที่สอง เป็น 40(1) ก้อนเดียว ไม่แยกให้สับสน
        (ค่าใช้จ่ายของกลุ่ม 40(1)+(2) หักรวมกันไม่เกิน 100,000 อยู่แล้ว การแยกแถวจึงไม่เปลี่ยนภาษี) */
     const merged=[]; const byType={};
@@ -9160,16 +9229,36 @@ function setTaxAutoMode(on){ if(!STATE.assume) STATE.assume={};
 /* ═══ v3.9.27 · ลดหย่อนบุตร — นับถึงอายุเท่าไหร่ ═══
    กฎหมาย: บุตรอายุไม่เกิน 20 ปี ได้โดยไม่มีเงื่อนไข · อายุ 21–25 ต้องกำลังศึกษาอยู่
    เดิมเครื่องให้ทุกปีที่บุตรอายุ ≤ 25 → เกินสิทธิเมื่อบุตรเรียนจบก่อน 25 */
+/* ═══ v3.9.60 · ผู้พึ่งพิงเป็นของใครของมัน ═══
+   บุตรที่แชร์ค่าเลี้ยงดูระหว่างผู้วางแผน 2 คน เก็บเป็น 2 ระเบียน ผูกกันด้วย d.link (คนละ parent)
+   เดิมช่องนับลดหย่อนยกทุกระเบียนให้ผู้วางแผนคนแรก (isPrimary ? ทั้งหมด : 0)
+   → คนแรกได้ลดหย่อนบุตรซ้ำสองเท่า คนที่สองได้ 0 ทั้งที่กฎหมายให้พ่อและแม่ที่มีเงินได้คนละ 30,000 ต่อบุตร 1 คน */
+function depsOf(deps, cid, isPrimary, kind){
+  return (deps||[]).filter(d=>{
+    const k=d.kind||'child';
+    if(k!==kind) return false;
+    return d.parent ? (d.parent===cid) : !!isPrimary;   /* ไฟล์เก่าที่ไม่มี parent ให้ตกเป็นของคนแรกเหมือนเดิม */
+  });
+}
 function setKidTaxTo(id, raw){
-  const d=(STATE.dependents||[]).find(x=>String(x.id)===String(id)); if(!d) return;
+  const L=(STATE.dependents||[]);
+  const d=L.find(x=>String(x.id)===String(id)); if(!d) return;
   const v=Math.max(0, Math.round(Number(String(raw==null?'':raw).replace(/[^\d]/g,''))||0));
-  if(v>0) d.taxTo=Math.min(25,v); else delete d.taxTo;
+  /* v3.9.60: ตั้งให้ระเบียนคู่แฝดด้วย ไม่งั้นฝั่งที่ไม่ได้แก้จะนับลดหย่อนคนละปีกับที่เห็นบนจอ */
+  const set=x=>{ if(v>0) x.taxTo=Math.min(25,v); else delete x.taxTo; };
+  set(d); if(d.link) L.forEach(x=>{ if(x!==d && x.link===d.link) set(x); });
   if(typeof saveState==='function') saveState(); render(); try{ renderTax(); }catch(e){} }
 function kidDedHTML(){
-  const kids=(STATE.dependents||[]).filter(d=>(d.kind==='child'||!d.kind));
+  /* v3.9.60: ยุบบุตรที่แชร์กันให้เหลือแถวเดียว (เดิมโผล่ซ้ำตามจำนวนผู้วางแผนที่แชร์) */
+  const _seen=new Set();
+  const kids=(STATE.dependents||[]).filter(d=>{
+    if(!(d.kind==='child'||!d.kind)) return false;
+    if(d.link){ if(_seen.has(d.link)) return false; _seen.add(d.link); }
+    return true; });
   if(!kids.length) return '';
-  const c=(STATE.carriers||[])[0]||{}; const a0=Number(c.age)||0;
+  const C0=(STATE.carriers||[])[0]||{};
   const rows=kids.map(d=>{ const dAge=Number(d.age)||0;
+    const _own=(STATE.carriers||[]).find(x=>x.id===d.parent)||C0; const a0=Number(_own.age)||0;
     const eff=(Number(d.taxTo)||0)>0?Math.min(25,Number(d.taxTo)):Math.min(25,Math.max(20,Number(d.endAge||d.life)||25));
     const lastOwnerAge=a0+Math.max(0,eff-dAge);
     return `<div class="cf-row">
@@ -10031,11 +10120,45 @@ function renderProjectionTable(pf){
   });
   // ── ตารางแนวนอน: ปีอยู่บนสุด (คอลัมน์) · รายการอยู่ซ้าย (แถว) เหมือน Excel ──
   const head=`<tr><th class="rowlbl cornr">รายการ \\ ปี</th>${ctx.map(c=>`<th>${c.year}<br><span style="font-weight:400;color:var(--muted);font-size:8.5px">อายุ ${c.r.age}</span></th>`).join('')}</tr>`;
-  const row=(label,cell)=>`<tr><th class="rowlbl">${label}</th>${ctx.map(cell).join('')}</tr>`;
+  const row=(label,cell,cls)=>`<tr${cls?' class="'+cls+'"':''}><th class="rowlbl">${label}</th>${ctx.map(cell).join('')}</tr>`;
+
+  /* ── v3.9.60 · บรรทัดการออม ──────────────────────────────────────────────
+     ชื่อบรรทัดตรงกับหน้า II ทุกตัว · ช่องของ 4 ช่องมาตรฐาน "พิมพ์ทับได้ทีละปี"
+     เพราะแผนออมจริงไม่เท่ากันทุกปี (แคท: RMF 80,000 → 100,000 → 312,000)
+     ยอดที่พิมพ์ไปลดหย่อนภาษีของปีนั้นจริง ๆ (ตารางภาษีอ่านจาก savingsPlan) ตัวเลขจึงขยับตาม */
+  const DCF=(STATE.snap&&STATE.snap.detail&&STATE.snap.detail.cashflow)||{};
+  const SV=DCF.savings||{};
+  const SVDEF=[['normal','เงินออมปกติ'],['retire','เงินออมเพื่อวัยเกษียณ'],['rmf','เงินออม RMF'],['tesg','เงินออม Thai ESG']];
+  const svPlanHas=k=>Array.isArray(DCF.savingsPlan)&&DCF.savingsPlan.some(r=>(r.k||'rmf')===k);
+  const svYear=(k,age)=>{ const pl=savingPlanAt(k,age); return (pl!=null)?Number(pl)||0:(Number(SV[k])||0)*12; };
+  const svKeys=SVDEF.filter(([k])=>(Number(SV[k])||0)>0||svPlanHas(k));
+  const svExtras=(Array.isArray(DCF.savingExtra)?DCF.savingExtra:[])
+    .filter(x=>Number(x&&x.monthly)>0)
+    .map(x=>({nm:String(x.name||'เงินออมอื่น'), m:Number(x.monthly)||0,
+              f:Number(x.startAge)||0, t:Number(x.endAge)||0}));
+  const svExtraAt=(x,age)=>((!x.f||age>=x.f)&&(!x.t||age<=x.t))?x.m*12:0;
+  const svTotalAt=age=>svKeys.reduce((a,[k])=>a+svYear(k,age),0)+svExtras.reduce((a,x)=>a+svExtraAt(x,age),0);
+  const svRows=[];
+  if(svKeys.length||svExtras.length){
+    svRows.push(row('ระบุเป็นเงินออมมีปลายทาง', c=>`<td class="sv-hd"></td>`, 'sv-hdr'));
+    svKeys.forEach(([k,lbl])=>{ svRows.push(row('· '+lbl+' <span class="sv-pen">✎</span>', c=>{
+      const v=svYear(k,c.r.age);
+      return `<td class="sv-c" contenteditable="true" spellcheck="false" data-k="${k}" data-age="${c.r.age}"`
+        +` onblur="savPlanCell(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}"`
+        +` title="พิมพ์ยอดของปีนี้ทับได้ · ปีอื่นไม่เปลี่ยน">${v>0?fmt0(v):''}</td>`; }, 'sv-row')); });
+    svExtras.forEach(x=>{ svRows.push(row('· '+x.nm.replace(/[&<>]/g,'').slice(0,26), c=>{
+      const v=svExtraAt(x,c.r.age);
+      return `<td style="color:${v>0?'var(--ink-2)':'var(--faint)'}">${v>0?fmt0(v):'—'}</td>`; }, 'sv-row')); });
+    svRows.push(row('รวมเงินออมที่ระบุไว้', c=>{ const t=svTotalAt(c.r.age), over=t>(c.r.net||0)+1;
+      return `<td class="${over?'sv-over':''}" style="font-weight:700">${t>0?fmt0(t):'—'}</td>`; }, 'sv-tot'));
+  }
+
   const body=[
     row('รายรับ', c=>`<td>${fmt0(c.r.income)}</td>`),
     row('รายจ่าย', c=>`<td>${fmt0(c.r.expense)}</td>`),
     row('เป้าหมายก้อน', c=>`<td style="color:${c.r.lump>0?'var(--carrier-2)':'var(--faint)'}">${c.r.lump>0?fmt0(c.r.lump):'—'}</td>`),
+    row('เงินเหลือปีนี้', c=>`<td style="font-weight:700;color:${(c.r.net||0)>=0?'var(--sage-2)':'var(--carrier-2)'}">${(c.r.net||0)>=0?'+':'−'}${fmt0(Math.abs(c.r.net||0))}</td>`, 'sv-net'),
+    ...svRows,
     row('พอร์ตต้นปี', c=>`<td>${fmt0(c.portStart)}</td>`),
     row('ผลตอบแทน (+)', c=>`<td style="color:${c.retAmt>=0?'var(--sage-2)':'var(--carrier-2)'}">${c.retAmt>=0?'+':''}${fmt0(c.retAmt)}</td>`),
     row('พอร์ตปลายปี', c=>`<td style="font-weight:700;color:${(c.r.short||0)>0?'var(--carrier-2)':'var(--ink)'}">${fmt0(c.r.balance)}</td>`),
@@ -10049,7 +10172,13 @@ function renderProjectionTable(pf){
   ].join('');
   box.innerHTML=`<div style="overflow:auto;max-height:430px;border:1px solid var(--line-2);border-radius:6px">
     <table class="gp-tbl proj-tbl proj-h"><thead>${head}</thead><tbody>${body}</tbody></table></div>
-    <div class="h-note" style="margin-top:8px">เลื่อนซ้าย-ขวาดูปีต่อ ๆ ไป · <b>"อัตราถอน"</b> หลังเกษียณ ควร ≤ 5% (แดง = ถอนเร็วเกินไป)</div>`;
+    <div class="h-note" style="margin-top:8px">เลื่อนซ้าย-ขวาดูปีต่อ ๆ ไป · <b>"อัตราถอน"</b> หลังเกษียณ ควร ≤ 5% (แดง = ถอนเร็วเกินไป)
+      ${(svKeys.length||svExtras.length)?`<br><b style="color:var(--gold-2)">ช่องที่มี ✎ พิมพ์ทับได้ทีละปี</b> — แก้ปีไหนกระทบแค่ปีนั้น ปีอื่นคงเดิม (กด Enter หรือคลิกออกเพื่อบันทึก)
+      · ยอดที่ใส่<b>ลดหย่อนภาษีของปีนั้นจริง</b> ตัวเลขรายจ่ายและพอร์ตจะขยับตามทันที
+      · <b>เงินออมไม่ใช่รายจ่าย</b> — ทั้งเงินเหลือถูกลงทุนอยู่แล้ว บรรทัดพวกนี้บอกว่าก้อนไหนมีปลายทางอะไร
+      · <b style="color:var(--carrier-2)">แถวรวมขึ้นสีแดง</b> = ปีนั้นระบุออมไว้มากกว่าเงินที่เหลือจริง ต้องลดยอดหรือหาเงินเพิ่ม
+      · บรรทัดที่ไม่มี ✎ เป็นเงินออมที่ตั้งชื่อเอง แก้ที่หน้า <a onclick="goPage('p2')" style="color:var(--gold-2);cursor:pointer;text-decoration:underline">Snapshot</a>`:''}</div>`;
+  try{ const sc=box.firstElementChild; if(sc&&PROJ_KEEP&&PROJ_SCROLL) sc.scrollLeft=PROJ_SCROLL; }catch(e){}
 }
 
 function projectionSVG(pf){
@@ -10885,11 +11014,15 @@ function a4TaxExtra(){
     </tbody></table>`;
 }
 
-/* ─────────── หน้า I (ต่อ) · ไทม์ไลน์ครอบครัว ─────────── */
-function a4FamilySheet(){
-  const c=(STATE.carriers||[])[0]; if(!c) return '';
+/* ═══ v3.9.60 · ตัวเก็บเหตุการณ์ตลอดแผน ═══
+   กลไกจริงของเครื่องมือคือ "ทุกบรรทัดมีช่วงอายุของตัวเอง" (startAge/endAge · pf/cf ของกรมธรรม์ · savingsPlan)
+   ที่ปรึกษาตั้งค่าไว้แล้ว แต่เดิมมีแค่ไทม์ไลน์หน้า I ที่อ่านมันออกมา — ตารางกระแสเงินสดรายปีเงียบสนิท
+   ลูกค้าจึงเห็นตัวเลขปีที่ 12 กระโดด แต่ไม่มีอะไรบอกว่าเพราะอะไร
+   แยกส่วนเก็บออกมาให้สองหน้าใช้ชุดเดียวกัน ถ้าต่างคนต่างเก็บ สองหน้าจะเล่าปีเดียวกันไม่ตรงกัน */
+function a4TimeAxis(){
+  const c=(STATE.carriers||[])[0]; if(!c) return null;
   const a0=Number(c.age)||0, retA=(typeof calcRetireAge==='function')?calcRetireAge(c):(Number(c.retireAge)||60);
-  const life=Number(c.life)||85; if(life<=a0) return '';
+  const life=Number(c.life)||85; if(life<=a0) return null;
   const be0=a4BeYear(), yrOf=a=>be0+(a-a0);
   const D=(STATE.snap&&STATE.snap.detail&&STATE.snap.detail.cashflow)||{};
   const FM=D.fixedMeta||{};
@@ -10961,7 +11094,13 @@ function a4FamilySheet(){
   if(dep) ev(dep,'⚠️ พอร์ตหมดตามแผนปัจจุบัน');
   ev(life,'สิ้นสุดกรอบแผน');
 
-  if(!T.length) return '';
+  const byAge={}; E.forEach(x=>{ (byAge[x.a]=byAge[x.a]||[]).push(x.txt); });
+  return {c:c, a0:a0, retA:retA, life:life, be0:be0, yrOf:yrOf, T:T, E:E, dep:dep, byAge:byAge};
+}
+/* ─────────── หน้า I (ต่อ) · ไทม์ไลน์ครอบครัว ─────────── */
+function a4FamilySheet(){
+  const X=a4TimeAxis(); if(!X||!X.T.length) return '';
+  const c=X.c, a0=X.a0, retA=X.retA, life=X.life, yrOf=X.yrOf, T=X.T, E=X.E, dep=X.dep;
 
   /* ── กราฟแถบเวลา ── */
   const GRP=['รายได้','คนที่เราดูแล','ภาระรายเดือน','แผนเงินออม','เบี้ยกรมธรรม์'];
@@ -11010,6 +11149,72 @@ function a4FamilySheet(){
   </div>`;
 }
 
+/* ═══ v3.9.60 · คอลัมน์ "วันนี้" ═══
+   ไฟล์ทำงานของที่ปรึกษาคือสถานะ "หลังปรับตามแผน" (ซื้อเล่มใหม่แล้ว · เริ่ม RMF แล้ว · เบี้ยเปลี่ยนแล้ว)
+   แต่หน้า II เคยพิมพ์หัวว่า "ปัจจุบัน" → ลูกค้าอ่านว่านี่คือของที่มีอยู่จริงวันนี้ ซึ่งไม่จริง
+   วิธีแก้ที่ไม่แตะการคำนวณ: รัน builder เดิมซ้ำอีกรอบบน STATE.baseline แล้วเอาสองชุดมาเทียบกันทีละบรรทัด
+   บรรทัดที่ตรงกัน = แผนไม่ได้เปลี่ยนอะไร ปล่อยว่าง · บรรทัดที่ต่าง = พิมพ์ยอดวันนี้ให้เห็นข้าง ๆ
+   ไม่มี baseline (ไฟล์ที่ทีมเพิ่งกรอก) → คอลัมน์ไม่ขึ้นเลย และหัวหน้ากลับเป็น "Snapshot ปัจจุบัน" ตามเดิม */
+/* v3.9.60: ล็อกโซนเวลาเป็นไทย — เดิมใช้เวลาเครื่องที่สร้างไฟล์ PDF ที่ถูกสร้างนอกประเทศจะเพี้ยนไป 1 วัน */
+function a4DateTH(iso){ try{ const d=new Date(iso); if(isNaN(d)) return '';
+    return d.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit',timeZone:'Asia/Bangkok'}); }catch(e){ return ''; } }
+function a4NowKey(s){ return String(s||'').replace(/\([^)]*\)/g,' ').replace(/[0-9]/g,'').replace(/\s+/g,' ').trim(); }
+function a4Before(fn){
+  const b=STATE&&STATE.baseline;
+  if(!b||!b.state||!((b.state.carriers||[]).length)) return null;
+  const keep=STATE; let out=null;
+  try{ STATE=migrate(JSON.parse(JSON.stringify(b.state)));
+       const bf=computeFinancials(); out=fn(bf); }
+  catch(e){ console.warn('a4Before',e); out=null; }
+  finally{ STATE=keep; }
+  return out;
+}
+/* เทียบตาราง after กับ before แล้วแทรกคอลัมน์ที่ 2 — คืนของเดิมถ้าไม่มีอะไรต่าง หรือจับคู่บรรทัดไม่ได้ */
+function a4MergeNow(aHtml,bHtml,hdr,ren){
+  if(!aHtml||!bHtml) return aHtml;
+  try{
+    const P=new DOMParser();
+    const bq={}; let bn=0;
+    const bdoc=P.parseFromString(bHtml,'text/html');
+    Array.prototype.forEach.call(bdoc.querySelectorAll('tr[data-k]'),tr=>{
+      const k=tr.getAttribute('data-k'); bn++; (bq[k]=bq[k]||[]).push(Number(tr.getAttribute('data-v'))||0); });
+    if(!bn) return aHtml;
+    const adoc=P.parseFromString(aHtml,'text/html');
+    const tbl=adoc.querySelector('table'); if(!tbl) return aHtml;
+    const hrow=tbl.querySelector('thead tr'); if(!hrow) return aHtml;
+    const rows=Array.prototype.slice.call(tbl.querySelectorAll('tbody tr'));
+    let keyed=0, hit=0, diff=0;
+    const pend=[];
+    rows.forEach(tr=>{
+      const k=tr.getAttribute('data-k');
+      if(!k){ pend.push({tr:tr,txt:''}); return; }
+      keyed++;
+      const av=Number(tr.getAttribute('data-v'))||0;
+      if(bq[k]&&bq[k].length){ hit++;
+        const bv=bq[k].shift();
+        if(Math.abs(bv-av)>=1){ diff++; pend.push({tr:tr,txt:'<b>'+A4N(bv)+'</b>'}); }
+        else pend.push({tr:tr,txt:''}); }
+      else { diff++; pend.push({tr:tr,txt:'<span class="nowx">ยังไม่มี</span>'}); }
+    });
+    /* จับคู่ได้น้อยกว่าครึ่ง = โครงตารางสองชุดไม่ใช่เรื่องเดียวกัน อย่าพิมพ์ออกไปให้ลูกค้าสับสน */
+    if(!diff||!keyed||hit/keyed<0.5) return aHtml;
+    const th=adoc.createElement('th'); th.className='n nowc'; th.textContent=hdr;
+    hrow.insertBefore(th, hrow.children[1]||null);
+    if(ren&&hrow.children[2]) hrow.children[2].textContent=ren;
+    pend.forEach(p=>{
+      const tr=p.tr;
+      const sp=tr.querySelectorAll('td[colspan]');
+      if(sp.length&&!tr.hasAttribute('data-k')){
+        Array.prototype.forEach.call(sp,td=>{ const cs=Number(td.getAttribute('colspan'))||1;
+          if(cs>1) td.setAttribute('colspan',String(cs+1)); });
+        return; }
+      const td=adoc.createElement('td'); td.className='n nowc'; td.innerHTML=p.txt;
+      tr.insertBefore(td, tr.children[1]||null);
+    });
+    return tbl.outerHTML;
+  }catch(e){ console.warn('a4MergeNow',e); return aHtml; }
+}
+
 /* ─────────── หน้า II · งบดุล & งบกระแส ลงรายการทีละบรรทัด ─────────── */
 function a4SnapBS(f){
   const D=(STATE.snap&&STATE.snap.detail)||{}; const A=D.assets||{}, L=D.liab||{};
@@ -11018,16 +11223,19 @@ function a4SnapBS(f){
   const META=A.investMeta||{};
   let out='';
   const grp=(title)=>{ out+='<tr class="grp"><td colspan="2">'+title+'</td></tr>'; };
-  const line=(name,val,sub)=>{ out+='<tr><td>'+A4ESC(name)+'</td><td class="n">'+A4N(val)+'</td></tr>'
+  /* v3.9.60: data-k = ชื่อบรรทัดที่ถอดตัวเลขออกแล้ว (ป้ายบางอันมีตัวเลขฝังอยู่ เช่น "เฉลี่ยจากปีละ 126,895")
+     data-v = ยอดดิบ — สองอันนี้คือสิ่งที่ a4MergeNow ใช้จับคู่บรรทัดกับชุด baseline */
+  const DK=(name,val)=>' data-k="'+A4ESC(a4NowKey(name))+'" data-v="'+(Number(val)||0)+'"';
+  const line=(name,val,sub,key)=>{ out+='<tr'+DK(key||name,val)+'><td>'+A4ESC(name)+'</td><td class="n">'+A4N(val)+'</td></tr>'
     +(sub?'<tr><td class="sub" colspan="2">'+A4ESC(sub)+'</td></tr>':''); };
-  const tot=(name,val)=>{ out+='<tr class="hi"><td>'+A4ESC(name)+'</td><td class="n">'+A4N(val)+'</td></tr>'; };
+  const tot=(name,val)=>{ out+='<tr class="hi"'+DK(name,val)+'><td>'+A4ESC(name)+'</td><td class="n">'+A4N(val)+'</td></tr>'; };
   const sec=(secKey,extraKey,title)=>{
     const o=A[secKey]||{}, ex=Array.isArray(A[extraKey])?A[extraKey]:[];
     const items=Object.keys(o).filter(k=>Number(o[k])>0).map(k=>({n:lbl[secKey+'.'+k]||k, v:Number(o[k]), r:(META[k]||{}).ret}))
       .concat(ex.filter(x=>Number(x&&x.amt)>0).map(x=>({n:a4Split(x.name).head||'สินทรัพย์อื่น', s:a4Split(x.name).tail, v:Number(x.amt), r:x.ret})));
     if(!items.length) return 0;
     grp(title);
-    let t=0; items.forEach(i=>{ t+=i.v; line(i.n+(i.r!=null&&i.r!==''?' · ผลตอบแทน '+i.r+'%/ปี':''), i.v, i.s); });
+    let t=0; items.forEach(i=>{ t+=i.v; line(i.n+(i.r!=null&&i.r!==''?' · ผลตอบแทน '+i.r+'%/ปี':''), i.v, i.s, i.n); });
     return t;
   };
   const t1=sec('liquid','liquidExtra','สินทรัพย์สภาพคล่อง');
@@ -11041,7 +11249,7 @@ function a4SnapBS(f){
     grp(title); items.forEach(k=>line(lbl[(title.indexOf('สั้น')>=0?'liab_short':'liab_long')+'.'+k]||k, o[k])); };
   liabSec(L.short,'หนี้สินระยะสั้น'); liabSec(L.long,'หนี้สินระยะยาว');
   if(f.totalLiab>0) tot('หนี้สินรวม', f.totalLiab);
-  out+='<tr class="hi"><td style="color:#1f3b5e">ความมั่งคั่งสุทธิ (Net Worth)</td><td class="n" style="color:#1f3b5e">'+A4N(f.netWorth)+'</td></tr>';
+  out+='<tr class="hi"'+DK('ความมั่งคั่งสุทธิ',f.netWorth)+'><td style="color:#1f3b5e">ความมั่งคั่งสุทธิ (Net Worth)</td><td class="n" style="color:#1f3b5e">'+A4N(f.netWorth)+'</td></tr>';
   return '<table class="a4-batbl"><thead><tr><th>รายการ</th><th class="n">บาท</th></tr></thead><tbody>'+out+'</tbody></table>';
 }
 function a4SnapCF(f){
@@ -11055,9 +11263,10 @@ function a4SnapCF(f){
   const grp=t=>{ out+='<tr class="grp"><td colspan="3">'+t+'</td></tr>'; };
   /* v3.9.54: ยุบภาคผนวก ค เข้ามาที่นี่ — ทุกบรรทัดมีช่องขวาเว้นไว้ให้ลูกค้าเขียนยอดจริงทับ */
   const WR='<td style="width:74px;border-bottom:1px dotted #C9C0AA"></td>';
-  const line=(n,v,sub)=>{ out+='<tr><td>'+A4ESC(n)+'</td><td class="n">'+A4N(v)+'</td>'+WR+'</tr>'
+  const DK=(n,v)=>' data-k="'+A4ESC(a4NowKey(n))+'" data-v="'+(Number(v)||0)+'"';
+  const line=(n,v,sub)=>{ out+='<tr'+DK(n,v)+'><td>'+A4ESC(n)+'</td><td class="n">'+A4N(v)+'</td>'+WR+'</tr>'
     +(sub?'<tr><td class="sub" colspan="3">'+A4ESC(sub)+'</td></tr>':''); };
-  const tot=(n,v,col)=>{ out+='<tr class="hi"><td'+(col?' style="color:'+col+'"':'')+'>'+A4ESC(n)+'</td><td class="n"'+(col?' style="color:'+col+'"':'')+'>'+A4N(v)+'</td><td></td></tr>'; };
+  const tot=(n,v,col)=>{ out+='<tr class="hi"'+DK(n,v)+'><td'+(col?' style="color:'+col+'"':'')+'>'+A4ESC(n)+'</td><td class="n"'+(col?' style="color:'+col+'"':'')+'>'+A4N(v)+'</td><td></td></tr>'; };
 
   /* ── รายรับ ── */
   grp('กระแสเงินสดรับ · ต่อเดือน');
@@ -11103,10 +11312,10 @@ function a4SnapCF(f){
       let pl=null; try{ pl=savingPlanAt(k,a0); }catch(e){}
       line(lbl['savings.'+k]||k, pl!=null?pl/12:v, pl!=null?('ใช้แผนตามช่วงอายุ — ปีนี้ '+A4N(pl)+' บาท/ปี'):''); });
     (D.savingExtra||[]).forEach(x=>{ if(!(Number(x.monthly)>0)||!act(x)) return; const sp=a4Split(x.name); line(sp.head,x.monthly,sp.tail); });
-    if(svPlan.length) out+='<tr><td class="sub" colspan="2">แผนตามช่วงอายุ: '
+    if(svPlan.length) out+='<tr><td class="sub" colspan="3">แผนตามช่วงอายุ: '
       +svPlan.map(b=>A4ESC((SVL[b.k]||b.k)+' อายุ '+b.from+'–'+b.to+' ปีละ '+A4N(b.amt))).join(' · ')+'</td></tr>';
   }
-  out+='<tr class="hi"><td style="color:'+(f.surplus>=0?'#3F6B52':'#B5453E')+'">เงินเหลือ → เข้าพอร์ตทุกบาท</td>'
+  out+='<tr class="hi"'+DK('เงินเหลือ → เข้าพอร์ตทุกบาท',f.surplus)+'><td style="color:'+(f.surplus>=0?'#3F6B52':'#B5453E')+'">เงินเหลือ → เข้าพอร์ตทุกบาท</td>'
     +'<td class="n" style="color:'+(f.surplus>=0?'#3F6B52':'#B5453E')+'">'+(f.surplus<0?'−':'')+A4N(f.surplus)+'</td><td></td></tr>';
   /* v3.9.54: บรรทัดที่คนส่วนใหญ่มีจ่ายจริงแต่แผนยังไม่ได้นับ — เดิมอยู่ในภาคผนวก ค แผ่นแยก
      ต้องพิมพ์ออกมา ไม่งั้นลูกค้าไม่รู้ว่าแผนไม่ได้กันเงินก้อนนี้ไว้ */
@@ -11225,13 +11434,31 @@ function a4PolicyTable(){
   const ownerName=p=>{ const own=(!p.owner)?cid0:p.owner;
     const cc=(STATE.carriers||[]).find(x=>x.id===own); if(cc) return String(cc.name||'ผู้วางแผน');
     const dd=(STATE.dependents||[]).find(x=>x.id===own); return dd?String(dd.name||'ผู้อยู่ในอุปการะ'):'ผู้อยู่ในอุปการะ'; };
+  /* v3.9.60: เล่มที่แผนนี้พาเข้ามาใหม่ ต้องแยกให้เห็นจากเล่มที่ลูกค้ามีอยู่จริงแล้ว
+     จับคู่ด้วยเลขกรมธรรม์ (เล่มใหม่ยังไม่มีเลข → ใช้ชื่อ) · "ปรับ" = เล่มเดิมที่ทุนหรือกำหนดจ่ายเปลี่ยน
+     (จับการเปลี่ยนเป็น "จ่ายครบแล้ว" ได้ด้วย ซึ่งกฎวันที่จับไม่ได้) */
+  const BPOL=(function(){ const b=STATE.baseline; if(!b||!b.state) return null;
+    const L=(b.state.snap&&b.state.snap.policies)||[]; if(!L.length) return null;
+    const m={}; L.forEach(p=>{ m[String(p.no||p.name||'').trim()]=p; }); return m; })();
+  /* เทียบแค่ "ภาระเบี้ยและกำหนดสัญญา" ไม่เทียบยอดทุน — เพราะทุนของเล่มเดิมที่เปลี่ยนไป
+     เกือบทุกครั้งคือที่ปรึกษาแก้ทะเบียนให้ตรงเล่มจริงทีหลัง ไม่ใช่แผนไปปรับอะไร
+     ถ้าเทียบทุนด้วย ป้าย "ปรับ" จะขึ้นเพราะเราแก้ข้อมูลเอง ซึ่งโกหกลูกค้า */
+  const polTag=p=>{ if(!BPOL) return '';
+    const o=BPOL[String(p.no||p.name||'').trim()]; if(!o) return 'ใหม่';
+    const pm=x=>{ try{ return Math.round(polPremAtAge(x,a0)); }catch(e){ return Math.round(Number(x.premium)||0); } };
+    let chg=pm(p)!==pm(o);
+    if(!chg&&String(p.payUntil||'')!==String(o.payUntil||'')) chg=true;
+    if(!chg&&String(p.maturity||'')!==String(o.maturity||'')) chg=true;
+    return chg?'ปรับ':''; };
   const polRow=p=>{
     let prem=0; try{ prem=polPremAtAge(p,a0); }catch(e){ prem=Number(p.premium)||0; }
+    const tg=polTag(p);
+    const chip=tg?('<span class="a4-nc'+(tg==='ใหม่'?' nw':'')+'">'+tg+'</span>'):'';
     const sp=a4Split(p.name);
     const py=yr(p.payUntil), my=yr(p.maturity);
     const done=my&&my<a4BeYear();
     return {prem, html:`<tr>
-      <td><b style="color:#1C1C2E">${A4ESC(sp.head)}</b>
+      <td><b style="color:#1C1C2E">${A4ESC(sp.head)}</b>${chip}
         <div style="color:#9A8E6E;font-size:8.4px;margin-top:1px">${A4ESC(p.company||'')}${p.no?' · เลขที่ '+A4ESC(p.no):''}${p.saleAge?' · ทำตอนอายุ '+A4ESC(String(p.saleAge)):''}${p.start?' · เริ่ม '+A4ESC(p.start):''}${done?' · <b style="color:#8A3A32">ครบสัญญาแล้ว</b>':''}</div></td>
       <td class="n">${num(prem)}</td>
       ${COLS.map(col=>`<td class="n">${num(col.g(p))}</td>`).join('')}
@@ -11265,7 +11492,7 @@ function a4PolicyTable(){
       จึงถูกนับในงบกระแสเงินสด (หน้า II บรรทัด “เบี้ยกรมธรรม์ของผู้อยู่ในอุปการะ”)
       · คอลัมน์ที่ขึ้นคือประเภทผลประโยชน์ที่<b>มีเล่มใดเล่มหนึ่งใช้จริง</b> — ประเภทที่ทุกเล่มเป็นศูนย์ถูกซ่อนไว้เพื่อให้อ่านง่าย
       · เบี้ยปีนี้อ่านจากตารางเบี้ยรายอายุของแต่ละเล่ม เล่มที่เบี้ยขึ้นตามอายุจะไม่เท่ากันทุกปี (ดูภาระเบี้ยตลอดแผนที่หน้า V)
-      · ปีที่แสดงเป็น พ.ศ. · ช่อง "—" คือเล่มนั้นไม่มีผลประโยชน์ประเภทนั้น ไม่ใช่ยังไม่ได้กรอก</div>`;
+      · ปีที่แสดงเป็น พ.ศ. · ช่อง "—" คือเล่มนั้นไม่มีผลประโยชน์ประเภทนั้น ไม่ใช่ยังไม่ได้กรอก${BPOL?'<br><span class="a4-nc nw">ใหม่</span> คือเล่มที่ยังไม่มีวันนี้ — จะมีเมื่อทำตามแผนในเล่มนี้ · <span class="a4-nc">ปรับ</span> คือเล่มเดิมที่แผนนี้ปรับทุนหรือกำหนดจ่าย · เล่มที่ไม่มีป้าย คือเล่มที่ถืออยู่แล้ววันนี้และแผนไม่ได้แตะ':''}</div>`;
 }
 
 /* ═══ v3.9.45 · รายงานต้องออกมาจาก "ไฟล์" ไม่ใช่ "จังหวะที่กดเปิด" ═══
@@ -11777,14 +12004,29 @@ function renderA4Summary(){
   const household=(STATE.snap.cashflow&&STATE.snap.cashflow.household)||0, savM=(STATE.snap.cashflow&&STATE.snap.cashflow.savings)||0;
   const rr=f.ratios||{};
   const ratioRow=(l,v,crit,ok2)=>`<tr><td>${l}</td><td style="text-align:right;font-weight:700;color:${ok2?'#3F6B52':'#B5453E'}">${v}</td><td style="text-align:right;color:#888">${crit}</td></tr>`;
+  /* v3.9.60: รันตารางเดิมสองรอบ — รอบหนึ่งบนไฟล์ (หลังปรับตามแผน) อีกรอบบน baseline (ของจริงวันนี้) */
+  let tblBS='',tblCF='';
+  try{ tblBS=a4SnapBS(f); }catch(e){ console.warn('a4SnapBS',e); }
+  try{ tblCF=a4SnapCF(f); }catch(e){ console.warn('a4SnapCF',e); }
+  const befBS=a4Before(bf=>{ try{ return a4SnapBS(bf); }catch(e){ return ''; } });
+  const befCF=a4Before(bf=>{ try{ return a4SnapCF(bf); }catch(e){ return ''; } });
+  const mrgBS=a4MergeNow(tblBS,befBS,'วันนี้','ตามแผน'), mrgCF=a4MergeNow(tblCF,befCF,'วันนี้','ตามแผน');
+  const nowBS=(mrgBS!==tblBS), nowCF=(mrgCF!==tblCF), hasNow=nowBS||nowCF;
+  /* ตารางไหนเทียบแล้วไม่ต่างเลย คอลัมน์จะไม่ขึ้น — ต้องบอกไว้ ไม่ใช่ปล่อยให้ลูกค้าเดาว่าทำไมมีข้างเดียว */
+  const sameNote=(befBS&&!nowBS)?' — วันนี้ (แผนไม่ได้แตะงบดุล ยอดเท่าเดิมทุกบรรทัด)':' — ณ ปัจจุบัน';
+  const baLbl=(STATE.baseline&&STATE.baseline.capturedAt)?a4DateTH(STATE.baseline.capturedAt):'';
   const sheetBalance=`<div class="a4-sheet">
-    <div class="a4-ptitle"><span class="n">II</span><span class="t">Snapshot ปัจจุบัน</span><span class="ref">หน้า II ในเครื่องมือ</span></div>
-    <div class="a4-note" style="margin:-3px 0 7px">ตัวเลขกลางคือยอดที่ใช้คำนวณแผนฉบับนี้ · <b>ช่องขวาเว้นไว้ให้เขียนยอดจริงทับ</b>
+    <div class="a4-ptitle"><span class="n">II</span><span class="t">${hasNow?'Snapshot · วันนี้ → หลังปรับตามแผน':'Snapshot ปัจจุบัน'}</span><span class="ref">หน้า II ในเครื่องมือ</span></div>
+    ${hasNow?`<div class="a4-note" style="margin:-3px 0 7px"><b>วันนี้</b> = ยอดจริงที่มีอยู่ตอนนี้${baLbl?' (บันทึก '+baLbl+')':''} · <b>ตามแผน</b> = ยอดหลังทำตามข้อเสนอในเล่มนี้ครบแล้ว
+      · <b>ช่องวันนี้ที่ว่าง แปลว่าแผนไม่ได้แตะบรรทัดนั้น ยอดเท่าเดิม</b> · “ยังไม่มี” คือรายการที่เพิ่งเกิดจากแผน
+      · ช่องขวาสุดไว้เขียนทับถ้ายอดวันนี้ไม่ตรง เขียนเฉพาะบรรทัดที่ผิด
+      · <b style="color:#B5453E">บรรทัดแดงท้ายตารางคือรายการที่แผนยังไม่ได้นับไว้เลย</b> ถ้ามีจ่ายจริงช่วยเขียนยอดมา</div>`
+    :`<div class="a4-note" style="margin:-3px 0 7px">ตัวเลขกลางคือยอดที่ใช้คำนวณแผนฉบับนี้ · <b>ช่องขวาเว้นไว้ให้เขียนยอดจริงทับ</b>
       เขียนเฉพาะบรรทัดที่ไม่ตรง ไม่ต้องเขียนใหม่ทั้งหมด · <b style="color:#B5453E">บรรทัดสีแดงท้ายตารางคือรายการที่แผนยังไม่ได้นับไว้เลย</b>
-      ถ้ามีจ่ายจริงช่วยเขียนยอดมาด้วย — แผนทั้งฉบับคำนวณจากตารางสองชุดนี้</div>
+      ถ้ามีจ่ายจริงช่วยเขียนยอดมาด้วย — แผนทั้งฉบับคำนวณจากตารางสองชุดนี้</div>`}
     <div class="a4-2col">
-      <div><div class="a4-sec" style="margin-top:0">งบดุล — ณ ปัจจุบัน</div>${(function(){ try{ return a4SnapBS(f); }catch(e){ console.warn('a4SnapBS',e); return ''; } })()}</div>
-      <div><div class="a4-sec" style="margin-top:0">งบกระแสเงินสด — ต่อเดือน</div>${(function(){ try{ return a4SnapCF(f); }catch(e){ console.warn('a4SnapCF',e); return ''; } })()}</div>
+      <div><div class="a4-sec" style="margin-top:0">งบดุล${nowBS?'':sameNote}</div>${mrgBS}</div>
+      <div><div class="a4-sec" style="margin-top:0">งบกระแสเงินสด — ต่อเดือน${nowCF?'':(befCF?' — แผนไม่ได้เปลี่ยนอะไรเลย':'')}</div>${mrgCF}</div>
     </div>
     ${f.surplus<0?`<div class="a4-note" style="background:#FBEEEC;border:1px solid #E2AFA9;border-radius:7px;padding:8px 12px;color:#8A3A32;margin-top:6px">
       <b>รายจ่าย + เงินออม มากกว่ารายรับเดือนละ ${f0(-f.freeCash)} บาท</b> — ยอดออมที่ตั้งไว้ยังไม่ได้มาจากเงินที่เหลือจริง
@@ -11799,14 +12041,22 @@ function renderA4Summary(){
     ${(function(){ try{ return a4RatioTable(f); }catch(e){ console.warn('a4RatioTable',e); return ''; } })()}`;
 
   /* ── ภาคผนวก: ตารางกระแสเงินสดรายปี ── */
+  /* v3.9.60: หมุดเหตุการณ์ — อ่านจาก a4TimeAxis ชุดเดียวกับไทม์ไลน์หน้า I ไม่เก็บซ้ำ */
+  const EVBY=(function(){ try{ const X=a4TimeAxis(); return (X&&X.byAge)||{}; }catch(e){ console.warn('a4TimeAxis',e); return {}; } })();
+  const EVBE=(function(){ try{ const cc=(STATE.carriers||[])[0]||{}; const a=Number(cc.age)||0;
+    const y=a4BeYear(); return function(age){ return y+(Number(age)-a); }; }catch(e){ return function(){ return ''; }; } })();
   const yearSheets=[];
   { const rowsAll=pf.rows||[]; const RPP=Math.max(18, Math.ceil(rowsAll.length/Math.max(1,Math.ceil(rowsAll.length/20))));
     for(let i=0;i<rowsAll.length;i+=RPP){ const chunk=rowsAll.slice(i,i+RPP);
-      const trs=chunk.map(r=>`<tr${(r.shortCum||0)>0?' class="cf-out"':''}><td>${r.age}</td><td style="text-align:right">${f0(r.income)}</td><td style="text-align:right">${f0(r.expense)}</td><td style="text-align:right">${r.lump>0?f0(r.lump):'—'}</td><td style="text-align:right;color:${r.net>=0?'#3F6B52':'#B5453E'}">${r.net>=0?'+':'−'}${f0(Math.abs(r.net))}</td><td style="text-align:right;font-weight:700">${f0(r.balance)}${(r.shortCum||0)>0?'<span class="cf-tag">เงินหมดแล้ว</span>':''}</td></tr>`).join('');
+      const trs=chunk.map(r=>{ const evs=EVBY[r.age]||[];
+        return `<tr${(r.shortCum||0)>0?' class="cf-out"':''}><td>${r.age}</td><td class="cf-yr">${EVBE(r.age)}</td><td style="text-align:right">${f0(r.income)}</td><td style="text-align:right">${f0(r.expense)}</td><td style="text-align:right">${r.lump>0?f0(r.lump):'—'}</td><td style="text-align:right;color:${r.net>=0?'#3F6B52':'#B5453E'}">${r.net>=0?'+':'−'}${f0(Math.abs(r.net))}</td><td style="text-align:right;font-weight:700">${f0(r.balance)}${(r.shortCum||0)>0?'<span class="cf-tag">เงินหมดแล้ว</span>':''}</td><td class="cf-ev">${evs.length?('<span class="cf-pin"></span>'+evs.map(A4ESC).join(' · ')):''}</td></tr>`; }).join('');
       yearSheets.push(`<div class="a4-sheet"><div class="a4-ptitle"><span class="n">V</span><span class="t">แผนเกษียณ${i===0?'':' · กระแสเงินสดล่วงหน้ารายปี'}${rowsAll.length>RPP?` (${Math.floor(i/RPP)+1}/${Math.ceil(rowsAll.length/RPP)})`:''}</span><span class="ref">หน้า V ในเครื่องมือ</span></div>
         ${i===0?((function(){ try{ return a4RetireBlock(); }catch(e){ console.warn('a4RetireBlock',e); return ''; } })()+'<div class="a4-sec" style="margin-top:11px">กระแสเงินสดล่วงหน้ารายปี</div>'):''}
-        <table class="a4-gtbl" style="font-size:8.8px"><thead><tr><th>อายุ</th><th style="text-align:right">รายรับ/ปี</th><th style="text-align:right">รายจ่าย/ปี</th><th style="text-align:right">เงินก้อนเป้าหมาย</th><th style="text-align:right">สุทธิ</th><th style="text-align:right">พอร์ตปลายปี</th></tr></thead><tbody>${trs}</tbody></table>
-        <div class="a4-note"><b>แถวที่มีแถบสีและพื้นชมพู = ปีที่พอร์ตหมดแล้ว</b> — ตัวเลขรายรับและรายจ่ายในแถวนั้นยังเป็นค่าปกติ
+        <table class="a4-gtbl cf-pin-tbl" style="font-size:8.8px"><thead><tr><th>อายุ</th><th>ปี พ.ศ.</th><th style="text-align:right">รายรับ/ปี</th><th style="text-align:right">รายจ่าย/ปี</th><th style="text-align:right">เงินก้อนเป้าหมาย</th><th style="text-align:right">สุทธิ</th><th style="text-align:right">พอร์ตปลายปี</th><th>เกิดอะไรขึ้นปีนี้</th></tr></thead><tbody>${trs}</tbody></table>
+        <div class="a4-note"><b>คอลัมน์ขวาสุดคือเหตุการณ์ที่ทำให้ตัวเลขปีนั้นขยับ</b> — เริ่ม/สิ้นสุดรายได้ · งวดสุดท้ายของหนี้ ·
+          เบี้ยงวดสุดท้ายและครบสัญญาของแต่ละกรมธรรม์ · เงินก้อนตามเป้าหมาย — ทั้งหมดอ่านจากช่วงอายุที่กรอกไว้ในเครื่องมือ
+          ชุดเดียวกับไทม์ไลน์หน้า <b>I</b> ปีที่ช่องนี้ว่าง คือปีที่ไม่มีอะไรเปลี่ยน เดินตามปีก่อนหน้าทุกบรรทัด
+          · <b>แถวที่มีแถบสีและพื้นชมพู = ปีที่พอร์ตหมดแล้ว</b> — ตัวเลขรายรับและรายจ่ายในแถวนั้นยังเป็นค่าปกติ
           ไม่ได้ติดลบและไม่ได้ถูกหักอะไรออก เพียงแต่ส่วนที่ขาดของปีนั้นไม่มีแหล่งเงินรองรับแล้ว
           · เครื่องหมายลบในคอลัมน์ \u201Cสุทธิ\u201D หมายถึงรายจ่ายมากกว่ารายรับของปีนั้น ซึ่งเกิดขึ้นตั้งแต่ก่อนพอร์ตหมด
           · ประมาณการผลตอบแทนคงที่ ไม่รวมความผันผวนตลาด</div></div>`);
