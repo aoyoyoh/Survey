@@ -1060,6 +1060,18 @@ nav.pages .jstep .jt small{font-size:9px;color:var(--faint);letter-spacing:.02em
 .a4-ptitle{display:flex;align-items:baseline;gap:10px;border-bottom:2px solid #2A2A2A;padding-bottom:8px;margin-bottom:16px}
 .a4-ptitle .n{font-family:var(--serif);font-size:22px;font-weight:700;color:#B89548}
 .a4-ptitle .t{font-size:17px;font-weight:700;color:#1C1C2E}
+.a4-ptitle .ref{margin-left:auto;font-size:8.8px;font-weight:600;color:#9A8E6E;letter-spacing:.03em;white-space:nowrap;align-self:flex-end;padding-bottom:1px}
+.a4-src{display:inline-block;margin-left:7px;font-size:8.4px;font-weight:600;padding:1px 6px;border-radius:6px;vertical-align:2px;letter-spacing:.01em}
+.a4-src.auto{color:#8A6E2E;background:#F6EBD2}
+.a4-src.adv{color:#3F6B52;background:#E4EFE7}
+.a4-baleg{display:flex;gap:15px;flex-wrap:wrap;font-size:9.4px;color:#6B6355;margin:3px 0 5px}
+.a4-baleg i{display:inline-block;width:17px;border-top:2.6px solid;vertical-align:3px;margin-right:5px}
+.a4-batbl{width:100%;border-collapse:collapse;font-size:9.8px}
+.a4-batbl th{padding:3px 6px;border-bottom:1px solid #D9D2C0;text-align:left;font-size:9px;letter-spacing:.05em;color:#9A8E6E;text-transform:uppercase}
+.a4-batbl td{padding:3px 6px;border-bottom:1px solid #F3EFE3;text-align:left}
+.a4-batbl td.n,.a4-batbl th.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.a4-batbl td.w{color:#6B6355;font-size:9px}
+.a4-batbl tr.hi td{background:#F7F4E9;font-weight:700}
 .a4-rrow{display:grid;grid-template-columns:130px 1fr 56px;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid #F0ECE0}
 .a4-rrow .rl{font-size:12px;font-weight:600;color:#1C1C2E}
 .a4-rrow .rl small{display:block;font-size:9.5px;font-weight:400;color:#999;margin-top:1px}
@@ -1732,7 +1744,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.44</b> · หน้าขอบเขตของแผน · แผนลงมือยาวก็ไม่ล้น · รายงาน CFP</div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.47</b> · รายงานอ่านจากไฟล์ · เลขโรมันตรงหน้าเว็บ · เพิ่มหน้า VI/IX/XI · ปิดเล่มด้วย Before→After</div>
 </aside>
 
 <main id="main">
@@ -10528,7 +10540,7 @@ function a4AssumeSheet(){
     if(sso) assume+=row('เครื่องคำนวณบำนาญ (จากประวัติที่กรอก)', sso,'ประวัติยังเป็นช่วงตัวอย่าง ต้องใช้ของจริงจาก SSO Connect'); }
   let sr=null; try{ sr=planSuccessRate(); }catch(e){}
   return `<div class="a4-sheet">
-    <div class="a4-ptitle"><span class="n">VII</span><span class="t">สมมติฐาน — ข้อมูลจริง เทียบ สมมติฐาน</span></div>
+    <div class="a4-ptitle"><span class="n">ก</span><span class="t">สมมติฐาน — ข้อมูลจริง เทียบ สมมติฐาน</span><span class="ref">ภาคผนวก · ไม่ใช่หน้าในเครื่องมือ</span></div>
     <div class="a4-note" style="margin:0 0 9px">อ่านหน้านี้ก่อนตัดสินใจ — ตัวเลขในแผนมาจากสองแหล่ง คำตอบของแผนจะขยับตามกลุ่มล่างมากกว่ากลุ่มบน</div>
     <div class="a4-sec">ข้อมูลจริงจากลูกค้า / เอกสาร</div>
     <table class="a4-gtbl"><tbody>${real}</tbody></table>
@@ -10536,7 +10548,7 @@ function a4AssumeSheet(){
     <table class="a4-gtbl"><tbody>${assume}</tbody></table>
     ${sr!=null?`<div class="a4-note" style="margin-top:11px"><b>โอกาสที่แผนสำเร็จ ${sr}%</b> — จำลอง 2,000 รอบโดยให้ผลตอบแทนพอร์ตแกว่งตามความผันผวนจริง ไม่ใช่โตเท่ากันทุกปีแบบในตาราง · ตัวเลขในตารางทุกหน้าเป็นเส้นทางกลาง ไม่ใช่คำรับประกัน</div>`:''}
   </div>`+`<div class="a4-sheet">
-    <div class="a4-ptitle"><span class="n">VII-ก</span><span class="t">ขอบเขตของแผน — สิ่งที่ยังไม่ได้กันไว้</span></div>
+    <div class="a4-ptitle"><span class="n">ข</span><span class="t">ขอบเขตของแผน — สิ่งที่ยังไม่ได้กันไว้</span>${a4SrcBadge('planGaps')}<span class="ref">ภาคผนวก · ไม่ใช่หน้าในเครื่องมือ</span></div>
     ${planGapHTML()}
     <div class="a4-note" style="margin-top:11px">หน้านี้ไม่ได้แปลว่าแผนไม่ดี แต่แปลว่าแผนมีขอบเขต ทุกแผนการเงินมีขอบเขตเสมอ
       สิ่งที่อันตรายคือการไม่รู้ว่าขอบอยู่ตรงไหน · รายการนี้ทบทวนทุกปีพร้อมแผน และเติมทีละข้อเมื่อมีข้อมูลจริง</div>
@@ -10621,9 +10633,334 @@ function a4FitSheets(){
     }
   });
 }
+
+/* ═══ v3.9.45 · รายงานต้องออกมาจาก "ไฟล์" ไม่ใช่ "จังหวะที่กดเปิด" ═══
+   ปัญหาเดิมสองข้อ:
+   ก) แผนลงมือ (STATE.planActions) ต้องกดปุ่ม ↻ ร่างเองที่หน้า X ถ้าที่ปรึกษาไม่กด รายงานก็ไม่มีหน้านั้นเลย
+   ข) "สิ่งที่แผนนี้ยังไม่ได้กันไว้" (planGapList) ร่างสดทุกครั้งที่เปิดรายงาน ไม่เคยถูกเขียนลงไฟล์
+   → ไฟล์เดียวกัน คนละคนเปิด ได้เนื้อหาไม่เท่ากัน และพอตัวเลขขยับข้อความก็เปลี่ยนเองเงียบ ๆ
+   วิธีแก้: ตอนเปิดรายงาน ช่องไหนยัง "ว่าง" ให้ร่างครั้งเดียวแล้วเขียนลงไฟล์ (saveState)
+   ช่องที่มีของอยู่แล้ว "ห้ามแตะ" — ที่ปรึกษาแก้ถ้อยคำไว้ยังอยู่ครบ
+   และติดป้ายบนหน้ากระดาษว่าเนื้อหาชุดนั้นเป็นร่างอัตโนมัติ หรือที่ปรึกษาแก้แล้ว */
+function a4SrcBadge(which){
+  const k=(which==='planGaps')?(STATE.planGapsSrc||''):(STATE.planActionsSrc||'');
+  if(k==='advisor') return '<span class="a4-src adv">ที่ปรึกษาตรวจแล้ว</span>';
+  if(k==='auto')    return '<span class="a4-src auto">ร่างอัตโนมัติ — ยังไม่ได้ตรวจถ้อยคำ</span>';
+  return '';
+}
+function a4Materialize(){
+  /* v3.9.46: ถ้าหน้าจอยังไม่มีลูกค้า ห้ามเขียนอะไรลงไฟล์เลย
+     เดิมเปิดรายงานบนหน้าจอเปล่า ๆ แล้วได้แผนลงมือ 2 ข้อติดไปในไฟล์ว่าง */
+  if(!(STATE.carriers||[]).length) return false;
+  let wrote=false;
+  /* ── แผนลงมือ ── */
+  try{
+    const have=Array.isArray(STATE.planActions)&&STATE.planActions.length;
+    if(!have){
+      let L=null; try{ L=actBuildDraft(); }catch(e){ console.warn('actBuildDraft failed',e); }
+      if(L&&L.length){
+        STATE.planActions=L.map(l=>{ const p=String(l).split('|').map(x=>x.trim());
+          return {t:p[0]||'',how:p[1]||'',when:p[2]||''}; }).filter(a=>a.t);
+        STATE.planActionsSrc='auto'; wrote=true;
+      }
+    } else if(!STATE.planActionsSrc){ STATE.planActionsSrc='advisor'; wrote=true; }
+  }catch(e){ console.warn('materialize actions failed',e); }
+  /* ── ขอบเขตของแผน ── */
+  try{
+    const have=Array.isArray(STATE.planGaps)&&STATE.planGaps.length;
+    if(!have){
+      let G=null; try{ G=planGapList(); }catch(e){ console.warn('planGapList failed',e); }
+      if(G&&G.length){
+        STATE.planGaps=G.map(g=>[String((g&&g[0])||''),String((g&&g[1])||'')]).filter(g=>g[0]);
+        STATE.planGapsSrc='auto'; wrote=true;
+      }
+    } else if(!STATE.planGapsSrc){ STATE.planGapsSrc='advisor'; wrote=true; }
+  }catch(e){ console.warn('materialize gaps failed',e); }
+  if(wrote){ try{ if(typeof saveState==='function') saveState(); }catch(e){} }
+  return wrote;
+}
+
+/* ═══ v3.9.45 · VI ทุนการศึกษาบุตร — ขึ้นเฉพาะตอนมีเป้าหมายการศึกษาในไฟล์ ═══ */
+function a4EduSheet(){
+  if(!(STATE.carriers||[]).length) return '';
+  let E=null; try{ E=HENG.education(); }catch(e){ return ''; }
+  if(!E||!E.items||!E.items.length) return '';
+  const f0=n=>Math.round(Math.abs(Number(n)||0)).toLocaleString('en-US');
+  const esc=v=>String(v==null?'':v).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+  const deps=Array.isArray(STATE.dependents)?STATE.dependents:[];
+  const depRows=deps.map(d=>`<tr><td>${esc(d.name||'ผู้อยู่ในอุปการะ')}</td>
+      <td class="n">${d.age!=null?d.age:'—'}</td>
+      <td class="n">${Number(d.monthly)>0?f0(d.monthly)+' /ด.':'—'}</td>
+      <td class="n">${d.endAge!=null?('ถึงอายุ '+d.endAge):'—'}</td></tr>`).join('');
+  const rows=E.items.map(it=>`<tr><td>${esc(it.name)}</td>
+      <td class="n">${it.age}</td>
+      <td class="n">${f0(it.today)}</td>
+      <td class="n">${f0(it.fv)}</td>
+      <td class="n">${it.monthly>0?f0(it.monthly):'—'}</td></tr>`).join('');
+  return `<div class="a4-sheet">
+    <div class="a4-ptitle"><span class="n">VI</span><span class="t">ทุนการศึกษาบุตร</span><span class="ref">หน้า VI ในเครื่องมือ</span></div>
+    ${depRows?`<div class="a4-sec">คนที่เราดูแล</div>
+    <table class="a4-batbl"><thead><tr><th>ชื่อ</th><th class="n">อายุ</th><th class="n">ค่าเลี้ยงดู</th><th class="n">ดูแลถึง</th></tr></thead>
+      <tbody>${depRows}</tbody></table>`:''}
+    <div class="a4-sec" style="margin-top:12px">ทุนการศึกษา — ที่ตั้งไว้ในแผน</div>
+    <table class="a4-batbl"><thead><tr><th>ระดับ / เป้าหมาย</th><th class="n">อายุที่ถึงกำหนด</th>
+      <th class="n">ราคาวันนี้</th><th class="n">ต้องมี ณ ปีนั้น</th><th class="n">ต้องออม/เดือน</th></tr></thead>
+      <tbody>${rows}
+      <tr class="hi"><td>รวม</td><td class="n">—</td><td class="n">${f0(E.totalToday)}</td>
+        <td class="n">${f0(E.totalFV)}</td><td class="n">${f0(E.totalMonthly)}</td></tr></tbody></table>
+    <div class="a4-note">"ต้องมี ณ ปีนั้น" ปรับเงินเฟ้อค่าเล่าเรียนทุกปีการศึกษาแล้ว (ไม่ใช่ทบถึงปีแรกของชั้นเท่านั้น)
+      · "ต้องออม/เดือน" คิดจากผลตอบแทนที่จับคู่กับระยะเวลาของเป้าหมายแต่ละก้อน
+      · เป้าหมายที่ถึงกำหนดภายในปีนี้ไม่มียอดออมรายเดือน เพราะต้องจ่ายจากเงินก้อน</div>
+  </div>`;
+}
+
+/* ═══ v3.9.45 · IX วางแผนภาษี — สิ่งที่กรอกหน้าภาษี ยังไม่เคยโผล่ในรายงานเลย ═══ */
+function a4TaxSheet(){
+  const c=(STATE.carriers||[])[0]; if(!c) return '';
+  let P=null; try{ P=HENG.taxPlan(c); }catch(e){ return ''; }
+  if(!P||!P.base) return '';
+  const b=P.base, t=P.t||{};
+  const f0=n=>Math.round(Math.abs(Number(n)||0)).toLocaleString('en-US');
+  const be=(typeof snapYearCE==='function'?snapYearCE():2026)+543;
+  const cap=n=>{ try{ return RD(n,be); }catch(e){ return null; } };
+  const row=(l,v,capv,note)=>`<tr><td>${l}</td><td class="n">${v==null?'—':f0(v)}</td>
+      <td class="n" style="color:#9A8E6E">${capv==null?'—':f0(capv)}</td><td class="w">${note||''}</td></tr>`;
+  let ded='';
+  /* v3.9.47: เดิมเรียก RD('ค่าใช้จ่ายเงินเดือนไม่เกิน') ซึ่งไม่มีในไฟล์กฎ จึงคืน 0 แล้วพิมพ์เพดานเป็น 0
+     เพดานจริงอยู่ที่ RSALCAP() (ไฟล์กฎ: "เพดานค่าใช้จ่ายกลุ่มเงินเดือน") */
+  let salCap=null; try{ salCap=RSALCAP(); }catch(e){}
+  ded+=row('ค่าใช้จ่าย (เหมา 50%)', b.expense, salCap, 'ตามประมวลรัษฎากร · 50% แต่ไม่เกินเพดาน');
+  ded+=row('ค่าลดหย่อนส่วนตัว + ผู้อยู่ในอุปการะ', Math.max(0,(b.allow||0)-(b.lifeHealth||0)-(b.parentHealth||0)-(b.ss||0)-(b.retireCapped||0)-(b.esg||0)-(b.mort||0)-(b.elderly||0)), null, 'ส่วนตัว · คู่สมรส · บุตร · บิดามารดา');
+  if((b.elderly||0)>0) ded+=row('ยกเว้นเงินได้ผู้สูงอายุ', b.elderly, cap('ยกเว้นผู้สูงอายุไม่เกิน'), 'ได้ตั้งแต่อายุ '+(cap('ยกเว้นผู้สูงอายุตั้งแต่อายุ')||65)+' ปี');
+  ded+=row('เบี้ยประกันชีวิต + สุขภาพ (รวมกัน)', b.lifeHealth, cap('เบี้ยประกันชีวิตรวมสุขภาพไม่เกิน'), 'ในนั้นเบี้ยสุขภาพไม่เกิน '+f0(cap('เบี้ยสุขภาพตนเองไม่เกิน')||0));
+  if((b.parentHealth||0)>0) ded+=row('เบี้ยสุขภาพบิดามารดา', b.parentHealth, cap('เบี้ยสุขภาพบิดามารดาไม่เกิน'), '');
+  ded+=row('เงินสมทบประกันสังคม', b.ss, null, 'ตามเพดานค่าจ้างของปีนั้น');
+  ded+=row('เบี้ยประกันบำนาญ', b.pension, cap('เบี้ยบำนาญไม่เกิน'), 'และไม่เกิน '+(cap('เบี้ยบำนาญร้อยละของเงินได้')||15)+'% ของเงินได้');
+  ded+=row('RMF', b.rmf, cap('RMF ไม่เกิน'), 'และไม่เกิน '+(cap('RMF ร้อยละของเงินได้')||30)+'% ของเงินได้');
+  if((b.ssf||0)>0) ded+=row('SSF', b.ssf, cap('SSF ไม่เกิน'), '');
+  if((b.pvd||0)>0) ded+=row('กองทุนสำรองเลี้ยงชีพ (PVD)', b.pvd, cap('PVD ไม่เกิน'), '');
+  ded+=row('<b>รวมกลุ่มเกษียณ (บำนาญ+RMF+SSF+PVD)</b>', b.retireCapped, cap('เพดานรวมกลุ่มเกษียณ'), 'เพดานรวมของทั้งกลุ่ม');
+  if((b.esg||0)>0) ded+=row('Thai ESG', b.esg, cap('ThaiESG ไม่เกิน'), '');
+  if((b.mort||0)>0) ded+=row('ดอกเบี้ยกู้ซื้อบ้าน', b.mort, cap('ดอกเบี้ยกู้ซื้อบ้านไม่เกิน'), '');
+  if(((b.don||0)+(b.donEdu||0))>0) ded+=row('เงินบริจาค', (b.don||0)+(b.donEdu||0), null, 'เพื่อการศึกษานับสองเท่า');
+  /* ภาษีตลอดแผน — ทุก 5 ปี พอให้เห็นจังหวะที่เปลี่ยน */
+  let SCH=[]; try{ SCH=HENG.taxSchedule(c)||[]; }catch(e){}
+  let schRows='';
+  if(SCH.length){
+    const pick=SCH.filter((r,i)=>i===0||i===SCH.length-1||r.age%5===0);
+    /* v3.9.47: ปีหลัง ๆ สิทธิลดหย่อนรวมกันมากกว่าเงินได้ ถ้าพิมพ์ยอดดิบจะได้ "หักได้ > เงินได้"
+       ซึ่งอ่านแล้วเหมือนตารางผิด — พิมพ์เฉพาะยอดที่หักได้จริง (เงินได้ − เงินได้สุทธิ)
+       แล้วบอกไว้ที่หมายเหตุว่าปีไหนสิทธิเหลือใช้ไม่หมด */
+    schRows=pick.map(r=>{ const raw=(r.deductTotal!=null?r.deductTotal:(r.expense+r.allow));
+      const used=Math.max(0,(r.income||0)-(r.net||0)); const spare=raw-used;
+      return `<tr><td class="n">${r.age}</td><td class="n">${f0(r.income)}</td>
+      <td class="n">${f0(used)}</td>
+      <td class="n">${f0(r.net)}</td><td class="n" style="font-weight:700;color:${r.tax>0?'#B5453E':'#3F6B52'}">${r.tax>0?f0(r.tax):'ไม่เสีย'}</td>
+      <td class="w">${spare>1000?('สิทธิเหลือใช้ไม่หมด '+f0(spare)):(r.est?'ประมาณการ':'')}</td></tr>`; }).join('');
+  }
+  const mr=Math.round((P.marginal||0)*100);
+  return `<div class="a4-sheet">
+    <div class="a4-ptitle"><span class="n">IX</span><span class="t">วางแผนภาษี</span><span class="ref">หน้า IX ในเครื่องมือ</span></div>
+    <div class="a4-3">
+      <div class="c"><div class="l">เงินได้พึงประเมินปีนี้</div><div class="v">${f0(b.income)}</div></div>
+      <div class="c"><div class="l">เงินได้สุทธิหลังหักทุกอย่าง</div><div class="v">${f0(b.net)}</div></div>
+      <div class="c"><div class="l">ภาษีที่ต้องเสียปีนี้</div><div class="v" style="color:${b.tax>0?'#B5453E':'#3F6B52'}">${b.tax>0?f0(b.tax):'0'}</div></div>
+    </div>
+    <div class="a4-note" style="margin-top:4px">ขั้นภาษีสูงสุดที่ชนอยู่ <b>${mr}%</b> — ทุก 100 บาทที่ลดหย่อนเพิ่มได้ ประหยัดภาษี ${mr} บาท
+      ${P.plannedAdd>0?` · แผนปีนี้ตั้งใจซื้อเพิ่มอีก ${f0(P.plannedAdd)} บาท ประหยัดภาษีได้ ${f0(P.plannedSaved)} บาท`:''}</div>
+    <div class="a4-sec">ค่าลดหย่อนที่ใช้อยู่ เทียบเพดานของแต่ละช่อง</div>
+    <table class="a4-batbl"><thead><tr><th>รายการ</th><th class="n">ที่ใช้อยู่</th><th class="n">เพดาน</th><th>หมายเหตุ</th></tr></thead>
+      <tbody>${ded}</tbody></table>
+    ${schRows?`<div class="a4-sec" style="margin-top:12px">ภาษีตลอดแผน (แสดงทุก 5 ปี)</div>
+    <table class="a4-batbl"><thead><tr><th class="n">อายุ</th><th class="n">เงินได้</th><th class="n">หักได้จริง</th>
+      <th class="n">เงินได้สุทธิ</th><th class="n">ภาษี/ปี</th><th>หมายเหตุ</th></tr></thead><tbody>${schRows}</tbody></table>`:''}
+    <div class="a4-note">เพดานทุกช่องอ่านจากไฟล์กฎ (rules.json) ตามปีภาษีของแถวนั้น — ถ้ากฎหมายเปลี่ยน แก้ที่ไฟล์กฎที่เดียว ทุกหน้าเปลี่ยนตาม
+      · ช่องว่างคือช่องที่ยังใช้ไม่เต็มเพดาน ไม่ใช่ช่องที่ต้องใช้ให้เต็มทุกช่อง — ซื้อเพิ่มเฉพาะตัวที่ตรงกับเป้าหมายของแผน</div>
+  </div>`;
+}
+
+/* ═══ v3.9.45 · XI มรดก & พินัยกรรม — ข้อมูลที่กรอกไว้หน้า XI ไม่เคยโผล่ในรายงานเลย ═══ */
+function a4EstateSheet(){
+  const c=(STATE.carriers||[])[0]; if(!c) return '';
+  let f=null; try{ f=computeFinancials(); }catch(e){ return ''; }
+  const est=(STATE.snap&&STATE.snap.estate)||{};
+  const B=est.beneficiaries||{}, XF=est.xfer||{}, WL=est.will||{};
+  const N=v=>Number(v)||0, f0=n=>Math.round(Math.max(0,Number(n)||0)).toLocaleString('en-US');
+  const esc=v=>String(v==null?'':v).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+  const a=f.assets||{};
+  const dEx=(STATE.snap&&STATE.snap.detail&&STATE.snap.detail.assets)||{};
+  const items=[
+    {k:'liquid',label:'เงินสด / ออมทรัพย์',v:N(a.cash),xfer:'ตั้งผู้รับโดยตรง'},
+    {k:'invest',label:'เงินลงทุน (กองทุน/หุ้น/RMF/PVD)',v:N(a.fund)+N(a.retire),xfer:'ตั้งผู้รับโดยตรง'},
+    {k:'insVal',label:'มูลค่าเงินสดกรมธรรม์',v:N(a.insVal),xfer:'ระบุผู้รับผลประโยชน์'},
+    {k:'property',label:'บ้าน / คอนโด',v:N(a.home),xfer:'พินัยกรรม'},
+    {k:'car',label:'รถยนต์',v:N(a.car),xfer:'พินัยกรรม'},
+    {k:'jewelry',label:'เครื่องประดับ / ของมีค่า',v:N(a.jewelry),xfer:'พินัยกรรม'}
+  ].filter(i=>i.v>0);
+  ['liquidExtra','investExtra','personalExtra'].forEach(g=>{
+    (Array.isArray(dEx[g])?dEx[g]:[]).forEach(it=>{ const v=Number(it&&it.amt)||0; if(v<=0) return;
+      items.push({k:'x_'+it.id,label:String(it.name||'สินทรัพย์อื่น'),v,xfer:'พินัยกรรม'}); }); });
+  if(!items.length) return '';
+  let missing=0;
+  const rows=items.map(it=>{ const bene=String(B[it.k]||'').trim(); if(!bene) missing++;
+    return `<tr><td>${esc(it.label)}</td><td class="n">${f0(it.v)}</td>
+      <td>${bene?('<b style="color:#1C1C2E">'+esc(bene)+'</b>'):'<span style="color:#B5453E;font-weight:600">ยังไม่ระบุ</span>'}</td>
+      <td class="w">${esc(XF[it.k]||it.xfer)}</td></tr>`; }).join('');
+  const totV=items.reduce((s,i)=>s+i.v,0);
+  const cov=(c._cov)||{};
+  let lifeCov=Number(cov.life)||0;
+  if(!lifeCov){ try{ lifeCov=Number((STATE.snap&&STATE.snap.protection&&STATE.snap.protection.life))||0; }catch(e){} }
+  const willItems=[['executor','ผู้จัดการมรดก (Executor)'],['guardian','ผู้ปกครองทรัพย์บุตร'],
+                   ['beneAll','ผู้รับผลประโยชน์ทุกกรมธรรม์'],['contingent','ผู้รับสำรอง (Contingent)']];
+  const willRows=willItems.map(w=>{ const v=String(WL[w[0]]||'').trim();
+    return `<tr><td>${w[1]}</td><td>${v?('<b style="color:#1C1C2E">'+esc(v)+'</b>'):'<span style="color:#9A8E6E">ยังไม่ระบุ</span>'}</td></tr>`; }).join('');
+  const nw=f.netWorth||0, EXEMPT=100000000, taxable=Math.max(0,nw-EXEMPT), etax=taxable*0.05;
+  return `<div class="a4-sheet">
+    <div class="a4-ptitle"><span class="n">XI</span><span class="t">มรดก & พินัยกรรม</span><span class="ref">หน้า XI ในเครื่องมือ</span></div>
+    <div class="a4-sec">ทะเบียนทรัพย์สิน — ใครได้รับ และส่งต่อด้วยวิธีไหน</div>
+    <table class="a4-batbl"><thead><tr><th>ทรัพย์สิน</th><th class="n">มูลค่า</th><th>ผู้รับหลัก</th><th>วิธีส่งต่อ</th></tr></thead>
+      <tbody>${rows}
+      <tr class="hi"><td>รวมทรัพย์สินที่ระบุไว้</td><td class="n">${f0(totV)}</td><td colspan="2" class="w">
+        ${missing===0?'ระบุผู้รับครบทุกรายการแล้ว':('ยังไม่ระบุผู้รับ '+missing+' รายการ')}</td></tr></tbody></table>
+    ${lifeCov>0?`<div class="a4-note" style="margin-top:5px">นอกเหนือจากตารางนี้ ยังมี<b>ทุนประกันชีวิต ${f0(lifeCov)} บาท</b>
+      ที่จ่ายให้ผู้รับผลประโยชน์โดยตรง ไม่ต้องรอแบ่งมรดกและไม่เข้ากองมรดก — ตรวจชื่อผู้รับในกรมธรรม์ทุกเล่มให้ตรงกับที่ระบุไว้ข้างบน</div>`:''}
+    <div class="a4-sec" style="margin-top:12px">พินัยกรรม — รายชื่อที่ระบุไว้ (พร้อมส่งทนาย)</div>
+    <table class="a4-batbl"><thead><tr><th style="width:46%">หัวข้อ</th><th>ที่ระบุไว้</th></tr></thead><tbody>${willRows}</tbody></table>
+    <div class="a4-sec" style="margin-top:12px">ภาษีมรดก — ถ้าเกิดเหตุวันนี้</div>
+    <table class="a4-batbl"><tbody>
+      <tr><td>ความมั่งคั่งสุทธิ</td><td class="n">${f0(nw)}</td></tr>
+      <tr><td>ยกเว้นเบื้องต้นตามกฎหมาย</td><td class="n">−${f0(EXEMPT)}</td></tr>
+      <tr class="hi"><td>ส่วนที่ต้องเสียภาษี</td><td class="n">${f0(taxable)}</td></tr>
+      <tr><td>ภาษีมรดก (ทายาทสายตรง 5%)</td><td class="n" style="font-weight:700;color:${etax>0?'#B5453E':'#3F6B52'}">${f0(etax)}</td></tr>
+    </tbody></table>
+    <div class="a4-note">${nw<EXEMPT?'กองมรดกต่ำกว่าเกณฑ์ 100 ล้านบาท — ยังไม่มีภาระภาษีมรดก เรื่องที่ต้องทำคือ "ระบุให้ชัดว่าใครได้อะไร" ไม่ใช่การลดภาษี'
+      :'กองมรดกเกิน 100 ล้านบาท ส่วนเกินเสียภาษี 5% (ทายาทสายตรง) / 10% (ผู้อื่น) — ควรวางแผนล่วงหน้า'}
+      · รายชื่อในตารางนี้เป็นบันทึกเพื่อร่างพินัยกรรม การจัดทำเอกสารจริงต้องทำกับทนาย</div>
+  </div>`;
+}
+
+/* ═══ v3.9.45 · กราฟปิดเล่ม · Before → After ═══
+   วาดเป็น SVG นิ่งเฉพาะของรายงาน (ไม่ใช้ baChart ของหน้าจอ เพราะตัวนั้นมี id + แอนิเมชัน
+   ถ้ายัดลงกระดาษจะได้ id ซ้ำกับการ์ดบนหน้าจอ แล้วแอนิเมชันไปจับตัวผิด)
+   เพิ่มเส้นเป้าหมายอายุสิ้นแผน และยอดที่ยังขาดอยู่จริงลงบนกราฟ */
+function a4BAChart(d){
+  const C=XC(); const W=960,H=330,L=60,Rp=104,T=26,Bm=42, pw=W-L-Rp, ph=H-T-Bm;
+  const a0=Math.min(d.before.rows[0].age,d.after.rows[0].age)-0.4;
+  const life=Math.max(d.before.life,d.after.life);
+  const a1=life+1.6;
+  const vmax=Math.max(1,...d.before.rows.map(p=>p.v),...d.after.rows.map(p=>p.v))*1.12;
+  const X=a=>L+(a-a0)/(a1-a0)*pw, Y=v=>T+(1-v/vmax)*ph;
+  const path=arr=>arr.map((p,i)=>(i?'L':'M')+X(p.age).toFixed(1)+','+Y(p.v).toFixed(1)).join('');
+  let g='';
+  for(let i=0;i<=4;i++){ const v=vmax*i/4, y=Y(v);
+    g+='<line x1="'+L+'" y1="'+y.toFixed(1)+'" x2="'+(L+pw)+'" y2="'+y.toFixed(1)+'" stroke="#EDE8DC" stroke-width="1"/>'
+      +'<text x="'+(L-8)+'" y="'+(y+3.4).toFixed(1)+'" text-anchor="end" font-size="9.5" fill="#9A8E6E">'+xM(v)+'</text>'; }
+  for(let a=Math.ceil(a0/5)*5;a<=life;a+=5){
+    g+='<text x="'+X(a).toFixed(1)+'" y="'+(H-24)+'" text-anchor="middle" font-size="9.5" fill="#9A8E6E">'+a+'</text>'; }
+  /* เส้นเกษียณ + เส้นเป้าหมายปลายแผน */
+  const vline=(a,txt,col,dash,dy)=>{ if(!(a>a0&&a<=a1)) return;
+    g+='<line x1="'+X(a).toFixed(1)+'" y1="'+T+'" x2="'+X(a).toFixed(1)+'" y2="'+(T+ph)+'" stroke="'+col+'" stroke-width="1.2"'+(dash?' stroke-dasharray="4,3"':'')+' opacity=".85"/>'
+      +'<text x="'+(X(a)+4).toFixed(1)+'" y="'+(T+dy)+'" font-size="9.5" font-weight="600" fill="'+col+'">'+txt+'</text>'; };
+  vline(d.after.retAge,'เกษียณ '+d.after.retAge,'#4A4A4A',true,12);
+  vline(life,'เป้าหมาย: เงินต้องพอถึง '+life,'#3F6B52',false,26);
+  /* เส้น Before */
+  g+='<path d="'+path(d.before.rows)+'" fill="none" stroke="'+(C.carrier||'#C8635A')+'" stroke-width="2" stroke-dasharray="5,3" stroke-linejoin="round" opacity=".95"/>';
+  if(d.before.deplete){ const dx=X(d.before.deplete+1);
+    g+='<circle cx="'+dx.toFixed(1)+'" cy="'+Y(0).toFixed(1)+'" r="4.6" fill="'+(C.carrier||'#C8635A')+'" stroke="#fff" stroke-width="1.8"/>'
+      +'<text x="'+(dx-7).toFixed(1)+'" y="'+(Y(0)-9).toFixed(1)+'" text-anchor="end" font-size="10.5" font-weight="700" fill="'+(C.carrier||'#C8635A')+'">แผนเดิม เงินหมด '+d.before.deplete+'</text>'; }
+  /* เส้น After */
+  const aft=d.after.rows, le=aft[aft.length-1];
+  g+='<path d="'+path(aft)+'" fill="none" stroke="#1C1C2E" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round"/>';
+  if(d.after.deplete){ const dx=X(d.after.deplete+1);
+    g+='<circle cx="'+dx.toFixed(1)+'" cy="'+Y(0).toFixed(1)+'" r="4.6" fill="#1C1C2E" stroke="#fff" stroke-width="1.8"/>'
+      /* v3.9.47: เดิมป้ายนี้อยู่ใต้เส้นศูนย์ ไปทับเลขอายุบนแกน — ย้ายขึ้นเหนือเส้นและกางไปทางขวาของจุด */
+      +'<text x="'+(dx+8).toFixed(1)+'" y="'+(Y(0)-9).toFixed(1)+'" text-anchor="start" font-size="10.5" font-weight="700" fill="#1C1C2E">แผนใหม่ เงินหมด '+d.after.deplete+'</text>'; }
+  /* v3.9.47: ป้ายริมขวาเดิมเขียนปีที่เงินหมดซ้ำกับจุดบนเส้น — เหลือไว้เฉพาะกรณีเงินพอ (บอกยอดคงเหลือ) */
+  if(d.after.feasible)
+    g+='<text x="'+(L+pw+7)+'" y="'+(Y(le.v)+3.5).toFixed(1)+'" font-size="10.5" font-weight="700" fill="#3F6B52">เหลือ '+xM(le.v)+'</text>';
+  return '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block">'+g+'</svg>';
+}
+function a4BASheet(){
+  let d=null; try{ d=baCompute(); }catch(e){ console.warn('baCompute failed',e); }
+  const R=Array.isArray(STATE.planReasons)?STATE.planReasons:[];
+  if(!d){
+    if(!R.length) return '';
+    return `<div class="a4-sheet">
+      <div class="a4-ptitle"><span class="n">→</span><span class="t">ทำไมแผนนี้จึงปรับแบบนี้</span><span class="ref">หน้า X ในเครื่องมือ</span></div>
+      ${R.map((r,i)=>`<div style="display:flex;gap:9px;padding:6px 0;border-bottom:1px solid #F1ECDF">
+        <span style="flex:0 0 18px;height:18px;border-radius:50%;background:#1C1C2E;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center">${i+1}</span>
+        <div style="font-size:10.5px;line-height:1.55;color:#2A2A2A"><b style="color:#1C1C2E">${baEsc(r.t)}</b>
+        ${r.why?`<div style="color:#6B6355">เพราะ ${baEsc(r.why)}</div>`:''}
+        ${r.eff?`<div style="color:#3F6B52">→ ${baEsc(r.eff)}</div>`:''}</div></div>`).join('')}
+      <div class="a4-note">ยังไม่ได้ตั้งภาพ "ก่อนปรับ" (Before) ไว้ในไฟล์ จึงยังเทียบเป็นกราฟไม่ได้ —
+        ตั้งได้ที่หน้า XII ของเครื่องมือ ปุ่ม 📌 ตั้งค่าปัจจุบันเป็น Before</div>
+    </div>`;
+  }
+  const b=d.before, a=d.after;
+  const bTxt=b.feasible?('เงินพอถึง '+b.life):('เงินหมดอายุ '+b.deplete);
+  const aTxt=a.feasible?('เงินพอถึง '+a.life):('เงินหมดอายุ '+a.deplete);
+  const chg=(bv,av,better)=>{ const good=better(bv,av); return `<td class="n${good?' d':''}">${av}</td>`; };
+  const r2=(l,bv,av,note,good)=>`<tr><td>${l}</td><td class="n" style="color:#9A8E6E">${bv}</td>
+      <td class="n"${good?' style="color:#3F6B52;font-weight:700"':''}>${av}</td><td class="w">${note||''}</td></tr>`;
+  const pct=(v,i)=>i>0?(v/(i*12)*100).toFixed(1)+'%':'—';
+  const yrsGain=(b.deplete&&a.deplete)?(a.deplete-b.deplete):((b.deplete&&!a.deplete)?(a.life-b.deplete):0);
+  return `<div class="a4-sheet">
+    <div class="a4-ptitle"><span class="n">→</span><span class="t">ผลของแผนนี้ · ก่อนปรับ เทียบ หลังปรับ</span><span class="ref">หน้า XII ในเครื่องมือ</span></div>
+    <div class="a4-verdict ${a.feasible?'ok':'bad'}" style="margin-bottom:8px">
+      <div class="vico">${a.feasible?'✓':'→'}</div>
+      <div><b>${bTxt} → ${aTxt}</b>
+        <div class="vs">${yrsGain>0?('ยืดอายุเงินออกไปได้อีก '+yrsGain+' ปี'):'อายุที่เงินหมดเท่าเดิม'}${
+          (b.short>0||a.short>0)?(' · ยอดที่ยังขาดถึงอายุ '+a.life+' ลดจาก '+xF(b.short)+' เหลือ '+xF(a.short)+' บาท'):''}</div></div>
+    </div>
+    ${a4BAChart(d)}
+    <div class="a4-baleg">
+      <span><i style="border-color:${(XC().carrier||'#C8635A')};border-top-style:dashed"></i>ก่อนปรับแผน (${baEsc(d.label||'Before')}${d.capturedAt?' · '+baEsc(String(d.capturedAt).slice(0,10)):''})</span>
+      <span><i style="border-color:#1C1C2E"></i>แผนที่เสนอในเล่มนี้</span>
+      <span><i style="border-color:#3F6B52"></i>เส้นเป้าหมาย: เงินต้องพอถึงอายุ ${a.life}</span>
+    </div>
+    <table class="a4-batbl" style="margin-top:4px"><thead><tr><th>ตัวชี้วัด</th><th class="n">ก่อนปรับ</th><th class="n">หลังปรับ</th><th>หมายความว่า</th></tr></thead><tbody>
+      ${r2('อายุที่เงินหมด', b.deplete||('พอถึง '+b.life), a.deplete||('พอถึง '+a.life), yrsGain>0?('ดีขึ้น '+yrsGain+' ปี'):'', yrsGain>0)}
+      ${r2('ยอดที่ยังขาดถึงอายุ '+a.life, xF(b.short), xF(a.short), a.short<b.short?('ลดลง '+xF(b.short-a.short)):'', a.short<b.short)}
+      ${r2('เบี้ยประกัน/ปี', xF(b.prem)+' ('+pct(b.prem,b.income)+')', xF(a.prem)+' ('+pct(a.prem,a.income)+')', a.prem<b.prem?'จ่ายน้อยลงแต่คุ้มครองมากขึ้น':'', a.prem<b.prem)}
+      ${r2('ทุนชีวิต', xM(b.cov.life), xM(a.cov.life), '', a.cov.life>b.cov.life)}
+      ${r2('สุขภาพ (เหมาจ่าย)', b.cov.health?xM(b.cov.health):'ไม่มี', a.cov.health?xM(a.cov.health):'ไม่มี', '', a.cov.health>b.cov.health)}
+      ${r2('โรคร้ายแรง', xM(b.cov.ci), xM(a.cov.ci), '', a.cov.ci>b.cov.ci)}
+      ${r2('ทุพพลภาพ', xM(b.cov.tpd), xM(a.cov.tpd), '', a.cov.tpd>b.cov.tpd)}
+      ${r2('อัตราการออม', (b.savingRate*100).toFixed(1)+'%', (a.savingRate*100).toFixed(1)+'%', '', a.savingRate>b.savingRate)}
+      ${r2('ภาษี/ปี', xF(b.tax), xF(a.tax), a.tax<b.tax?('ประหยัด '+xF(b.tax-a.tax)+' บาท/ปี'):'', a.tax<b.tax)}
+      ${r2('เงินสำรองฉุกเฉิน (เดือน)', b.liquidity.toFixed(1), a.liquidity.toFixed(1), '', a.liquidity>b.liquidity)}
+      ${r2('ทรัพย์สินสุทธิวันนี้', xF(b.netWorth), xF(a.netWorth), '', a.netWorth>b.netWorth)}
+    </tbody></table>
+    <div class="a4-note">ทั้งสองเส้นคิดด้วยสูตรชุดเดียวกัน ต่างกันแค่ข้อมูลที่ใส่ — เส้นประคือภาพก่อนปรับที่แช่แข็งไว้ในไฟล์เดียวกัน
+      ไม่ใช่ตัวเลขที่พิมพ์ทับ · ประมาณการผลตอบแทนคงที่ ไม่รวมความผันผวนตลาด</div>
+  </div>`
+  /* v3.9.46: เหตุผลของแผนแยกเป็นแผ่นของตัวเอง — รวมกับหน้ากราฟแล้วล้นขอบกระดาษ
+     ถ้าที่เหลือพอ a4Balance() จะรวมสองแผ่นนี้กลับเข้าหน้าเดียวให้เอง */
+  +(R.length?`<div class="a4-sheet">
+    <div class="a4-ptitle"><span class="n">→</span><span class="t">ทำไมแผนนี้จึงปรับแบบนี้</span><span class="ref">หน้า X ในเครื่องมือ</span></div>
+    <div class="a4-note" style="margin:-4px 0 7px">แต่ละข้อคือการตัดสินใจที่ทำให้เส้นในกราฟหน้าก่อนขยับ — อ่านคู่กันได้</div>
+    ${R.map((r,i)=>`<div style="display:flex;gap:9px;padding:6px 0;border-bottom:1px solid #F1ECDF">
+      <span style="flex:0 0 18px;height:18px;border-radius:50%;background:#1C1C2E;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px">${i+1}</span>
+      <div style="font-size:10.3px;line-height:1.55;color:#2A2A2A"><b style="color:#1C1C2E">${baEsc(r.t)}</b>
+      ${r.why?`<div style="color:#6B6355"><span style="color:#9A8E6E;font-weight:600">เพราะ</span> ${baEsc(r.why)}</div>`:''}
+      ${r.eff?`<div style="color:#3F6B52">→ ${baEsc(r.eff)}</div>`:''}</div></div>`).join('')}
+    <div class="a4-note">ข้อความชุดนี้ที่ปรึกษาเขียนไว้ในไฟล์ (STATE.planReasons) ไม่ใช่ข้อความที่เครื่องสร้างสดตอนพิมพ์</div>
+  </div>`:'');
+}
+
+/* ═══ v3.9.45 · ท้ายเล่ม — ต้องต่อหลังภาคผนวกที่ a4Extras() แปะไว้ ═══
+   ลำดับที่อ้อยสั่ง: ... ภาคผนวก → X แผนการเงินองค์รวม & แผนลงมือ → กราฟ Before→After → หน้านักวางแผน */
+let A4_TAIL='';
+function a4Tail(){
+  const host=document.getElementById('a4Summary'); if(!host||!A4_TAIL) return;
+  host.insertAdjacentHTML('beforeend', A4_TAIL);
+}
 function openA4(){
+  /* ต้องทำก่อนวาด: ช่องที่ยังว่างให้ร่างครั้งเดียวแล้วเขียนลงไฟล์ เพื่อให้รายงานออกจากไฟล์เท่านั้น */
+  try{ a4Materialize(); }catch(e){ console.warn('a4Materialize failed', e); }
   try{ renderA4Summary(); }catch(e){ console.warn('renderA4 failed', e); }
   try{ a4Extras(); }catch(e){ console.warn('a4Extras failed', e); }
+  try{ a4Tail(); }catch(e){ console.warn('a4Tail failed', e); }
   document.getElementById('a4Overlay').classList.add('on');
   /* ต้องวัดหลังจากแสดงผลแล้ว (ตอนซ่อนอยู่ scrollHeight = 0) */
   requestAnimationFrame(()=>{ try{ a4FitSheets(); }catch(e){ console.warn('a4Fit failed',e); } });
@@ -10735,17 +11072,17 @@ function renderA4Summary(){
 
   /* ── ชั้นที่ 1 เพิ่ม: เส้นทางพอร์ต + แผนลงมือ ── */
   let projSvg=''; try{ projSvg=projectionSVG(pf); }catch(e){}
-  let AP=[]; try{ AP=(HENG.actionPlan().ordered||[]).slice(0,6); }catch(e){}
+  /* v3.9.46: ย้ายมาอยู่หน้า X ร่วมกับแผนลงมือ — เหลือ 4 ข้อพอให้เห็นลำดับ ไม่แย่งที่แผนลงมือ */
+  let AP=[]; try{ AP=(HENG.actionPlan().ordered||[]).slice(0,4); }catch(e){}
   const apRows=AP.map((a,i)=>`<div style="display:flex;gap:9px;align-items:flex-start;padding:6px 0;border-bottom:1px solid #EFEADC"><span style="flex:0 0 18px;height:18px;border-radius:50%;background:#1C1C2E;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center">${i+1}</span><div style="font-size:10.5px;line-height:1.5;color:#2A2A2A">${a.t}${a.b!=null?` <b style="color:#B5453E">(${f0(a.b)}${a.perMonth?' /ด.':' บ.'})</b>`:''}${a.why?`<div style="font-size:9px;color:#888">↳ ${a.why}</div>`:''}</div></div>`).join('');
   const lifePathBlock=`<div class="a4-sec">เส้นทางชีวิต · คุณอยู่ตรงไหน</div>${svg}`;
   const sheetPath=`<div class="a4-sheet">
     ${lifePathBlock}
-    <div class="a4-ptitle" style="margin-top:9px"><span class="n">I</span><span class="t">เส้นทางพอร์ต & แผนลงมือ</span></div>
+    <div class="a4-ptitle" style="margin-top:9px"><span class="n">I</span><span class="t">เส้นทางชีวิตบูรณาการ</span><span class="ref">หน้า I ในเครื่องมือ</span></div>
     <div class="a4-sec">มูลค่าพอร์ตตลอดแผน</div>
     ${projSvg||'<div class="a4-note">ยังไม่มีข้อมูลพอ</div>'}
-    <div class="a4-note">เส้นทอง = มูลค่าพอร์ต · ◆ = ปีที่จ่ายเงินก้อน · แถบล่าง: เขียว = ปีที่เหลือเก็บเข้าพอร์ต · แดง = ปีที่ดึงจากพอร์ตมาใช้</div>
-    <div class="a4-sec">ลำดับลงมือ (จากฐานพีระมิด)</div>
-    ${apRows||'<div class="a4-note">สถานะครบทุกด้านแล้ว</div>'}
+    <div class="a4-note">เส้นทอง = มูลค่าพอร์ต · ◆ = ปีที่จ่ายเงินก้อน · แถบล่าง: เขียว = ปีที่เหลือเก็บเข้าพอร์ต · แดง = ปีที่ดึงจากพอร์ตมาใช้
+      · ลำดับลงมือและแผนลงมือทั้งชุด อยู่หน้า <b>X แผนการเงินองค์รวม</b> ท้ายเล่ม</div>
   </div>`;
 
   /* ── ภาคผนวก: งบดุล/งบกระแส + ratios ── */
@@ -10757,7 +11094,7 @@ function renderA4Summary(){
   const rr=f.ratios||{};
   const ratioRow=(l,v,crit,ok2)=>`<tr><td>${l}</td><td style="text-align:right;font-weight:700;color:${ok2?'#3F6B52':'#B5453E'}">${v}</td><td style="text-align:right;color:#888">${crit}</td></tr>`;
   const sheetBalance=`<div class="a4-sheet">
-    <div class="a4-ptitle"><span class="n">IV</span><span class="t">งบดุล & งบกระแสเงินสด</span></div>
+    <div class="a4-ptitle"><span class="n">II</span><span class="t">Snapshot ปัจจุบัน</span><span class="ref">หน้า II ในเครื่องมือ</span></div>
     <div class="a4-sec">งบดุล — ณ ปัจจุบัน</div>
     <table class="a4-gtbl"><tbody>
       <tr><td>สินทรัพย์สภาพคล่อง</td><td style="text-align:right">${f0(liqA)}</td></tr>
@@ -10780,22 +11117,26 @@ function renderA4Summary(){
     ${f.surplus<0?`<div class="a4-note" style="background:#FBEEEC;border:1px solid #E2AFA9;border-radius:7px;padding:8px 12px;color:#8A3A32;margin-top:6px">
       <b>รายจ่าย + เงินออม มากกว่ารายรับเดือนละ ${f0(-f.freeCash)} บาท</b> — ยอดออมที่ตั้งไว้ยังไม่ได้มาจากเงินที่เหลือจริง
       ต้องปรับข้อใดข้อหนึ่งก่อนเดินแผนต่อ: ลดรายจ่าย · ลดยอดออม · หรือเพิ่มรายได้</div>`:''}
-    <div class="a4-sec">อัตราส่วนสุขภาพการเงินหลัก</div>
+    <div class="a4-note">ตัวเลขทุกบรรทัดมาจากงบดุล/งบกระแสที่กรอกไว้หน้า II ของเครื่องมือ
+      · อัตราส่วนสุขภาพการเงินอยู่หน้า <b>III สุขภาพการเงิน</b> ถัดไป</div>
+  </div>`;
+
+  /* ── v3.9.45 · III สุขภาพการเงิน — อัตราส่วนหลัก (ย้ายมาจากหน้า II) + พีระมิด ── */
+  const healthRatioBlock=`<div class="a4-sec">อัตราส่วนสุขภาพการเงินหลัก</div>
     <table class="a4-gtbl"><thead><tr><th>อัตราส่วน</th><th style="text-align:right">ของคุณ</th><th style="text-align:right">เกณฑ์</th></tr></thead><tbody>
       ${ratioRow('สภาพคล่อง (เดือนของค่าใช้จ่าย)', Math.round(rr.liquidity||0)+' ด.', '≥ '+CONFIG.emergencyMonths+' ด.', (rr.liquidity||0)>=CONFIG.emergencyMonths)}
       ${rr.savingRate!=null?ratioRow('อัตราการออม', Math.round((rr.savingRate||0)*100)+'%', '≥ 10%', (rr.savingRate||0)>=0.1):''}
       ${rr.dsRatio!=null?ratioRow('ภาระหนี้ ÷ รายได้', Math.round((rr.dsRatio||0)*100)+'%', '≤ 45%', (rr.dsRatio||0)<=0.45):''}
       ${rr.debtToAsset!=null?ratioRow('หนี้สิน ÷ สินทรัพย์', Math.round((rr.debtToAsset||0)*100)+'%', '≤ 50%', (rr.debtToAsset||0)<=0.5):''}
     </tbody></table>
-    <div class="a4-note">ตัวเลขจากงบดุล/งบกระแสที่กรอกในระบบ · ดู 8 ratios เต็มที่หน้า Snapshot</div>
-  </div>`;
+    <div class="a4-note">ดู 8 ratios เต็มที่หน้า III ของเครื่องมือ</div>`;
 
   /* ── ภาคผนวก: ตารางกระแสเงินสดรายปี ── */
   const yearSheets=[];
   { const rowsAll=pf.rows||[]; const RPP=Math.max(18, Math.ceil(rowsAll.length/Math.max(1,Math.ceil(rowsAll.length/20))));
     for(let i=0;i<rowsAll.length;i+=RPP){ const chunk=rowsAll.slice(i,i+RPP);
       const trs=chunk.map(r=>`<tr${(r.shortCum||0)>0?' class="cf-out"':''}><td>${r.age}</td><td style="text-align:right">${f0(r.income)}</td><td style="text-align:right">${f0(r.expense)}</td><td style="text-align:right">${r.lump>0?f0(r.lump):'—'}</td><td style="text-align:right;color:${r.net>=0?'#3F6B52':'#B5453E'}">${r.net>=0?'+':'−'}${f0(Math.abs(r.net))}</td><td style="text-align:right;font-weight:700">${f0(r.balance)}${(r.shortCum||0)>0?'<span class="cf-tag">เงินหมดแล้ว</span>':''}</td></tr>`).join('');
-      yearSheets.push(`<div class="a4-sheet"><div class="a4-ptitle"><span class="n">V</span><span class="t">กระแสเงินสดล่วงหน้ารายปี${rowsAll.length>RPP?` (${Math.floor(i/RPP)+1}/${Math.ceil(rowsAll.length/RPP)})`:''}</span></div>
+      yearSheets.push(`<div class="a4-sheet"><div class="a4-ptitle"><span class="n">V</span><span class="t">แผนเกษียณ · กระแสเงินสดล่วงหน้ารายปี${rowsAll.length>RPP?` (${Math.floor(i/RPP)+1}/${Math.ceil(rowsAll.length/RPP)})`:''}</span><span class="ref">หน้า V ในเครื่องมือ</span></div>
         <table class="a4-gtbl" style="font-size:8.8px"><thead><tr><th>อายุ</th><th style="text-align:right">รายรับ/ปี</th><th style="text-align:right">รายจ่าย/ปี</th><th style="text-align:right">เงินก้อนเป้าหมาย</th><th style="text-align:right">สุทธิ</th><th style="text-align:right">พอร์ตปลายปี</th></tr></thead><tbody>${trs}</tbody></table>
         <div class="a4-note"><b>แถวที่มีแถบสีและพื้นชมพู = ปีที่พอร์ตหมดแล้ว</b> — ตัวเลขรายรับและรายจ่ายในแถวนั้นยังเป็นค่าปกติ
           ไม่ได้ติดลบและไม่ได้ถูกหักอะไรออก เพียงแต่ส่วนที่ขาดของปีนั้นไม่มีแหล่งเงินรองรับแล้ว
@@ -10805,11 +11146,13 @@ function renderA4Summary(){
 
   /* ── ภาคผนวก: พีระมิด + ผลิตภัณฑ์ ── */
   let PD=null; try{ PD=pyramidBands(); }catch(e){}
-  const sheetPyr=PD?`<div class="a4-sheet"><div class="a4-ptitle"><span class="n">VI</span><span class="t">พีระมิดการเงิน & ผลิตภัณฑ์ที่เหมาะ</span></div>
+  const sheetPyr=`<div class="a4-sheet"><div class="a4-ptitle"><span class="n">III</span><span class="t">สุขภาพการเงิน</span><span class="ref">หน้า III ในเครื่องมือ</span></div>
+    ${healthRatioBlock}
+    ${PD?`<div class="a4-sec" style="margin-top:13px">พีระมิดการเงิน & ผลิตภัณฑ์ที่เหมาะ</div>
     <table class="a4-gtbl"><thead><tr><th>ชั้น</th><th>สถานะ</th><th>ผลิตภัณฑ์ที่เหมาะ</th></tr></thead><tbody>
       ${PD.bands.map(b=>`<tr><td style="white-space:nowrap"><b style="color:${PD.TXT[b.st]}">${b.k}</b> ${b.t}</td><td style="white-space:nowrap;font-weight:700;color:${PD.TXT[b.st]}">${PD.ST_LBL[b.st]}</td><td>${(PD.PROD[b.k]||[]).join(' · ')}</td></tr>`).join('')}
     </tbody></table>
-    <div class="a4-note">เรียงจากยอด (L5 ส่งต่อ) ลงฐาน (L1 สำรองฉุกเฉิน) — เสริมชั้นล่างให้ครบก่อน</div></div>`:'';
+    <div class="a4-note">เรียงจากยอด (L5 ส่งต่อ) ลงฐาน (L1 สำรองฉุกเฉิน) — เสริมชั้นล่างให้ครบก่อน</div>`:''}</div>`;
 
   const sheetCover=`<div class="a4-sheet"><div class="a4-cover">
     <div class="cv-brandbar"><span class="cv-sig">SIGNATURE 41</span><span class="cv-rep">Financial Report</span></div>
@@ -10837,11 +11180,18 @@ function renderA4Summary(){
     <div class="a4-sec">ความพร้อมรายด้าน</div>
     ${domBars}
     <div class="a4-note">แถบเขียว ≥100% = พร้อม · เหลือง 60–99% = ใกล้ครบ · แดง <60% = ควรเร่ง · "ต้องการ/มีแล้ว" เป็นมูลค่าที่ปรับเงินเฟ้อถึงปีเป้าหมายแล้ว</div>
+    <div class="a4-sec">อ่านรายงานนี้อย่างไร</div>
+    <div class="a4-note" style="margin-top:0">เลขโรมันบนหัวทุกหน้า = <b>หน้าเดียวกันในเครื่องมือวางแผน</b> (I เส้นทางชีวิตบูรณาการ · II Snapshot ·
+      III สุขภาพการเงิน · IV การคุ้มครอง · V แผนเกษียณ · VI ทุนการศึกษาบุตร · VII เป้าหมายชีวิต · VIII พอร์ตการลงทุน ·
+      IX วางแผนภาษี · X แผนการเงินองค์รวม · XI มรดก &amp; พินัยกรรม) — เปิดหน้านั้นในเครื่องมือจะเห็นตัวเลขชุดเดียวกันทุกตัว
+      · หน้าที่ขึ้นต้นด้วย <b>ก ข ค ง</b> เป็นภาคผนวก ไม่มีในเครื่องมือ
+      · หน้า XII ทบทวนประจำปี ยังไม่อยู่ในเล่มนี้ เพราะเป็นงานของปีถัดไป
+      · บทสรุปและสิ่งที่ต้องทำต่ออยู่หน้า <b>X</b> ท้ายเล่ม ตามด้วยกราฟเทียบก่อน–หลังปรับแผน</div>
   </div>`;
 
   const preR=(typeof AS==='function'&&AS('preRet')!=null)?Number(AS('preRet')):postR;
   const sheetGoals=`<div class="a4-sheet">
-    <div class="a4-ptitle"><span class="n">II</span><span class="t">เป้าหมาย & พอร์ตลงทุน</span></div>
+    <div class="a4-ptitle"><span class="n">VII·VIII</span><span class="t">เป้าหมายชีวิต & พอร์ตการลงทุน</span><span class="ref">หน้า VII + VIII ในเครื่องมือ</span></div>
     <div class="a4-sec">พอร์ตลงทุน & ผลตอบแทน</div>
 <!-- v3.9.29: ตัวเลข 4 ช่องนี้เคยไม่ตรงกับแผน — แก้ให้อ้างตารางกระแสเงินสดชุดเดียวกันทั้งหมด
          เดิม: "เงินลงทุนในพอร์ต" รวมมูลค่าเวนคืนกรมธรรม์ที่แผนตั้งใจไม่นับ (รับเป็นเงินก้อนตามตารางแทน)
@@ -10866,7 +11216,7 @@ function renderA4Summary(){
   </div>`;
 
   const sheetProtect=`<div class="a4-sheet">
-    <div class="a4-ptitle"><span class="n">III</span><span class="t">เกราะคุ้มครอง</span></div>
+    <div class="a4-ptitle"><span class="n">IV</span><span class="t">การคุ้มครอง · Protection Gap</span><span class="ref">หน้า IV ในเครื่องมือ</span></div>
     <div class="a4-sec">ความพร้อมแต่ละชั้น (ต้องการ · มีแล้ว · ขาด)</div>
     ${protBars||'<div class="a4-note">ยังไม่มีข้อมูลความคุ้มครอง</div>'}
     <div class="a4-3" style="margin-top:14px">
@@ -10888,7 +11238,7 @@ function renderA4Summary(){
       <div><span style="font-size:15px;color:#B9B09A">☐</span> ตัวเลขถูกต้องแล้ว ใช้แผนนี้ได้เลย</div>
       <div><span style="font-size:15px;color:#B9B09A">☐</span> มีที่ต้องแก้ — เขียนไว้ด้านล่าง</div>
     </div>
-    <div class="a4-note" style="margin:0 0 6px">รายจ่ายที่ใช้คำนวณ แยกไว้ทีละบรรทัดในหน้าสุดท้ายของรายงาน (ค่าใช้จ่ายรายบรรทัด)
+    <div class="a4-note" style="margin:0 0 6px">รายจ่ายที่ใช้คำนวณ แยกไว้ทีละบรรทัดในภาคผนวก ค (ค่าใช้จ่ายรายบรรทัด)
       — ช่องขวามือของหน้านั้นเว้นไว้ให้เขียนยอดจริงทับได้เลย ไม่ต้องเขียนใหม่ทั้งหมด เขียนเฉพาะบรรทัดที่ไม่ตรง</div>
     <div style="font-size:10.5px;color:#9A8E6E;font-weight:600;margin-bottom:3px">เรื่องอื่นที่อยากบอก / ตัวเลขที่ต้องแก้</div>
     ${rule(8)}
@@ -10903,12 +11253,14 @@ function renderA4Summary(){
       ${a.how?`<div style="color:#6B6355;font-size:10.5px;line-height:1.55;margin-top:1px">${String(a.how).replace(/</g,'&lt;')}</div>`:''}</td>
       <td style="text-align:right;white-space:nowrap;color:#B5453E;font-weight:600;font-size:10.5px;vertical-align:top">${String(a.when||'').replace(/</g,'&lt;')}</td></tr>`).join('');
   const sheetAct=actRows?`<div class="a4-sheet">
-    <div class="a4-ptitle"><span class="n">VIII</span><span class="t">แผนลงมือ · สิ่งที่ต้องทำต่อ</span></div>
+    <div class="a4-ptitle"><span class="n">X</span><span class="t">แผนการเงินองค์รวม & แผนลงมือ</span>${a4SrcBadge('planActions')}<span class="ref">หน้า X ในเครื่องมือ</span></div>
+    ${apRows?`<div class="a4-sec" style="margin-top:-2px">ลำดับความสำคัญจากฐานพีระมิด</div>${apRows}`:''}
+    <div class="a4-sec">แผนลงมือ · สิ่งที่ต้องทำต่อ</div>
     <div class="a4-note" style="margin:-2px 0 ${(Array.isArray(STATE.planActions)?STATE.planActions.length:0)>=13?'5px':'9px'}">เรียงตามลำดับที่ควรทำ · ติ๊กช่องซ้ายเมื่อทำแล้ว · ข้อที่มีกำหนดเวลาสีแดงคือข้อที่เลื่อนไม่ได้</div>
     <table class="a4-gtbl"><thead><tr><th style="text-align:center">ทำแล้ว</th><th style="text-align:center">#</th>
       <th style="text-align:left">ทำอะไร · ทำยังไง</th><th style="text-align:right">ภายในเมื่อไหร่</th></tr></thead><tbody>${actRows}</tbody></table>
-    ${(Array.isArray(STATE.planActions)?STATE.planActions.length:0)>=13?'':'<div class="a4-sec">บันทึกเพิ่มเติม · ข้อที่อยากเพิ่มเอง</div>'}
-    ${(Array.isArray(STATE.planActions)?STATE.planActions.length:0)>=13?'':rule(Math.max(2, 14-(Array.isArray(STATE.planActions)?STATE.planActions.length:0)))}
+    ${((Array.isArray(STATE.planActions)?STATE.planActions.length:0)>=10||apRows)?'':'<div class="a4-sec">บันทึกเพิ่มเติม · ข้อที่อยากเพิ่มเอง</div>'}
+    ${((Array.isArray(STATE.planActions)?STATE.planActions.length:0)>=10||apRows)?'':rule(Math.max(2, 12-(Array.isArray(STATE.planActions)?STATE.planActions.length:0)))}
     <div class="a4-note" style="margin-top:10px">ข้อที่เป็นการ “ยืนยันตัวเลข” ต้องทำก่อนข้ออื่น เพราะทั้งแผนคำนวณจากตัวเลขเหล่านั้น</div>
   </div>`:'';
 
@@ -10934,12 +11286,23 @@ function renderA4Summary(){
       .join('<div style="height:6mm"></div>');
     return '<div class="a4-sheet">'+body+'</div>'; };
 
+  /* ── v3.9.45 · หน้าที่เคยไม่มีในรายงานเลย แม้จะกรอกไว้ในเครื่องมือ ── */
+  let sheetEdu='', sheetTax='', sheetEstate='';
+  try{ sheetEdu=a4EduSheet()||''; }catch(e){ console.warn('a4EduSheet failed',e); }
+  try{ sheetTax=a4TaxSheet()||''; }catch(e){ console.warn('a4TaxSheet failed',e); }
+  try{ sheetEstate=a4EstateSheet()||''; }catch(e){ console.warn('a4EstateSheet failed',e); }
+
   host.className='';
+  /* ลำดับเล่ม: ปก → ภาพรวม → ตรวจตัวเลข → I..XI (เรียงตามหน้าในเครื่องมือ) → ภาคผนวก ก/ข
+     ส่วนท้ายเล่ม (X แผนองค์รวม & แผนลงมือ → กราฟ Before→After → นักวางแผน) ถูกเก็บไว้ใน A4_TAIL
+     แล้วแปะต่อหลัง a4Extras() เพราะ a4Extras แปะภาคผนวก ค/ง ต่อท้ายเสมอ */
   host.innerHTML = sheetCover + sheetScore + sheetCheck + sheetPath
-    + mergeSheets(sheetGoals, sheetProtect)
-    + sheetBalance + yearSheets.join('')
-    + sheetPyr + a4AssumeSheet()   /* ปล่อยให้ตัวจัดหน้าอัตโนมัติตัดสินว่ารวมได้ไหม — ถ้ามีแถบเตือนเพิ่มจะแยกหน้าให้เอง */
-    + sheetAct + sheetPlanner;
+    + sheetBalance + sheetPyr
+    + sheetProtect + yearSheets.join('')
+    + sheetEdu + sheetGoals + sheetTax + sheetEstate
+    + a4AssumeSheet();   /* ปล่อยให้ตัวจัดหน้าอัตโนมัติตัดสินว่ารวมได้ไหม — ถ้ามีแถบเตือนเพิ่มจะแยกหน้าให้เอง */
+  let sheetBA=''; try{ sheetBA=a4BASheet()||''; }catch(e){ console.warn('a4BASheet failed',e); }
+  A4_TAIL = sheetAct + sheetBA + sheetPlanner;
 }
 </script>
 
@@ -12039,7 +12402,7 @@ function a4Extras(){
   const totalM=lines.reduce((s,l)=>s+(l.blank?0:l.amt),0);
   host.insertAdjacentHTML('beforeend',
     '<div class="a4-sheet">'+
-      '<div class="a4-h"><div><div class="a4-brand">SIGNATURE 41</div><div class="a4-sub">WEALTH PATH · แผน เทียบ ความจริง</div></div>'+
+      '<div class="a4-h"><div><div class="a4-brand">SIGNATURE 41</div><div class="a4-sub">ภาคผนวก ง · WEALTH PATH · แผน เทียบ ความจริง</div></div>'+
       '<div class="a4-cli" style="font-size:11px;color:#888">'+(STATE.carriers[0].name||'')+'</div></div>'+
       '<div class="a4-sec" style="margin-top:14px">เส้นทางความมั่งคั่ง — ที่ทำได้จริง เทียบ แผน</div>'+
       '<div style="margin:6px 0 4px">'+ch.svg.replace('id="x-svg"','').replace(/<div class="x-tip"[^>]*><\/div>/,'')+'</div>'+
@@ -12048,7 +12411,7 @@ function a4Extras(){
       navRows+
     '</div>'+
     '<div class="a4-sheet">'+
-      '<div class="a4-h"><div><div class="a4-brand">SIGNATURE 41</div><div class="a4-sub">EXPENSES · ค่าใช้จ่ายรายบรรทัด</div></div>'+
+      '<div class="a4-h"><div><div class="a4-brand">SIGNATURE 41</div><div class="a4-sub">ภาคผนวก ค · EXPENSES · ค่าใช้จ่ายรายบรรทัด</div></div>'+
       '<div class="a4-cli" style="font-size:11px;color:#888">รวม '+xF(totalM)+' บาท/เดือน</div></div>'+
       '<div class="a4-sec" style="margin-top:14px">ค่าใช้จ่ายรายบรรทัด — ช่องขวาเว้นไว้ให้เขียนยอดจริง</div>'+
       '<div style="font-size:10px;color:#6B6355;margin:0 0 5px;line-height:1.6">ตัวเลขกลางคือยอดที่ใช้คำนวณแผนฉบับนี้ '+
@@ -12274,9 +12637,24 @@ function actBuildDraft(){
   }catch(e){}
 
   /* 7) เรื่องที่ทำครั้งเดียวแล้วจบ */
-  L.push(['ทำพินัยกรรม และตรวจผู้รับผลประโยชน์ทุกกรมธรรม์',
-    'ระบุให้ชัดว่าทรัพย์สินและทุนประกันจะตกถึงใคร — ถ้าไม่ระบุ จะต้องไปจัดการทางศาลซึ่งใช้เวลานาน',
-    'ภายในปีนี้']);
+  /* v3.9.45: เดิมข้อนี้ push เสมอ แม้ไฟล์จะระบุผู้รับและผู้รับทุกกรมธรรม์ไว้ครบแล้ว
+     รายงานจึงสั่งให้ "ไปทำพินัยกรรม" ทั้งที่หน้า XI บันทึกไว้ว่าทำแล้ว — ขัดกันเองในเล่มเดียว */
+  { let anyB=false, anyW=false;
+    try{ const est=(STATE.snap&&STATE.snap.estate)||{};
+      const B=est.beneficiaries||{}, W=est.will||{};
+      anyB=Object.keys(B).some(k=>String(B[k]||'').trim());
+      anyW=Object.keys(W).some(k=>String(W[k]||'').trim());
+    }catch(e){}
+    if(anyB&&anyW){
+      L.push(['จัดทำพินัยกรรมฉบับจริงกับทนาย และแจ้งบริษัทประกันให้ชื่อตรงกัน',
+        'ในแผนระบุผู้รับทรัพย์สินและผู้รับผลประโยชน์ไว้ครบแล้ว (ดูหน้า XI) — เหลือขั้นทำเอกสารจริง '
+        +'และตรวจว่าชื่อผู้รับผลประโยชน์ในกรมธรรม์ทุกเล่มตรงกับที่ระบุไว้',
+        'ภายในปีนี้']);
+    } else {
+      L.push(['ทำพินัยกรรม และตรวจผู้รับผลประโยชน์ทุกกรมธรรม์',
+        'ระบุให้ชัดว่าทรัพย์สินและทุนประกันจะตกถึงใคร — ถ้าไม่ระบุ จะต้องไปจัดการทางศาลซึ่งใช้เวลานาน',
+        'ภายในปีนี้']);
+    } }
   L.push(['ทบทวนแผนประจำปี',
     'นัดคุยปีละครั้ง หรือเร็วกว่านั้นถ้ารายได้ ภาระ หรือสุขภาพเปลี่ยน',
     'ทุก 12 เดือน']);
@@ -12307,6 +12685,7 @@ function actSave(){
   const ta=document.getElementById('actTxt'); if(!ta) return;
   STATE.planActions=ta.value.split('\n').map(l=>l.trim()).filter(l=>l&&!/^—.*—$/.test(l))
     .map(l=>{ const p=l.split('|').map(x=>x.trim()); return {t:p[0]||'',how:p[1]||'',when:p[2]||''}; });
+  STATE.planActionsSrc='advisor';   /* v3.9.45: ผ่านมือที่ปรึกษาแล้ว — ป้ายบนรายงานเปลี่ยนเป็น "ตรวจแล้ว" */
   if(typeof saveState==='function') saveState(); renderActions();
 }
 function actMove(i,d){ const A=actList(); const j=i+d; if(j<0||j>=A.length) return;
