@@ -275,6 +275,11 @@ details.more[open]>summary::before{content:'▾ '}
 
 .tl-bar{position:relative;height:42px}
 .tl-bar.dep-bar{height:30px}
+/* v3.9.86: ค่าเทอมบนแถบลูก + บรรทัดค่าเทอมใต้ช่อง ฿/m */
+.b.edu.tui{height:17px;border-radius:6px;display:flex;align-items:center;justify-content:center;overflow:hidden;z-index:2}
+.b.edu.tui span{font-size:10px;font-weight:700;color:#2E2A22;white-space:nowrap;padding:0 4px;pointer-events:none}
+.tl-tui{flex-basis:100%;font-size:11px;color:var(--gold-2,#8A6E2E);cursor:pointer;margin-top:-2px}
+.tl-tui:hover{text-decoration:underline}
 
 .b{position:absolute;border-radius:99px;top:50%;transform:translateY(-50%);cursor:pointer;transition:filter .15s,transform .15s}
 .b.car{background:var(--carrier-soft);height:13px}
@@ -1924,7 +1929,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.85</b><span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.86</b><span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
 </aside>
 
 <main id="main">
@@ -5120,8 +5125,13 @@ function depRow(d, parent){
   const shareTag = d.share && d.share < 100 ? ` <span style="font-size:10px;color:var(--gold-2);font-weight:600;background:#FBF8EE;border:1px solid var(--gold);padding:1px 5px;border-radius:8px;margin-left:4px">${d.share}%</span>` : '';
   const fields = `
     <div class="tl-fld"><span class="lab">อายุ</span><input class="y y-num sm" value="${d.age}" data-k="age" data-id="${d.id}"></div>
-    <div class="tl-fld"><span class="lab">฿/m</span><input class="y y-num sm" value="${fmt(d.monthly)}" data-k="monthly" data-id="${d.id}" style="width:72px"></div>
-  `;
+    <div class="tl-fld"><span class="lab">฿/m</span><input class="y y-num sm" value="${fmt(d.monthly)}" data-k="monthly" data-id="${d.id}" style="width:72px" title="ค่าเลี้ยงดูต่อเดือน (ไม่รวมค่าเทอม)"></div>
+  `+(function(){ /* v3.9.86: ค่าเทอม (อ่านอย่างเดียว) — ปีนี้ หรือชั้นถัดไป · กดไปหน้าทุนการศึกษา */
+    const T=depTuitionItems(d); if(!T.length) return '';
+    const k=Number(d.age)||0, now=T.filter(t=>t.a1<=k&&k<=t.a2), nx=T.find(t=>t.a1>k);
+    const txt=now.length?('ค่าเทอม '+fmt(now.reduce((a,t)=>a+t.perYear,0))+'/ปี · '+now.map(t=>t.lv).join(' + '))
+      :(nx?('ค่าเทอมเริ่มอายุ '+nx.a1+' · '+fmt(nx.perYear)+'/ปี ('+nx.lv+')'):'');
+    return txt?`<div class="tl-tui" onclick="goPage('pEdu')" title="ราคาวันนี้ · แก้ที่หน้าทุนการศึกษาบุตร">🎓 ${txt}</div>`:''; })();
   row.innerHTML = `
     <div class="tl-name nested">
       <div class="tl-mn dep">↳ ${d.name}${shareTag}</div>
@@ -5131,7 +5141,27 @@ function depRow(d, parent){
   `;
   const bar = row.querySelector('.tl-bar');
 
-  if(d.kind === 'child'){
+  const _tui = (d.kind==='child') ? depTuitionItems(d) : [];
+  if(d.kind === 'child' && _tui.length){
+    /* v3.9.86: ลูกที่มีค่าเทอม → แถบตามช่วงชั้นจริงจากหน้าทุนการศึกษา พร้อมตัวเลขในแถบ (ราคาวันนี้/ปี)
+       ฐานบาง = ช่วงที่ยังอยู่ในความดูแล · แถบหนา = ปีที่มีค่าเทอม */
+    const LVC={'อนุบาล':'#F0DDB0','ประถม':'#E6CB92','มัธยม':'#93C4B8','ป.ตรี':'#8496AE','ป.โท':'#DDA49C'};
+    const base=document.createElement('div'); base.className='b dep'; base.style.height='5px';
+    base.style.left=x0+'%'; base.style.width=Math.max(0,x1-x0)+'%'; base.title='คลิกเพื่อแก้';
+    base.onclick=e=>{ e.stopPropagation(); openDepPop(d, base); }; bar.appendChild(base);
+    _tui.forEach(t=>{
+      const ax0=xPct(STATE.snapAge+(Math.max(t.a1,d.age)-d.age)), ax1=xPct(STATE.snapAge+(t.a2+1-d.age));
+      if(!(ax1>ax0)) return;
+      const seg=document.createElement('div'); seg.className='b edu tui';
+      seg.style.left=ax0+'%'; seg.style.width=(ax1-ax0)+'%';
+      const lvKey=Object.keys(LVC).find(k=>t.lv.indexOf(k)>=0); seg.style.background=LVC[lvKey]||'#A2B3C5';
+      seg.title=t.lv+' '+fmt(t.perYear)+' บาท/ปี (ราคาวันนี้) · อายุลูก '+t.a1+'–'+t.a2+(t.mode==='goal'?' · เงินก้อน (เป้าหมาย)':' · จ่ายจากกระแสเงินสด')+' · คลิกเพื่อดู';
+      seg.innerHTML='<span>'+t.lv+' '+kfmt(t.perYear)+'/ปี</span>';
+      seg.onclick=e=>{ e.stopPropagation(); openDepPop(d, seg); };
+      bar.appendChild(seg);
+      requestAnimationFrame(()=>{ const sp=seg.firstChild; if(!sp) return; if(sp.scrollWidth>seg.clientWidth-2){ sp.textContent=kfmt(t.perYear); if(sp.scrollWidth>seg.clientWidth-2) sp.textContent=''; } });
+    });
+  } else if(d.kind === 'child'){
     const segs = [
       {s:8,e:12,c:'#E6CB92'},{s:13,e:15,c:'#93C4B8'},{s:16,e:18,c:'#A2B3C5'},
       {s:19,e:22,c:'#8496AE'},{s:23,e:24,c:'#DDA49C'},{s:25,e:60,c:'#CFC9BC'}
@@ -5178,7 +5208,9 @@ function depRow(d, parent){
     const refAge = primary0 ? primary0.age : STATE.snapAge;
     // เป้าหมายของบุตรคนนี้ (g.parent===d.id) + ถ้า "แบ่งครึ่ง" ให้แสดงครึ่งของบุตรคู่ (link เดียวกัน) บนแถวนี้ด้วย
     const entries = [];
+    const _isEduG=g=>(g.ico==='🎓'||g.eduKid||(typeof goalType==='function'&&goalType(g)==='edu'));
     (STATE.goals||[]).forEach(g => {
+      if(_tui.length && _isEduG(g)) return;   /* v3.9.86: ค่าเทอมโชว์เป็นแถบพร้อมตัวเลขแล้ว ไม่ต้องปักหมุดซ้ำ */
       if(g.parent === d.id){ entries.push({g, half: !!g.split}); }
       else if(d.link && g.split){
         const gp=(STATE.dependents||[]).find(x=>x.id===g.parent);
@@ -6117,6 +6149,21 @@ function openDepPop(d, anchor){
     const box=document.getElementById('dd-cost'); if(box) box.innerHTML=depCostHTML(Object.assign({},d,{age:ag,[endKey]:en}), m); }); });
   setTimeout(() => { const el = document.getElementById('dd-end'); if(el){ el.focus(); el.select(); } }, 30);
 }
+/* v3.9.86: รายการค่าเทอมของลูกคนนี้ (ราคาวันนี้/ปี · อายุลูก) — ใช้ร่วมกันทั้ง Life Path และป๊อปอัป */
+function depTuitionItems(d){
+  const c0=(STATE.carriers||[])[0]||{}, cAge=Number(c0.age)||0, kAge=Number(d.age)||0;
+  const ids=new Set([String(d.id)]); if(d.link) (STATE.dependents||[]).filter(x=>x.link===d.link).forEach(x=>ids.add(String(x.id)));
+  const out=[];
+  ((STATE.snap&&STATE.snap.detail&&STATE.snap.detail.cashflow&&STATE.snap.detail.cashflow.varExtra)||[])
+    .filter(x=>{ const id=String(x&&x.id||''); return id.indexOf('edu-tut-')===0 && [...ids].some(k=>id.indexOf('edu-tut-'+k+'|')===0); })
+    .forEach(x=>{ const a1=kAge+((Number(x.startAge)||cAge)-cAge), a2=kAge+((Number(x.endAge)||cAge)-cAge);
+      out.push({lv:(String(x.name||'').split('·')[1]||'ค่าเทอม').trim(), perYear:(Number(x.monthly)||0)*12, a1, a2, mode:'cash', inf:x.inf}); });
+  (STATE.goals||[]).filter(g=>ids.has(String(g.eduKid||g.parent)) && (g.ico==='🎓'||/ค่าเทอม|การศึกษา/.test(g.name||''))).forEach(g=>{
+    const n=Math.max(1,Math.round(Number(g.eduYears)||1)), a1=kAge+((Number(g.age)||cAge)-cAge);
+    out.push({lv:String(g.name||'ค่าเทอม').replace(/^ค่าเทอม\s*/,'').split('(')[0].trim(), perYear:Math.abs(Number(g.amt)||0)/n, a1, a2:a1+n-1, mode:'goal', total:Math.abs(g.amt||0), split:!!g.split}); });
+  return out.sort((a,b)=>a.a1-b.a1);
+}
+const kfmt=n=>{ n=Math.round(Number(n)||0); return n>=1e6?(Math.round(n/1e5)/10)+'M':(n>=1e3?Math.round(n/1e3)+'k':String(n)); };
 /* v3.9.85 (อ้อย): กดผู้พึ่งพิงบนไทม์ไลน์ต้องเห็นค่าใช้จ่ายต่อปี — ค่าเลี้ยงดู + ค่าเทอม (ทั้งแบบจ่ายจากกระแสเงินสดและเงินก้อน) */
 function depCostHTML(d, monthly){
   const f0=n=>Math.round(Math.abs(Number(n)||0)).toLocaleString('en-US');
