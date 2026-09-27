@@ -1923,7 +1923,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.77</b><span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.78</b><span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
 </aside>
 
 <main id="main">
@@ -8511,7 +8511,8 @@ const HENG = (function(){
          เดิม pmtSinkingMonthly คืนค่า fv ทั้งก้อนมาเป็น "ต่อเดือน" (เช่น 775,823 บาท/เดือน) */
       const monthly = yrs>0 ? pmtSinkingMonthly(fv, portRet(riskByHorizon(yrs)), yrs*12) : 0;
       const near=yrs<3;
-      items.push({name:g.name||'การศึกษา', age:g.age, yrs, today, fv, monthly, near, owner:owner&&owner.id});
+      const _kid=(STATE.dependents||[]).find(d=>d.id===(g.eduKid||g.parent));   /* v3.9.78: เป้าหมายการศึกษาเป็นของลูกคนไหน */
+      items.push({name:g.name||'การศึกษา', age:g.age, yrs, today, fv, monthly, near, owner:owner&&owner.id, kid:_kid?_kid.id:null, kidName:_kid?String(_kid.name||''):''});
     });
     return {
       items,
@@ -8533,23 +8534,26 @@ const HENG = (function(){
        ผลคือทุนประกันที่แนะนำสูงเกินจริงหลายสิบเปอร์เซ็นต์ (เคสทดสอบ: 91.4 ลบ. → ที่ถูกคือ 60.7 ลบ.)
        หลัก CFP: Needs Approach ใช้ "มูลค่าปัจจุบัน" ของภาระทุกก้อน — ตรงกับที่ B (ค่าเลี้ยงดู) ทำอยู่แล้ว */
     const _dr=consR();
-    const eduResp=edu.items.filter(i=>!i.owner || i.owner===c.id)
-                           .reduce((s,i)=>s+i.fv/Math.pow(1+_dr, Math.max(0,i.yrs)), 0);
+    /* v3.9.78 (อ้อย): "ถ้าตาย ค่าใช้จ่ายของผู้พึ่งพิงนับหมด" — ทุนชีวิตของผู้วางแผนแต่ละคนนับภาระผู้พึ่งพิง "ทั้งบ้าน"
+       เดิมนับเฉพาะผู้พึ่งพิงที่ผูกกับคนนั้น (d.parent) และทุนการศึกษาไปตกที่คนแรกเสมอ → คู่สมรสอีกคนได้ภาระ 0 */
+    const eduByKid={};
+    const eduResp=edu.items.reduce((s,i)=>{ const pv=i.fv/Math.pow(1+_dr, Math.max(0,i.yrs)); const k=i.kidName||'บุตร';
+      (eduByKid[k]=eduByKid[k]||{name:k,pv:0,n:0,from:null,to:null}); const E=eduByKid[k]; E.pv+=pv; E.n++; return s+pv; }, 0);
     const A=FINAL_EXPENSE+debts+eduResp;
     /* v3.9.75 (อ้อย): ค่าใช้จ่ายของผู้พึ่งพิง × จำนวนปีที่พึ่งพิง (ถึงอายุที่ดูแล หรือจบชีวิต) — คูณตรง ไม่คิดลด
        (เดิมคิด PV ที่อัตราผลตอบแทนหักเงินเฟ้อ ซึ่งค่าตั้งต้น 3% − 3% ได้ผลเท่ากันอยู่แล้ว แต่อธิบายลูกค้ายากกว่า) */
     let B=0; const depList=[];
-    (STATE.dependents||[]).filter(d=>d.parent===c.id).forEach(d=>{
+    (STATE.dependents||[]).forEach(d=>{
       const years=Math.max(0,((d.life||d.endAge||0))-(d.age||0));
       const annual=(Number(d.monthly)||0)*12, tot=annual*years;
-      B+=tot; if(annual>0) depList.push({name:String(d.name||'ผู้พึ่งพิง'), monthly:Number(d.monthly)||0, years, total:tot});
+      B+=tot; depList.push({name:String(d.name||'ผู้พึ่งพิง'), monthly:Number(d.monthly)||0, years, total:tot, toAge:(d.life||d.endAge||0), life:!!d.life});
     });
     const a=f.assets, p=f.protection;
     const cAssets=investableTotal(f)+(p.retireFund||0);  // ทรัพย์สิน/เงินลงทุนทุกช่อง (fix 02/08/2026 — เดิมข้าม investExtra/insVal/liquidExtra)
     const cLife=((c._cov&&c._cov.life)||0);                                  // ทุนประกันชีวิตเดิม (รายคน)
     const C=cAssets+cLife;
     const gap=Math.max(0,A+B-C);
-    return {A, B, C, cAssets, cLife, gap, premium:gap*TERM_RATE, finalExpense:FINAL_EXPENSE, debts, eduResp, depList};
+    return {A, B, C, cAssets, cLife, gap, premium:gap*TERM_RATE, finalExpense:FINAL_EXPENSE, debts, eduResp, depList, eduByKid:Object.values(eduByKid)};
   }
   function retirement(c){
     const carriers=STATE.carriers||[];
@@ -11093,8 +11097,11 @@ function renderProtectCheck(){
     const lifeBase=L.A+L.B, lifeNet=lifeBase-L.cAssets;
     const tpdCovOwn=(c._cov&&c._cov.tpd)||0, tpdSS=Math.max(0,(T.existIns||0)-(L.cLife||0)-tpdCovOwn);
     const calcLife=eq(['ค่าใช้จ่ายสุดท้าย '+K(L.finalExpense),'+ หนี้สิน '+K(L.debts),
-        (L.eduResp>0?'+ ทุนการศึกษาบุตร (มูลค่าวันนี้) '+K(L.eduResp):''),
-        ...(L.depList||[]).map(d=>'+ ค่าเลี้ยงดู'+d.name+' '+K(d.monthly)+'/ด. × 12 × '+d.years+' ปี = '+K(d.total)),
+        ...(L.eduByKid||[]).map(e=>'+ ทุนการศึกษา'+e.name+' ('+e.n+' รายการที่เหลือ · มูลค่าวันนี้) '+K(e.pv)),
+        ...(L.depList||[]).map(d=>d.monthly>0
+          ? '+ ค่าเลี้ยงดู'+d.name+' '+K(d.monthly)+'/ด. × 12 × '+d.years+' ปี'+(d.life?' (ถึงอายุขัย '+d.toAge+')':' (ถึงอายุ '+d.toAge+')')+' = '+K(d.total)
+          : '+ ค่าเลี้ยงดู'+d.name+' <span style="color:var(--carrier-2)">ยังไม่ได้กรอกยอด/เดือน</span> = 0'),
+        ((L.eduByKid||[]).length||(L.depList||[]).length)?'':'+ ผู้พึ่งพิง <span style="color:var(--carrier-2)">ยังไม่มีในแผน</span> 0',
         '− ทรัพย์สินที่มี (ไม่รวมบ้าน/รถ/ของใช้ส่วนตัว) '+K(L.cAssets)], lifeNet>0?'ต้องการ '+K(lifeNet):'ทรัพย์สินครอบคลุมภาระแล้ว (ขาด 0)')
       +(L.cLife>0?' · ขาด = ต้องการ − ทุนชีวิตที่มี '+K(L.cLife):'');
     const calcTpd=eq(['ภาระเดียวกับทุนชีวิต '+K(lifeBase),'+ ค่าใช้จ่ายส่วนตัว '+K((T.personalYr||0)/12)+'/ด.'+((T.depLike&&T.depLike.m>0)?' (รายจ่ายผันแปร '+K(T.household)+' − '+T.depLike.items.map(x=>x.name+' '+K(x.m)).join(' − ')+' ที่นับในผู้พึ่งพิงแล้ว'+(cs.length>1?' ÷ '+cs.length+' คน':'')+')':(cs.length>1?' (รายจ่ายผันแปร '+K(T.household)+' ÷ '+cs.length+' คน)':''))+' × 12 × '+T.years+' ปี = '+K(T.pvPersonal),
