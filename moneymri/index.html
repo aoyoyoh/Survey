@@ -1929,7 +1929,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.87</b><span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.88</b><span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
 </aside>
 
 <main id="main">
@@ -8625,7 +8625,7 @@ const HENG = (function(){
     const _payerOf=pid=>{ if(_cs.some(x=>x.id===pid)) return pid; const d=_deps.find(x=>String(x.id)===String(pid)); return (d&&_cs.some(x=>x.id===d.parent))?d.parent:(_cs[0]||{}).id; };
     const _eduShare=i=>{ if(_cs.length<2) return 1; if(i.split) return 0.5; return _payerOf(i.gParent)===c.id?1:0; };
     const eduByKid={};
-    const eduResp=edu.items.reduce((s,i)=>{ const sh=_eduShare(i); if(!(sh>0)) return s; const pv=i.fv/Math.pow(1+_dr, Math.max(0,i.yrs))*sh; const k=i.kidName||'บุตร';
+    const eduResp=edu.items.reduce((s,i)=>{ const sh=_eduShare(i); if(!(sh>0)) return s; const pv=i.fv*sh;   /* v3.9.88 (อ้อย): นับ ณ ปีที่เรียนจริง รวมเงินเฟ้อ — ไม่คิดลดกลับมาเป็นมูลค่าวันนี้ */ const k=i.kidName||'บุตร';
       (eduByKid[k]=eduByKid[k]||{name:k,pv:0,n:0,shares:{}}); const E=eduByKid[k]; E.pv+=pv; E.n++; E.shares[sh]=1; return s+pv; }, 0);
     /* v3.9.87: ค่าเทอมแบบ "จ่ายจากกระแสเงินสด" (บรรทัด edu-tut-<ลูก>|ชั้น) ต้องนับในทุนชีวิตด้วย — เดิมนับเฉพาะแบบเงินก้อน (เป้าหมาย)
        มูลค่าวันนี้ = Σ ค่าเทอมรายปี × (1+เงินเฟ้อการศึกษา)^t ÷ (1+ผลตอบแทนหลังเกษียณ)^t · สัดส่วนตามผู้จ่าย (ลูกที่แชร์ = share%) */
@@ -8641,7 +8641,7 @@ const HENG = (function(){
         if(!(sh>0)) return;
         const per=(Number(x.monthly)||0)*12, g=(x.inf!=null?Number(x.inf):5)/100;
         const a1=Number(x.startAge)||c0a, a2=Number(x.endAge)||a1;
-        let pv=0; for(let a=Math.max(a1,c0a); a<=a2; a++){ const t=a-c0a; pv+=per*Math.pow(1+g,t)/Math.pow(1+_dr,t); }
+        let pv=0; for(let a=Math.max(a1,c0a); a<=a2; a++){ const t=a-c0a; pv+=per*Math.pow(1+g,t); }   /* v3.9.88: ราคา ณ ปีที่เรียน (รวมเงินเฟ้อ) */
         pv*=sh; if(!(pv>0)) return; eduCash+=pv;
         const k=String(kid.name||'บุตร'); (eduByKid[k]=eduByKid[k]||{name:k,pv:0,n:0,shares:{}}); const E=eduByKid[k]; E.pv+=pv; E.n++; E.shares[sh]=1; E.cash=true; });
     }
@@ -11207,7 +11207,7 @@ function renderProtectCheck(){
     const lifeBase=L.A+L.B, lifeNet=lifeBase-L.cAssets;
     const tpdCovOwn=(c._cov&&c._cov.tpd)||0, tpdSS=Math.max(0,(T.existIns||0)-(L.cLife||0)-tpdCovOwn);
     const calcLife=eq(['ค่าใช้จ่ายสุดท้าย '+K(L.finalExpense),'+ หนี้สิน '+K(L.debts),
-        ...(L.eduByKid||[]).map(e=>'+ ทุนการศึกษา'+e.name+' ('+e.n+' ชั้นที่เหลือ'+(e.cash?' · รวมที่จ่ายรายปี':'')+' · มูลค่าวันนี้'+(e.share&&e.share<1?' · ส่วนที่จ่าย '+Math.round(e.share*100)+'%':'')+') '+K(e.pv)),
+        ...(L.eduByKid||[]).map(e=>'+ ทุนการศึกษา'+e.name+' ('+e.n+' ชั้นที่เหลือ'+(e.cash?' · รวมที่จ่ายรายปี':'')+' · ราคา ณ ปีที่เรียน รวมเงินเฟ้อการศึกษา'+(e.share&&e.share<1?' · ส่วนที่จ่าย '+Math.round(e.share*100)+'%':'')+') '+K(e.pv)),
         ...(L.depList||[]).map(d=>d.monthly>0
           ? '+ ค่าเลี้ยงดู'+d.name+' '+K(d.total)+' ('+K(d.monthly)+'/ด.'+(d.share<1?' × '+Math.round(d.share*100)+'%':'')+' × 12 × '+d.years+' ปี '+(d.life?'ถึงอายุขัย '+d.toAge:'ถึงอายุ '+d.toAge)+')'
           : '+ ค่าเลี้ยงดู'+d.name+' 0 (<span style="color:var(--carrier-2)">ยังไม่ได้กรอกยอด/เดือน</span>)'),
