@@ -1844,7 +1844,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.65</b> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.66</b> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</div>
 </aside>
 
 <main id="main">
@@ -2101,7 +2101,6 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
           <div class="note" id="snap-cf-surplus-note" style="margin-top:5px;line-height:1.7"></div>
           </div>
           <div id="coupleCashflow" style="display:none"></div>
-          <div id="pvdAutoBox"></div>
         </div>
       </div>
 
@@ -2112,6 +2111,17 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
           <button class="add-btn" onclick="addLoan('home')"><b>+</b> เพิ่มสินเชื่อบ้าน</button>
           <button class="add-btn" onclick="addLoan('car')"><b>+</b> เพิ่มสินเชื่อรถ / อื่น ๆ</button>
         </div>
+      </div>
+
+      <!-- v3.9.66 (= v3.9.64 ทำซ้ำ): เครื่องคำนวณ 3 ตัวอยู่หน้าเดียวกัน รูปแบบเดียวกัน -->
+      <div class="card adv-only">
+        <div class="card-h"><div class="card-t">เครื่องคำนวณกองทุนสำรองเลี้ยงชีพ (PVD)</div><div class="card-s">ลูกจ้าง + นายจ้างสะสมเท่าไร → คาดว่ามี ณ เกษียณเท่าไร · ส่วนลูกจ้าง = รายจ่ายคงที่ + ลดหย่อนภาษีของคนนั้น · ทั้งสองส่วนเข้าถัง PVD ในแผน</div></div>
+        <div id="pvdAutoBox"></div>
+      </div>
+
+      <div class="card adv-only">
+        <div class="card-h"><div class="card-t">เครื่องคำนวณบำเหน็จ / บำนาญ ประกันสังคม</div><div class="card-s">กรอกค่าจ้างที่ส่งสมทบจริงของแต่ละคน → เครื่องคิดให้ว่าจะได้บำนาญเดือนละเท่าไหร่ แล้วกด "ใส่เข้าแผน"</div></div>
+        <div id="ssoCard"></div>
       </div>
 
       </section>
@@ -2445,9 +2455,9 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
         <div id="retVisit"></div>
       </div>
       <div class="card advisor-only">
-        <div class="card-h"><div class="card-t">บำนาญ / บำเหน็จ ประกันสังคม</div>
-        <div class="card-s">กรอกค่าจ้างที่ส่งสมทบจริง → เครื่องคิดให้ว่าจะได้บำนาญเดือนละเท่าไหร่</div></div>
-        <div id="ssoCard"></div>
+        <div class="card-h"><div class="card-t">บำนาญประกันสังคม · สรุป</div>
+        <div class="card-s">เครื่องคำนวณย้ายไปหน้า II (อยู่กับเครื่องคำนวณผ่อนและ PVD) — ที่นี่แสดงสรุปรายคน</div></div>
+        <div id="ssoSummary"></div>
       </div>
       <div class="card">
         <div class="card-h"><div class="card-t">ใช้เดือนละเท่าไรหลังเกษียณ?</div>
@@ -3182,6 +3192,8 @@ function migrate(s){
     if(c && c.retireMode==='items' && !c.retireItemOff)
       c.retireMode = (Number(c.retireExpense)>0) ? 'custom' : 'items';   /* v3.9.65: ค่าเริ่มต้นเป็น "เลือกตามรายการ" (เดิม auto70) */
   }); }catch(e){}
+  /* v3.9.66: ปกส. รายคน — ย้ายก้อนเดียว s.sso (ของคนแรก) ไป s.ssoBy[cid คนแรก] ครั้งเดียว */
+  try{ if(s.sso && typeof s.sso==='object' && !s.ssoBy){ const c0=(s.carriers||[])[0]; if(c0&&c0.id){ s.ssoBy={}; s.ssoBy[c0.id]=s.sso; delete s.sso; } } }catch(e){}
   /* v3.9.65: ค่าใช้จ่ายหลังเกษียณเป็นของครัวเรือน (ตั้งที่คนแรก) — ไฟล์เก่าที่คนที่สองมีตัวเลข custom ของตัวเอง → รวมเข้าเป็นยอดครัวเรือนครั้งเดียว */
   try{ const cs=s.carriers||[]; if(cs.length>=2 && !s._retHouseholdV1){
     const extra=cs.slice(1).reduce((t,c)=>t+((c&&(c.retireMode==='custom'||(!c.retireMode&&Number(c.retireExpense)>0)))?(Number(c.retireExpense)||0):0),0);
@@ -4310,6 +4322,7 @@ function renderP2Snapshot(){
     else { el.readOnly=false; el.classList.remove('locked'); el.title=''; }
   });
   if(typeof renderLoans==='function') renderLoans();
+  try{ renderSsoCard(); }catch(e){ console.warn('renderSsoCard failed', e); }   /* v3.9.66: เครื่องคำนวณ ปกส. อยู่หน้า II */
 
   /* ─── อัตราส่วน 8 ตัว (เกณฑ์ตามเล่ม AVP) พร้อมสีสถานะ ok/warn/bad ─── */
   const r = f.ratios;
@@ -7195,36 +7208,76 @@ function setPvd(cid, field, raw){
   if(typeof saveState==='function') saveState();
   render();
 }
+/* v3.9.66 (= v3.9.64 ทำซ้ำ) · เครื่องคำนวณ PVD รายคน — รูปแบบเดียวกับเครื่องคำนวณผ่อน
+   สูตรสะสมรายปี = สูตรเดียวกับถัง PVD ใน projection (ต้นปีโต r แล้วบวกเงินสะสมปลายปี)
+   ยอดตั้งต้น = ช่อง PVD ในงบดุล (ของคนนั้น เมื่อวางแผนคู่) · ผลตอบแทน %/ปี = บรรทัด PVD ในงบดุล (ตัวเดียวร่วมกันทุกคน) */
+function pvdRetPct(){ let r=null; try{ const m=STATE.snap.detail.assets.investMeta.pvd; r=(m&&m.ret!=null&&m.ret!=='')?Number(m.ret):null; }catch(e){} return (r==null)?4.5:r; }
+function pvdStartBal(c){ const cs=STATE.carriers||[];
+  if(cs.length>=2){ try{ return Number((STATE.snap.byCarrier[c.id]||{}).invest.pvd)||0; }catch(e){ return 0; } }
+  try{ return Number(STATE.snap.detail.assets.invest.pvd)||0; }catch(e){ return 0; } }
+function pvdProjection(c){
+  const r=pvdRetPct()/100, a0=Number(c.age)||0, retA=calcRetireAge(c)||60;
+  let bal=pvdStartBal(c); const rows=[];
+  for(let age=a0; age<retA; age++){ const y=age-a0; const v=pvdYear(c,y); const grow=bal*r;
+    bal=bal*(1+r)+v.ee+v.er; rows.push({age, wage:v.wage||0, ee:v.ee, er:v.er, ret:grow, end:bal}); }
+  return {rows, atRet:bal, retAge:retA, r:pvdRetPct(), start:pvdStartBal(c)}; }
+let PVD_SCHED_OPEN={};
+function togglePvdSched(cid){ PVD_SCHED_OPEN[cid]=!PVD_SCHED_OPEN[cid]; renderPvdBox(); }
+function setPvdRet(raw){ const t=String(raw==null?'':raw).replace(/[^\d.]/g,''); try{ const im=STATE.snap.detail.assets.investMeta; if(!im.pvd) im.pvd={ret:4.5,port:'retire'}; im.pvd.ret=(t==='')?4.5:Number(t)||0; }catch(e){} if(typeof saveState==='function') saveState(); render(); }
 function renderPvdBox(){
   const host=document.getElementById('pvdAutoBox'); if(!host) return;
-  const cs=STATE.carriers||[]; if(!cs.length){ host.innerHTML=''; return; }
+  const cs=STATE.carriers||[]; if(!cs.length){ host.innerHTML='<div class="note">ยังไม่มีข้อมูลผู้วางแผน</div>'; return; }
   const f0=n=>Math.round(Math.max(0,Number(n)||0)).toLocaleString('en-US');
   const esc=x=>String(x==null?'':x).replace(/[&<>"]/g,'');
-  const rows=cs.map(c=>{ const P=pvdCfg(c), v=pvdYear(c,0);
-    const wageM=pvdWageM(c,0);
+  let totYr=0, totRet=0;
+  const cards=cs.map(c=>{ const P=pvdCfg(c), v=pvdYear(c,0), wageM=pvdWageM(c,0), PJ=pvdProjection(c);
+    totYr+=v.ee+v.er; totRet+=PJ.atRet;
     const eeV=(P.ee!=null?P.ee:''), erV=(P.er!=null?P.er:''), erMV=(P.erM!=null?P.erM:'');
     const inputs=P.auto
-      ? `<label class="pvd-f">ลูกจ้าง <input class="y y-num xs" value="${eeV}" onchange="setPvd('${c.id}','ee',this.value)" placeholder="%">%</label>
-         <label class="pvd-f">นายจ้าง <input class="y y-num xs" value="${erV}" onchange="setPvd('${c.id}','er',this.value)" placeholder="${P.ee!=null?P.ee:''}">%</label>`
-      : `<span class="pvd-f">ลูกจ้าง <b>${f0(pvdManualM(c))}</b> บ./ด. <span style="color:var(--faint)">(ช่องในงบ)</span></span>
-         <label class="pvd-f">นายจ้าง <input class="y y-num xs" style="width:78px" value="${erMV===''?'':f0(erMV)}" onchange="setPvd('${c.id}','erM',this.value)" placeholder="${f0(pvdManualM(c))}">บ./ด.</label>`;
-    const res=(v.ee+v.er)>0
-      ? `ปีนี้เข้า PVD <b>${f0((v.ee+v.er)/12)}</b> บ./ด. <span style="color:var(--muted)">(ลูกจ้าง ${f0(v.ee/12)} + นายจ้าง ${f0(v.er/12)})</span>`
-      : (P.auto&&!(wageM>0)?'<span style="color:var(--carrier)">ไม่มีเงินเดือน 40(1) ในแผน — ไม่มียอดสะสม</span>':'<span style="color:var(--faint)">ยังไม่มียอดสะสม</span>');
-    return `<div class="pvd-row">
-      <div class="pvd-nm">👤 ${esc(c.name)}${P.auto&&wageM>0?`<div class="pvd-sub">เงินเดือน ${f0(wageM)} บ./ด.</div>`:''}</div>
-      <label class="pvd-f pvd-sw"><input type="checkbox" ${P.auto?'checked':''} onchange="setPvd('${c.id}','auto',this.checked)"> คิดจาก % เงินเดือน</label>
-      ${inputs}
-      <div class="pvd-res">${res}</div></div>`; }).join('');
-  host.innerHTML=`<div class="pvd-box">
-    <div class="pvd-h">กองทุนสำรองเลี้ยงชีพ (PVD) · รายคน</div>
-    ${rows}
-    <div class="note" style="margin-top:6px">ส่วนลูกจ้าง = รายจ่ายคงที่ + ลดหย่อนภาษีของคนนั้น (≤ 15% ของค่าจ้าง · อยู่ในเพดานรวมกลุ่มเกษียณ 500,000) · ลูกจ้าง + นายจ้าง เข้าถัง PVD ในพอร์ต โตตาม %/ปี ของบรรทัด PVD ในงบดุล · คิดจาก % = ยอดขึ้นตามเงินเดือนทุกปีและหยุดเมื่อเงินเดือนหยุด · ส่วนนายจ้างนับเต็ม (ยังไม่หักกรณีลาออกก่อนได้สิทธิ์ครบ)</div>
-  </div>`;
+      ? `<label>ลูกจ้างสะสม (% ของเงินเดือน)<input class="y y-num" value="${eeV}" onchange="setPvd('${c.id}','ee',this.value)" placeholder="2–15"></label>
+         <label>นายจ้างสมทบ (%) <small style="color:var(--faint)">ว่าง = เท่าลูกจ้าง</small><input class="y y-num" value="${erV}" onchange="setPvd('${c.id}','er',this.value)" placeholder="${P.ee!=null?P.ee:''}"></label>`
+      : `<label>ลูกจ้างสะสม (บาท/เดือน) <small style="color:var(--faint)">จากช่องในงบ</small><input class="y y-num" value="${f0(pvdManualM(c))}" readonly style="background:#f3f1ea"></label>
+         <label>นายจ้างสมทบ (บาท/เดือน) <small style="color:var(--faint)">ว่าง = เท่าลูกจ้าง</small><input class="y y-num" value="${erMV===''?'':f0(erMV)}" onchange="setPvd('${c.id}','erM',this.value)" placeholder="${f0(pvdManualM(c))}"></label>`;
+    const sched=PJ.rows.map(x=>`<tr><td>อายุ ${x.age}</td><td style="text-align:right">${x.wage>0?f0(x.wage):'—'}</td><td style="text-align:right">${f0(x.ee)}</td><td style="text-align:right">${f0(x.er)}</td><td style="text-align:right">${f0(x.ret)}</td><td style="text-align:right"><b>${f0(x.end)}</b></td></tr>`).join('');
+    const warn=(P.auto&&!(wageM>0))?'<div class="note" style="color:var(--carrier)">ไม่มีเงินเดือน 40(1) ในแผน — ไม่มียอดสะสม</div>':'';
+    return `<div class="loan-card">
+      <div class="loan-top"><b>👤 ${esc(c.name)}</b>
+        <span style="color:var(--muted);font-size:11px">${wageM>0?'เงินเดือน '+f0(wageM)+' บ./ด. · ':''}เกษียณ ${PJ.retAge}</span>
+        <label class="pvd-f" style="margin-left:auto;font-size:11.5px"><input type="checkbox" ${P.auto?'checked':''} onchange="setPvd('${c.id}','auto',this.checked)"> คิดจาก % ของเงินเดือน</label>
+      </div>
+      <div class="loan-grid">
+        ${inputs}
+        <label>ยอด PVD ปัจจุบัน <small style="color:var(--faint)">จากงบดุล</small><input class="y y-num" value="${f0(PJ.start)}" readonly style="background:#f3f1ea"></label>
+        <label>ผลตอบแทน %/ปี <small style="color:var(--faint)">= บรรทัด PVD ในงบดุล</small><input class="y y-num" value="${PJ.r}" onchange="setPvdRet(this.value)"></label>
+      </div>
+      ${warn}
+      <div class="loan-out">
+        <div><span class="lo-l">ลูกจ้าง/เดือน</span><span class="lo-v">${f0(v.ee/12)}</span></div>
+        <div><span class="lo-l">นายจ้าง/เดือน</span><span class="lo-v">${f0(v.er/12)}</span></div>
+        <div><span class="lo-l">เข้า PVD/ปี</span><span class="lo-v">${f0(v.ee+v.er)}</span></div>
+        <div><span class="lo-l">คาดว่ามี ณ เกษียณ ${PJ.retAge}</span><span class="lo-v hot">${f0(PJ.atRet)}</span></div>
+      </div>
+      <div class="loan-sched-toggle" onclick="togglePvdSched('${c.id}')">${PVD_SCHED_OPEN[c.id]?'▾':'▸'} ตารางสะสมรายปี</div>
+      ${PVD_SCHED_OPEN[c.id]?`<table class="loan-sched"><thead><tr><th>ปี</th><th style="text-align:right">เงินเดือน/ด.</th><th style="text-align:right">ลูกจ้าง/ปี</th><th style="text-align:right">นายจ้าง/ปี</th><th style="text-align:right">ผลตอบแทน</th><th style="text-align:right">ยอดสิ้นปี</th></tr></thead><tbody>${sched||'<tr><td colspan="6" style="color:var(--faint)">ไม่มีปีสะสม (ถึงอายุเกษียณแล้ว)</td></tr>'}</tbody></table>`:''}
+    </div>`; }).join('');
+  host.innerHTML=cards+`<div class="loan-sum">รวมทุกคน · เข้า PVD <b>${f0(totYr)}</b>/ปี · คาดว่ามี ณ เกษียณ <b>${f0(totRet)}</b> บาท <span style="color:var(--muted)">(ลูกจ้าง ≤ 15% ของค่าจ้าง · นายจ้างนับเต็ม ไม่มีตาราง vesting · ตัวเลขเดียวกับถัง PVD ในกราฟ)</span></div>`;
   /* ล็อกช่อง PVD ในงบของคนที่คิดอัตโนมัติ */
   try{ cs.forEach(c=>{ const on=pvdCfg(c).auto;
       const sel = cs.length>=2 ? `input[onchange*="'${c.id}','fixed','pvdContrib'"]` : 'input[data-snap="detail.cashflow.fixed.pvdContrib"]';
-      document.querySelectorAll(sel).forEach(inp=>{ inp.readOnly=on; inp.style.background=on?'#f3f1ea':''; inp.title=on?'คิดจาก % เงินเดือน — แก้ที่กล่อง PVD ใต้งบกระแสเงินสด':''; }); }); }catch(e){}
+      document.querySelectorAll(sel).forEach(inp=>{ inp.readOnly=on; inp.style.background=on?'#f3f1ea':''; inp.title=on?'คิดจาก % เงินเดือน — แก้ที่เครื่องคำนวณ PVD ด้านล่าง':''; }); }); }catch(e){}
+}
+/* v3.9.66: สรุป ปกส. รายคนบนหน้าเกษียณ (ตัวเครื่องอยู่หน้า II) */
+function renderSsoSummary(){
+  const box=document.getElementById('ssoSummary'); if(!box) return;
+  const cs=STATE.carriers||[]; const f0=n=>Math.round(Number(n)||0).toLocaleString('en-US');
+  if(!cs.length){ box.innerHTML=''; return; }
+  box.innerHTML=cs.map(c=>{ let R=null; try{ R=ssoCompute(c); }catch(e){ return ''; }
+    const used=((c.incomes||[]).find(i=>String(i.id||'')==='i-sso')||{}).monthly;
+    const nm=String(c.name||'').replace(/[<>&]/g,'');
+    const main=R.eligible?`บำนาญ <b>${f0(R.pension)}</b> บาท/เดือน เริ่มอายุ ${R.claimAge}`:`บำเหน็จ <b>${f0(R.lump)}</b> บาท (สมทบ ${R.months} เดือน ยังไม่ถึง ${R.minM})`;
+    const st=used>0?`<span style="color:var(--sage-2)">✓ ใส่เข้าแผนแล้ว ${f0(used)}/เดือน</span>`:`<span style="color:var(--carrier)">ยังไม่ได้ใส่เข้าแผน</span>`;
+    return `<div class="bsum-r"><span><b>👤 ${nm}</b> · ${main} · สมทบ ${R.months} เดือน</span><span>${st}</span></div>`; }).join('')
+    +`<div class="note" style="margin-top:6px">แก้ประวัติค่าจ้าง/สูตร ที่ <a onclick="goPage('p2')" style="color:var(--gold-2);cursor:pointer;text-decoration:underline">หน้า II · เครื่องคำนวณบำเหน็จ/บำนาญประกันสังคม</a></div>`;
 }
 /* ค่าจ้างจากการจ้างงาน (40(1) ของ Life Path เท่านั้น — ไม่รวมโบนัสและงานอิสระ) */
 function ssoWageM(c, y){
@@ -7245,8 +7298,11 @@ function ssoWageM(c, y){
      → เครื่องนี้ใช้ % ต่อปีที่ที่ปรึกษากำหนด (ค่าเริ่มต้น = เงินเฟ้อของแผน) และต้องระบุว่าเป็นค่าประมาณ
    สมทบ < 180 เดือน = บำเหน็จ (เงินสมทบส่วนชราภาพ 3% ของเราสมทบ + 3% นายจ้าง + ผลประโยชน์)
      สมทบ < 12 เดือน = ได้คืนเฉพาะส่วนของผู้ประกันตน */
-function ssoCfg(){ if(!STATE.sso) STATE.sso={};
-  const S=STATE.sso;
+/* v3.9.66 (= v3.9.64 ทำซ้ำ) · ปกส. รายคน — STATE.ssoBy[cid] · ไฟล์เก่า STATE.sso (ก้อนเดียวของคนแรก) ย้ายให้ตอนโหลด */
+function ssoCarrier(c){ const cs=STATE.carriers||[]; if(c&&typeof c==='object') return c; if(typeof c==='string'){ const f=cs.find(x=>x.id===c); if(f) return f; } return cs[0]||{}; }
+function ssoCfg(c){ c=ssoCarrier(c); if(!STATE.ssoBy||typeof STATE.ssoBy!=='object') STATE.ssoBy={};
+  const cid=c.id||'_'; if(!STATE.ssoBy[cid]) STATE.ssoBy[cid]={};
+  const S=STATE.ssoBy[cid];
   if(!Array.isArray(S.bands)) S.bands=[];
   if(S.formula==null) S.formula='care';
   /* ค่าเริ่มต้น = ไม่ปรับมูลค่า (0%) — เป็นขั้นต่ำที่พูดกับลูกค้าได้โดยไม่เกินจริง
@@ -7257,11 +7313,11 @@ function ssoCfg(){ if(!STATE.sso) STATE.sso={};
   if(S.stopAge==null) S.stopAge=null;      /* null = หยุดส่งตอนเกษียณ */
   if(S.autoFuture==null) S.autoFuture=true;
   return S; }
-function ssoStopAge(){ const S=ssoCfg(); const c=(STATE.carriers||[])[0]||{};
+function ssoStopAge(c){ c=ssoCarrier(c); const S=ssoCfg(c);
   const v=Number(S.stopAge)||0; return v>0?v:(typeof calcRetireAge==='function'?calcRetireAge(c):(Number(c.retireAge)||60)); }
 /* สร้างรายเดือนจาก bands (อดีตที่กรอก) + อนาคตจากเงินเดือนในแผน */
-function ssoMonths(){
-  const S=ssoCfg(); const c=(STATE.carriers||[])[0]||{};
+function ssoMonths(c){
+  c=ssoCarrier(c); const S=ssoCfg(c);
   const age0=Number(c.age)||0, be0=snapYearCE()+543;
   const out=[];   /* {be, wageCapped, n} */
   (S.bands||[]).forEach(b=>{
@@ -7272,18 +7328,18 @@ function ssoMonths(){
     for(let be=f; be<=t; be++){ if(be>=be0) continue;                /* ปีปัจจุบันขึ้นไป ให้ส่วนอนาคตจัดการ */
       out.push({be, w:Math.min(w, ssoCeilBE(be)), n:nPerYear}); } });
   if(S.autoFuture){
-    const stop=ssoStopAge();
+    const stop=ssoStopAge(c);
     for(let age=age0; age<=stop; age++){ const y=age-age0; const be=be0+y;
       const w=ssoWageM(c,y); if(!(w>0)) continue;
       out.push({be, w:Math.min(w, ssoCeilBE(be)), n:12}); } }
   return out; }
-function ssoCompute(ov){
-  ov=ov||{};
-  const S=ssoCfg(); const c=(STATE.carriers||[])[0]||{};
+function ssoCompute(c, ov){
+  if(c&&typeof c==='object'&&!c.id&&!c.name&&(c.formula!=null||c.reval!=null)){ ov=c; c=null; }   /* เรียกแบบเก่า ssoCompute(ov) */
+  ov=ov||{}; c=ssoCarrier(c); const S=ssoCfg(c);
   const age0=Number(c.age)||0, be0=snapYearCE()+543;
   const claimAge=Math.max(age0, Number(S.claimAge)||55);
   const claimBE=be0+(claimAge-age0);
-  const rows=ssoMonths();
+  const rows=ssoMonths(c);
   const prior=Math.max(0, Math.round(Number(S.monthsPrior)||0));   /* เดือนสมทบที่ไม่ได้ลงรายละเอียด */
   const rv=((ov.reval!=null?Number(ov.reval):Number(S.reval))||0)/100;
   let months=prior, sumPts=0, sumRaw=0;
@@ -11046,7 +11102,7 @@ function a4AssumeSheet(){
   if(Number(c.retireExpense)>0) assume+=row('ค่าใช้จ่ายหลังเกษียณ', F(c.retireExpense)+' /เดือน (ค่าเงินวันนี้)','ลูกค้าแจ้ง — ต้องยืนยันว่ารวมอะไรบ้าง');
   (D.supportExtra||[]).forEach(x=>{ if(!(Number(x&&x.monthly)>0)) return;
     assume+=row(String(x.name||'').split('(')[0].trim(), F(x.monthly)+' /เดือน เฟ้อ '+((x.inf!=null&&x.inf!=='')?x.inf:inf)+'%','สมมติฐานที่ปรึกษา'); });
-  { let sso=''; try{ const R=ssoCompute(); sso=R.eligible?('บำนาญ '+F(R.pension)+' /เดือน · สมทบ '+R.months+' เดือน'):('บำเหน็จ '+F(R.lump)+' บาท'); }catch(e){}
+  { let sso=''; try{ const R=ssoCompute(c); sso=R.eligible?('บำนาญ '+F(R.pension)+' /เดือน · สมทบ '+R.months+' เดือน'):('บำเหน็จ '+F(R.lump)+' บาท'); }catch(e){}
     const used=((c.incomes||[]).find(i=>String(i.id||'')==='i-sso')||{}).monthly;
     if(used>0) assume+=row('บำนาญประกันสังคมที่ใช้ในแผน', F(used)+' /เดือน ตั้งแต่อายุ '+(((c.incomes||[]).find(i=>String(i.id||'')==='i-sso')||{}).startAge||retA),'สมมติฐานที่ปรึกษา — ยืนยันกับ สปส.');
     if(sso) assume+=row('เครื่องคำนวณบำนาญ (จากประวัติที่กรอก)', sso,'ประวัติยังเป็นช่วงตัวอย่าง ต้องใช้ของจริงจาก SSO Connect'); }
@@ -13022,8 +13078,8 @@ function retLivingAnnualAt(y){
 }
 /* ค่าใช้จ่ายหลังเกษียณ/เดือน (ค่าเงินวันนี้) ตามโหมดของผู้วางแผนคนนั้น — แหล่งเดียว ทุกสูตรใช้ตัวนี้ */
 /* ═══════════ v3.9.27 · หน้าจอเครื่องคำนวณบำนาญ ปกส. ═══════════ */
-function setSso(field, raw){
-  const S=ssoCfg();
+function setSso(cid, field, raw){
+  const S=ssoCfg(cid);
   if(field==='formula'){ S.formula=(String(raw)==='last60')?'last60':'care'; }
   else if(field==='autoFuture'){ S.autoFuture=!!raw; }
   else if(field==='reval'||field==='benefitRet'){ const t=String(raw==null?'':raw).trim();
@@ -13032,17 +13088,17 @@ function setSso(field, raw){
     S[field]=(v>0)?v:null; }
   if(typeof saveState==='function') saveState(); render(); try{ renderRetPage(); }catch(e){}
 }
-function addSsoBand(){ const S=ssoCfg(); const be0=snapYearCE()+543;
+function addSsoBand(cid){ const S=ssoCfg(cid); const be0=snapYearCE()+543;
   const last=(S.bands||[]).reduce((m,b)=>Math.max(m, Number(b.to)||0), 0);
   S.bands.push({from:(last>0?last+1:be0-20), to:(last>0?Math.min(be0-1,last+5):be0-1), wage:15000, months:12});
   if(typeof saveState==='function') saveState(); render(); try{ renderRetPage(); }catch(e){} }
-function setSsoBand(i, field, raw){ const S=ssoCfg(); const b=S.bands[i]; if(!b) return;
+function setSsoBand(cid, i, field, raw){ const S=ssoCfg(cid); const b=S.bands[i]; if(!b) return;
   const v=Math.max(0, Number(String(raw==null?'':raw).replace(/[^\d.]/g,''))||0);
   b[field]=v; if(typeof saveState==='function') saveState(); render(); try{ renderRetPage(); }catch(e){} }
-function delSsoBand(i){ const S=ssoCfg(); S.bands.splice(i,1);
+function delSsoBand(cid, i){ const S=ssoCfg(cid); S.bands.splice(i,1);
   if(typeof saveState==='function') saveState(); render(); try{ renderRetPage(); }catch(e){} }
-function ssoToPlan(){
-  const R=ssoCompute(); const c=(STATE.carriers||[])[0]; if(!c) return;
+function ssoToPlan(cid){
+  const c=ssoCarrier(cid); if(!c||!c.id) return; const R=ssoCompute(c);
   if(!R.eligible){ alert('สมทบยังไม่ครบ '+R.minM+' เดือน — กรณีนี้ได้ "บำเหน็จ" เป็นเงินก้อน ไม่ใช่บำนาญรายเดือน\n'
     +'เครื่องจะไม่ใส่เป็นรายได้รายเดือนให้ · ให้ใส่ก้อนนี้เป็น "เงินก้อนเข้า" ที่หน้างบกระแสเงินสดแทน'); return; }
   const m=Math.round(R.pension);
@@ -13057,16 +13113,21 @@ function ssoToPlan(){
 }
 function renderSsoCard(){
   const box=document.getElementById('ssoCard'); if(!box) return;
-  const S=ssoCfg(), R=ssoCompute(); const c=(STATE.carriers||[])[0]||{};
+  const cs=STATE.carriers||[]; if(!cs.length){ box.innerHTML='<div class="note">ยังไม่มีข้อมูลผู้วางแผน</div>'; return; }
+  box.innerHTML=cs.map(c=>`<div class="loan-card"><div class="loan-top"><b>👤 ${String(c.name||'').replace(/[<>&]/g,'')}</b><span style="color:var(--muted);font-size:11px">อายุ ${c.age||0} · หยุดส่งอายุ ${ssoStopAge(c)}</span></div>${ssoCardHTML(c)}</div>`).join('');
+}
+/* v3.9.66: เนื้อในของเครื่องคำนวณ ปกส. หนึ่งคน (ย้ายจากหน้าเกษียณมาหน้า II ให้อยู่กับเครื่องคำนวณผ่อนและ PVD) */
+function ssoCardHTML(c){
+  const S=ssoCfg(c), R=ssoCompute(c); const cid=c.id;
   const f0=n=>Math.round(Number(n)||0).toLocaleString('en-US');
   const be0=snapYearCE()+543;
   const bands=(S.bands||[]).map((b,i)=>`<div class="cf-row">
-    <span>พ.ศ.</span><input class="y y-num" style="width:58px" value="${b.from||''}" onchange="setSsoBand(${i},'from',this.value)" placeholder="จาก">
-    <span>–</span><input class="y y-num" style="width:58px" value="${b.to||''}" onchange="setSsoBand(${i},'to',this.value)" placeholder="ถึง">
-    <span>· ค่าจ้าง</span><input class="y y-num" style="width:82px" value="${b.wage?commafy(b.wage):''}" onchange="setSsoBand(${i},'wage',this.value)" placeholder="บาท/เดือน">
-    <span>บาท/เดือน · ส่ง</span><input class="y y-num" style="width:44px" value="${b.months||12}" onchange="setSsoBand(${i},'months',this.value)" title="เดือน/ปี (ปีที่ส่งไม่ครบ 12 เดือน)">
+    <span>พ.ศ.</span><input class="y y-num" style="width:58px" value="${b.from||''}" onchange="setSsoBand('${cid}',${i},'from',this.value)" placeholder="จาก">
+    <span>–</span><input class="y y-num" style="width:58px" value="${b.to||''}" onchange="setSsoBand('${cid}',${i},'to',this.value)" placeholder="ถึง">
+    <span>· ค่าจ้าง</span><input class="y y-num" style="width:82px" value="${b.wage?commafy(b.wage):''}" onchange="setSsoBand('${cid}',${i},'wage',this.value)" placeholder="บาท/เดือน">
+    <span>บาท/เดือน · ส่ง</span><input class="y y-num" style="width:44px" value="${b.months||12}" onchange="setSsoBand('${cid}',${i},'months',this.value)" title="เดือน/ปี (ปีที่ส่งไม่ครบ 12 เดือน)">
     <span>เดือน/ปี</span>
-    <button class="pf-del" onclick="delSsoBand(${i})" title="ลบช่วง">×</button>
+    <button class="pf-del" onclick="delSsoBand('${cid}',${i})" title="ลบช่วง">×</button>
   </div>`).join('');
   const chip=(cond,txt,fn)=>`<span class="${cond?'on':''}" onclick="${fn}">${txt}</span>`;
   const verdict = R.eligible
@@ -13074,7 +13135,7 @@ function renderSsoCard(){
        <div style="font-size:11.5px;color:var(--muted);margin-top:2px">เริ่มรับอายุ ${R.claimAge} (พ.ศ. ${R.claimBE}) · ตลอดชีวิต · ไม่เสียภาษี</div>`
     : `<div style="font-family:var(--serif);font-size:20px;color:var(--carrier);font-weight:600">บำเหน็จ ${f0(R.lump)} บาท (เงินก้อน)</div>
        <div style="font-size:11.5px;color:var(--muted);margin-top:2px">สมทบ ${R.months} เดือน ยังไม่ถึง ${R.minM} เดือน จึงไม่ได้บำนาญรายเดือน · คืนส่วนชราภาพ ${R.both}% ของค่าจ้าง + ผลประโยชน์ ${S.benefitRet}%/ปี</div>`;
-  box.innerHTML=`
+  return `
   <div style="display:grid;grid-template-columns:1fr;gap:11px">
     <div style="background:#F1F7F3;border:1px solid #CADFD2;border-radius:10px;padding:12px 15px">
       ${verdict}
@@ -13085,7 +13146,7 @@ function renderSsoCard(){
       </div>
       ${(()=>{ if(!R.eligible) return '';
         const inf=Number(STATE.inflation)||(STATE.assume&&STATE.assume.inf)||3;
-        const A=ssoCompute({formula:'care',reval:0}), B=ssoCompute({formula:'care',reval:inf}), C=ssoCompute({formula:'last60',reval:0});
+        const A=ssoCompute(c,{formula:'care',reval:0}), B=ssoCompute(c,{formula:'care',reval:inf}), C=ssoCompute(c,{formula:'last60',reval:0});
         const cell=(t,v,note,act)=>`<div style="flex:1;min-width:148px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:7px 10px">
           <div style="font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em">${t}</div>
           <div style="font-family:var(--serif);font-size:16px;font-weight:600;color:${act?'var(--sage-2)':'var(--ink)'}">${f0(v)}</div>
@@ -13096,29 +13157,29 @@ function renderSsoCard(){
           ${cell('60 เดือนสุดท้าย', C.pension, 'กฎหมายที่ใช้อยู่วันนี้ (CARE ยังไม่บังคับใช้)', R.formula==='last60')}
         </div>
         <div style="font-size:11px;color:var(--muted);margin-top:5px">ช่วงที่เป็นไปได้ <b>${f0(Math.min(A.pension,B.pension,C.pension))}–${f0(Math.max(A.pension,B.pension,C.pension))}</b> บาท/เดือน — ส่วนต่างมาจากวิธีปรับมูลค่าค่าจ้าง ไม่ใช่ข้อมูลของลูกค้า</div>`; })()}
-      <button class="add-btn" style="margin-top:8px" onclick="ssoToPlan()">↧ ใส่ตัวเลขนี้เข้าแผน (รายได้หลังเกษียณ)</button>
+      <button class="add-btn" style="margin-top:8px" onclick="ssoToPlan('${cid}')">↧ ใส่ตัวเลขนี้เข้าแผน (รายได้หลังเกษียณของ ${String(c.name||'').replace(/[<>&]/g,'').split(/\s+/)[0]})</button>
     </div>
     <div>
       <div class="cf-h">ประวัติค่าจ้างที่ส่งสมทบ <small style="font-weight:400;color:var(--muted)">(จากใบรับรองการส่งเงินสมทบ สปส. หรือแอป SSO Connect — เครื่องจะตัดที่เพดานของแต่ละปีให้เอง)</small></div>
       ${bands||`<div class="note" style="font-style:italic;color:var(--carrier)">ยังไม่กรอกประวัติในอดีต — ตอนนี้นับเฉพาะปี ${be0} ขึ้นไปจากเงินเดือนในแผน ซึ่งจะได้เดือนสมทบน้อยกว่าความจริงมาก</div>`}
-      <button class="add-btn" style="margin-top:4px" onclick="addSsoBand()"><b>+</b> เพิ่มช่วงปี</button>
+      <button class="add-btn" style="margin-top:4px" onclick="addSsoBand('${cid}')"><b>+</b> เพิ่มช่วงปี</button>
       <div class="cf-row" style="margin-top:7px">
         <span>หรือใส่เป็นยอดรวม: เดือนสมทบก่อนปี ${be0}</span>
-        <input class="y y-num" style="width:66px" value="${S.monthsPrior||''}" onchange="setSso('monthsPrior',this.value)" placeholder="เดือน">
+        <input class="y y-num" style="width:66px" value="${S.monthsPrior||''}" onchange="setSso('${cid}','monthsPrior',this.value)" placeholder="เดือน">
         <span style="color:var(--muted);font-size:11px">(ใช้ค่าจ้างเฉลี่ยของช่วงที่กรอกละเอียดแทน)</span>
       </div>
       <div class="cf-row">
-        <span>ส่งสมทบถึงอายุ</span><input class="y y-num" style="width:52px" value="${S.stopAge||''}" onchange="setSso('stopAge',this.value)" placeholder="${ssoStopAge()}">
-        <span>· เริ่มรับบำนาญอายุ</span><input class="y y-num" style="width:52px" value="${S.claimAge||55}" onchange="setSso('claimAge',this.value)">
-        <span>· ปรับมูลค่าค่าจ้าง</span><input class="y y-num" style="width:52px" value="${S.reval}" onchange="setSso('reval',this.value)"><span>%/ปี</span>
+        <span>ส่งสมทบถึงอายุ</span><input class="y y-num" style="width:52px" value="${S.stopAge||''}" onchange="setSso('${cid}','stopAge',this.value)" placeholder="${ssoStopAge(c)}">
+        <span>· เริ่มรับบำนาญอายุ</span><input class="y y-num" style="width:52px" value="${S.claimAge||55}" onchange="setSso('${cid}','claimAge',this.value)">
+        <span>· ปรับมูลค่าค่าจ้าง</span><input class="y y-num" style="width:52px" value="${S.reval}" onchange="setSso('${cid}','reval',this.value)"><span>%/ปี</span>
       </div>
       <div class="cf-row">
         <span>สูตร</span>
         <span class="zoom-sw" style="font-size:11.5px">
-          ${chip(S.formula==='care','CARE (เฉลี่ยทั้งชีวิต ปรับมูลค่า)',"setSso('formula','care')")}
-          ${chip(S.formula==='last60','60 เดือนสุดท้าย (กฎหมายปัจจุบัน)',"setSso('formula','last60')")}
+          ${chip(S.formula==='care','CARE (เฉลี่ยทั้งชีวิต ปรับมูลค่า)',"setSso('"+cid+"','formula','care')")}
+          ${chip(S.formula==='last60','60 เดือนสุดท้าย (กฎหมายปัจจุบัน)',"setSso('"+cid+"','formula','last60')")}
         </span>
-        <span>· ผลประโยชน์กรณีบำเหน็จ</span><input class="y y-num" style="width:46px" value="${S.benefitRet}" onchange="setSso('benefitRet',this.value)"><span>%/ปี</span>
+        <span>· ผลประโยชน์กรณีบำเหน็จ</span><input class="y y-num" style="width:46px" value="${S.benefitRet}" onchange="setSso('${cid}','benefitRet',this.value)"><span>%/ปี</span>
       </div>
       <div class="note" style="margin-top:7px;line-height:1.8">
         <b>เพดานค่าจ้าง</b> (จากไฟล์กฎชุด ${rulesVer()}) — ${((RSSO()||{})['เพดานค่าจ้างตามปี']||[]).map(b=>(Number(b['ตั้งแต่ปี'])?('ตั้งแต่ '+b['ตั้งแต่ปี']):'ถึง '+b['ถึงปี'])+' = <b>'+commafy(b['ค่า'])+'</b>').join(' · ')} · เงินสมทบ = ${(ssoRate()*100)}% ของค่าจ้างที่ไม่เกินเพดาน<br>
@@ -13206,7 +13267,7 @@ function renderRetVisit(){
 }
 function renderRetPage(){
   try{ renderRetVisit(); }catch(e){}
-  try{ renderSsoCard(); }catch(e){}            /* v3.9.27: เครื่องคำนวณบำนาญ ปกส. */
+  try{ renderSsoSummary(); }catch(e){}         /* v3.9.66: สรุป ปกส. รายคน (เครื่องคำนวณอยู่หน้า II) */
   const ll=document.getElementById('retLifeline'); if(!ll) return;
   if(!(STATE.carriers||[]).length){ ll.innerHTML='<div class="note">กรอกข้อมูลที่ Life Path ก่อนค่ะ</div>';
     document.getElementById('retModeUI').innerHTML=''; document.getElementById('retResult').innerHTML=''; return; }
@@ -13927,8 +13988,8 @@ function actBuildDraft(){
   /* v3.9.43: เดิมข้อนี้ push เสมอ แม้ที่ปรึกษาจะยืนยันประวัติ ปกส. ครบแล้ว ทำให้ทวงซ้ำในรายงานทุกฉบับ
      ตอนนี้ขึ้นเฉพาะตอนที่ยังไม่มีประวัติค่าจ้างจริง หรือที่ปรึกษายังไม่ติดธงว่าเคลียร์แล้ว (STATE.ssoConfirmed) */
   { let hasSso=false, done=false;
-    try{ hasSso=!!(STATE.sso&&(STATE.sso.bands||[]).length); }catch(e){}
-    try{ done=!!(STATE.ssoConfirmed || (STATE.sso&&STATE.sso.confirmed)); }catch(e){}
+    try{ hasSso=(STATE.carriers||[]).every(x=>((STATE.ssoBy||{})[x.id]||{}).bands&&STATE.ssoBy[x.id].bands.length); }catch(e){}   /* v3.9.66: ต้องมีประวัติครบทุกคน */
+    try{ done=!!(STATE.ssoConfirmed || (STATE.carriers||[]).every(x=>((STATE.ssoBy||{})[x.id]||{}).confirmed)); }catch(e){}
     if(!done && !hasSso){
       L.push(['ส่งประวัติการส่งเงินสมทบประกันสังคม',
         'เปิดแอป SSO Connect แล้วถ่ายหน้าจอส่งมา หรือขอใบรับรองการส่งเงินสมทบจากสำนักงานประกันสังคม '
