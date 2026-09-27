@@ -87,6 +87,19 @@ body:not(.adv) .sec-h span{display:none!important}
 body.adv .basic-only{display:none!important}
 /* ═══ MINIMAL (ตัวอย่าง) — มุมมองลูกค้า: ตัวเลขใหญ่ + key highlight สั้น · รายละเอียดพับไว้ กดเปิดได้ · มุมมองที่ปรึกษาไม่เปลี่ยน ═══ */
 body:not(.adv) .cv-hide{display:none!important}
+/* v3.9.67 · minimal ทุกหน้า (มุมมองลูกค้า) */
+body:not(.adv) .rt-cap{display:none}                      /* สุขภาพการเงิน: เหลือตัวเลข + ผ่าน/ควรปรับ + เกณฑ์สั้น */
+body:not(.adv) .rt-note{font-size:11px;color:var(--faint)}
+body:not(.adv) .pyt-prods,body:not(.adv) .pyr-prod-h{display:none}   /* พีระมิด: ลูกค้าเห็น key highlight ต่อชั้น ไม่เห็นรายการผลิตภัณฑ์ */
+.pyt-key{font-size:12px;color:var(--ink-2,#555);margin-top:4px}
+body:not(.adv) #goalPriority .gp-long{display:none}
+body:not(.adv) .fs-warn,body:not(.adv) .lib-fs{display:none!important}   /* กล่องโฟลเดอร์ = เรื่องของที่ปรึกษา */
+body:not(.adv) .ver-stamp .ver-tail{display:none}
+body:not(.adv) #h-couple-card{display:none!important}
+body:not(.adv) .edu-explain{display:none!important}   /* v3.9.70: !important — ตัว element มี inline display:block ทับอยู่ */
+body:not(.adv) .xpl,body:not(.adv) .tx-l small{display:none!important}   /* v3.9.70: คำอธิบายสำหรับที่ปรึกษา */
+body:not(.adv) .goalport-card{display:none}
+body:not(.adv) .p3-hint,body:not(.adv) .p7-long{display:none}
 body:not(.adv) #pRet small,body:not(.adv) #p10 .h-verdict small{display:none!important}
 body:not(.adv) .ph-eye{display:none}
 body:not(.adv) svg .lm-lab{display:none}
@@ -120,12 +133,33 @@ details.more[open]>summary::before{content:'▾ '}
 .rv-others span.cur{opacity:.55}
 .kh-sub-r{font-size:12.5px;color:var(--ink-2,#555);display:flex;gap:8px;flex-wrap:wrap}
 .kh-sub-r b{color:var(--ink,#2a2a2a)}
+.pol-mini .kh{margin-top:0}
+.pf-mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:12px}
+.pf-mini-i{border:1px solid var(--line-2,#EEE8DA);border-radius:12px;padding:12px 14px;background:#fff;display:flex;gap:12px;align-items:center}
+.pf-mini-pie{flex:0 0 64px;width:64px;height:64px}
+.pf-mini-i .k{font-size:12.5px;font-weight:600}
+.pf-mini-i .v{font-family:Georgia,serif;font-size:22px;font-weight:700;margin-top:2px}
+.pf-mini-i .v small{font-size:12px;font-weight:500;color:var(--muted)}
+.pf-mini-i .s{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5}
+.pol-mini-l{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.pol-mini-l span{font-size:12px;padding:3px 10px;border-radius:20px;background:#fff;border:1px solid var(--line,#EDE8DC);color:var(--ink-2,#555)}
 .hv-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .hv-chips span{font-size:12px;padding:3px 10px;border-radius:20px;background:#fff;border:1px solid var(--carrier-soft,#E9C9C4);color:var(--ink-2,#555)}
 @media(max-width:680px){.kh{grid-template-columns:1fr}}
 @media print{body:not(.adv) .cv-hide{display:revert!important}}
 /* ── มุมมองลูกค้า / ที่ปรึกษา (ซ่อนด้วย CSS ไม่ลบ · ค่าในช่องยังถูกอ่านข้ามหน้า) ── */
 #app.mode-client .advisor-only{display:none !important}
+/* v3.9.70 · แผนลงมือแบบกระชับ */
+#actBox .act-r{display:grid;grid-template-columns:22px minmax(0,1fr) auto auto;gap:4px 10px;align-items:start;padding:7px 0;border-bottom:1px solid var(--line-2,#EEE8DA);font-size:13px;line-height:1.45}
+#actBox .act-r:last-of-type{border-bottom:none}
+#actBox .act-no{width:20px;height:20px;border-radius:50%;background:var(--ink,#1C1C2E);color:#fff;font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+#actBox .act-t b{color:var(--ink,#1C1C2E);font-weight:600}
+#actBox .act-how{display:block;font-size:11.5px;color:var(--muted,#8A8272);margin-top:1px}
+#actBox .act-when{font-size:11px;color:var(--carrier-2,#B5453E);font-weight:600;white-space:nowrap;text-align:right;padding-top:2px}
+#actBox .act-mv{display:inline-flex;gap:2px}
+#actBox .act-mv button{border:1px solid var(--line,#E5DFCE);background:#fff;border-radius:5px;font-size:11px;line-height:1;padding:3px 6px;cursor:pointer;color:var(--ink-2,#555)}
+#actBox .act-mv button:disabled{opacity:.3;cursor:default}
+@media(max-width:640px){#actBox .act-r{grid-template-columns:22px minmax(0,1fr)}#actBox .act-when,#actBox .act-mv{grid-column:2;text-align:left}}
 /* 5 ratios เชิงลึก — ซ่อนด้วย id เพราะ setR() เขียนทับ className ทุก render */
 
 /* เฟส 2: พีระมิด — ลูกค้าเห็นพีระมิดสี+สถานะ แต่ไม่เห็นบรรทัดตัวเลขเชิงลึก */
@@ -1234,6 +1268,48 @@ nav.pages .jstep .jt small{font-size:9px;color:var(--faint);letter-spacing:.02em
     color:#8A3A32;background:#F4D9D5;border-radius:6px;padding:1px 5px;vertical-align:1px;letter-spacing:.01em}
 .a4-st-ok{color:#508B82;font-weight:700}.a4-st-bad{color:#C8635A;font-weight:700}
 .a4-note{font-size:9.5px;color:#999;line-height:1.55;margin-top:14px;border-top:1px solid #EAE4D2;padding-top:8px}
+/* ═══ v3.9.68 · รายงานฉบับย่อ (minimal ตามหน้าเว็บ) + ตัวอักษรไม่เล็กเกิน + แผ่นแนวนอน ═══
+   .a4-x = คำอธิบายยาว โชว์เฉพาะ "ฉบับเต็ม" · .a4-k = key highlight สั้น โชว์เฉพาะ "ฉบับย่อ" */
+#a4Summary:not(.a4-full) .a4-x{display:none!important}
+#a4Summary.a4-full .a4-k{display:none!important}
+.a4-sheet{font-size:11.5px}
+.a4-note{font-size:10px;color:#857D6C}
+.a4-rt,.a4-batbl{font-size:10.5px}
+.a4-rt th,.a4-batbl th,.a4-gtbl th{font-size:9.5px}
+.a4-gtbl{font-size:11px}
+.a4-batbl td.sub,.a4-batbl td.w,.a4-rt td.sub{font-size:9.5px}
+.a4-gtbl td.cf-ev,.a4-gtbl td.cf-yr{font-size:9.5px}
+.a4-nc,.a4-gtbl .cf-tag{font-size:8.6px}
+.a4-stack>div+div{margin-top:12px}
+.a4-sheet.a4-land{width:297mm;min-height:210mm}
+.a4-cft{width:100%;border-collapse:collapse;font-size:10.5px;font-variant-numeric:tabular-nums}
+.a4-cft th{font-size:9.5px;color:#8A7E60;font-weight:700;text-align:right;padding:5px 6px;border-bottom:1.5px solid #2A2A2A;vertical-align:bottom;line-height:1.3}
+.a4-cft th small{display:block;font-weight:500;color:#9A8E6E;font-size:9px;letter-spacing:0}
+.a4-cft th.l,.a4-cft td.l{text-align:left}
+.a4-cft td{padding:4px 6px;border-bottom:1px solid #F0ECE0;text-align:right;white-space:nowrap}
+.a4-cft td.ev{white-space:normal;text-align:left;font-size:9.5px;color:#5A5346;line-height:1.35}
+.a4-cft .pre{background:#EEF5F0;box-shadow:inset 1.5px 0 0 #6BA89E,inset -1.5px 0 0 #6BA89E;font-weight:700}
+.a4-cft .post{background:#FBF3DF;box-shadow:inset 1.5px 0 0 #D4A961,inset -1.5px 0 0 #D4A961;font-weight:700}
+.a4-cft .g{color:#A23E36}
+.a4-cft .z{color:#C9C1AC}
+.a4-cft td.bal{font-weight:700;color:#1C1C2E}
+.a4-cft tr.cf-out td{background:#FBEEEC}
+.a4-cft tr.cf-out td:first-child{box-shadow:inset 3px 0 0 #B5453E}
+.a4-cft .cf-tag{display:inline-block;margin-left:5px;font-size:8.6px;font-weight:700;color:#8A3A32;background:#F4D9D5;border-radius:6px;padding:0 5px}
+.a4-hh{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:4px 0 8px}
+.a4-hh .c{border:1px solid #EAE4D2;border-radius:9px;padding:10px 12px;text-align:center}
+.a4-hh .c .l{font-size:10px;color:#8A8272}
+.a4-hh .c .v{font-size:19px;font-weight:800;color:#1C1C2E;font-variant-numeric:tabular-nums;margin-top:2px}
+.a4-hh .c.bad{border-color:#E2AFA9;background:#FBEEEC}.a4-hh .c.bad .v{color:#B5453E}
+.a4-hh .c.ok .v{color:#3F6B52}
+.a4-cta{display:flex;justify-content:space-between;align-items:center;gap:12px;border-radius:9px;padding:10px 14px;background:#1C1C2E;color:#fff;margin-bottom:8px}
+.a4-cta .k{font-size:11px;font-weight:600}.a4-cta .s{font-size:10px;color:#D8CFB8;margin-top:1px}
+.a4-cta .v{font-size:20px;font-weight:800;white-space:nowrap}
+.a4-cta.ok{background:#E4EFE7;color:#2F5A46}
+@media print{
+  @page land{size:A4 landscape;margin:0}
+  .a4-sheet.a4-land{page:land;width:297mm;height:210mm;max-height:210mm}
+}
 @media print{
   @page{size:A4 portrait;margin:0}
   /* v3.8: พื้นหลังกระดาษต้องขาวล้วน — เดิมสีพื้นแอปติดไปเป็นแถบเทาท้ายหน้าที่เนื้อหาไม่เต็ม */
@@ -1844,7 +1920,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.66</b> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.71</b><span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
 </aside>
 
 <main id="main">
@@ -1882,7 +1958,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
       <div class="ph">
         <div class="ph-eye">Section I · Master View</div>
         <div class="ph-t">เส้นทางชีวิตบูรณาการ</div>
-        <div class="ph-s">Integrated Life Path — กรอกที่นี่ที่เดียว · ทุกหน้าใช้ค่านี้</div>
+        <div class="ph-s"><span class="adv-only">Integrated Life Path — กรอกที่นี่ที่เดียว · ทุกหน้าใช้ค่านี้</span><span class="cl-only">ครอบครัว รายได้ เป้าหมาย บนเส้นเวลาเดียว</span></div>
       </div>
 
       <div class="tl-wrap" id="tlWrap">
@@ -2134,7 +2210,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
         <div class="ph-eye">Section VII · Future Frame</div>
       <div id="goalPriority"></div>
         <div class="ph-t">เป้าหมายชีวิต</div>
-        <div class="ph-s">Goal Pins — sync กับ Timeline · เพิ่ม/แก้ที่ไหนก็ได้</div>
+        <div class="ph-s"><span class="adv-only">Goal Pins — sync กับ Timeline · เพิ่ม/แก้ที่ไหนก็ได้</span><span class="cl-only">เป้าหมายทั้งหมด เรียงตามความสำคัญ</span></div>
       </div>
 
       <div class="card">
@@ -2198,7 +2274,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
       <div class="ph">
         <div class="ph-eye">Section IV · Protect</div>
         <div class="ph-t">การคุ้มครอง · Protection Gap</div>
-        <div class="ph-s">เช็คเกราะป้องกันของคุณ — ไต่จากฐานพีระมิดสู่ยอด</div>
+        <div class="ph-s"><span class="adv-only">เช็คเกราะป้องกันของคุณ — ไต่จากฐานพีระมิดสู่ยอด</span><span class="cl-only">มีแล้วเท่าไร · ยังขาดเท่าไร</span></div>
       </div>
 
       <div class="card">
@@ -2216,7 +2292,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <!-- ═══════════════════════════════════════════════
          P6 — WHAT-IF & ASSUMPTIONS
          ═══════════════════════════════════════════════ -->
-    <section class="page advisor-only" id="p6">
+    <section class="page" id="p6">   <!-- v3.9.70: ลูกค้าเห็นทุกหน้า (เดิม advisor-only → เมนูกดแล้วเจอหน้าว่าง) -->
       <div class="ph">
         <div class="ph-eye">What-If · Sensitivity</div>
         <div class="ph-t">สมมติฐาน &amp; What-If</div>
@@ -2232,7 +2308,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
       <div class="ph">
         <div class="ph-eye">Section VIII · Allocate</div>
         <div class="ph-t">พอร์ตการลงทุน</div>
-        <div class="ph-s">แหล่งเดียวของ "ผลตอบแทนคาดหวัง" — ตั้งที่นี่ ทุกหน้าใช้ค่านี้</div>
+        <div class="ph-s"><span class="adv-only">แหล่งเดียวของ "ผลตอบแทนคาดหวัง" — ตั้งที่นี่ ทุกหน้าใช้ค่านี้</span><span class="cl-only">ผลตอบแทนที่ใช้วางแผน</span></div>
       </div>
       <div id="portfolioBox"></div>
     </section>
@@ -2240,7 +2316,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <!-- ═══════════════════════════════════════════════
          P8 — ESTATE & WILL
          ═══════════════════════════════════════════════ -->
-    <section class="page advisor-only" id="p8">
+    <section class="page" id="p8">   <!-- v3.9.70: ลูกค้าเห็นทุกหน้า (เดิม advisor-only → เมนูกดแล้วเจอหน้าว่าง) -->
       <div class="ph">
         <div class="ph-eye">Section XI · Legacy</div>
         <div class="ph-t">มรดก &amp; พินัยกรรม</div>
@@ -2425,7 +2501,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
       <div class="ph">
         <div class="ph-eye">Section III · Financial Health</div>
         <div class="ph-t">สุขภาพการเงิน</div>
-        <div class="ph-s">อัตราส่วนมาตรฐาน 8 ตัว + ลำดับที่ควรทำก่อน-หลัง — จากข้อมูลที่กรอกไว้แล้ว ไม่ต้องกรอกอะไรเพิ่ม</div>
+        <div class="ph-s"><span class="adv-only">อัตราส่วนมาตรฐาน 8 ตัว + ลำดับที่ควรทำก่อน-หลัง — จากข้อมูลที่กรอกไว้แล้ว ไม่ต้องกรอกอะไรเพิ่ม</span><span class="cl-only">8 ตัวเลขสุขภาพการเงิน</span></div>
       </div>
       <div class="card">
         <div class="card-h"><div class="card-t">อัตราส่วนทางการเงิน 8 ตัว (เกณฑ์ CFP)</div>
@@ -2436,7 +2512,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
       <div class="ph">
         <div class="ph-eye">Section III · Financial Pyramid</div>
         <div class="ph-t">พีระมิดวางแผนการเงิน</div>
-        <div class="ph-s">Financial Pyramid — สร้างจากฐานสู่ยอด · สีแต่ละชั้นมาจากสถานะจริงของคุณ</div>
+        <div class="ph-s"><span class="adv-only">Financial Pyramid — สร้างจากฐานสู่ยอด · สีแต่ละชั้นมาจากสถานะจริงของคุณ</span><span class="cl-only">ชั้นไหนแน่นแล้ว ชั้นไหนควรเสริม</span></div>
       </div>
       <div class="card"><div id="pyramidBox"></div></div>
     
@@ -2454,7 +2530,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
         <div class="card-s">แก้ไขได้ · ทุกหน้าอัปเดตตาม</div></div>
         <div id="retVisit"></div>
       </div>
-      <div class="card advisor-only">
+      <div class="card">
         <div class="card-h"><div class="card-t">บำนาญประกันสังคม · สรุป</div>
         <div class="card-s">เครื่องคำนวณย้ายไปหน้า II (อยู่กับเครื่องคำนวณผ่อนและ PVD) — ที่นี่แสดงสรุปรายคน</div></div>
         <div id="ssoSummary"></div>
@@ -2464,7 +2540,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
         <div class="card-s">ตัวเลขเดียวของทั้งครัวเรือน (ค่าเงินวันนี้) — ค่าเริ่มต้นเลือกตามรายการรายจ่าย · หรือ 70% ของรายจ่ายผันแปร · หรือกำหนดเอง</div></div>
         <div id="retModeUI"></div>
       </div>
-      <div class="card cv-hide">
+      <div class="card">
         <div class="card-h"><div class="card-t">เส้นเวลาเกษียณของคุณ</div></div>
         <div id="retLifeline"></div>
       </div>
@@ -2479,7 +2555,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
       <div class="ph">
         <div class="ph-eye">Section VI · Education</div>
         <div class="ph-t">ทุนการศึกษาบุตร</div>
-        <div class="ph-s">เห็นเป็นเส้นเวลา: ช่วงไหนสะสม ช่วงไหนใช้ และต้องมีเท่าไหร่</div>
+        <div class="ph-s"><span class="adv-only">เห็นเป็นเส้นเวลา: ช่วงไหนสะสม ช่วงไหนใช้ และต้องมีเท่าไหร่</span><span class="cl-only">ต้องเตรียมเท่าไร เมื่อไร</span></div>
       </div>
       <div class="card">
         <div class="card-h"><div class="card-t">เส้นเวลาครอบครัว</div>
@@ -2584,7 +2660,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     
     
 
-    <section class="page advisor-only" id="p11">
+    <section class="page" id="p11">   <!-- v3.9.70: ลูกค้าเห็นทุกหน้า (เดิม advisor-only → เมนูกดแล้วเจอหน้าว่าง) -->
       <div class="ph">
         <div class="ph-eye">Section IX · Optimize</div>
         <div class="ph-t">วางแผนภาษี</div>
@@ -2978,6 +3054,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
   <div class="a4-bar">
     <button class="btn" onclick="closeA4()">✕ ปิด</button>
     <div class="a4-bar-t">รายงานแผนการเงิน · หลายหน้า (พิมพ์เป็น PDF ได้)</div>
+    <button class="btn adv-only" id="a4FullBtn" onclick="a4ToggleFull()" title="ฉบับย่อ = ส่งลูกค้า · ฉบับเต็ม = มีคำอธิบายวิธีคิดทุกหน้า">📄 ฉบับย่อ (ลูกค้า)</button>
     <button class="btn btn-pri" onclick="window.print()">🖨 พิมพ์ / บันทึก PDF</button>
   </div>
   <div class="a4-scroll"><div id="a4Summary" class="a4-sheet"></div></div>
@@ -4741,7 +4818,7 @@ function saveState(){
 function loadState(){
   try {
     const raw = localStorage.getItem(LS_KEY);
-    if(raw){ STATE = migrate(JSON.parse(raw)); return true; }
+    if(raw){ STATE = migrate(JSON.parse(raw)); STATE.uiMode='basic'; return true; }   /* v3.9.69: เปิดหน้า = มุมมองลูกค้าเสมอ */
   } catch(e){}
   return false;
 }
@@ -6526,7 +6603,7 @@ function importJSON(){
         const data = JSON.parse(ev.target.result);
         if(!data.state){ throw new Error('ไม่พบ state ในไฟล์'); }
         if(!confirm(`Import ข้อมูลจาก ${file.name}?\nข้อมูลปัจจุบันจะถูกเขียนทับ\n\nผู้วางแผน: ${(data.state.carriers||[]).map(c=>c.name).join(', ')||'(empty)'}\nSnapshots: ${Object.keys(data.snapshots||{}).length} ปี`)) return;
-        STATE = migrate(data.state);
+        STATE = migrate(data.state); STATE.uiMode='basic';   /* v3.9.69: เปิดไฟล์ = มุมมองลูกค้าเสมอ */
         if(data.snapshots) setSnapshots(data.snapshots);
         saveState();
         render();
@@ -7812,13 +7889,14 @@ function renderPyramid(){
     return `<div class="pyt ${b.st}">
       <div class="pyt-h"><span class="pyt-k">${b.k}</span><span class="pyt-t">${b.t}</span><span class="pyt-st ${b.st}">${ST_LBL[b.st]}</span></div>
       <div class="pyt-prods">${chips}</div>
+      <div class="pyt-key cl-only">${String(b.d||'').split(' — ')[0]}</div>
       <div class="pyt-hint advisor-only">↳ ${b.hint}</div>
     </div>`;
   }).join('');
   box.innerHTML=`<div class="pyr-wrap2">
     <div>${svg}${legend}</div>
-    <div>
-      <div style="font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-2);font-weight:700;margin-bottom:9px">ผลิตภัณฑ์ที่เหมาะกับแต่ละชั้น</div>
+    <div class="pyr-prod">
+      <div class="pyr-prod-h" style="font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-2);font-weight:700;margin-bottom:9px">ผลิตภัณฑ์ที่เหมาะกับแต่ละชั้น</div>
       ${panel}
     </div>
   </div>
@@ -8163,7 +8241,7 @@ function renderPortfolio(){
     return `<option value="" ${has?'':'selected'}>ตามค่าเริ่มต้นของแผน (${rNum(defRet)}%)</option>`+
       ports.map(p=>`<option value="${p.id}" ${p.id===sel?'selected':''}>${p.name} (${rNum(portMetrics(p).ret)}%)</option>`).join(''); };
   const grows=goals.map(g=>`<tr><td>${g.ico||'🎯'} ${g.name}</td><td>อายุ ${g.age}</td><td style="text-align:right"><select class="y-sel" style="max-width:200px" onchange="setGoalPort(${g.id},this.value)">${portOpts(g.port)}</select></td></tr>`).join('');
-  const assignCard = goals.length?`<div class="card">
+  const assignCard = goals.length?`<div class="card goalport-card">
     <div class="card-h"><div class="card-t">เลือกพอร์ตให้แต่ละเป้าหมาย</div><div class="card-s">เป้าหมายไกล = เสี่ยงได้มาก · เป้าหมายใกล้ = พอร์ตมั่นคง</div></div>
     <table class="gp-tbl"><thead><tr><th>เป้าหมาย</th><th>กำหนด</th><th style="text-align:right">พอร์ตที่ลงทุน</th></tr></thead><tbody>${grows}</tbody></table>
     <div class="note" style="margin-top:8px">ผลตอบแทนของพอร์ตที่เลือกจะใช้คำนวณ "ออม/เดือน" ของเป้าหมายนั้นที่หน้า Goals</div>
@@ -8198,7 +8276,12 @@ function renderPortfolio(){
   const recHead=`<div style="margin:2px 0 9px;display:flex;align-items:baseline;gap:9px;flex-wrap:wrap">
     <span style="font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-2);font-weight:700">พอร์ตแนะนำ</span>
     </div>`;
-  box.innerHTML=`${levelCard}${recHead}<div class="pf-grid">${portCards}</div>
+  /* v3.9.67: มุมมองลูกค้า = พอร์ตแนะนำแบบย่อ (ชื่อ · ผลตอบแทน · สัดส่วน) — ตัวแก้พอร์ตเฉพาะที่ปรึกษา */
+  const portMini=`<div class="cl-only pf-mini">${ports.map(p=>{ const m=portMetrics(p);
+    const mix=(p.assets||[]).filter(x=>Number(x.w)>0).map(x=>String(x.a).replace(/[<>&]/g,'')+' '+Math.round(Number(x.w))+'%').join(' · ');
+    const pie=pieSVG((p.assets||[]).map((x,i)=>({label:x.a,value:Number(x.w)||0,color:PIE_COLS[i%PIE_COLS.length]})),64,{top:(Number(m.ret)||0).toFixed(0)+'%'});
+    return `<div class="pf-mini-i"><div class="pf-mini-pie">${pie}</div><div><div class="k">${String(p.name||'').replace(/[<>&]/g,'')}</div><div class="v">${(Number(m.ret)||0).toFixed(1)}%<small> /ปี</small></div><div class="s">${mix}</div></div></div>`; }).join('')}</div>`;
+  box.innerHTML=`${levelCard}${recHead}${portMini}<div class="pf-grid adv-only">${portCards}</div>
     ${(function(){ try{ return goalPortTable(); }catch(e){ console.warn('goalPortTable failed',e); return ''; } })()}
     ${assignCard}`;
 }
@@ -9517,7 +9600,7 @@ function taxModeBar(){
       <span class="${auto?'on':''}" onclick="setTaxAutoMode(true)">คำนวณอัตโนมัติทุกปี</span>
       <span class="${auto?'':'on'}" onclick="setTaxAutoMode(false)">ใส่ตัวเลขเอง</span>
     </span>
-    <span style="font-size:11.5px;color:var(--muted);flex:1;min-width:220px">${auto
+    <span class="xpl" style="font-size:11.5px;color:var(--muted);flex:1;min-width:220px">${auto
       ? 'ทุกปีคิดใหม่จากรายได้ของปีนั้น หักค่าใช้จ่ายตามประเภทเงินได้ และค่าลดหย่อนที่มีจริงในปีนั้น (เบี้ยประกันจากทะเบียน · บำนาญ · RMF/SSF/ESG ตามแผน · ประกันสังคม · บุตร · ยกเว้นผู้สูงอายุ 65+) — งบกระแสเงินสด หน้าเกษียณ และแผนองค์รวม ใช้ตัวเลขชุดเดียวกันนี้'
       : 'ใช้ตัวเลขในช่อง “ภาษี” ของงบกระแสเงินสดเป็นค่าคงที่ทุกปี — ไม่ขยับตามรายได้หรือค่าลดหย่อน (ไม่แนะนำ)'}</span>
   </div></div>`;
@@ -9567,7 +9650,7 @@ function kidDedHTML(){
       <span style="min-width:96px">${String(d.name||'บุตร')} <span style="color:var(--muted)">(อายุ ${dAge})</span></span>
       <span>นับลดหย่อนถึงบุตรอายุ</span>
       <input class="y y-num" style="width:48px" value="${d.taxTo||''}" onchange="setKidTaxTo('${d.id}',this.value)" placeholder="${eff}">
-      <span style="color:var(--muted);font-size:11px">= ปีภาษีสุดท้ายตอนผู้วางแผนอายุ ${lastOwnerAge} · ว่าง = ใช้อายุสิ้นสุดการอุปการะ (${eff})</span>
+      <span class="xpl" style="color:var(--muted);font-size:11px">= ปีภาษีสุดท้ายตอนผู้วางแผนอายุ ${lastOwnerAge} · ว่าง = ใช้อายุสิ้นสุดการอุปการะ (${eff})</span>
     </div>`; }).join('');
   return `<div class="card" style="margin-bottom:12px"><div style="padding:10px 15px">
     <div class="cf-h" style="margin-bottom:3px">ค่าลดหย่อนบุตร 30,000 บาท/คน — นับถึงเมื่อไหร่</div>
@@ -10099,7 +10182,7 @@ function goalRows(){
     const pmt=(!due&&gap>0)?HENG.pmtSinkingMonthly(gap,ret,yrsTo*12):0;
     const cashMonthly=due?(gap/(nSpan*12)):0;   /* ภาระจริงที่ต้องจ่ายจากกระแสเงินสด เฉลี่ยต่อเดือนตลอดช่วงชั้น */
     const reqRet=(!due&&pv0>0)?(Math.pow(fv/pv0,1/years)-1)*100:null;
-    rows.push({name:(g.ico||'🎯')+' '+goalDisplayName(g), need:fv, have, gap, reqRet, assumed:ret, pmt, tied, alloc,
+    rows.push({gid:g.id, name:(g.ico||'🎯')+' '+goalDisplayName(g), need:fv, have, gap, reqRet, assumed:ret, pmt, tied, alloc,
       act: (_pool?'ใช้เงินก้อนการศึกษา '+fmt0(_pool.fv)+' · ':'')+(gap<=0 ? 'พอแล้ว ✓'
          : due ? ('ถึงกำหนดแล้ว · จ่ายจริง ~'+fmt0(cashMonthly)+'/ด. ตลอด '+nSpan+' ปี')
                : ('ลงทุนเพิ่ม '+fmt0(pmt)+'/ด.')),
@@ -10373,7 +10456,9 @@ function renderBudgetOrder(){
   const grPmt=id=>{ const r=GR.find(x=>x.goalId===id); return r?(r.pmt||0):null; };
   const grRow=id=>GR.find(x=>x.goalId===id)||null;
   const items=[];
-  cs.forEach(c=>{ let R; try{ R=HENG.retirement(c); }catch(e){ return; } const a=R.planA; const rp=grPmt('retire'); const pm=(rp!=null?rp:(a&&a.monthly)||0);
+  cs.forEach(c=>{ let R; try{ R=HENG.retirement(c); }catch(e){ return; } const a=R.planA;
+    /* v3.9.70: goalRows มีแถวเกษียณของคนแรกคนเดียว — คู่สมรสต้องใช้ตัวเลขของตัวเอง (ชุดเดียวกับหน้าเกษียณ/retHouseholdPlan) */
+    const rp=(cs.length===1)?grPmt('retire'):null; const pm=(rp!=null?rp:((a&&a.gap>0)?(a.monthly||0):0));
     items.push({name:'🏖️ เกษียณ'+(cs.length>1?' · '+c.name:''), need:pm, covered:pm<=0}); });
   (STATE.goals||[]).filter(g=>g.amt<0).slice().sort((a,b)=>(a.rank||0)-(b.rank||0)).forEach(g=>{
     const yrs=Math.max(1,(g.age||0)-curAge); let pmt=grPmt(g.id); if(pmt==null){ try{ pmt=HENG.pmtSinkingMonthly(goalFV(g),goalRet(g),yrs*12); }catch(e){ pmt=0; } }
@@ -10916,7 +11001,17 @@ function renderPolicies(){
     <button class="btn" style="padding:4px 11px;font-size:12px" onclick="stampPolicySummaryToday()">วันนี้</button>
     ${elapsedHTML}
   </div>`;
-  box.innerHTML=dateBar+`<div class="pol-wrap"><table class="pol-tbl">
+  /* v3.9.67: มุมมองลูกค้า = สรุปสั้น (จำนวนเล่ม · เบี้ยรวม · ทุนหลัก) · ตารางเต็มเฉพาะที่ปรึกษา */
+  const _a0=Number((STATE.carriers||[])[0]&&STATE.carriers[0].age)||0;
+  const _sum=arr.reduce((t,p)=>{ let pr=0; try{ pr=polPremAtAge(p,_a0); }catch(e){ pr=Number(p.premium)||0; }
+    t.prem+=pr; t.life+=Number(p.life)||0; t.health=Math.max(t.health,Number(p.health)||0); t.ci+=(Number(p.ciSevere)||0)+(Number(p.ciCrit)||0); return t; },{prem:0,life:0,health:0,ci:0});
+  const clientSum=arr.length?`<div class="cl-only pol-mini">
+      <div class="kh"><div class="kh-i"><div class="k">กรมธรรม์</div><div class="v">${arr.length} เล่ม</div></div>
+      <div class="kh-i"><div class="k">เบี้ยรวม /ปี</div><div class="v">${f0(_sum.prem)}</div></div>
+      <div class="kh-i"><div class="k">ทุนชีวิตรวม</div><div class="v">${xM1(_sum.life)}</div></div></div>
+      <div class="pol-mini-l">${arr.map(p=>`<span>${String(p.name||'กรมธรรม์').replace(/[<>&]/g,'')}${p.owner&&(STATE.dependents||[]).find(d=>d.id===p.owner)?' · '+String(((STATE.dependents||[]).find(d=>d.id===p.owner)||{}).name||'').replace(/[<>&]/g,''):''}</span>`).join('')}</div>
+    </div>`:'';
+  box.innerHTML=`<div class="pol-full">`+dateBar+`<div class="pol-wrap"><table class="pol-tbl">
     <thead>
       <tr class="pol-grp"><th colspan="8">ข้อมูลกรมธรรม์</th><th colspan="2">หลัก</th><th colspan="2" class="g-hos">1 · จ่ายโรงพยาบาล</th><th colspan="5" class="g-comp">2 · จ่ายเรา (ค่าชดเชย)</th><th colspan="2" class="g-sav">3 · เงินสะสม (รับ/ปี)</th><th>มูลค่าเวนคืน</th><th></th></tr>
       <tr class="pol-sub"><th>บริษัท</th><th>แบบประกันหลัก</th><th>เลขที่กรมธรรม์</th><th>ทำตอนอายุ</th><th>เริ่มทำ</th><th>ครบชำระเบี้ยหลัก</th><th>ครบสัญญา</th><th>ของใคร</th><th>ทุนชีวิต</th><th>เบี้ยประกัน</th><th>รักษาพยาบาลทั่วไป</th><th>อุบัติเหตุ (ค่ารักษา)</th><th>ชดเชยนอนรพ</th><th>ชดเชยนอนรพ(มะเร็ง) /วัน</th><th>ทุนมะเร็ง (เงินก้อน)</th><th>โรคร้ายแรงต้น-ปานกลาง</th><th>โรคร้ายแรงระดับรุนแรง</th><th>อุบัติเหตุ (เสียชีวิต)</th><th>สะสมทรัพย์ (รับ/ปี)</th><th>บำนาญ (รับ/ปี)</th><th>ณ วันนี้ → สินทรัพย์</th><th></th></tr>
@@ -10932,7 +11027,7 @@ function renderPolicies(){
     <textarea id="aiPolIn" placeholder='วางคำตอบ JSON จาก AI ที่นี่ เช่น [{"company":"AIA","name":"ตลอดชีพ",...}]' style="width:100%;min-height:70px;margin-top:8px;font-size:11.5px;font-family:monospace;border:1px solid var(--line);border-radius:6px;padding:7px"></textarea>
     <button class="btn btn-pri" style="margin-top:6px;font-size:12px" onclick="importAiPolicies()">➕ เพิ่มเข้าทะเบียน</button>
     <span style="font-size:10.5px;color:var(--muted);margin-left:8px">เพิ่มต่อท้าย ไม่ทับของเดิม · อย่าลืมเลือก "ของใคร" หลังเพิ่ม</span>
-  </div>
+  </div></div>
   ${arr.length?`<div class="note" style="margin-top:8px">เลือก <b>"ของใคร"</b> ให้ตรงคน → ทุนคุ้มครองไหลเข้า "เกราะ 5 ชั้น" ของคนนั้นโดยตรง (แยกสามี/ภรรยา) · <b>เบี้ยของผู้พึ่งพิง → ภาระอุปการะ</b> · สะสมทรัพย์+บำนาญ (รับ/ปี) <b>${f0(T.saving+T.annuity)}</b> → รายรับ · มูลค่าเวนคืน <b>${f0(T.surrender)}</b> → สินทรัพย์ <span style="color:var(--sage-2)">(ไหลเข้าให้อัตโนมัติ ✓)</span><br>
     <b>กระแสตามอายุ (ท้ายแถว):</b> <span style="color:var(--carrier-2)">💸 เบี้ยจ่าย</span> → ค่าใช้จ่ายในกราฟ projection (กำหนดช่วงอายุให้หยุดเมื่อครบชำระ) · <span style="color:var(--sage-2)">💧 เงินรับ</span> (ปันผล/เงินคืน/บำนาญ/ครบสัญญา) → รายรับในกราฟ projection</div>`:''}`;
 }
@@ -11147,6 +11242,7 @@ function a4Balance(){
     for(let i=1;i<sheets.length-1;i++){
       const a=sheets[i], b=sheets[i+1];
       if(a.querySelector('.a4-cover')||b.querySelector('.a4-cover')) continue;
+      if(a.classList.contains('a4-land')||b.classList.contains('a4-land')) continue;   /* v3.9.68: แผ่นแนวนอนอยู่แผ่นของตัวเอง */
       const cs=getComputedStyle(a);
       const avail=PAGE_H-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-RUN;
       /* ต้องวัดความสูงของ "เนื้อหา" — ความสูงของแผ่นถูกล็อกไว้เท่ากระดาษเสมอ วัดแล้วได้เท่ากันหมด */
@@ -11183,11 +11279,13 @@ function a4Furnish(){
   });
 }
 function a4FitSheets(){
+  try{ a4FontFloor(); }catch(e){ console.warn('a4FontFloor',e); }
+  try{ a4Paginate(); }catch(e){ console.warn('a4Paginate',e); }
   try{ a4Balance(); }catch(e){}
   try{ a4Furnish(); }catch(e){}
   const PX_PER_MM = 96/25.4;
-  const PAGE_H = 297*PX_PER_MM;                 /* ความสูง A4 (margin ของ @page = 0) */
   document.querySelectorAll('#a4Summary .a4-sheet, #taxCompareBody.tc-sheet').forEach(sh=>{
+    const PAGE_H = (sh.classList.contains('a4-land')?210:297)*PX_PER_MM;   /* v3.9.68: แผ่นแนวนอนสูง 210mm */
     /* ห่อเนื้อหาไว้ในชั้นเดียว เพื่อย่อทั้งก้อนได้โดยไม่กระทบขอบกระดาษ */
     const inner=a4Fit(sh);
     inner.style.transform=''; inner.style.width=''; inner.style.transformOrigin='top left';
@@ -11196,7 +11294,7 @@ function a4FitSheets(){
     const avail = PAGE_H - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) - RUN - 2;
     const h = inner.scrollHeight;
     if(h > avail && avail > 0){
-      const k=Math.max(0.55, avail/h);           /* ไม่ย่อเกิน 55% — เล็กกว่านั้นอ่านไม่ออก */
+      const k=Math.max(0.95, avail/h);            /* v3.9.68: ย่อได้ไม่เกิน 10% — ที่เหลือ a4Paginate() แยกไปแผ่นถัดไปแล้ว (เดิม 55% ทำให้ตัวอักษรเหลือ 5–6px) */
       inner.style.width=(100/k).toFixed(4)+'%';  /* ชดเชยความกว้างให้ยังเต็มหน้ากระดาษ */
       inner.style.transform='scale('+k.toFixed(4)+')';
     }
@@ -11221,6 +11319,36 @@ function a4BeYear(){ try{ return (typeof snapYearCE==='function'?snapYearCE():ne
 
 /* ── V · ภาพรวมแผนเกษียณ (จากหน้า pRet) ── */
 function a4RetireBlock(){
+  /* v3.9.68: ส่วนบนเป็นตัวเลขครัวเรือน (ตรงกับหน้าเว็บ retKeyHTML) · ตาราง "คิดมาอย่างไร" อยู่ในฉบับเต็มเท่านั้น */
+  let top='';
+  try{
+    const H=retHouseholdPlan();
+    if(H&&H.n){
+      const need=H.A.target, have=H.A.expected, gap=H.A.gap, m=H.A.monthly, B=H.B, hh=H.n>1;
+      top=`<div class="a4-hh">
+          <div class="c"><div class="l">ต้องมี ณ วันเกษียณ${hh?' · ครัวเรือน':''}</div><div class="v">${A4N(need)}</div></div>
+          <div class="c"><div class="l">คาดว่าจะมี</div><div class="v">${A4N(have)}</div></div>
+          <div class="c ${gap>0?'bad':'ok'}"><div class="l">${gap>0?'ยังขาด':'ส่วนที่ขาด'}</div><div class="v">${gap>0?A4N(gap):'0 ✓'}</div></div>
+        </div>`
+        +(gap>0
+          ?`<div class="a4-cta"><div><div class="k">ต้องออมเพิ่ม${hh?' · ทั้งครัวเรือน':''}</div>${B&&B.retAge?`<div class="s">ถ้าเลื่อนเกษียณเป็น ${B.retAge} → ${B.gap>0?A4N(B.monthly)+' /เดือน':'พอแล้ว ✓'}</div>`:''}</div><div class="v">${A4N(m)} <span style="font-size:12px;font-weight:600">/เดือน</span></div></div>`
+          :`<div class="a4-cta ok"><div class="k">ออมตามแผนเดิมก็พอ ✓${hh?' · ทั้งครัวเรือน':''}</div></div>`)
+        +(hh?`<table class="a4-batbl" style="margin-bottom:8px"><thead><tr><th>รายคน</th><th class="n">เกษียณ</th><th class="n">ต้องมี</th><th class="n">คาดว่าจะมี</th><th class="n">ขาด</th><th class="n">ออมเพิ่ม/เดือน</th></tr></thead><tbody>`
+            +H.per.map(x=>`<tr><td><b>${A4ESC(shortName(x.c))}</b></td><td class="n">${x.a.retAge}</td><td class="n">${A4N(x.a.target)}</td><td class="n">${A4N(x.a.expected)}</td>
+              <td class="n" style="color:${x.a.gap>0?'#B5453E':'#3F6B52'}">${x.a.gap>0?A4N(x.a.gap):'พอ ✓'}</td><td class="n">${x.a.gap>0?A4N(x.a.monthly):'—'}</td></tr>`).join('')
+            +`</tbody></table>`:'');
+    }
+  }catch(e){ console.warn('a4RetireBlock household',e); }
+  return top + '<div class="a4-x">' + a4RetireBlockDetail() + '</div>';   /* v3.9.69: บรรทัดผลลัพธ์ซ้ำกับหน้า ◎ — ตัดออก */
+}
+function a4RetireResult(){
+  let pf=null; try{ pf=HENG.proForma(); }catch(e){}
+  const c=(STATE.carriers||[])[0]||{}; const life=(pf&&pf.targetAge)||Number(c.life)||85; const dep=pf&&pf.depleteAge;
+  return `<div class="a4-note a4-k" style="margin-top:6px">${dep
+      ? '<b style="color:#B5453E">ผลลัพธ์: เงินเริ่มไม่พอตอนอายุ '+dep+'</b> — ปรับได้ 3 ทาง: ลดค่าใช้จ่ายหลังเกษียณ · เลื่อนอายุเกษียณ · เพิ่มเงินออม/ผลตอบแทน'
+      : '<b style="color:#3F6B52">ผลลัพธ์: เงินพอใช้ตลอดแผนถึงอายุ '+life+'</b>'}</div>`;
+}
+function a4RetireBlockDetail(){
   const c=(STATE.carriers||[])[0]; if(!c) return '';
   let R=null; try{ R=HENG.retirement(c); }catch(e){ return ''; }
   const A=R&&R.planA; if(!A) return '';
@@ -11233,7 +11361,7 @@ function a4RetireBlock(){
   const cell=(l,v,sub,col)=>`<div class="c"><div class="l">${l}</div><div class="v"${col?` style="color:${col}"`:''}>${v}</div>${sub?`<div class="l" style="margin-top:1px">${sub}</div>`:''}</div>`;
   const row=(l,v,note)=>`<tr><td>${l}${note?`<div style="color:#8A8272;font-size:8.8px;line-height:1.45;margin-top:1px">${note}</div>`:''}</td><td class="n">${v}</td></tr>`;
   const dep=pf&&pf.depleteAge;
-  return `<div class="a4-3" style="margin-bottom:8px">
+  return `${(STATE.carriers||[]).length>1?`<div class="a4-sec" style="margin-top:4px">แผนเกษียณคิดมาอย่างไร · ${A4ESC(c.name||'')}</div>`:''}<div class="a4-3" style="margin-bottom:8px">
       ${cell('เวลาเก็บเงิน', (retA-a0)+' ปี', 'อายุ '+a0+' → '+retA)}
       ${cell('เวลาใช้เงิน', (life-retA)+' ปี', 'อายุ '+retA+' → '+life)}
       ${cell('เงินก้อนที่ต้องมี ณ วันเกษียณ', A4N(A.target), 'รวมเงินเฟ้อและผลตอบแทนแล้ว')}
@@ -11493,26 +11621,26 @@ function a4FamilySheet(){
   /* ── กราฟแถบเวลา ── */
   const GRP=['รายได้','คนที่เราดูแล','ภาระรายเดือน','แผนเงินออม','เบี้ยกรมธรรม์'];
   const rows=[]; GRP.forEach(g=>{ const in_=T.filter(x=>x.g===g); if(in_.length) rows.push({hdr:g}); in_.forEach(x=>rows.push(x)); });
-  const RH=13, LW=192, VW=54, W=940, PAD=8;
+  const RH=15, LW=200, VW=64, W=720, PAD=8;   /* v3.9.68: W 940→720 ให้ตัวอักษรในกราฟไม่ถูกย่อจนเล็ก (เดิมเหลือ ~6.5px) */
   const H=PAD*2+rows.length*RH+26;
   const px=a=>LW+((a-a0)/(life-a0))*(W-LW-VW-6);
   let g='';
   /* เส้นปีทุก 5 ปี */
   for(let a=Math.ceil(a0/5)*5;a<=life;a+=5){
     g+='<line x1="'+px(a).toFixed(1)+'" y1="'+PAD+'" x2="'+px(a).toFixed(1)+'" y2="'+(H-24)+'" stroke="#EFEADC" stroke-width="1"/>'
-      +'<text x="'+px(a).toFixed(1)+'" y="'+(H-12)+'" text-anchor="middle" font-size="8.6" fill="#9A8E6E">'+a+'</text>'
-      +'<text x="'+px(a).toFixed(1)+'" y="'+(H-3)+'" text-anchor="middle" font-size="7.4" fill="#C0B8A4">'+yrOf(a)+'</text>'; }
+      +'<text x="'+px(a).toFixed(1)+'" y="'+(H-12)+'" text-anchor="middle" font-size="9.6" fill="#9A8E6E">'+a+'</text>'
+      +'<text x="'+px(a).toFixed(1)+'" y="'+(H-3)+'" text-anchor="middle" font-size="8.6" fill="#C0B8A4">'+yrOf(a)+'</text>'; }
   /* เส้นเกษียณ */
   g+='<line x1="'+px(retA).toFixed(1)+'" y1="'+PAD+'" x2="'+px(retA).toFixed(1)+'" y2="'+(H-24)+'" stroke="#B89548" stroke-width="1.3" stroke-dasharray="4,3"/>'
-    +'<text x="'+(px(retA)+3).toFixed(1)+'" y="'+(PAD+8)+'" font-size="8.6" font-weight="700" fill="#B89548">เกษียณ '+retA+'</text>';
+    +'<text x="'+(px(retA)+3).toFixed(1)+'" y="'+(PAD+8)+'" font-size="9.6" font-weight="700" fill="#B89548">เกษียณ '+retA+'</text>';
   if(dep) g+='<line x1="'+px(dep).toFixed(1)+'" y1="'+PAD+'" x2="'+px(dep).toFixed(1)+'" y2="'+(H-24)+'" stroke="#C8635A" stroke-width="1.3" stroke-dasharray="4,3"/>'
-    +'<text x="'+(px(dep)-3).toFixed(1)+'" y="'+(PAD+8)+'" text-anchor="end" font-size="8.6" font-weight="700" fill="#C8635A">พอร์ตหมด '+dep+'</text>';
+    +'<text x="'+(px(dep)-3).toFixed(1)+'" y="'+(PAD+8)+'" text-anchor="end" font-size="9.6" font-weight="700" fill="#C8635A">พอร์ตหมด '+dep+'</text>';
   rows.forEach((r,i)=>{ const y=PAD+i*RH;
-    if(r.hdr){ g+='<text x="2" y="'+(y+9.5)+'" font-size="8.4" font-weight="700" fill="#9A8E6E" letter-spacing=".06em">'+A4ESC(r.hdr).toUpperCase()+'</text>'; return; }
+    if(r.hdr){ g+='<text x="2" y="'+(y+10.5)+'" font-size="9.4" font-weight="700" fill="#9A8E6E" letter-spacing=".06em">'+A4ESC(r.hdr).toUpperCase()+'</text>'; return; }
     const x1=px(r.f), x2=Math.max(px(r.t)+2.2,x1+3);
-    g+='<text x="8" y="'+(y+9.5)+'" font-size="8.8" fill="#2A2A2A">'+A4ESC(r.ico+' '+r.nm)+'</text>'
+    g+='<text x="8" y="'+(y+10.5)+'" font-size="9.8" fill="#2A2A2A">'+A4ESC(r.ico+' '+r.nm)+'</text>'
       +'<rect x="'+x1.toFixed(1)+'" y="'+(y+2.5)+'" width="'+(x2-x1).toFixed(1)+'" height="'+(RH-6)+'" rx="3.5" fill="'+r.col+'" opacity=".85"/>'
-      +(r.v?'<text x="'+(W-4)+'" y="'+(y+9.5)+'" text-anchor="end" font-size="8.4" fill="#6B6355">'+A4ESC(r.v)+'</text>':'');
+      +(r.v?'<text x="'+(W-4)+'" y="'+(y+10.5)+'" text-anchor="end" font-size="9.4" fill="#6B6355">'+A4ESC(r.v)+'</text>':'');
   });
   const svg='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block">'+g+'</svg>';
 
@@ -11529,8 +11657,9 @@ function a4FamilySheet(){
     <div class="a4-note" style="margin:-3px 0 6px">แถบแต่ละเส้นคือช่วงอายุที่รายการนั้น "ยังมีอยู่จริง" ตามที่กรอกไว้ —
       เส้นจบตรงไหน แปลว่าปีนั้นเงินก้อนนั้นหายไปจากงบ นี่คือจุดที่แผนมักพลิก</div>
     ${svg}
-    <div class="a4-sec" style="margin-top:11px">เหตุการณ์สำคัญรายปี</div>
-    <table class="a4-batbl"><thead><tr><th class="n">ปี พ.ศ.</th><th class="n">อายุ${A4ESC(c.name||'')}</th>
+    <div class="a4-note a4-k" style="margin-top:8px">เหตุการณ์รายปีทั้งหมดอยู่ในคอลัมน์ขวาสุดของตารางกระแสเงินสดล่วงหน้า (หน้า V)</div>
+    <div class="a4-sec a4-x" style="margin-top:11px">เหตุการณ์สำคัญรายปี</div>
+    <table class="a4-batbl a4-x"><thead><tr><th class="n">ปี พ.ศ.</th><th class="n">อายุ${A4ESC(c.name||'')}</th>
       ${deps.map(d=>`<th class="n">อายุ${A4ESC(d.name||'')}</th>`).join('')}<th>เกิดอะไรขึ้น</th></tr></thead>
       <tbody>${evRows}</tbody></table>
     <div class="a4-note">ปีที่ไม่มีในตาราง คือปีที่ไม่มีอะไรเปลี่ยน — รายรับรายจ่ายเดินตามเดิม</div>
@@ -11847,7 +11976,7 @@ function a4PolicyTable(){
     const done=my&&my<a4BeYear();
     return {prem, html:`<tr>
       <td><b style="color:#1C1C2E">${A4ESC(sp.head)}</b>${chip}
-        <div style="color:#9A8E6E;font-size:8.4px;margin-top:1px">${A4ESC(p.company||'')}${p.no?' · เลขที่ '+A4ESC(p.no):''}${p.saleAge?' · ทำตอนอายุ '+A4ESC(String(p.saleAge)):''}${p.start?' · เริ่ม '+A4ESC(p.start):''}${done?' · <b style="color:#8A3A32">ครบสัญญาแล้ว</b>':''}</div></td>
+        <div style="color:#9A8E6E;font-size:9.5px;margin-top:1px">${A4ESC(p.company||'')}${p.no?' · เลขที่ '+A4ESC(p.no):''}${p.saleAge?' · ทำตอนอายุ '+A4ESC(String(p.saleAge)):''}${p.start?' · เริ่ม '+A4ESC(p.start):''}${done?' · <b style="color:#8A3A32">ครบสัญญาแล้ว</b>':''}</div></td>
       <td class="n">${num(prem)}</td>
       ${COLS.map(col=>`<td class="n">${num(col.g(p))}</td>`).join('')}
       <td class="n" style="font-weight:400;color:#6B6355">${py||'—'}</td>
@@ -11870,7 +11999,7 @@ function a4PolicyTable(){
   gDeps.forEach(g=>{ tot.prem+=g.tot.prem; COLS.forEach(col=>{ tot[col.k]+=g.tot[col.k]; }); });
   const grand=depList.length?`<tr class="grand"><td>รวมทั้งบ้าน (เบี้ยที่จ่ายจริงต่อปี)</td><td class="n">${A4N(tot.prem)}</td>
       ${COLS.map(col=>`<td class="n">${A4N(tot[col.k])}</td>`).join('')}<td colspan="2"></td></tr>`:'';
-  return `<div style="overflow-x:auto"><table class="a4-rt" style="font-size:8.4px"><thead><tr>
+  return `<div style="overflow-x:auto"><table class="a4-rt a4-poltbl"><thead><tr>
       <th>กรมธรรม์</th><th class="n">เบี้ยปีนี้</th>
       ${COLS.map(col=>`<th class="n">${col.h}</th>`).join('')}
       <th class="n">จ่ายถึง</th><th class="n">ครบสัญญา</th></tr></thead>
@@ -12265,9 +12394,249 @@ function openA4(){
   try{ renderA4Summary(); }catch(e){ console.warn('renderA4 failed', e); }
   try{ a4Extras(); }catch(e){ console.warn('a4Extras failed', e); }
   try{ a4Tail(); }catch(e){ console.warn('a4Tail failed', e); }
+  try{ a4Minimal(); }catch(e){ console.warn('a4Minimal failed', e); }
   document.getElementById('a4Overlay').classList.add('on');
   /* ต้องวัดหลังจากแสดงผลแล้ว (ตอนซ่อนอยู่ scrollHeight = 0) */
   requestAnimationFrame(()=>{ try{ a4FitSheets(); }catch(e){ console.warn('a4Fit failed',e); } });
+}
+
+/* ═══════════ v3.9.68 · รายงานฉบับย่อ + อ่านได้ชัดทุกหน้า (อ้อย 27 ก.ย. 69) ═══════════
+   1) a4Minimal(): คำอธิบายยาวในรายงาน → ซ่อน (ฉบับเต็มยังมี) หรือแทนด้วย key highlight บรรทัดเดียว
+   2) a4FontFloor(): ตัวอักษรในรายงานไม่ต่ำกว่า 9.5px (≈7pt) — ยกเว้นตัวอักษรในกราฟ SVG
+   3) a4Paginate(): แผ่นที่ยาวเกินกระดาษ → ตัดไปแผ่นถัดไป (ตารางตัดทีละแถวพร้อมหัวตารางซ้ำ)
+      แทนการย่อทั้งแผ่นจนเหลือ 55% แบบเดิม */
+let A4_FULL=false;
+function a4ToggleFull(){ A4_FULL=!A4_FULL;
+  const b=document.getElementById('a4FullBtn'); if(b) b.textContent=A4_FULL?'📚 ฉบับเต็ม (ที่ปรึกษา)':'📄 ฉบับย่อ (ลูกค้า)';
+  openA4(); }
+const A4_MIN_RULES=[
+  [/^แถบแต่ละเส้นคือช่วงอายุ/, null],
+  [/^ปีที่ไม่มีในตาราง/, null],
+  [/^วันนี้ = ยอดจริง/, '<b>วันนี้</b> = ยอดจริงตอนนี้ · <b>ตามแผน</b> = หลังทำตามข้อเสนอ · ช่องขวาเขียนทับได้เฉพาะบรรทัดที่ไม่ตรง · <b style="color:#B5453E">บรรทัดแดง = รายการที่แผนยังไม่ได้นับ</b>'],
+  [/^ตัวเลขกลางคือยอดที่ใช้คำนวณ/, 'ช่องขวาเว้นไว้เขียนยอดจริงทับ — เฉพาะบรรทัดที่ไม่ตรง · <b style="color:#B5453E">บรรทัดแดง = รายการที่แผนยังไม่ได้นับ</b>'],
+  [/^เงินเหลือทั้งก้อนถูกนำไปลงทุน/, null],
+  [/^อ้างอิงชุดอัตราส่วนมาตรฐาน/, 'เกณฑ์เป็นช่วงที่ใช้กันทั่วไป ไม่ใช่กฎตายตัว'],
+  [/^เรียงจากยอด \(L5/, 'หลักของพีระมิด: <b>ชั้นล่างต้องครบก่อน จึงขึ้นชั้นบน</b>'],
+  [/^"ต้องการ" คิดแบบ Needs Approach/, '"ต้องการ" = ภาระหนี้ + ค่าครองชีพครอบครัว + ทุนการศึกษาบุตร − ทรัพย์สินและทุนที่มีอยู่'],
+  [/^ทุนคุ้มครองที่นับเข้าแผน/, n=>'ปีเป็น พ.ศ. · “—” = เล่มนั้นไม่มีผลประโยชน์ประเภทนั้น · เบี้ยของผู้อยู่ในอุปการะนับเป็นรายจ่ายของบ้าน'
+      +(n.querySelector('.a4-nc')?' · <span class="a4-nc nw">ใหม่</span> = เล่มที่แผนเสนอ · <span class="a4-nc">ปรับ</span> = เล่มเดิมที่แผนปรับ':'')],
+  [/^"มูลค่าวันนี้" คือราคาที่กรอกไว้/, n=>{ const h=n.innerHTML, i=h.indexOf('งบที่มีจริงตอนนี้'); return i>=0?h.slice(i):null; }],
+  [/^ผลตอบแทนรายสินทรัพย์เป็นตัวเลข/, 'ผลตอบแทนเป็นสมมติฐาน ไม่ใช่ผลตอบแทนที่รับประกัน'],
+  [/^"เพดานที่เหลือ"/, n=>{ const b=n.querySelector('b'); return 'กลุ่มเกษียณ (บำนาญ + RMF + SSF + PVD) รวมไม่เกิน 500,000'+(b?' — เหลือ <b>'+b.textContent+'</b> บาท':'')+' · ไม่จำเป็นต้องใช้เต็มทุกช่อง'; }],
+  [/^"ต้องมี ณ ปีนั้น" ปรับเงินเฟ้อ/, null],
+  [/^เพดานทุกช่องอ่านจากไฟล์กฎ/, null],
+  [/^ยังไม่ได้ตั้งภาพ "ก่อนปรับ"/, null],
+  [/^ทั้งสองเส้นคิดด้วยสูตร/, 'ประมาณการผลตอบแทนคงที่ ไม่รวมความผันผวนตลาด'],
+  [/^แต่ละข้อคือการตัดสินใจ/, null],
+  [/^ข้อความชุดนี้ที่ปรึกษาเขียนไว้/, null],
+  [/^แถบเขียว ≥100%/, 'เขียว ≥100% พร้อม · เหลือง 60–99% ใกล้ครบ · แดง <60% ควรเร่ง'],
+  [/^เลขโรมันบนหัวทุกหน้า/, null],
+  [/^สินทรัพย์ลงทุนในงบดุลรวม/, null],
+  [/^"มีแล้ว" นับเฉพาะสินทรัพย์/, null],
+  [/^รายจ่ายที่ใช้คำนวณ แยกไว้ทีละบรรทัด/, 'ยอดรายจ่ายแยกบรรทัดอยู่หน้า <b>II</b> — เขียนแก้เฉพาะบรรทัดที่ไม่ตรงได้เลย'],
+  [/^ข้อที่เป็นการ “ยืนยันตัวเลข”/, null],
+  [/^สมมติฐานทั้งหมดที่ใช้ในแผน/, null],
+  [/^อ่านหน้านี้ก่อนตัดสินใจ/, 'ตัวเลขในแผนมาจากสองแหล่ง — คำตอบขยับตาม “สมมติฐาน” มากกว่า “ข้อมูลจริง”'],
+  [/^โอกาสที่แผนสำเร็จ/, n=>{ const b=n.querySelector('b'); return b?('<b>'+b.textContent+'</b> — จำลอง 2,000 รอบ · ตัวเลขในตารางเป็นเส้นทางกลาง ไม่ใช่คำรับประกัน'):null; }],
+  [/^หน้านี้ไม่ได้แปลว่าแผนไม่ดี/, 'ทุกแผนมีขอบเขต — ทบทวนรายการนี้ทุกปีพร้อมแผน'],
+  [/^คอลัมน์ขวาสุดคือเหตุการณ์/, null],
+  [/^ผลลัพธ์: /, null]            /* เวอร์ชันสั้นอยู่ใน a4RetireResult() แล้ว */
+];
+function a4Minimal(){
+  const host=document.getElementById('a4Summary'); if(!host) return;
+  host.classList.toggle('a4-full', !!A4_FULL);
+  host.querySelectorAll('.a4-note').forEach(n=>{
+    if(n.classList.contains('a4-k')||n.classList.contains('a4-x')) return;
+    const t=(n.textContent||'').replace(/\s+/g,' ').trim();
+    for(const [re,act] of A4_MIN_RULES){
+      if(!re.test(t)) continue;
+      n.classList.add('a4-x');
+      let h=(typeof act==='function')?act(n):act;
+      if(h){ const k=n.cloneNode(false); k.classList.remove('a4-x'); k.classList.add('a4-k'); k.innerHTML=h; n.after(k); }
+      /* หัวข้อที่เหลือแต่หัว (เช่น "อ่านรายงานนี้อย่างไร") ซ่อนไปด้วย */
+      const pv=n.previousElementSibling;
+      if(!h && pv && pv.classList.contains('a4-sec') && (!n.nextElementSibling || n.nextElementSibling.classList.contains('a4-sec'))) pv.classList.add('a4-x');
+      break;
+    }
+  });
+  /* แผนลงมือ: เหตุผลย่อย "↳" ของลำดับความสำคัญเก็บไว้ฉบับเต็ม */
+  host.querySelectorAll('.a4-sheet div').forEach(d=>{ if(!d.children.length && /^↳/.test(d.textContent||'')) d.classList.add('a4-x'); });
+}
+function a4FontFloor(){
+  const host=document.getElementById('a4Summary'); if(!host) return;
+  const MIN=9.5;
+  host.querySelectorAll('*').forEach(e=>{
+    if(e.closest('svg')) return;
+    let own=false; for(const n of e.childNodes){ if(n.nodeType===3 && n.nodeValue.trim()){ own=true; break; } }
+    if(!own) return;
+    const fs=parseFloat(getComputedStyle(e).fontSize)||0;
+    if(fs && fs<MIN) e.style.fontSize=MIN+'px';
+  });
+}
+/* v3.9.71 · ตารางที่ถูกตัดข้ามแผ่น ต้องมีคอลัมน์ตรงกันทุกแผ่น (อ้อย: อ่านต่อเนื่องได้)
+   วัดความกว้างจากตารางเต็มก่อนตัด แล้วตรึงเป็น % ด้วย <colgroup> + table-layout:fixed
+   ส่วนที่ถูกโคลนไปแผ่นถัดไปพา colgroup ติดไปด้วย จึงกว้างเท่ากันทุกแผ่น */
+function a4LockCols(tbl){
+  if(!tbl || tbl.dataset.colLock) return;
+  const rows=[...tbl.rows];
+  let ref=null;
+  for(const r of rows){ if([...r.cells].every(c=>(c.colSpan||1)===1) && r.offsetParent!==null){ if(!ref||r.cells.length>ref.cells.length) ref=r; } }
+  if(!ref||!ref.cells.length) return;
+  const ws=[...ref.cells].map(c=>c.getBoundingClientRect().width), tot=ws.reduce((a,b)=>a+b,0);
+  if(!(tot>0)) return;
+  const old=tbl.querySelector(':scope > colgroup'); if(old) old.remove();
+  const cg=document.createElement('colgroup');
+  ws.forEach(w=>{ const col=document.createElement('col'); col.style.width=(w/tot*100).toFixed(3)+'%'; cg.appendChild(col); });
+  tbl.insertBefore(cg, tbl.firstChild);
+  tbl.style.tableLayout='fixed'; tbl.style.width='100%';
+  tbl.dataset.colLock='1';
+}
+function a4Paginate(){
+  const host=document.getElementById('a4Summary'); if(!host) return;
+  const MM=96/25.4, RUN=30;
+  let guard=0;
+  for(let si=0; si<host.children.length; si++){
+    if(++guard>300) break;
+    const sh=host.children[si];
+    if(!sh.classList.contains('a4-sheet')||sh.querySelector('.a4-cover')) continue;
+    const inner=a4Fit(sh); inner.style.transform=''; inner.style.width='';
+    const cs=getComputedStyle(sh);
+    const PH=(sh.classList.contains('a4-land')?210:297)*MM;
+    const avail=PH-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-RUN-4;
+    if(inner.scrollHeight<=avail/0.95) continue;       /* ล้นไม่เกิน 5% → ย่อเล็กน้อยแทนการแยกแผ่น (ตัวอักษรยัง ≥ 9px) */
+    const top0=inner.getBoundingClientRect().top;
+    const kids=[...inner.children].filter(k=>getComputedStyle(k).display!=='none');
+    const idx=kids.findIndex(k=>k.getBoundingClientRect().bottom-top0>avail);
+    if(idx<0) continue;
+    const k=kids[idx];
+    /* กล่องธรรมดาที่ข้างในมีหลายชิ้น → แกะออกมาให้ตัดทีละชิ้นได้ */
+    if(k.tagName==='DIV' && getComputedStyle(k).display==='block' && k.children.length>1
+       && !k.classList.contains('a4-ptitle') && !k.querySelector(':scope > .a4-ptitle')){
+      while(k.firstChild) k.parentNode.insertBefore(k.firstChild,k); k.remove(); si--; continue; }
+    const tbl = k.tagName==='TABLE' ? k : ((k.children.length===1 && k.firstElementChild.tagName==='TABLE') ? k.firstElementChild : null);
+    let head=null;                                   /* สิ่งที่ย้ายไปแผ่นใหม่ */
+    if(tbl && tbl.tBodies[0]){
+      a4LockCols(tbl);                                /* v3.9.71: ล็อกความกว้างคอลัมน์ก่อนตัด — ทุกแผ่นที่ต่อกันคอลัมน์ตรงกัน */
+      const rows=[...tbl.tBodies[0].rows];
+      let cut=rows.findIndex(r=>r.getBoundingClientRect().bottom-top0>avail);
+      while(cut>0 && rows[cut].querySelector('td.sub')) cut--;        /* แถวคำอธิบายต้องอยู่กับแถวแม่ */
+      while(cut>0 && rows[cut-1].classList.contains('own')) cut--;   /* หัวกลุ่มต้องไม่ค้างท้ายแผ่น */
+      if(cut>0){
+        const clone=k.cloneNode(true);
+        const ct=(clone.tagName==='TABLE')?clone:clone.firstElementChild;
+        const crow=[...ct.tBodies[0].rows]; crow.slice(0,cut).forEach(r=>r.remove());
+        rows.slice(cut).forEach(r=>r.remove());
+        head=clone;
+      }
+    }
+    const nsh=document.createElement('div'); nsh.className=sh.className;
+    const ninner=document.createElement('div'); ninner.className='a4-fit'; nsh.appendChild(ninner);
+    const pt=inner.querySelector(':scope > .a4-ptitle');
+    if(pt){ const c2=pt.cloneNode(true); const t=c2.querySelector('.t'); if(t) t.textContent=t.textContent.replace(/\s*\(ต่อ\)$/,'')+' (ต่อ)'; ninner.appendChild(c2); }
+    let from;
+    if(head){ ninner.appendChild(head); from=idx+1; }
+    else{
+      from=idx;
+      while(from>0 && kids[from-1].classList.contains('a4-sec')) from--;   /* หัวข้อไปพร้อมเนื้อหา */
+      const firstBody=kids.findIndex(x=>!x.classList.contains('a4-ptitle'));
+      if(from<=firstBody) continue;                     /* ชิ้นเดียวใหญ่เกินกระดาษ — ปล่อยให้ย่อ */
+    }
+    kids.slice(from).forEach(x=>ninner.appendChild(x));
+    sh.after(nsh);
+  }
+}
+/* ── ตารางกระแสเงินสดล่วงหน้า (รายงาน) — ชุดตัวเลขเดียวกับตารางหน้าเว็บ renderProjectionTable ── */
+function a4CfTable(pf, EVBY, EVBE){
+  const rows=(pf&&pf.rows)||[]; if(!rows.length) return '';
+  const f0=n=>Math.round(Math.abs(Number(n)||0)).toLocaleString('en-US');
+  const sg=(v)=>`${v>=0?'+':'−'}${f0(v)}`;
+  const DCF=(STATE.snap&&STATE.snap.detail&&STATE.snap.detail.cashflow)||{};
+  const SV=DCF.savings||{};
+  const svPlanHas=k=>Array.isArray(DCF.savingsPlan)&&DCF.savingsPlan.some(r=>(r.k||'rmf')===k);
+  const svYear=(k,age)=>{ const pl=(typeof savingPlanAt==='function')?savingPlanAt(k,age):null; return (pl!=null)?Number(pl)||0:(Number(SV[k])||0)*12; };
+  const svKeys=['normal','retire','rmf','tesg'].filter(k=>(Number(SV[k])||0)>0||svPlanHas(k));
+  const svEx=(Array.isArray(DCF.savingExtra)?DCF.savingExtra:[]).filter(x=>Number(x&&x.monthly)>0)
+    .map(x=>({m:Number(x.monthly)||0,f:Number(x.startAge)||0,t:Number(x.endAge)||0}));
+  const svAt=age=>svKeys.reduce((a,k)=>a+svYear(k,age),0)+svEx.reduce((a,x)=>a+(((!x.f||age>=x.f)&&(!x.t||age<=x.t))?x.m*12:0),0);
+  const hasSv=svKeys.length||svEx.length;
+  /* เป้าหมาย: รวมเป็นกลุ่มแบบเดียวกับหน้าเว็บ (ทริปหลายครั้ง = บรรทัดเดียว · ค่าเทอม = ต่อลูกหนึ่งคน) */
+  const GS=STATE.goals||[], DEPS=STATE.dependents||[]; const gById={}; GS.forEach(g=>{ gById[g.id]=g; });
+  const gKey=g=>{ if(!g) return {k:'?',nm:'เป้าหมายอื่น'};
+    if(g.eduKid){ const d=DEPS.find(x=>x.id===g.eduKid); const kn=d?String(d.name||''):''; return {k:'edu:'+g.eduKid, nm:'ค่าเทอม'+(kn?' '+kn:'')}; }
+    const base=String(g.name||'').split(/\s*·\s*ครั้งที่|\s*\(ปีที่|\s*·\s*/)[0].trim(); return {k:'n:'+base, nm:base}; };
+  const grp={}, order=[];
+  (pf.lumps||[]).forEach(l=>{ const g=gById[l.gid]; const K=gKey(g);
+    if(!grp[K.k]){ grp[K.k]={nm:K.nm, rank:(g&&g.rank!=null)?+g.rank:1e9, first:l.age, byAge:{}}; order.push(K.k); }
+    const G=grp[K.k]; G.rank=Math.min(G.rank,(g&&g.rank!=null)?+g.rank:1e9); G.first=Math.min(G.first,l.age);
+    G.byAge[l.age]=(G.byAge[l.age]||0)+(Number(l.amt)||0); });
+  order.sort((a,b)=>(grp[a].rank-grp[b].rank)||(grp[a].first-grp[b].first));
+  let cols=order.map((k,i)=>({h:'เป้าหมาย '+(i+1), nm:grp[k].nm, at:a=>grp[k].byAge[a]||0}));
+  if(cols.length>4){ const rest=order.slice(3); cols=cols.slice(0,3).concat([{h:'เป้าหมาย 4–'+order.length, nm:'อื่น ๆ ('+rest.length+' รายการ)', at:a=>rest.reduce((t,k)=>t+(grp[k].byAge[a]||0),0)}]); }
+  const cut=(t,n)=>{ t=String(t||''); return t.length>n?t.slice(0,n-1)+'…':t; };
+  const cs=STATE.carriers||[], a0=Number((cs[0]||{}).age)||0;
+  const ageTxt=age=>cs.length>1?cs.map(c=>String(age-(a0-(Number(c.age)||0)))).join(' / '):String(age);
+  const th=`<tr><th class="l">อายุ${cs.length>1?'<small>'+cs.map(c=>A4ESC(shortName(c))).join(' / ')+'</small>':''}</th><th class="l">พ.ศ.</th>
+      <th>รายรับ</th><th>รายจ่าย</th>${hasSv?'<th>เงินออม<small>จ่ายตัวเองก่อน</small></th>':''}
+      <th class="pre">เงินสด<small>ก่อนเป้าหมาย</small></th>
+      ${cols.map(c=>`<th>${c.h}<small>${A4ESC(cut(c.nm,16))}</small></th>`).join('')}
+      <th class="post">เงินสด<small>หลังเป้าหมาย</small></th><th>พอร์ตปลายปี</th><th class="l">เหตุการณ์ปีนี้</th></tr>`;
+  const tb=rows.map(r=>{ const sv=hasSv?svAt(r.age):0;
+    const pre=(r.income||0)-(r.expense||0)-sv, post=(r.net||0)-sv, out=(r.shortCum||0)>0;
+    const evs=(EVBY&&EVBY[r.age])||[];
+    return `<tr${out?' class="cf-out"':''}><td class="l">${ageTxt(r.age)}</td><td class="l" style="color:#A79C80">${EVBE?EVBE(r.age):''}</td>
+      <td>${f0(r.income)}</td><td>${f0(r.expense)}</td>${hasSv?`<td>${sv>0?'−'+f0(sv):'<span class="z">—</span>'}</td>`:''}
+      <td class="pre" style="color:${pre>=0?'#3F6B52':'#B5453E'}">${sg(pre)}</td>
+      ${cols.map(c=>{ const v=c.at(r.age); return v>0?`<td class="g">−${f0(v)}</td>`:'<td class="z">—</td>'; }).join('')}
+      <td class="post" style="color:${post>=0?'#3F6B52':'#B5453E'}">${sg(post)}</td>
+      <td class="bal">${f0(r.balance)}${out?'<span class="cf-tag">เงินหมด</span>':''}</td>
+      <td class="ev">${evs.map(A4ESC).join(' · ')}</td></tr>`; }).join('');
+  return `<table class="a4-cft"><thead>${th}</thead><tbody>${tb}</tbody></table>
+    <div class="a4-note a4-k" style="margin-top:8px">เงินออมไหลเข้าพอร์ต ไม่ได้หายไปไหน · เงินสดหลังเป้าหมายติดลบ = ปีนั้นดึงจากพอร์ต · <b style="color:#B5453E">แถวชมพู = ปีที่พอร์ตหมดแล้ว</b> · ประมาณการผลตอบแทนคงที่</div>
+    <div class="a4-note a4-x" style="margin-top:8px">ลำดับคอลัมน์แบบ CFP: รายรับ − รายจ่าย − เงินออม (จ่ายตัวเองก่อน) = <b>เงินสดก่อนเป้าหมาย</b> − เงินก้อนตามเป้าหมาย = <b>เงินสดหลังเป้าหมาย</b>
+      · พอร์ตปลายปี = พอร์ตต้นปี + เงินออม + เงินสดหลังเป้าหมาย${rows.some(r=>(r.pvdIn||0)>0)?' + เงินสะสม PVD':''} + ผลตอบแทน
+      · เป้าหมายรวมเป็นกลุ่มแบบเดียวกับหน้าเว็บ (ทริปหลายครั้ง = คอลัมน์เดียว · ค่าเทอม = ต่อลูกหนึ่งคน)${cols.length&&order.length>4?' · เกิน 4 กลุ่ม รวมกลุ่มที่ 4 เป็นต้นไปไว้คอลัมน์เดียว':''}
+      · เหตุการณ์อ่านจากช่วงอายุชุดเดียวกับไทม์ไลน์หน้า I · แถวชมพู = ปีที่พอร์ตหมดแล้ว ตัวเลขรายรับรายจ่ายยังเป็นค่าปกติ · ประมาณการผลตอบแทนคงที่ ไม่รวมความผันผวนตลาด</div>`;
+}
+
+/* v3.9.69 · ตารางเป้าหมายฉบับย่อ — รวมกลุ่มแบบหน้าเว็บ (ทริปหลายครั้ง = แถวเดียว · ค่าเทอม = แถวละลูกหนึ่งคน รายละเอียดอยู่หน้า VI) */
+function a4GoalTableMin(){
+  let gr=[]; try{ gr=goalRows()||[]; }catch(e){ return ''; }
+  const rows=gr.filter(r=>!/^🛡/.test(r.name||'')); if(!rows.length) return '';
+  const GS=STATE.goals||[], DEPS=STATE.dependents||[];
+  let dep=null; try{ dep=(HENG.proForma()||{}).depleteAge; }catch(e){}
+  const grp={}, order=[];
+  /* เกษียณ: แถวละคน จาก retHouseholdPlan (เดิม goalRows มีแค่ผู้วางแผนคนแรก) */
+  try{ const H=retHouseholdPlan(); (H.per||[]).forEach(x=>{ const key='ret:'+x.c.id;
+      grp[key]={label:'เกษียณ · '+shortName(x.c), note:'', need:x.a.target||0, have:x.a.expected||0, gap:Math.max(0,x.a.gap||0), pmt:(x.a.gap>0?x.a.monthly:0)||0, ages:[x.a.retAge], n:1, ret:true}; order.push(key); }); }catch(e){}
+  const hasRet=order.length>0;
+  rows.forEach(r=>{
+    const nm=String(r.name||'');
+    if(r.goalId==='retire' && hasRet) return;
+    const g=(r.gid!=null)?GS.find(x=>String(x.id)===String(r.gid)):null;
+    let key, label, note='';
+    if(r.goalId==='retire' || !g){ key='r:'+nm; label=nm.replace(/^[^฀-๿a-zA-Z0-9]+\s*/,''); }
+    else if(g.eduKid){ const d=DEPS.find(x=>x.id===g.eduKid); key='edu:'+g.eduKid; label='ค่าเทอม · '+((d&&d.name)||'บุตร'); note='รายชั้นดูหน้า VI'; }
+    else { const base=String(g.name||'').split(/\s*·\s*ครั้งที่|\s*\(ปีที่/)[0].trim(); key='n:'+base; label=base; }
+    if(!grp[key]){ grp[key]={label, note, need:0, have:0, gap:0, pmt:0, ages:[], n:0}; order.push(key); }
+    const G=grp[key]; G.need+=Number(r.need)||0; G.have+=Number(r.have)||0; G.gap+=Math.max(0,Number(r.gap)||0); G.pmt+=Number(r.pmt)||0; G.n++;
+    const age=g?Number(g.age):(r.goalId==='retire'?Number(r.retAge):NaN); if(isFinite(age)&&age) G.ages.push(age);
+  });
+  const out=order.map((k,i)=>{ const G=grp[k];
+    const a1=G.ages.length?Math.min(...G.ages):null, a2=G.ages.length?Math.max(...G.ages):null;
+    const okY=G.ret?true:((dep==null)||(a2==null)||(a2<dep));
+    return `<tr><td class="n" style="color:#9A8E6E">${i+1}</td>
+      <td><b style="color:#1C1C2E">${A4ESC(G.label)}</b>${G.n>1||G.note?`<div style="color:#8A8272;font-size:9.5px">${G.n>1?G.n+' รายการ':''}${G.n>1&&G.note?' · ':''}${G.note}</div>`:''}</td>
+      <td class="n">${a1==null?'—':(a1===a2?a1:a1+'–'+a2)}</td>
+      <td class="n">${A4N(G.need)}</td><td class="n" style="color:#2F5E48">${A4N(G.have)}</td>
+      <td class="n" style="color:${G.gap>0?'#B5453E':'#2F5E48'}">${G.gap>0?A4N(G.gap):'ครบ ✓'}</td>
+      <td class="n">${G.pmt>0?A4N(G.pmt):'—'}</td>
+      <td>${G.ret?(dep?'<span style="color:#B5453E">เงินหมดอายุ '+dep+'</span>':'<span style="color:#2F5E48">พอถึงสิ้นแผน ✓</span>'):(a1==null?'—':(okY?'<span style="color:#2F5E48">แผนมีเงินจ่าย ✓</span>':'<span style="color:#B5453E">เงินไม่พอบางปี</span>'))}</td></tr>`; }).join('');
+  const sumPmt=order.reduce((t,k)=>t+grp[k].pmt,0);
+  let f=null; try{ f=computeFinancials(); }catch(e){}
+  const budget=Math.max(0,(f&&f.surplus)||0);
+  return `<table class="a4-batbl"><thead><tr><th class="n">#</th><th>เป้าหมาย</th><th class="n">อายุ</th><th class="n">ต้องมี</th><th class="n">มีแล้ว</th><th class="n">ยังขาด</th><th class="n">ออม/เดือน</th><th>สถานะ</th></tr></thead>
+    <tbody>${out}<tr class="hi"><td colspan="6">รวมต้องออมต่อเดือน (ทุกเป้าหมายพร้อมกัน)</td><td class="n">${A4N(sumPmt)}</td><td></td></tr></tbody></table>
+    <div class="a4-note">งบที่มีตอนนี้ ${A4N(budget)} บาท/เดือน — ${sumPmt<=budget?'<b style="color:#3F6B52">พอทุกเป้าหมาย</b>':'<b style="color:#B5453E">ยังไม่พอทุกเป้าหมายพร้อมกัน ต้องเรียงลำดับ</b>'}</div>`;
 }
 /* สั่งพิมพ์จากเมนูเบราว์เซอร์ (Ctrl+P) ก็ต้องพอดีหน้าเหมือนกัน */
 window.addEventListener('beforeprint',()=>{ try{ a4FitSheets(); }catch(e){} });
@@ -12412,7 +12781,7 @@ function renderA4Summary(){
     :`<div class="a4-note" style="margin:-3px 0 7px">ตัวเลขกลางคือยอดที่ใช้คำนวณแผนฉบับนี้ · <b>ช่องขวาเว้นไว้ให้เขียนยอดจริงทับ</b>
       เขียนเฉพาะบรรทัดที่ไม่ตรง ไม่ต้องเขียนใหม่ทั้งหมด · <b style="color:#B5453E">บรรทัดสีแดงท้ายตารางคือรายการที่แผนยังไม่ได้นับไว้เลย</b>
       ถ้ามีจ่ายจริงช่วยเขียนยอดมาด้วย — แผนทั้งฉบับคำนวณจากตารางสองชุดนี้</div>`}
-    <div class="a4-2col">
+    <div class="a4-stack">
       <div><div class="a4-sec" style="margin-top:0">งบดุล${nowBS?'':sameNote}</div>${mrgBS}</div>
       <div><div class="a4-sec" style="margin-top:0">งบกระแสเงินสด — ต่อเดือน${nowCF?'':(befCF?' — แผนไม่ได้เปลี่ยนอะไรเลย':'')}</div>${mrgCF}</div>
     </div>
@@ -12433,30 +12802,23 @@ function renderA4Summary(){
   const EVBY=(function(){ try{ const X=a4TimeAxis(); return (X&&X.byAge)||{}; }catch(e){ console.warn('a4TimeAxis',e); return {}; } })();
   const EVBE=(function(){ try{ const cc=(STATE.carriers||[])[0]||{}; const a=Number(cc.age)||0;
     const y=a4BeYear(); return function(age){ return y+(Number(age)-a); }; }catch(e){ return function(){ return ''; }; } })();
+  /* v3.9.68: แผนเกษียณ = แผ่นตั้ง (สรุปแบบครัวเรือน) · ตารางกระแสเงินสด = แผ่นนอน เรียงแบบ CFP
+     รายรับ → รายจ่าย → เงินออม → เงินสดก่อนเป้าหมาย → เป้าหมาย 1,2,3 → เงินสดหลังเป้าหมาย → พอร์ตปลายปี
+     ตารางยาวถูก a4Paginate() ตัดต่อแผ่นให้เอง พร้อมหัวตารางซ้ำ */
   const yearSheets=[];
-  { const rowsAll=pf.rows||[]; const RPP=Math.max(18, Math.ceil(rowsAll.length/Math.max(1,Math.ceil(rowsAll.length/20))));
-    for(let i=0;i<rowsAll.length;i+=RPP){ const chunk=rowsAll.slice(i,i+RPP);
-      const trs=chunk.map(r=>{ const evs=EVBY[r.age]||[];
-        return `<tr${(r.shortCum||0)>0?' class="cf-out"':''}><td>${r.age}</td><td class="cf-yr">${EVBE(r.age)}</td><td style="text-align:right">${f0(r.income)}</td><td style="text-align:right">${f0(r.expense)}</td><td style="text-align:right">${r.lump>0?f0(r.lump):'—'}</td><td style="text-align:right;color:${r.net>=0?'#3F6B52':'#B5453E'}">${r.net>=0?'+':'−'}${f0(Math.abs(r.net))}</td><td style="text-align:right;font-weight:700">${f0(r.balance)}${(r.shortCum||0)>0?'<span class="cf-tag">เงินหมดแล้ว</span>':''}</td><td class="cf-ev">${evs.length?('<span class="cf-pin"></span>'+evs.map(A4ESC).join(' · ')):''}</td></tr>`; }).join('');
-      yearSheets.push(`<div class="a4-sheet"><div class="a4-ptitle"><span class="n">V</span><span class="t">แผนเกษียณ${i===0?'':' · กระแสเงินสดล่วงหน้ารายปี'}${rowsAll.length>RPP?` (${Math.floor(i/RPP)+1}/${Math.ceil(rowsAll.length/RPP)})`:''}</span><span class="ref">หน้า V ในเครื่องมือ</span></div>
-        ${i===0?((function(){ try{ return a4RetireBlock(); }catch(e){ console.warn('a4RetireBlock',e); return ''; } })()+'<div class="a4-sec" style="margin-top:11px">กระแสเงินสดล่วงหน้ารายปี</div>'):''}
-        <table class="a4-gtbl cf-pin-tbl" style="font-size:8.8px"><thead><tr><th>อายุ</th><th>ปี พ.ศ.</th><th style="text-align:right">รายรับ/ปี</th><th style="text-align:right">รายจ่าย/ปี</th><th style="text-align:right">เงินก้อนเป้าหมาย</th><th style="text-align:right">สุทธิ</th><th style="text-align:right">พอร์ตปลายปี</th><th>เกิดอะไรขึ้นปีนี้</th></tr></thead><tbody>${trs}</tbody></table>
-        <div class="a4-note"><b>คอลัมน์ขวาสุดคือเหตุการณ์ที่ทำให้ตัวเลขปีนั้นขยับ</b> — เริ่ม/สิ้นสุดรายได้ · งวดสุดท้ายของหนี้ ·
-          เบี้ยงวดสุดท้ายและครบสัญญาของแต่ละกรมธรรม์ · เงินก้อนตามเป้าหมาย — ทั้งหมดอ่านจากช่วงอายุที่กรอกไว้ในเครื่องมือ
-          ชุดเดียวกับไทม์ไลน์หน้า <b>I</b> ปีที่ช่องนี้ว่าง คือปีที่ไม่มีอะไรเปลี่ยน เดินตามปีก่อนหน้าทุกบรรทัด
-          · <b>แถวที่มีแถบสีและพื้นชมพู = ปีที่พอร์ตหมดแล้ว</b> — ตัวเลขรายรับและรายจ่ายในแถวนั้นยังเป็นค่าปกติ
-          ไม่ได้ติดลบและไม่ได้ถูกหักอะไรออก เพียงแต่ส่วนที่ขาดของปีนั้นไม่มีแหล่งเงินรองรับแล้ว
-          · เครื่องหมายลบในคอลัมน์ \u201Cสุทธิ\u201D หมายถึงรายจ่ายมากกว่ารายรับของปีนั้น ซึ่งเกิดขึ้นตั้งแต่ก่อนพอร์ตหมด
-          · ประมาณการผลตอบแทนคงที่ ไม่รวมความผันผวนตลาด</div></div>`);
-    } }
+  { let rb='', t=''; try{ rb=a4RetireBlock(); }catch(e){ console.warn('a4RetireBlock',e); }
+    try{ t=a4CfTable(pf, EVBY, EVBE); }catch(e){ console.warn('a4CfTable',e); }
+    /* สรุปเกษียณ + ตารางกระแสเงินสด อยู่แผ่นนอนเดียวกัน (เดิมแผ่นตั้งสรุปเกษียณเหลือที่ว่าง 70%) */
+    yearSheets.push(`<div class="a4-sheet a4-land"><div class="a4-ptitle"><span class="n">V</span><span class="t">แผนเกษียณ · กระแสเงินสดล่วงหน้ารายปี</span><span class="ref">หน้า V ในเครื่องมือ</span></div>
+      ${rb}${t?'<div class="a4-sec" style="margin-top:12px">กระแสเงินสดล่วงหน้ารายปี · เรียงแบบ CFP</div>'+t:''}</div>`); }
 
   /* ── ภาคผนวก: พีระมิด + ผลิตภัณฑ์ ── */
   let PD=null; try{ PD=pyramidBands(); }catch(e){}
   const sheetPyr=`<div class="a4-sheet"><div class="a4-ptitle"><span class="n">III</span><span class="t">สุขภาพการเงิน</span><span class="ref">หน้า III ในเครื่องมือ</span></div>
     ${healthRatioBlock}
-    ${PD?`<div class="a4-sec" style="margin-top:13px">พีระมิดการเงิน & ผลิตภัณฑ์ที่เหมาะ</div>
-    <table class="a4-gtbl"><thead><tr><th>ชั้น</th><th>สถานะ</th><th>ผลิตภัณฑ์ที่เหมาะ</th></tr></thead><tbody>
-      ${PD.bands.map(b=>`<tr><td style="white-space:nowrap"><b style="color:${PD.TXT[b.st]}">${b.k}</b> ${b.t}</td><td style="white-space:nowrap;font-weight:700;color:${PD.TXT[b.st]}">${PD.ST_LBL[b.st]}</td><td>${(PD.PROD[b.k]||[]).join(' · ')}</td></tr>`).join('')}
+    ${PD?`<div class="a4-sec" style="margin-top:13px">พีระมิดการเงิน<span class="a4-x"> & ผลิตภัณฑ์ที่เหมาะ</span></div>
+    <table class="a4-gtbl"><thead><tr><th>ชั้น</th><th>สถานะ</th><th class="a4-x">ผลิตภัณฑ์ที่เหมาะ</th><th class="a4-k" style="text-align:left">จุดสำคัญ</th></tr></thead><tbody>
+      ${PD.bands.map(b=>`<tr><td style="white-space:nowrap"><b style="color:${PD.TXT[b.st]}">${b.k}</b> ${b.t}</td><td style="white-space:nowrap;font-weight:700;color:${PD.TXT[b.st]}">${PD.ST_LBL[b.st]}</td><td class="a4-x">${(PD.PROD[b.k]||[]).join(' · ')}</td><td class="a4-k" style="text-align:left;color:#4A4438">${A4ESC(String(b.d||'').split(' — ')[0])}</td></tr>`).join('')}
     </tbody></table>
     <div class="a4-note">เรียงจากยอด (L5 ส่งต่อ) ลงฐาน (L1 สำรองฉุกเฉิน) — หลักของพีระมิดคือ <b>ชั้นล่างต้องครบก่อนจึงขึ้นชั้นบน</b>
       เพราะชั้นล่างคือสิ่งที่กันไม่ให้แผนพังจากเหตุการณ์เดียว ส่วนชั้นบนคือสิ่งที่ทำให้แผนโต
@@ -12486,7 +12848,7 @@ function renderA4Summary(){
         <div class="vs">${ok?`เริ่มจากเงินลงทุน ${f0(pf.startBalance||0)} บาท บวกเงินเหลือปีละ ${f0(Math.max(0,(f.surplus||0)*12))} บาท ที่ผลตอบแทน ${Math.round(preR0)}% ก่อนเกษียณ / ${Math.round(postR)}% หลังเกษียณ — ครอบคลุมทุกเป้าหมาย`:`ต้องเพิ่มผลตอบแทน ลดค่าใช้จ่าย หรือออม/ทำงานต่อ`}${(()=>{let s=null;try{s=planSuccessRate();}catch(e){}return s!=null?` · 🎯 โอกาสสำเร็จ ~${s}% (${successLabel(s)})`:'';})()}</div></div>
     </div>
     <div style="display:flex;align-items:center;gap:18px;margin:6px 0 4px">${ringSm}<div style="font-size:11.5px;color:#666;line-height:1.6">คะแนนรวมเฉลี่ยจากความพร้อมทุกด้าน — ยิ่งเข้าใกล้ 100% ยิ่งอุ่นใจ<br>โฟกัสด้านที่แถบยังสั้น (สีแดง/เหลือง) ก่อน</div></div>
-    ${radarSvg?`<div class="rep-radar">${radarSvg}</div>`:''}
+    ${radarSvg?`<div class="rep-radar a4-x">${radarSvg}</div>`:''}
     <div class="a4-sec">ความพร้อมรายด้าน</div>
     ${domBars}
     <div class="a4-note">แถบเขียว ≥100% = พร้อม · เหลือง 60–99% = ใกล้ครบ · แดง <60% = ควรเร่ง · "ต้องการ/มีแล้ว" เป็นมูลค่าที่ปรับเงินเฟ้อถึงปีเป้าหมายแล้ว</div>
@@ -12521,7 +12883,9 @@ function renderA4Summary(){
     ${(function(){ const sv=((STATE.snap&&STATE.snap.policies)||[]).reduce((t,x)=>t+((Array.isArray(x.cf)&&x.cf.length)?(Number(x.surrender)||0):0),0);
       return sv>0?`<div class="a4-note" style="margin:-4px 0 10px">สินทรัพย์ลงทุนในงบดุลรวม ${f0(invest)} บาท · ในนั้นเป็นมูลค่าเวนคืนกรมธรรม์ ${f0(sv)} บาท ที่แผน<b>ไม่นับเป็นเงินตั้งต้น</b> เพราะจะได้รับเป็นเงินก้อนตามตารางของกรมธรรม์อยู่แล้ว (กันนับซ้ำ)</div>`:''; })()}
     <div class="a4-sec">เป้าหมายทั้งหมด · เรียงตามลำดับความสำคัญ</div>
-    ${(function(){ try{ return a4GoalTable(); }catch(e){ console.warn('a4GoalTable',e); return ''; } })()||
+    ${(function(){ let m=''; try{ m=a4GoalTableMin(); }catch(e){ console.warn('a4GoalTableMin',e); }
+        let t=''; try{ t=a4GoalTable(); }catch(e){ console.warn('a4GoalTable',e); }
+        return m&&t ? '<div class="a4-k">'+m+'</div><div class="a4-x">'+t+'</div>' : t; })()||
       `<table class="a4-gtbl"><thead><tr><th>เป้าหมาย</th><th>ต้องการ (อนาคต)</th><th>สถานะ</th></tr></thead><tbody>${grows||'<tr><td colspan="3" style="text-align:center;color:#999">ยังไม่มีเป้าหมาย</td></tr>'}</tbody></table>`}
     <div class="a4-note">"มีแล้ว" นับเฉพาะสินทรัพย์ที่ติดป้ายไว้ว่าเก็บเพื่อเป้าหมายนั้น เงินก้อนที่ยังเป็นเงินสำรองทั่วไปจะไม่ถูกนับให้อัตโนมัติ
       · ช่อง "สถานะ ณ ปีที่ถึงเป้า" ตอบคนละคำถามกับ "ยังขาด" — ช่องขาดถามว่าเก็บเงินก้อนนั้นครบหรือยัง
@@ -12538,7 +12902,7 @@ function renderA4Summary(){
     <div class="a4-note" style="margin-top:6px">"ต้องการ" คิดแบบ Needs Approach = ภาระหนี้ + ค่าครองชีพที่คนข้างหลังยังต้องใช้ + ทุนการศึกษาบุตร − ทรัพย์สินและทุนที่มีอยู่แล้ว
       ไม่ใช่การคูณรายได้ตายตัว · ตัวเลขนี้จึงลดลงเองเมื่อหนี้หมดและทรัพย์สินโตขึ้น</div>
   </div>
-  ${(function(){ try{ const t=a4PolicyTable(); return t?`<div class="a4-sheet">
+  ${(function(){ try{ const t=a4PolicyTable(); return t?`<div class="a4-sheet a4-land">
       <div class="a4-ptitle"><span class="n">IV</span><span class="t">ทะเบียนกรมธรรม์ทุกเล่มที่ถืออยู่</span><span class="ref">หน้า IV ในเครื่องมือ</span></div>
       ${t}</div>`:''; }catch(e){ console.warn('a4PolicyTable',e); return ''; } })()}`;
 
@@ -12569,7 +12933,7 @@ function renderA4Summary(){
       <td style="text-align:right;white-space:nowrap;color:#B5453E;font-weight:600;font-size:10.5px;vertical-align:top">${String(a.when||'').replace(/</g,'&lt;')}</td></tr>`).join('');
   const sheetAct=actRows?`<div class="a4-sheet">
     <div class="a4-ptitle"><span class="n">X</span><span class="t">แผนการเงินองค์รวม & แผนลงมือ</span><span class="ref">หน้า X ในเครื่องมือ</span></div>
-    ${apRows?`<div class="a4-sec" style="margin-top:-2px">ลำดับความสำคัญจากฐานพีระมิด</div>${apRows}`:''}
+    ${apRows?`<div class="a4-x"><div class="a4-sec" style="margin-top:-2px">ลำดับความสำคัญจากฐานพีระมิด</div>${apRows}</div>`:''}
     <div class="a4-sec">แผนลงมือ · สิ่งที่ต้องทำต่อ</div>
     <div class="a4-note" style="margin:-2px 0 ${(Array.isArray(STATE.planActions)?STATE.planActions.length:0)>=13?'5px':'9px'}">เรียงตามลำดับที่ควรทำ · ติ๊กช่องซ้ายเมื่อทำแล้ว · ข้อที่มีกำหนดเวลาสีแดงคือข้อที่เลื่อนไม่ได้</div>
     <table class="a4-gtbl"><thead><tr><th style="text-align:center">ทำแล้ว</th><th style="text-align:center">#</th>
@@ -12710,7 +13074,7 @@ function renderNavMon(){
   if(m.empty){
     box.innerHTML=`<div class="nm-k" style="grid-column:1/-1"><div class="l">ยังไม่มีการบันทึก</div>
       <div class="v" style="font-size:14px">เริ่มบันทึกครั้งแรกด้านล่างได้เลย — ปีละครั้งก็พอ</div>
-      <div class="s">ครั้งแรก: ใส่ NAV ปัจจุบัน และช่อง "เงินเติมเข้า" = เงินต้นทั้งหมดที่ลงไปแล้ว</div></div>`;
+      <div class="s xpl">ครั้งแรก: ใส่ NAV ปัจจุบัน และช่อง "เงินเติมเข้า" = เงินต้นทั้งหมดที่ลงไปแล้ว</div></div>`;
     document.getElementById('navLegend').innerHTML='';
     document.getElementById('navChartBox').innerHTML='';
     document.getElementById('navVerdict').innerHTML='';
@@ -13567,12 +13931,12 @@ function eduSumLine(kidId){
   const perNow=(nowLv?eduFeeOf(kidId,nowLv):0)*_sh;
   let out='รวมค่าเทอมที่เหลือ ≈ <b>'+f(t)+'</b> บาท <small>(ราคาวันนี้)</small>';
   if(goalLv.length){
-    out+='<small style="display:block;margin-top:5px">🎯 <b>เก็บเป็นเงินก้อน</b> '+goalLv.map(L=>L.k).join(' · ')+
+    out+='<small class="edu-explain" style="display:block;margin-top:5px">🎯 <b>เก็บเป็นเงินก้อน</b> '+goalLv.map(L=>L.k).join(' · ')+
       ' — ตั้งเป็นเป้าหมาย 🎓 '+gs.length+' รายการ <span style="color:var(--muted)">(ต้องมีเงินครบตั้งแต่ปีแรกของแต่ละชั้น)</span>'+
       (fv>0?'<br>เมื่อถึงเวลาจริง (รวมเงินเฟ้อการศึกษา '+((typeof AS==='function'&&AS('eduInf')!=null)?AS('eduInf'):((typeof CONFIG!=='undefined'&&CONFIG.eduInflation)||5))+'%/ปี) ≈ <b>'+f(fv)+'</b> บาท'+(mo>0?' · ออมเพิ่มเดือนละ ≈ <b>'+f(mo)+'</b> บาท':''):'')+'</small>';
   }
   if(cashLv.length){
-    out+='<small style="display:block;margin-top:5px;color:#8A6D2F">💰 <b>จ่ายจากกระแสเงินสด</b> '+cashLv.map(L=>L.k).join(' · ')+
+    out+='<small class="edu-explain" style="display:block;margin-top:5px;color:#8A6D2F">💰 <b>จ่ายจากกระแสเงินสด</b> '+cashLv.map(L=>L.k).join(' · ')+
       ' — รวม ≈ <b>'+f(cashToday)+'</b> บาท (ราคาวันนี้)'+
       (perNow>0?' · ช่วงนี้ปีละ <b>'+f(perNow)+'</b> ≈ '+f(perNow/12)+' บาท/เดือน':'')+
       '<br><span style="color:var(--muted)">ลงเป็นรายจ่ายผันแปร ชื่อ "ค่าเทอมบุตร"'+
@@ -13622,12 +13986,12 @@ function renderEduPath(){
         '<input type="checkbox" '+(eduShare(k.id)<1?'checked':'')+' onchange="setEduSplit50(\''+k.id+'\',this.checked)" style="accent-color:var(--gold-2)">'+
         'แบ่งครึ่งกับคู่สมรส'+(eduShare(k.id)<1?' <b style="color:var(--gold-2)">· แผนนับ 50%</b>':'')+'</label></div>'+
       '<div class="edu-grid g5"><div class="edu-corner"></div>'+head+rows+'</div>'+
-      '<div class="edu-legend"><b>เงินก้อน</b> = ตั้งเป็นเป้าหมาย 🎓 มีเงินครบตั้งแต่ปีแรกของชั้นนั้น · <b>ปีต่อปี</b> = จ่ายจากกระแสเงินสด ลงเป็นรายจ่ายผันแปร</div>'+
+      '<div class="edu-legend edu-explain"><b>เงินก้อน</b> = ตั้งเป็นเป้าหมาย 🎓 มีเงินครบตั้งแต่ปีแรกของชั้นนั้น · <b>ปีต่อปี</b> = จ่ายจากกระแสเงินสด ลงเป็นรายจ่ายผันแปร</div>'+
       '<div class="edu-total" id="eduSum-'+k.id+'">'+eduSumLine(k.id)+'</div></div>';
   }).join('');
   host.innerHTML += '<div class="note">ค่าเทอมเป็นราคาต่อปีของวันนี้ · เงินก้อนตั้งไว้ที่ปีแรกของแต่ละระดับ</div>'+
     (kids.some(k=>EDU_LEVELS.some(L=>eduStartsIn(k.age,L)===0 && eduRemainYrs(k.age,L)>0))
-      ? '<div style="margin-top:10px;font-size:12px;line-height:1.6;color:var(--ink-2);background:#FBF8EE;border:1px solid var(--line);border-left:3px solid var(--carrier);border-radius:8px;padding:9px 12px">ระดับที่ <b>กำลังเรียนอยู่</b> ส่วนใหญ่รวมอยู่ในค่าเลี้ยงดูรายเดือน (จาก Life Path) แล้ว — เลือกเพิ่มเฉพาะกรณีที่อยากกันเป็นเงินก้อนแยก จะได้ไม่นับซ้ำ</div>' : '');
+      ? '<div class="edu-explain" style="margin-top:10px;font-size:12px;line-height:1.6;color:var(--ink-2);background:#FBF8EE;border:1px solid var(--line);border-left:3px solid var(--carrier);border-radius:8px;padding:9px 12px">ระดับที่ <b>กำลังเรียนอยู่</b> ส่วนใหญ่รวมอยู่ในค่าเลี้ยงดูรายเดือน (จาก Life Path) แล้ว — เลือกเพิ่มเฉพาะกรณีที่อยากกันเป็นเงินก้อนแยก จะได้ไม่นับซ้ำ</div>' : '');
 }
 /* ── pEdu · การศึกษาบุตร ── */
 function eduKids(){ const seen=new Set();
@@ -13699,9 +14063,9 @@ function renderGoalPriority(){
   box.innerHTML='<div class="card" style="border-left:3px solid var(--gold)">'+
     '<div class="card-t" style="font-size:14px">ลำดับความสำคัญของเป้าหมาย</div>'+
     '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;font-size:12.5px">'+
-    '<span style="background:var(--yellow);border:1px solid var(--yellow-bd);border-radius:999px;padding:6px 14px"><b>1</b> เกษียณ — เป้าหมายหลักเสมอ <a onclick="goPage(\'pRet\')" style="color:var(--gold-2);cursor:pointer;text-decoration:underline">ดูหน้าเกษียณ →</a></span>'+
+    '<span style="background:var(--yellow);border:1px solid var(--yellow-bd);border-radius:999px;padding:6px 14px"><b>1</b> เกษียณ<span class="adv-only"> — เป้าหมายหลักเสมอ</span> <a onclick="goPage(\'pRet\')" style="color:var(--gold-2);cursor:pointer;text-decoration:underline">ดูหน้าเกษียณ →</a></span>'+
     (kids.length?'<span style="background:var(--yellow);border:1px solid var(--yellow-bd);border-radius:999px;padding:6px 14px"><b>2</b> ทุนการศึกษาบุตร <a onclick="goPage(\'pEdu\')" style="color:var(--gold-2);cursor:pointer;text-decoration:underline">ดูหน้าการศึกษา →</a></span>':'')+
-    '<span style="background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:6px 14px">'+(kids.length?'3':'2')+' เป้าหมายอื่น ๆ ด้านล่าง — จัดลำดับด้วยปุ่ม ↑↓</span></div></div>';
+    '<span style="background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:6px 14px">'+(kids.length?'3':'2')+' เป้าหมายอื่น ๆ<span class="adv-only"> ด้านล่าง — จัดลำดับด้วยปุ่ม ↑↓</span></span></div></div>';
 }
 
 /* ── A4 extras: กราฟ + ตารางรายจ่าย (ไม่มีคอลัมน์ผลการตัด) + NAV ── */
@@ -14000,7 +14364,8 @@ function actBuildDraft(){
   (STATE.goals||[]).filter(g=>g.amt<0).slice().sort((x,y)=>(x.age||0)-(y.age||0)).slice(0,3).forEach(g=>{
     const gy=(Number(g.age)||0)-a0; if(gy>3) return;
     let fv=Math.abs(Number(g.amt)||0); try{ fv=goalFV(g); }catch(e){}
-    L.push([String(g.name||'เป้าหมาย').split('(')[0].trim(),
+    const _kid=g.eduKid?((STATE.dependents||[]).find(d=>d.id===g.eduKid)||{}).name:'';   /* v3.9.69 */
+    L.push([String(g.name||'เป้าหมาย').split('(')[0].trim()+(_kid&&String(g.name||'').indexOf(_kid)<0?' · '+_kid:''),
       'เตรียมเงิน '+f0(fv)+' บาท'+(gy<=0?' — ถึงกำหนดปีนี้':''),
       gy<=0?('ภายในปี '+yr):('ตอนอายุ '+g.age+' (อีก '+gy+' ปี)')]);
   });
@@ -14100,15 +14465,13 @@ function renderActions(){
   const host=document.getElementById('actBox'); if(!host) return;
   const adv=(typeof isAdvisor==='function')?isAdvisor():true;
   const A=actList();
-  const rows=A.map((a,i)=>`<div class="ba-r"><div class="no">${i+1}</div><div style="flex:1">
-      <b>${baEsc(a.t)}</b>${a.how?`<div class="why">${baEsc(a.how)}</div>`:''}
-      ${a.when?`<div class="eff">⏱ ${baEsc(a.when)}</div>`:''}</div>
-      ${adv?`<div class="no-print" style="display:flex;flex-direction:column;gap:2px">
-        <button class="x-replay" style="padding:1px 6px" onclick="actMove(${i},-1)" ${i===0?'disabled style=opacity:.3':''}>↑</button>
-        <button class="x-replay" style="padding:1px 6px" onclick="actMove(${i},1)" ${i===A.length-1?'disabled style=opacity:.3':''}>↓</button>
-      </div>`:''}
+  /* v3.9.70: แถวละรายการ — เลข · สิ่งที่ต้องทำ (+ วิธีทำบรรทัดเล็ก) · กำหนดเวลา · ↑↓ ในบรรทัดเดียว */
+  const rows=A.map((a,i)=>`<div class="act-r"><span class="act-no">${i+1}</span>
+      <div class="act-t"><b>${baEsc(a.t)}</b>${a.how?`<span class="act-how">${baEsc(a.how)}</span>`:''}</div>
+      <span class="act-when">${a.when?baEsc(a.when):''}</span>
+      ${adv?`<span class="act-mv no-print"><button onclick="actMove(${i},-1)" ${i===0?'disabled':''} title="เลื่อนขึ้น">↑</button><button onclick="actMove(${i},1)" ${i===A.length-1?'disabled':''} title="เลื่อนลง">↓</button></span>`:''}
     </div>`).join('');
-  host.innerHTML=(A.length?('<div class="ba-rh">แผนลงมือ — ทำอะไร ภายในเมื่อไหร่</div>'+rows)
+  host.innerHTML=(A.length?rows
       :(adv?'<div class="note">ยังไม่มีแผนลงมือ — กด ↻ ให้เครื่องร่างจากแผนให้ก่อน แล้วค่อยแก้ถ้อยคำ</div>':''))
     +(adv?'<div class="no-print" style="margin-top:8px;display:flex;gap:7px;flex-wrap:wrap">'
       +'<button class="x-replay" onclick="actDraft()" title="ร่างจากตัวเลขในแผน ณ ตอนนี้">↻ ร่างแผนลงมือจากแผน</button>'
@@ -14465,6 +14828,7 @@ function libOpen(id){
   const lib=libRead(); const rec=lib.clients.find(c=>c.id===id); if(!rec) return;
   const data=clientRead(id);
   STATE = data&&data.state ? migrate(data.state) : JSON.parse(JSON.stringify(EMPTY_STATE));
+  STATE.uiMode='basic';   /* v3.9.69: เปิดลูกค้าจากห้องสมุด = มุมมองลูกค้าเสมอ */
   if(typeof setSnapshots==='function') setSnapshots((data&&data.snapshots)||{});
   lib.activeId=id; libWrite(lib);
   closeModal('mLibrary'); render();
@@ -14517,7 +14881,7 @@ function libImportPayload(data, fallbackName){
   else { rec.name=name; rec.updatedAt=nowISO(); }
   lib.activeId=rec.id; libWrite(lib);
   clientStore(rec.id, {...data, s41:{clientId:rec.id,name}});
-  STATE=migrate(data.state);
+  STATE=migrate(data.state); STATE.uiMode='basic';   /* v3.9.69 */
   if(typeof setSnapshots==='function') setSnapshots(data.snapshots||{});
   render(); if(typeof renderSnapshotList==='function') try{ renderSnapshotList(); }catch(e){}
   LAST_FOLDER_AT=null; scheduleFolderWrite(); paintSaveInd();
