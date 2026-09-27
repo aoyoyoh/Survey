@@ -85,6 +85,45 @@ body:not(.adv) .hint,
 body:not(.adv) .ie-hint,
 body:not(.adv) .sec-h span{display:none!important}
 body.adv .basic-only{display:none!important}
+/* ═══ MINIMAL (ตัวอย่าง) — มุมมองลูกค้า: ตัวเลขใหญ่ + key highlight สั้น · รายละเอียดพับไว้ กดเปิดได้ · มุมมองที่ปรึกษาไม่เปลี่ยน ═══ */
+body:not(.adv) .cv-hide{display:none!important}
+body:not(.adv) #pRet small,body:not(.adv) #p10 .h-verdict small{display:none!important}
+body:not(.adv) .ph-eye{display:none}
+body:not(.adv) svg .lm-lab{display:none}
+.kh{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
+.kh-i{border:1px solid var(--line-2,#EEE8DA);border-radius:14px;padding:14px 16px;background:#fff}
+.kh-i .k{font-size:12.5px;color:var(--ink-2,#6b6b6b)}
+.kh-i .v{font-family:Georgia,serif;font-size:24px;font-weight:700;margin-top:4px}
+.kh-i.bad .v{color:var(--carrier,#C8635A)}
+.kh-cta{margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-radius:14px;padding:14px 18px;background:#FBF8EE;border:1px solid var(--gold,#C9A45C)}
+.kh-cta .k{font-size:13px;color:var(--gold-2,#9A7A2E);font-weight:600}
+.kh-cta .v{font-family:Georgia,serif;font-size:26px;font-weight:700;color:var(--ink,#2a2a2a)}
+.kh-cta .s{font-size:12px;color:var(--ink-2,#6b6b6b)}
+details.more{margin-top:12px}
+body:not(.adv) .fold:not(.open)>*:not(.card-h){display:none}
+body:not(.adv) .fold:not(.open)>.card-h{margin-bottom:0}
+.fold-btn{margin-left:auto;background:none;border:1px solid var(--gold,#C9A45C);color:var(--gold-2,#9A7A2E);border-radius:20px;padding:5px 14px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
+.fold-btn::before{content:'▸ '} .fold.open .fold-btn::before{content:'▾ '}
+.fold>.card-h{display:flex;align-items:center;gap:12px}
+details.more>summary{cursor:pointer;list-style:none;font-size:13px;color:var(--gold-2,#9A7A2E);font-weight:600;padding:6px 0}
+details.more>summary::-webkit-details-marker{display:none}
+details.more>summary::before{content:'▸ '}
+details.more[open]>summary::before{content:'▾ '}
+.proj-tbl tr.g-row th.rowlbl{padding-left:14px;font-weight:500}
+.proj-tbl .g-no{display:inline-block;font-size:9.5px;font-weight:700;color:var(--gold-2,#9A7A2E);background:#FBF5E6;border-radius:4px;padding:1px 5px;margin-right:4px}
+.proj-tbl tr.g-pre th.rowlbl,.proj-tbl tr.g-pre td{background:#EEF6F2;border-top:1.5px solid #6BA89E;border-bottom:1.5px solid #6BA89E}
+.proj-tbl tr.g-pre th.rowlbl{color:#3F7A6E;font-weight:700}
+.proj-tbl tr.g-post.sv-net th.rowlbl,.proj-tbl tr.g-post.sv-net td{background:#FBF1DC;border-top:1.5px solid var(--gold,#C9A45C);border-bottom:1.5px solid var(--gold,#C9A45C)}
+.proj-tbl tr.g-post.sv-net th.rowlbl{color:var(--gold-2,#9A7A2E);font-weight:700}
+.kh-sub{margin-top:10px;display:grid;gap:4px}
+.rv-others{display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:center;margin-top:10px;font-size:12px;color:var(--ink-2,#555)}
+.rv-others span.cur{opacity:.55}
+.kh-sub-r{font-size:12.5px;color:var(--ink-2,#555);display:flex;gap:8px;flex-wrap:wrap}
+.kh-sub-r b{color:var(--ink,#2a2a2a)}
+.hv-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.hv-chips span{font-size:12px;padding:3px 10px;border-radius:20px;background:#fff;border:1px solid var(--carrier-soft,#E9C9C4);color:var(--ink-2,#555)}
+@media(max-width:680px){.kh{grid-template-columns:1fr}}
+@media print{body:not(.adv) .cv-hide{display:revert!important}}
 /* ── มุมมองลูกค้า / ที่ปรึกษา (ซ่อนด้วย CSS ไม่ลบ · ค่าในช่องยังถูกอ่านข้ามหน้า) ── */
 #app.mode-client .advisor-only{display:none !important}
 /* 5 ratios เชิงลึก — ซ่อนด้วย id เพราะ setR() เขียนทับ className ทุก render */
@@ -684,8 +723,18 @@ body:not(.adv) .xrow.ivx>*:nth-child(3),body:not(.adv) .xrow.ivx>*:nth-child(4){
 .line.it{padding:3px 0;border-bottom:1px dotted var(--line)}
 .line.it.has-meta{display:grid;grid-template-columns:minmax(0,1fr) 108px 38px 42px;gap:5px;align-items:center}
 .line.it.has-meta .y-num.sm{width:100%}
+.loan-end{font-size:10.5px;color:var(--muted);font-weight:400;white-space:nowrap;margin-left:6px}
+input.auto-end::placeholder{color:var(--gold-2,#9A7A2E);font-weight:600;opacity:1}
 .line.it .xg,.xrow .xg{width:38px;padding:3px 4px;font-size:10.5px;text-align:center;color:var(--muted)}
 body:not(.adv) .adv-col{display:none!important}
+.pvd-box{margin:12px 0 4px;padding:12px 14px;border:1px solid var(--line-2);border-radius:8px;background:var(--paper,#fffdf7)}
+.pvd-h{font-weight:700;font-size:13px;margin-bottom:6px;color:var(--ink)}
+.pvd-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:7px 0;border-top:1px dashed var(--line-2);font-size:12.5px}
+.pvd-row:first-of-type{border-top:0}
+.pvd-nm{min-width:130px;font-weight:600}.pvd-sub{font-weight:400;font-size:11px;color:var(--muted)}
+.pvd-f{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.pvd-f input.xs{width:54px;text-align:right}
+.pvd-res{flex-basis:100%;font-size:12px;color:var(--ink-2)}
 body:not(.adv) .line.it.has-meta{display:block}
 .line.it .lbl{font-size:11.5px;color:var(--ink-2)}
 .line.it .lbl .hint{display:block;font-size:9.5px;color:var(--faint);font-style:italic;letter-spacing:0}
@@ -1795,7 +1844,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.60</b> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.65</b> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</div>
 </aside>
 
 <main id="main">
@@ -2052,6 +2101,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
           <div class="note" id="snap-cf-surplus-note" style="margin-top:5px;line-height:1.7"></div>
           </div>
           <div id="coupleCashflow" style="display:none"></div>
+          <div id="pvdAutoBox"></div>
         </div>
       </div>
 
@@ -2387,10 +2437,10 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
       <div class="ph">
         <div class="ph-eye">Section V · Retirement</div>
         <div class="ph-t">แผนเกษียณ</div>
-        <div class="ph-s">คำถามเดียวที่สำคัญ: หยุดทำงานแล้ว เงินพอใช้ไปตลอดไหม</div>
+        <div class="ph-s"><span class="adv-only">คำถามเดียวที่สำคัญ: หยุดทำงานแล้ว เงินพอใช้ไปตลอดไหม</span><span class="cl-only">หยุดงานแล้ว เงินพอใช้ไหม?</span></div>
       </div>
       <div class="card" id="retVisitCard">
-        <div class="card-h"><div class="card-t">ภาพรวมแผนเกษียณ · แก้ไขได้</div>
+        <div class="card-h"><div class="card-t"><span class="adv-only">ภาพรวมแผนเกษียณ · แก้ไขได้</span><span class="cl-only">เก็บกี่ปี · ใช้กี่ปี</span></div>
         <div class="card-s">แก้ไขได้ · ทุกหน้าอัปเดตตาม</div></div>
         <div id="retVisit"></div>
       </div>
@@ -2401,15 +2451,15 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
       </div>
       <div class="card">
         <div class="card-h"><div class="card-t">ใช้เดือนละเท่าไรหลังเกษียณ?</div>
-        <div class="card-s">ค่าเริ่มต้น 70% ของค่าใช้จ่ายรวม — แก้ตัวเลขได้</div></div>
+        <div class="card-s">ตัวเลขเดียวของทั้งครัวเรือน (ค่าเงินวันนี้) — ค่าเริ่มต้นเลือกตามรายการรายจ่าย · หรือ 70% ของรายจ่ายผันแปร · หรือกำหนดเอง</div></div>
         <div id="retModeUI"></div>
       </div>
-      <div class="card">
+      <div class="card cv-hide">
         <div class="card-h"><div class="card-t">เส้นเวลาเกษียณของคุณ</div></div>
         <div id="retLifeline"></div>
       </div>
       <div class="card">
-        <div class="card-h"><div class="card-t">ผลลัพธ์</div></div>
+        <div class="card-h"><div class="card-t"><span class="adv-only">ผลลัพธ์</span><span class="cl-only">ผลตรวจ</span></div></div>
         <div id="retResult"></div>
       </div>
     </section>
@@ -2485,7 +2535,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
       <div class="ph">
         <div class="ph-eye">Section X · Integrated Plan</div>
         <div class="ph-t">แผนการเงินองค์รวม</div>
-        <div class="ph-s">ภาพรวมทุกเป้าหมายในที่เดียว — ทำพร้อมกันไหวไหม? · พิสูจน์ด้วยกระแสเงินสดล่วงหน้า</div>
+        <div class="ph-s"><span class="adv-only">ภาพรวมทุกเป้าหมายในที่เดียว — ทำพร้อมกันไหวไหม? · พิสูจน์ด้วยกระแสเงินสดล่วงหน้า</span><span class="cl-only">ทุกเป้าหมาย ทำพร้อมกันไหวไหม?</span></div>
       </div>
 
       <div class="card" id="h-couple-card" style="display:none">
@@ -2507,7 +2557,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
       </div>
 
 
-      <div class="card">
+      <div class="card" id="projCard">
         <div class="card-h"><div class="card-t">ตารางกระแสเงินสดล่วงหน้า (รายปี)</div><div class="card-s">Monitor — เทียบพอร์ตจริงจาก Snapshot ว่าโตตามคาดไหม</div></div>
         <div id="h-projection"></div>
       </div>
@@ -3130,8 +3180,14 @@ function migrate(s){
      ที่ปรึกษาที่เลือกโหมด items เองจะมี retireItemOff ติดมาด้วย จึงไม่ถูกแตะ */
   try{ (s.carriers||[]).forEach(c=>{
     if(c && c.retireMode==='items' && !c.retireItemOff)
-      c.retireMode = (Number(c.retireExpense)>0) ? 'custom' : 'auto70';
+      c.retireMode = (Number(c.retireExpense)>0) ? 'custom' : 'items';   /* v3.9.65: ค่าเริ่มต้นเป็น "เลือกตามรายการ" (เดิม auto70) */
   }); }catch(e){}
+  /* v3.9.65: ค่าใช้จ่ายหลังเกษียณเป็นของครัวเรือน (ตั้งที่คนแรก) — ไฟล์เก่าที่คนที่สองมีตัวเลข custom ของตัวเอง → รวมเข้าเป็นยอดครัวเรือนครั้งเดียว */
+  try{ const cs=s.carriers||[]; if(cs.length>=2 && !s._retHouseholdV1){
+    const extra=cs.slice(1).reduce((t,c)=>t+((c&&(c.retireMode==='custom'||(!c.retireMode&&Number(c.retireExpense)>0)))?(Number(c.retireExpense)||0):0),0);
+    if(extra>0){ const c0=cs[0]; const base=(c0.retireMode==='custom'||(!c0.retireMode&&Number(c0.retireExpense)>0))?(Number(c0.retireExpense)||0):0;
+      c0.retireExpense=base+extra; c0.retireMode='custom'; cs.slice(1).forEach(c=>{ delete c.retireExpense; delete c.retireMode; }); }
+    s._retHouseholdV1=true; } }catch(e){}
   /* v3.9.2: ไฟล์เดิมที่บันทึกพอร์ตไว้ก่อน — เติมพอร์ต Passive Income และตัวเลขกลม 3/5/7 ให้
      (เฉพาะพอร์ตมาตรฐานที่ยังไม่เคยตั้ง ret เอง · พอร์ตที่ผู้ใช้แก้สัดส่วนเองไม่ถูกแตะ) */
   try{ if(Array.isArray(s.ports)&&s.ports.length){
@@ -3244,6 +3300,47 @@ function computeLoan(loan){
   let bal = (i===0) ? P - pmt*paid : P*Math.pow(1+i,paid) - pmt*(Math.pow(1+i,paid)-1)/i;
   bal = Math.max(0, bal);
   return {pmt, annual:pmt*12, balance:bal, n, i, paid, totalInterest: pmt*n - P, principal:P};
+}
+/* ═══ v3.9.65 · ปีจบหนี้อัตโนมัติ — บรรทัดผ่อนบ้าน/รถ/บัตร ที่ไม่ได้กรอก "ถึงอายุ"
+   เดิม: ว่าง = ผ่อนตลอดแผน (ทำให้ผ่อนบ้าน 24,000/เดือน วิ่งถึงอายุเกษียณทั้งที่หนี้หมดก่อนหลายปี)
+   ตอนนี้: (1) มีสัญญาในเครื่องคำนวณผ่อน → ใช้งวดที่เหลือ (n − จ่ายแล้ว)
+           (2) ไม่มีสัญญา แต่มียอดหนี้คงเหลือ + ค่างวด → คำนวณจำนวนงวดจากยอดหนี้ ค่างวด และดอกเบี้ยเริ่มต้น
+               (บ้าน 3.5% · รถ 4% · บัตรเครดิต 16% — ค่าเดียวกับเครื่องคำนวณผ่อน / สมมติฐาน CFP)
+           (3) กรอก "ถึงอายุ" เอง → ใช้ค่าที่กรอก (มีสิทธิ์เหนือกว่าเสมอ)
+   คืนค่า: {endAge, months, src} หรือ null ถ้าหาไม่ได้ (→ ตลอดแผนเหมือนเดิม) */
+const LOAN_LINE_DEF = { homeLoanPay:{type:'home', liab:['long','homeLoan'], rate:3.5}, carLoanPay:{type:'car', liab:['long','carLoan'], rate:4}, creditCardPay:{type:null, liab:['short','creditCard'], rate:16} };
+function loanEndAuto(key){
+  const def=LOAN_LINE_DEF[key]; if(!def) return null;
+  const d=STATE.snap&&STATE.snap.detail; if(!d) return null;
+  const a0=Number((STATE.carriers||[])[0]&&STATE.carriers[0].age)||0; if(!a0) return null;
+  let months=0, src='';
+  const loans=((STATE.snap&&STATE.snap.loans)||[]).filter(l=>def.type && (l.type||'home')===def.type);
+  if(loans.length){ loans.forEach(l=>{ const r=computeLoan(l); months=Math.max(months, Math.max(0,r.n-r.paid)); }); src='สัญญากู้'; }
+  else {
+    const bal=Number(((d.liab||{})[def.liab[0]]||{})[def.liab[1]])||0;
+    const pmt=Number((d.cashflow.fixed||{})[key])||0;
+    if(!(bal>0&&pmt>0)) return null;
+    const i=def.rate/100/12;
+    if(pmt<=bal*i) return {endAge:null, months:Infinity, src:'ค่างวดไม่พอจ่ายดอกเบี้ย'};
+    months=Math.ceil(-Math.log(1-i*bal/pmt)/Math.log(1+i)); src='ยอดหนี้ ÷ ค่างวด @'+def.rate+'%';
+  }
+  if(!(months>0)) return null;
+  return {endAge:a0+Math.ceil(months/12)-1, months, src};
+}
+/* ป้ายเล็กท้ายชื่อบรรทัดผ่อน (ฟอร์มวางแผนคู่ที่ไม่มีคอลัมน์ "ถึงอายุ") — โชว์ปีจบอัตโนมัติ + ช่องพิมพ์ทับ */
+function loanEndHint(key){
+  if(!LOAN_LINE_DEF[key]) return '';
+  let m={}; try{ m=STATE.snap.detail.cashflow.fixedMeta[key]||{}; }catch(e){}
+  const au=loanEndAuto(key); const manual=Number(m.endAge)>0?Number(m.endAge):'';
+  const ph=(au&&au.endAge)?('≈'+au.endAge):(au&&au.months===Infinity?'∞':'ถึง');
+  const tt=manual?('จ่ายถึงอายุ '+manual+' (กรอกเอง) — ล้างช่องเพื่อกลับไปคิดอัตโนมัติ'):(au&&au.endAge?('ว่าง = จบอัตโนมัติที่อายุ '+au.endAge+' (คิดจาก'+au.src+' · '+au.months+' งวด) — พิมพ์ทับได้'):(au&&au.months===Infinity?'ค่างวดไม่พอจ่ายดอกเบี้ย — กรอกอายุที่จะปิดหนี้เอง':'จ่ายถึงผู้วางแผนอายุ (ว่าง = ตลอดแผน)'));
+  return ` <span class="loan-end adv-only" title="${tt}">ถึงอายุ <input class="y xg${manual?'':' auto-end'}" style="width:40px" value="${manual}" placeholder="${ph}" onchange="setCfMeta('fixed','${key}','endAge',this.value)"></span>`;
+}
+/* อายุสุดท้ายที่ยังจ่ายบรรทัดคงที่ key — ใช้ทั้ง projection และ UI (ค่าที่กรอกเอง > อัตโนมัติ > ตลอดแผน) */
+function fixedEndAge(key, m){
+  m=m||{}; if(Number(m.endAge)>0) return Number(m.endAge);
+  const auto=loanEndAuto(key); if(auto&&auto.endAge) return auto.endAge;
+  return null;
 }
 /* ตารางผ่อนรายปี (สรุป 12 งวด/แถว) */
 function loanSchedule(loan){
@@ -3366,6 +3463,7 @@ function polCfEvents(p,a0,a1){ const out=[]; const base=Number(p&&p.life)||0; (A
 function syncSnapAggregates(){
   const d = STATE.snap && STATE.snap.detail; if(!d) return;
   syncByCarrierToDetail();
+  try{ pvdSyncAuto(); }catch(e){}   /* v3.9.63 */
   if(!STATE.snap.balance) STATE.snap.balance={assets:{},liab:{}};
   if(!STATE.snap.balance.assets) STATE.snap.balance.assets={};
   if(!STATE.snap.balance.liab)   STATE.snap.balance.liab={};
@@ -3404,7 +3502,7 @@ function syncSnapAggregates(){
   C.mortgagePay = (+cfx.homeLoanPay||0);                                              // ส่วนจำนอง
   C.insurance   = (+cfx.lifeIns||0)+(+cfx.carIns||0);
   /* v3.9.27: เงินสมทบ ปกส. ของปีนี้ — คิดจากค่าจ้างจริง × เพดานปีนี้ (แหล่งเดียวกับ projection และหน้าภาษี) */
-  if(ssoAutoOn()){ try{ cfx.socialSec = ssoContribM(0, ssoWageM((STATE.carriers||[])[0],0)); }catch(e){} }
+  if(ssoAutoOn()){ try{ cfx.socialSec = (STATE.carriers||[]).reduce((a,c)=>a+ssoContribM(0, ssoWageM(c,0)),0); }catch(e){} }   /* v3.9.63: ทุกคน (เดิมคิดเฉพาะคนแรก) */
   /* v3.9.27: ถ้าตั้ง "แผนเงินออมตามช่วงอายุ" ไว้ ช่องรายเดือนนี้จะถูกทับ — ต้องบอก ไม่ใช่ปล่อยให้กรอกแล้วเงียบ */
   try{ const a0=((STATE.carriers||[])[0]||{}).age||0;
     [['rmf','savPlanHintRmf','RMF'],['tesg','savPlanHintTesg','Thai ESG']].forEach(([k,id,lbl])=>{
@@ -3818,7 +3916,7 @@ function renderCfCombined(host, carriers){
     if(f.grp!==curGrp){ curGrp=f.grp; out+=hd3(curGrp); }
     const m2=f.yr?1:12, setFn=f.yr?'setCarrierCf':'setCarrierCfY';
     const v0=Math.round(cfGetVal(c0.id,f.sec,f.key)*m2), v1=Math.round(cfGetVal(c1.id,f.sec,f.key)*m2);
-    out+=`<div class="cpl3"><div class="lbl">${f.label}</div>
+    out+=`<div class="cpl3"><div class="lbl">${f.label}${f.sec==='fixed'?loanEndHint(f.key):''}</div>
       <input class="y y-num" value="${com(v0)}" onchange="${setFn}('${c0.id}','${f.sec}','${f.key}',this.value)">
       <input class="y y-num" value="${com(v1)}" onchange="${setFn}('${c1.id}','${f.sec}','${f.key}',this.value)">
       <div class="c-tot">${com(v0+v1)}</div></div>`;
@@ -3847,7 +3945,7 @@ function renderCfSeparate(host, carriers){
   let curGrp='in';
   CF_FIELDS.forEach((f,idx)=>{
     if(f.grp!==curGrp){ curGrp=f.grp; out+=sh(curGrp); }
-    out+=`<div class="line it"><div class="lbl">${f.label}</div><input class="y y-num sm" value="${com(Math.round(cfGetVal(c.id,f.sec,f.key)*(f.yr?1:12)))}" onchange="${f.yr?'setCarrierCf':'setCarrierCfY'}('${c.id}','${f.sec}','${f.key}',this.value)"></div>`;
+    out+=`<div class="line it"><div class="lbl">${f.label}${f.sec==='fixed'?loanEndHint(f.key):''}</div><input class="y y-num sm" value="${com(Math.round(cfGetVal(c.id,f.sec,f.key)*(f.yr?1:12)))}" onchange="${f.yr?'setCarrierCf':'setCarrierCfY'}('${c.id}','${f.sec}','${f.key}',this.value)"></div>`;
     const nxt=CF_FIELDS[idx+1];
     if(!nxt || nxt.grp!==curGrp){
       if(curGrp==='in')    out+=cfExtraRowsSolo('income','เพิ่มรายได้อื่น',c.id,carriers);
@@ -4055,6 +4153,9 @@ function enhanceCfMetaRows(){
     const ea=document.createElement('input');
     ea.className='y xg adv-col'; ea.value=(m.endAge>0?m.endAge:''); ea.placeholder='ถึง';
     ea.title=(m.stopAtRet?'จ่ายถึงผู้วางแผนอายุ (ว่าง = หยุดเองตอนเกษียณ)':'จ่ายถึงผู้วางแผนอายุ (ว่าง = ตลอดแผน)');
+    if(grp==='fixed' && LOAN_LINE_DEF[key]){ const au=loanEndAuto(key);   /* v3.9.65: ปีจบหนี้อัตโนมัติ */
+      if(au&&au.endAge){ ea.placeholder='≈'+au.endAge; ea.title='ว่าง = จบอัตโนมัติที่อายุ '+au.endAge+' (คิดจาก'+au.src+' · '+au.months+' งวด) — พิมพ์ทับได้'; ea.classList.add('auto-end'); }
+      else if(au&&au.months===Infinity){ ea.placeholder='∞'; ea.title='ค่างวดไม่พอจ่ายดอกเบี้ย — หนี้ไม่ลด กรอกอายุที่จะปิดหนี้เอง'; } }
     ea.onchange=function(){ setCfMeta(grp,key,'endAge',this.value); };
     row.appendChild(mk); row.appendChild(ea);
     row.classList.add('has-meta'); row.dataset.metaOn='1';
@@ -4100,6 +4201,7 @@ function renderP2Snapshot(){
   try{ renderBalanceSheetMode(); }catch(e){ console.warn('renderBalanceSheetMode failed', e); }
   try{ renderPlanModeCtrl(); }catch(e){ console.warn('renderPlanModeCtrl failed', e); }
   try{ renderCashflowMode(); }catch(e){ console.warn('renderCashflowMode failed', e); }
+  try{ renderPvdBox(); }catch(e){ console.warn('renderPvdBox failed', e); }   /* v3.9.63 */
   /* ── สินทรัพย์ → ผูกกับเป้าหมายจริง (dropdown "เพื่อ" รายชื่อเป้าหมาย) ── */
   { const im=(STATE.snap.detail&&STATE.snap.detail.assets.investMeta)||{};
     document.querySelectorAll('#p2 select.iv-port').forEach(sel=>{ if(sel===document.activeElement) return; const key=sel.getAttribute('data-port');
@@ -6635,9 +6737,29 @@ function polBandAt(rows, age, base){
   return t;
 }
 /* เบี้ยที่จ่ายจริงในปีอายุนั้น — มีตาราง pf ใช้ตาราง · ไม่มีก็ใช้เบี้ยรายปีของเล่ม */
+/* v3.9.65 · ช่อง "ครบชำระเบี้ย" ในทะเบียน → อายุ (แกนผู้วางแผนคนแรก) ปีสุดท้ายที่ยังจ่ายเบี้ย
+   รับได้ทั้ง: อายุเจ้าของเล่ม (เช่น "42" หรือ "18" ของลูก) · วันที่ วว/ดด/ปปปป (พ.ศ. หรือ ค.ศ.) · ปี 4 หลัก
+   คืน null = ไม่ระบุ (หักตลอดแผนเหมือนเดิม) */
+function polPayUntilPlanAge(p){
+  const t=String((p&&p.payUntil)||'').trim(); if(!t) return null;
+  const cs=STATE.carriers||[]; const c0=cs[0]; if(!c0) return null;
+  const a0=Number(c0.age)||0;
+  let owner=cs.find(c=>c.id===p.owner); let ownerAge=owner?Number(owner.age)||a0:null;
+  if(ownerAge==null){ const d=(STATE.dependents||[]).find(x=>x.id===p.owner); ownerAge=d?(Number(d.age)||0):a0; }
+  const nowY=new Date().getFullYear();
+  const toPlan=y=>{ if(y>2400) y-=543; else if(y<100) y+=2500-543; return a0+(y-nowY); };
+  let m;
+  if(/^\d{1,3}$/.test(t)){ const n=Number(t); if(n<=120) return n+(a0-ownerAge); return null; }
+  if((m=t.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})$/))) return toPlan(Number(m[3]));
+  if((m=t.match(/^(\d{4})[\/\-.](\d{1,2})[\/\-.](\d{1,2})$/))) return toPlan(Number(m[1]));
+  if(/^\d{4}$/.test(t)) return toPlan(Number(t));
+  return null;
+}
 function polPremAtAge(p, age){
   const pf=Array.isArray(p&&p.pf)?p.pf:[];
   if(pf.length) return polBandAt(pf, age, 0);
+  const last=polPayUntilPlanAge(p);                       /* v3.9.65: ไม่มีตารางเบี้ย → หยุดตามช่อง "ครบชำระเบี้ย" */
+  if(last!=null && Number(age)>last) return 0;
   return Number(p&&p.premium)||0;
 }
 /* ค่าลดหย่อนของเล่มนั้นในปีอายุนั้น — แยก ชีวิต / สุขภาพ / บำนาญ / สุขภาพพ่อแม่
@@ -7015,6 +7137,95 @@ function ssoPayToAge(){
   const c=(STATE.carriers||[])[0]||{};
   if(m.stopAtRet) return (typeof calcRetireAge==='function'?calcRetireAge(c):(Number(c.retireAge)||60))-1;
   return 9999; }
+/* ═══ v3.9.63 · กองทุนสำรองเลี้ยงชีพ (PVD) รายคน ═══
+   ตั้งที่ผู้วางแผนแต่ละคน: c.pvd = { auto, ee, er, erM }
+     auto = คิดจาก % ของเงินเดือน (40(1) ของคนนั้น ไม่รวมโบนัส) · ee = ลูกจ้าง % · er = นายจ้าง % (ว่าง = เท่าลูกจ้าง)
+     ปิด auto = ใช้ยอดบาทที่กรอกในงบ (ช่องของคนนั้น) · erM = นายจ้างสมทบ บาท/เดือน (ว่าง = เท่าลูกจ้าง)
+   ส่วนลูกจ้าง = รายจ่ายคงที่ + ลดหย่อนภาษีของคนนั้น · ลูกจ้าง+นายจ้าง = เข้าถัง PVD ในพอร์ต */
+function pvdCfg(c){ const p=(c&&c.pvd)||{}; const n=v=>(v!=null&&v!=='')?(Number(v)||0):null;
+  return {auto:!!p.auto, ee:n(p.ee), er:n(p.er), erM:n(p.erM)}; }
+function pvdWageM(c, y){ c=c||{}; y=Number(y)||0; const cAge=(Number(c.age)||0)+y; let w=0;
+  ((c.incomes)||[]).forEach(inc=>{ if(incTaxType(inc,'40(1)')!=='40(1)') return;
+    const end=inc.lifelong?9999:(inc.endAge!=null?inc.endAge:9999);
+    if(cAge<(inc.startAge||0)||cAge>end) return;
+    const g=(Number(inc.growth)||0)/100; w+=(Number(inc.monthly)||0)*Math.pow(1+g,y); });
+  return w; }
+function pvdManualM(c){ const cs=STATE.carriers||[];
+  if(cs.length>=2) return cfGetVal(c.id,'fixed','pvdContrib');
+  try{ return Number(STATE.snap.detail.cashflow.fixed.pvdContrib)||0; }catch(e){ return 0; } }
+/* เงินเข้า PVD ของคน c ในปี projection ที่ y (ต่อปี) */
+function pvdYear(c, y){ c=c||{}; y=Number(y)||0; const P=pvdCfg(c);
+  if(P.auto){ const w=pvdWageM(c,y)*12, eeP=P.ee||0, erP=(P.er!=null?P.er:eeP);
+    return {ee:w*eeP/100, er:w*erP/100, wage:w, auto:true}; }
+  const m0=pvdManualM(c); if(!(m0>0)) return {ee:0, er:0, wage:0, auto:false};
+  let fm={}; try{ fm=STATE.snap.detail.cashflow.fixedMeta.pvdContrib||{}; }catch(e){}
+  const cAge=(Number(c.age)||0)+y; let endA=Number(fm.endAge)>0?Number(fm.endAge):9999;
+  if(!(Number(fm.endAge)>0)) endA=calcRetireAge(c)-1;   /* PVD ผูกกับการจ้างงาน → ไม่ระบุอายุ = หยุดตอนเกษียณของคนนั้นเอง */
+  if(cAge>endA) return {ee:0, er:0, wage:0, auto:false};
+  const g=Math.pow(1+((fm.inf!=null&&fm.inf!=='')?Number(fm.inf):0)/100, y);
+  const ee=m0*12*g; return {ee, er:(P.erM!=null?P.erM*12*g:ee), wage:0, auto:false}; }
+/* โหมดอัตโนมัติ → เขียนยอดปีนี้ลงช่อง PVD ในงบของคนนั้น (ช่องล็อก แก้ที่กล่อง PVD) · ยอดรวมครัวเรือนตามไปด้วย */
+function pvdSyncAuto(){
+  const cs=STATE.carriers||[]; const d=STATE.snap&&STATE.snap.detail; if(!d||!cs.length) return;
+  if(!cs.some(c=>pvdCfg(c).auto)) return;
+  if(cs.length>=2){ const bc=STATE.snap.byCarrier||{};
+    cs.forEach(c=>{ if(!pvdCfg(c).auto) return; const r=bc[c.id]; if(!r||!r.cf) return;
+      if(!r.cf.fixed) r.cf.fixed={}; r.cf.fixed.pvdContrib=Math.round(pvdYear(c,0).ee/12*100)/100; });
+    d.cashflow.fixed.pvdContrib=cs.reduce((a,c)=>a+cfGetVal(c.id,'fixed','pvdContrib'),0);
+  } else { d.cashflow.fixed.pvdContrib=Math.round(pvdYear(cs[0],0).ee/12*100)/100; }
+}
+/* สัดส่วนของคน c ในบรรทัดงบครัวเรือน (ใช้แบ่งค่าลดหย่อนให้ถูกคนเวลาวางแผนคู่) */
+function cfShareOf(c, sec, key){ const cs=STATE.carriers||[]; if(cs.length<2) return 1;
+  const tot=cs.reduce((a,x)=>a+cfGetVal(x.id,sec,key),0);
+  if(tot>0) return cfGetVal(c.id,sec,key)/tot;
+  return (cs[0]&&c.id===cs[0].id)?1:0; }
+function setPvd(cid, field, raw){
+  const c=(STATE.carriers||[]).find(x=>x.id===cid); if(!c) return;
+  if(!c.pvd) c.pvd={};
+  if(field==='auto'){
+    const on=!!raw; c.pvd.auto=on;
+    if(on && (c.pvd.ee==null||c.pvd.ee==='')){   /* เปิดครั้งแรก: แปลงยอดบาทเดิมเป็น % ให้ ไม่ให้ตัวเลขกระโดด */
+      const w=pvdWageM(c,0), m=pvdManualM(c);
+      c.pvd.ee=(w>0&&m>0)?Math.round(m/w*1000)/10:5; }
+  } else {
+    const t=String(raw==null?'':raw).replace(/[^\d.]/g,'');
+    c.pvd[field]=(t==='')?null:Math.max(0, Number(t)||0);
+    if(field==='ee' && c.pvd.ee>15) c.pvd.ee=15;   /* PVD ลูกจ้างสะสมได้ 2–15% */
+  }
+  if(typeof saveState==='function') saveState();
+  render();
+}
+function renderPvdBox(){
+  const host=document.getElementById('pvdAutoBox'); if(!host) return;
+  const cs=STATE.carriers||[]; if(!cs.length){ host.innerHTML=''; return; }
+  const f0=n=>Math.round(Math.max(0,Number(n)||0)).toLocaleString('en-US');
+  const esc=x=>String(x==null?'':x).replace(/[&<>"]/g,'');
+  const rows=cs.map(c=>{ const P=pvdCfg(c), v=pvdYear(c,0);
+    const wageM=pvdWageM(c,0);
+    const eeV=(P.ee!=null?P.ee:''), erV=(P.er!=null?P.er:''), erMV=(P.erM!=null?P.erM:'');
+    const inputs=P.auto
+      ? `<label class="pvd-f">ลูกจ้าง <input class="y y-num xs" value="${eeV}" onchange="setPvd('${c.id}','ee',this.value)" placeholder="%">%</label>
+         <label class="pvd-f">นายจ้าง <input class="y y-num xs" value="${erV}" onchange="setPvd('${c.id}','er',this.value)" placeholder="${P.ee!=null?P.ee:''}">%</label>`
+      : `<span class="pvd-f">ลูกจ้าง <b>${f0(pvdManualM(c))}</b> บ./ด. <span style="color:var(--faint)">(ช่องในงบ)</span></span>
+         <label class="pvd-f">นายจ้าง <input class="y y-num xs" style="width:78px" value="${erMV===''?'':f0(erMV)}" onchange="setPvd('${c.id}','erM',this.value)" placeholder="${f0(pvdManualM(c))}">บ./ด.</label>`;
+    const res=(v.ee+v.er)>0
+      ? `ปีนี้เข้า PVD <b>${f0((v.ee+v.er)/12)}</b> บ./ด. <span style="color:var(--muted)">(ลูกจ้าง ${f0(v.ee/12)} + นายจ้าง ${f0(v.er/12)})</span>`
+      : (P.auto&&!(wageM>0)?'<span style="color:var(--carrier)">ไม่มีเงินเดือน 40(1) ในแผน — ไม่มียอดสะสม</span>':'<span style="color:var(--faint)">ยังไม่มียอดสะสม</span>');
+    return `<div class="pvd-row">
+      <div class="pvd-nm">👤 ${esc(c.name)}${P.auto&&wageM>0?`<div class="pvd-sub">เงินเดือน ${f0(wageM)} บ./ด.</div>`:''}</div>
+      <label class="pvd-f pvd-sw"><input type="checkbox" ${P.auto?'checked':''} onchange="setPvd('${c.id}','auto',this.checked)"> คิดจาก % เงินเดือน</label>
+      ${inputs}
+      <div class="pvd-res">${res}</div></div>`; }).join('');
+  host.innerHTML=`<div class="pvd-box">
+    <div class="pvd-h">กองทุนสำรองเลี้ยงชีพ (PVD) · รายคน</div>
+    ${rows}
+    <div class="note" style="margin-top:6px">ส่วนลูกจ้าง = รายจ่ายคงที่ + ลดหย่อนภาษีของคนนั้น (≤ 15% ของค่าจ้าง · อยู่ในเพดานรวมกลุ่มเกษียณ 500,000) · ลูกจ้าง + นายจ้าง เข้าถัง PVD ในพอร์ต โตตาม %/ปี ของบรรทัด PVD ในงบดุล · คิดจาก % = ยอดขึ้นตามเงินเดือนทุกปีและหยุดเมื่อเงินเดือนหยุด · ส่วนนายจ้างนับเต็ม (ยังไม่หักกรณีลาออกก่อนได้สิทธิ์ครบ)</div>
+  </div>`;
+  /* ล็อกช่อง PVD ในงบของคนที่คิดอัตโนมัติ */
+  try{ cs.forEach(c=>{ const on=pvdCfg(c).auto;
+      const sel = cs.length>=2 ? `input[onchange*="'${c.id}','fixed','pvdContrib'"]` : 'input[data-snap="detail.cashflow.fixed.pvdContrib"]';
+      document.querySelectorAll(sel).forEach(inp=>{ inp.readOnly=on; inp.style.background=on?'#f3f1ea':''; inp.title=on?'คิดจาก % เงินเดือน — แก้ที่กล่อง PVD ใต้งบกระแสเงินสด':''; }); }); }catch(e){}
+}
 /* ค่าจ้างจากการจ้างงาน (40(1) ของ Life Path เท่านั้น — ไม่รวมโบนัสและงานอิสระ) */
 function ssoWageM(c, y){
   c=c||(STATE.carriers||[])[0]||{}; const cAge=(Number(c.age)||0)+(Number(y)||0); let w=0;
@@ -8052,6 +8263,7 @@ const HENG = (function(){
      โหมด 'blend': แบบเดิม (≤ v3.9.22) ทั้งก้อนโต preRet/postRet — เก็บไว้เทียบ · ตั้งที่ STATE.assume.retMode
      เหตุผล: เงินที่อยู่ในออมทรัพย์/สลาก ได้ 0–1.5% จริง ๆ การเอา 3–4% ไปคูณทั้งก้อนทำให้แผนดูดีเกินจริง */
   function retMode(){ const m=STATE.assume&&STATE.assume.retMode; return m==='blend'?'blend':'asset'; }
+  const CONFIG_INVEST_RET={pvd:4.5,rmf:5.5};   /* v3.9.62: ค่าเริ่มต้นเดียวกับงบดุล ใช้เมื่อยังไม่มีบรรทัดสินทรัพย์ */
   const BK_LABEL={savings:'เงินฝากออมทรัพย์',fixedDep:'เงินฝากประจำ',moneyFund:'กองทุนตลาดเงิน',bond:'พันธบัตร/ตราสารหนี้',stock:'หุ้น',mutualFund:'กองทุนรวม',rmf:'RMF',pvd:'PVD',insCash:'มูลค่าเงินสดกรมธรรม์ (กรอกเอง)',gold:'ทองคำ'};
   /* รายการสินทรัพย์ตั้งต้นของ projection — แต่ละบรรทัดถือ %/ปี ของตัวเอง
      ไม่รวม: สินทรัพย์ป้าย Passive Income (แยกเป็น pNav เหมือนเดิม) · มูลค่าเวนคืนของเล่มที่มีตารางเงินรับ (ได้เงินครบสัญญาใน projection แทน — กฎ v3.9.17) */
@@ -8079,6 +8291,7 @@ const HENG = (function(){
   function makePool(mode, startTotal){
     if(mode!=='asset'){ let v=Math.max(0,startTotal); return { mode:'blend', total:()=>v,
       step:(ret,net)=>{ v=v*(1+ret)+net; let short=0; if(v<0){ short=-v; v=0; } return short; },
+      addTo:(key,amt)=>{ if(amt>0) v+=amt; },   /* v3.9.62: โหมด blend = ก้อนเดียว โตอัตราเดียวกับพอร์ต */
       snap:()=>({liquid:0,port:v,invest:0,retire:0,total:v}), buckets:()=>[] }; }
     const B=assetBuckets(); let port=0;                                   /* port = เงินออมใหม่ตามแผน */
     const bt=B.reduce((s,b)=>s+b.amt,0), diff=startTotal-bt;              /* ให้ยอดตั้งต้นเท่า investableTotal เสมอ */
@@ -8087,8 +8300,10 @@ const HENG = (function(){
     const take=b=>need=>{ if(need<=0||b.amt<=0) return need; const t=Math.min(b.amt,need); b.amt-=t; return need-t; };
     return { mode:'asset',
       total:()=>B.reduce((s,b)=>s+b.amt,0)+port,
-      step:(ret,net)=>{
-        B.forEach(b=>{ b.amt*=(1+b.ret); }); port*=(1+ret);
+      step:(ret,net,flat)=>{
+        /* v3.9.65: หลังเกษียณ ทุกก้อนโตด้วยผลตอบแทนหลังเกษียณตัวเดียว (flat = consR) — เดิมหุ้น/กองทุนเดิมโต 5.5–7% ต่อไปเรื่อย ๆ
+           ทั้งที่แผนบอกว่าย้ายเป็นพอร์ตเสี่ยงต่ำ · เฉพาะ Passive Income NAV ที่แยกอยู่แล้วไม่แตะ */
+        B.forEach(b=>{ b.amt*=(1+((flat!=null)?flat:b.ret)); }); port*=(1+ret);
         if(net>=0){ port+=net; return 0; }
         let need=-net;
         order.filter(b=>b.liq<4).forEach(b=>{ need=take(b)(need); });          /* 1) สภาพคล่อง */
@@ -8097,6 +8312,13 @@ const HENG = (function(){
         order.filter(b=>b.liq>=8).forEach(b=>{ need=take(b)(need); });          /* 4) RMF/PVD ท้ายสุด */
         return need>0?need:0;
       },
+      /* v3.9.62: เงินสะสมเข้ากองทุน (เช่น PVD) — เข้าถังของสินทรัพย์นั้นปลายปี แล้วโตด้วย %/ปี ของถังนั้นตั้งแต่ปีถัดไป
+         ยังไม่มีถัง (งบดุลเป็น 0) → สร้างถังใหม่ ใช้ %/ปี ที่ตั้งไว้ในงบดุล */
+      addTo:(key,amt)=>{ if(!(amt>0)) return; let b=B.find(x=>x.key===key);
+        if(!b){ const m=((STATE.snap&&STATE.snap.detail&&STATE.snap.detail.assets&&STATE.snap.detail.assets.investMeta)||{})[key]||{};
+          const r=(m.ret!=null&&m.ret!=='')?Number(m.ret)||0:((CONFIG_INVEST_RET[key]!=null)?CONFIG_INVEST_RET[key]:0);
+          b={key,label:BK_LABEL[key]||key,amt0:0,amt:0,ret:r/100,grp:'retire',liq:9}; B.push(b); order.push(b); }
+        b.amt+=amt; },
       snap:()=>{ const g={liquid:0,invest:0,retire:0}; B.forEach(b=>{ g[b.grp]+=b.amt; }); return {liquid:g.liquid,port,invest:g.invest,retire:g.retire,total:g.liquid+g.invest+g.retire+port}; },
       buckets:()=>B.map(b=>({key:b.key,label:b.label,amt:b.amt,amt0:b.amt0,ret:b.ret,grp:b.grp})) };
   }
@@ -8202,7 +8424,7 @@ const HENG = (function(){
       const row=_pfRows.find(x=>x.age===retAge) || _pfRows[_pfRows.length-1];
       if(row&&row.bk&&retMode()==='asset') return { existing:(row.bk.liquid+row.bk.invest+row.bk.retire)/_nC, planned:row.bk.port/_nC, fromRows:true };
       /* โหมด blend: สินทรัพย์เดิมโต r · เงินออมใหม่ = FV ของเงินเหลือรายปี */
-      const y0=Number(c.age)||0; let fv=0; _pfRows.forEach(x=>{ if(x.age<=retAge) fv+=(x.net||0)*Math.pow(1+r, retAge-x.age); });
+      const y0=Number(c.age)||0; let fv=0; _pfRows.forEach(x=>{ if(x.age<=retAge) fv+=((x.net||0)+(x.pvdIn||0))*Math.pow(1+r, retAge-x.age); });
       return { existing:investable*Math.pow(1+r,Math.max(0,retAge-y0)), planned:Math.max(0,fv)/_nC, fromRows:false };
     }
     const pensionMonthly=Number(c.pensionMonthly)||0;   // บำนาญหลังเกษียณ/เดือน (ประกันสังคม ฯลฯ)
@@ -8215,8 +8437,16 @@ const HENG = (function(){
       const pol=policyAtRet(retAge);
       const yToRet=Math.max(0, retAge-(c.age||0));
       const retireYears=Math.max(1,(c.life||CONFIG.lifeExp)-retAge);
-      const needAtRet=livingAnnual*Math.pow(1+inf(),yToRet);                       // ค่าใช้จ่าย/ปี ณ วันเกษียณ
-      const target=pvGrowingAnnuityDue(needAtRet, inf(), postR, retireYears);       // เงินก้อนที่ต้องมี
+      const _nC=Math.max(1,carriers.length);
+      const needAtRet=retLivingAnnualAt(yToRet)/_nC;                                 // ค่าใช้จ่าย/ปี ณ วันเกษียณ (ส่วนของคนนี้ · v3.9.65: รายบรรทัดทบเงินเฟ้อของตัวเอง)
+      /* v3.9.65: เงินก้อนค่าครองชีพ = Σ ค่าใช้จ่ายรายปี (ทบเงินเฟ้อรายบรรทัด) คิดลดกลับมา ณ วันเกษียณ แบบ annuity due
+         (เท่ากับ pvGrowingAnnuityDue เดิมทุกประการเมื่อทุกบรรทัดใช้เงินเฟ้อเดียวกัน) */
+      let targetLiving=0; for(let k=0;k<retireYears;k++){ targetLiving += (retLivingAnnualAt(yToRet+k)/_nC)/Math.pow(1+postR,k); }
+      /* v3.9.65: + เบี้ยประกันหลังเกษียณของเล่มที่คนนี้เป็นเจ้าของ (สุขภาพ/โรคร้าย ตามตารางเบี้ยรายอายุ) คิดลด ณ วันเกษียณ
+         — เดิมเป้าเกษียณไม่รวมเบี้ยหลังเกษียณเลย ทำให้ "ต้องออมเพิ่ม" ต่ำกว่าจริง (ไฟล์ CFP แยกเป็นเป้าหมาย "เงินออมเพื่อเบี้ยประกันหลังเกษียณ") */
+      const _a0=Number((carriers[0]||{}).age)||0, _off=_a0-(Number(c.age)||0);
+      let premPost=0; _pols.filter(_mine).forEach(p=>{ for(let a=retAge+1;a<=(Number(c.life)||CONFIG.lifeExp);a++){ const pr=polPremAtAge(p, a+_off); if(pr>0) premPost+=pr/Math.pow(1+postR, a-retAge); } });
+      const target=targetLiving+premPost;                                             // เงินก้อนที่ต้องมี (ค่าครองชีพ + เบี้ยหลังเกษียณ)
       const _ar=atRetFromRows(retAge);
       const investAtRet=_ar.existing;                                               // สินทรัพย์เดิม ณ วันเกษียณ (v3.9.23: โตด้วย % รายสินทรัพย์)
       const plannedAtRet=_ar.planned;                                               // เงินออมใหม่ตามแผน ณ วันเกษียณ (v3.9.23)
@@ -8224,7 +8454,7 @@ const HENG = (function(){
       const expected=investAtRet+plannedAtRet+retireFundShare+pensionPV+pol.total;  // แหล่งเงินที่คาดมี (v3.9.18: + เงินจากกรมธรรม์ · v3.9.23: + เงินออมใหม่ตามแผน)
       const gap=Math.max(0,target-expected);
       const pmtYr=pmtGrowingAnnuityFV(gap, g, r, yToRet);
-      return {retAge, yToRet, retireYears, needAtRet, target, investAtRet, plannedAtRet, retireFund:retireFundShare, pensionPV, policyPV:pol.total, policyPre:pol.pre, policyPost:pol.post, expected, gap, monthly:pmtYr/12};
+      return {retAge, yToRet, retireYears, needAtRet, target, targetLiving, premPost, investAtRet, plannedAtRet, retireFund:retireFundShare, pensionPV, policyPV:pol.total, policyPre:pol.pre, policyPost:pol.post, expected, gap, monthly:pmtYr/12};
     }
     const baseAge=calcRetireAge(c);
     return {planA:plan(baseAge), planB:plan(baseAge+5), retAge:baseAge, ret:r};
@@ -8235,8 +8465,10 @@ const HENG = (function(){
     const yToRet=Math.max(0, retAge-(c.age||0));
     const retireYears=Math.max(1,(c.life||CONFIG.lifeExp)-retAge);
     /* v3.9: ใช้แหล่งเดียวกับหน้าเกษียณ — กำหนดเอง/70%/ตามรายการ · ถ้ายังไม่ตั้งเลย ใช้สัดส่วนค่าใช้จ่ายร่วม */
-    const _effM=(typeof retEffExpenseM==='function')?retEffExpenseM(c,1):0;
-    const livingAnnual=(c.retireExpense>0)? c.retireExpense*12 : (_effM>0? _effM*12 : expShareAnnual);
+    /* v3.9.65: ค่าใช้จ่ายหลังเกษียณเป็นของครัวเรือน → ส่วนของคนนี้ = ครัวเรือน ÷ จำนวนผู้วางแผน (เดิมอ่าน c.retireExpense ตรง ๆ ทำให้คนแรกได้เต็ม อีกคนได้ 0) */
+    const _nC=Math.max(1,(STATE.carriers||[]).length);
+    const _effM=(typeof retEffExpenseM==='function')?retEffExpenseM(c,_nC):0;
+    const livingAnnual=(_effM>0? _effM*12 : expShareAnnual);
     const needAtRet=livingAnnual*Math.pow(1+inf(),yToRet);
     const target=pvGrowingAnnuityDue(needAtRet, inf(), consR(), retireYears);
     const investAtRet=assetsShare*Math.pow(1+portR(c),yToRet);
@@ -8263,9 +8495,14 @@ const HENG = (function(){
       const expense=sharedExpAnnual*s;
       let premium=0; try{ premium=needs(c).premium||0; }catch(e){}
       const assets=investable*s;
-      const saving=income-expense-premium;
-      const ret=retireForShare(c, assets, retireFundTot*s, expense);
-      return {c, share:Math.round(s*100), income, expense, premium, assets, saving, ret};
+      /* v3.9.63: PVD ของคนนั้นเอง — ส่วนลูกจ้างหักจากเงินเหลือ · เงินเข้า PVD (ลูกจ้าง+นายจ้าง) ทบถึงวันเกษียณของคนนั้นนับเป็นแหล่งเงินเกษียณ */
+      const pv0=pvdYear(c,0);
+      let pvdFV=0; { const rA=calcRetireAge(c), a0=Number(c.age)||0;
+        let pr=4.5; try{ const m=((STATE.snap.detail.assets.investMeta)||{}).pvd||{}; if(m.ret!=null&&m.ret!=='') pr=Number(m.ret)||0; }catch(e){}
+        for(let yy=0; a0+yy<rA; yy++){ const v=pvdYear(c,yy); pvdFV+=(v.ee+v.er)*Math.pow(1+pr/100, rA-(a0+yy)-1); } }
+      const saving=income-expense-premium-pv0.ee;
+      const ret=retireForShare(c, assets, retireFundTot*s+pvdFV, expense);
+      return {c, share:Math.round(s*100), income, expense, premium, assets, saving, ret, pvdYr:pv0.ee+pv0.er, pvdFV};
     });
     let sharedGoalFV=0;
     (STATE.goals||[]).forEach(g=>{ if(g.split){ try{ sharedGoalFV+=goalFV(g); }catch(e){} } });
@@ -8324,11 +8561,11 @@ const HENG = (function(){
     return { income:annualIncome+_bonus0, sources, spouse:false,   /* v3.9.19: income = เงินเดือน+โบนัส ให้ตรงกับ sources */
       /* v3.9.60: นับเฉพาะผู้พึ่งพิงของผู้วางแผนคนนี้ */
       children: depsOf(deps,c.id,isPrimary,'child').length, parents: depsOf(deps,c.id,isPrimary,'parent').length, disabled:0,
-      lifeIns: isPrimary?Math.round((+fx.lifeIns||0)*12):0, healthIns:0, parentHealthIns:0, pensionIns:0,
+      lifeIns: Math.round((+fx.lifeIns||0)*12*cfShareOf(c,'fixed','lifeIns')), healthIns:0, parentHealthIns:0, pensionIns:0,
       /* v3.8: ดึงเงินออม RMF/SSF และ Thai ESG ที่ลูกค้าซื้ออยู่แล้วจากงบกระแสมาลดหย่อนให้ด้วย
          เดิมตั้งเป็น 0 เสมอ → หน้าภาษีคำนวณภาษีสูงเกินจริง แล้วยังไปแนะนำให้ซื้อ RMF เพิ่มทั้งที่ซื้อเต็มอยู่แล้ว */
-      rmf: isPrimary?Math.round((+sv.rmf||0)*12):0, ssf:0, thaiESG: isPrimary?Math.round((+sv.tesg||0)*12):0,
-      pvd: isPrimary?Math.round((+fx.pvdContrib||0)*12):0, socialSec: isPrimary?Math.round((+fx.socialSec||0)*12):0,
+      rmf: Math.round((+sv.rmf||0)*12*cfShareOf(c,'savings','rmf')), ssf:0, thaiESG: Math.round((+sv.tesg||0)*12*cfShareOf(c,'savings','tesg')),
+      pvd: Math.round(pvdYear(c,0).ee), socialSec: Math.round((+fx.socialSec||0)*12*cfShareOf(c,'fixed','socialSec')),   /* v3.9.63: รายคน */
       mortgageInt:0, donation:0, donationEdu:0, addPension:0, addRMF:0, addSSF:0, addESG:0,
       withheld:0 };   /* v3.9: ภาษีหัก ณ ที่จ่าย/จ่ายล่วงหน้าทั้งปี — ใช้หายอดต้องชำระเพิ่มหรือขอคืน */
   }
@@ -8438,10 +8675,11 @@ const HENG = (function(){
       else { byType[x.type]={type:x.type, amt:x.amt, _n:x.label?[x.label]:[]}; merged.push(byType[x.type]); } });
     merged.forEach(x=>{ x.label=x._n.join(' + '); delete x._n; });
     return { age:cAge, sources:merged, spouse:false, children:kids, parents:par, disabled:0,
-      lifeIns: dLife + (isPrimary?fixAt('lifeIns'):0), healthIns: dHealth, parentHealthIns: dPar, pensionIns: dPen,
-      rmf: isPrimary?svAt('rmf','rmf'):0, ssf: isPrimary?svAt('ssf','ssf'):0, thaiESG: isPrimary?svAt('tesg','tesg'):0,
-      pvd: isPrimary?fixAt('pvdContrib'):0,
-      socialSec: isPrimary?(ssoAutoOn()?ssoContribM(y, ssoWageM(c,y))*12:fixAt('socialSec')):0,
+      /* v3.9.63: ค่าลดหย่อนเป็นของคนที่จ่ายจริง — แบ่งตามช่องของแต่ละคนในงบ (เดิมยกให้คนแรกทั้งหมด ทำให้เทียบยื่นรวม/แยกเพี้ยน) */
+      lifeIns: dLife + fixAt('lifeIns')*cfShareOf(c,'fixed','lifeIns'), healthIns: dHealth, parentHealthIns: dPar, pensionIns: dPen,
+      rmf: svAt('rmf','rmf')*cfShareOf(c,'savings','rmf'), ssf: isPrimary?svAt('ssf','ssf'):0, thaiESG: svAt('tesg','tesg')*cfShareOf(c,'savings','tesg'),
+      pvd: pvdYear(c,y).ee,
+      socialSec: ssoAutoOn()?ssoContribM(y, ssoWageM(c,y))*12:fixAt('socialSec')*cfShareOf(c,'fixed','socialSec'),
       ssoCap: ssoCeilAtYear(y)*ssoRate()*12,
       mortgageInt:0, donation:0, donationEdu:0, addPension:0, addRMF:0, addSSF:0, addESG:0, withheld:0,
       _y:y, _estDed:dEst };
@@ -8507,7 +8745,7 @@ const HENG = (function(){
        70% (แก้ % ได้) ของค่าใช้จ่ายรวม · กำหนดเอง · เลือกตามรายการรายจ่าย
        ตัวเลขนี้ถือเป็น "ค่าใช้จ่ายรวมทุกรายการ" หลังเกษียณ — รายจ่ายคงที่รายบรรทัด
        จึงหยุดนับที่วันเกษียณ (ถูกรวมในก้อนนี้แล้ว กันนับซ้ำ) */
-    const retireMonthlyTotal = carriers.reduce((s,c)=> s + retEffExpenseM(c, Math.max(1,carriers.length)), 0);
+    const retireMonthlyTotal = retHouseholdExpenseM();   /* v3.9.65: ตัวเลขเดียวของครัวเรือน (เดิมรวมรายคน → นับซ้ำได้) */
     const f=computeFinancials();
     /* พอร์ต Passive Income แยกเป็นอีกก้อน: จ่ายคืน x% ของ NAV ทุกปี → นับเป็นรายรับ
        ส่วนที่เหลือ y% ทบเข้า NAV · ไม่ถูกดึงมาใช้จ่าย เพราะถือไว้เพื่อกระแสเงินสด */
@@ -8525,12 +8763,15 @@ const HENG = (function(){
     let balance=spend+pNav;
     const startBalance=balance;
     const edu=education();
-    const insPremium=carriers.map(needs).reduce((s,i)=>s+i.premium,0);
+    const _needsArr=carriers.map(needs);
+    const insPremium=_needsArr.reduce((s,i)=>s+i.premium,0);
+    /* v3.9.65: เบี้ยแนะนำเพิ่ม = ทุนคุ้มครองรายได้ คุ้มครองถึงเกษียณ → จ่ายเบี้ยเฉพาะปีที่เจ้าของยังไม่เกษียณ (เดิมหักถึงปลายแผน) */
+    const insPremiumAt=y=>carriers.reduce((s,c,i)=>s+(((Number(c.age)||0)+y < calcRetireAge(c)) ? _needsArr[i].premium : 0),0);
     const rows=[]; const lumps=[]; let depleteAge=null, shortCum=0;   /* พอร์ตจริงไม่ติดลบ — ส่วนที่ขาดสะสมแยกเป็น shortCum */
     for(let age=startAge; age<=targetAge; age++){
       const y=age-startAge;
       const ret = age < retAge ? portR(primary) : consR();
-      let income=0;
+      let income=0, pvdIn=0;
       carriers.forEach(c=>{ (c.incomes||[]).forEach(inc=>{
         const cAge=(c.age||0)+y, end=inc.lifelong?9999:(inc.endAge!=null?inc.endAge:9999);
         if(cAge>=(inc.startAge||0) && cAge<=end){ const g=(Number(inc.growth)||0)/100; income += (inc.monthly||0)*12*Math.pow(1+g, y); }
@@ -8564,7 +8805,7 @@ const HENG = (function(){
       let living;
       const _skipVar=k=>(TAXAUTO && k==='tax');   /* v3.9.24: บรรทัด "ภาษี" ในงบ ไม่ใช่เลขมือแล้ว — คิดเองข้างล่าง */
       if(age>=retAge && retireMonthlyTotal>0){
-        living = retireMonthlyTotal*12*Math.pow(1+inf(), y);
+        living = retLivingAnnualAt(y);   /* v3.9.65: รายบรรทัดทบเงินเฟ้อของตัวเอง (ค่ารักษา 7% ไม่ถูกกลืนเป็น 3%) */
         /* v3.9.24: รายจ่ายผันแปรที่ตั้งช่วงอายุไว้ "หลังเกษียณโดยเฉพาะ" เดิมถูกกลืนหายทั้งบรรทัด
            (ก้อนค่าใช้จ่ายหลังเกษียณคิดจากฐานก่อนเกษียณ จึงไม่ได้รวมรายการพวกนี้อยู่แล้ว) */
         ((STATE.snap.detail&&STATE.snap.detail.cashflow.varExtra)||[]).forEach(x=>{
@@ -8600,12 +8841,14 @@ const HENG = (function(){
         const fm=(STATE.snap.detail&&STATE.snap.detail.cashflow.fixedMeta)||{};
         /* v3.9.27: โหมด ปกส.อัตโนมัติ — เงินสมทบ = 5% ของค่าจ้างที่ไม่เกินเพดานของปีนั้น
            (เพดานขยับตามกฎกระทรวง 17,500 → 20,000 → 23,000) · เลขเดียวกับที่ใช้ลดหย่อนภาษี */
-        if(SSOAUTO) expense += ssoContribM(y, ssoWageM(primary,y))*12;
+        if(SSOAUTO) carriers.forEach(c=>{ expense += ssoContribM(y, ssoWageM(c,y))*12; });   /* v3.9.63: ทุกคน */
         for(const k in fx){ if(SSOAUTO && k==='socialSec') continue;
+          if(k==='pvdContrib') continue;   /* v3.9.63: PVD คิดรายคนข้างล่าง */
           const amt=Number(fx[k])||0; if(amt<=0) continue;
           const m=fm[k]||{};
           let endA=Number(m.endAge)>0?Number(m.endAge):9999;
           if(m.stopAtRet && !(Number(m.endAge)>0)) endA=retAge-1;      /* ผูกกับการทำงาน → หยุดตอนเกษียณ */
+          if(!(Number(m.endAge)>0) && LOAN_LINE_DEF[k]){ const fe=fixedEndAge(k,m); if(fe) endA=fe; }   /* v3.9.65: ปีจบหนี้อัตโนมัติ */
           if(age>endA) continue;
           const fi=((m.inf!=null&&m.inf!=='')?Number(m.inf):0)/100;
           expense += amt*12*Math.pow(1+fi, y); }
@@ -8615,6 +8858,8 @@ const HENG = (function(){
           if(age<st || age>en) return;
           const xi=((x.inf!=null&&x.inf!=='')?Number(x.inf):0)/100;
           expense += amt*12*Math.pow(1+xi, y); }); }
+      /* v3.9.63: PVD รายคน — ส่วนลูกจ้างเป็นรายจ่าย · ลูกจ้าง+นายจ้าง เข้าถัง PVD (v3.9.62) */
+      carriers.forEach(c=>{ const pv=pvdYear(c,y); expense+=pv.ee; pvdIn+=pv.ee+pv.er; });
       { const _seenL=new Set(); (STATE.dependents||[]).forEach(d=>{
         if(d.link){ if(_seenL.has(d.link)) return; _seenL.add(d.link); }
         const dAge=(d.age||0)+y, end=d.life||d.endAge||0;
@@ -8636,13 +8881,13 @@ const HENG = (function(){
       let taxYr=0;
       if(TAXAUTO){ taxYr=taxYearTotal(y); expense+=taxYr; }
       else { taxYr=(Number((STATE.snap.detail&&STATE.snap.detail.cashflow.var&&STATE.snap.detail.cashflow.var.tax))||0)*12; }
-      expense+=insPremium;
+      expense+=insPremiumAt(y);
       // เบี้ยกรมธรรม์จริง (ตามอายุ) → ค่าใช้จ่าย · มี pf = ใช้ช่วงอายุ (หยุดเมื่อครบชำระ) · ไม่มี = หักเบี้ยทุกปี
       ((STATE.snap&&STATE.snap.policies)||[]).forEach(p=>{
         const pf=Array.isArray(p.pf)?p.pf:[];
         if(pf.length){ pf.forEach(r=>{ const from=Number(r.from)||0,to=Number(r.to)||0,ev=Math.max(1,Number(r.every)||1),amt=Number(r.amt)||0;
           if(amt>0 && from && age>=from && (to===0||age<=to) && ((age-from)%ev===0)) expense+=amt; }); }
-        else { const prem=Number(p.premium)||0; if(prem>0) expense+=prem; }
+        else { const prem=polPremAtAge(p, age); if(prem>0) expense+=prem; }   /* v3.9.65: หยุดตาม "ครบชำระเบี้ย" */
       });
       let lump=0;
       /* v3.8.1 (แก้สูตร): ค่าเทอมทั้งช่วงชั้น (eduYears 3-6 ปี) เดิมถูกหักออกจากพอร์ต "ก้อนเดียวในปีเดียว"
@@ -8654,20 +8899,21 @@ const HENG = (function(){
           if(age>=gAge && age<gAge+nSpan){
             const per=Math.abs(go.amt||0)/nSpan;
             const amt=per*Math.pow(1+goalInf(go)/100, y);   /* y = จำนวนปีนับจากวันนี้ → เงินเฟ้อทบถึงปีที่จ่ายจริง */
-            lump+=amt; lumps.push({age, name:go.name+' (ปีที่ '+(age-gAge+1)+'/'+nSpan+')', amt});
+            lump+=amt; lumps.push({age, name:go.name+' (ปีที่ '+(age-gAge+1)+'/'+nSpan+')', amt, gid:go.id});
           }
-        } else if(gAge===age){ const fv=goalFV(go); lump+=fv; lumps.push({age, name:go.name, amt:fv}); }
+        } else if(gAge===age){ const fv=goalFV(go); lump+=fv; lumps.push({age, name:go.name, amt:fv, gid:go.id}); }
       });
       const net=income-expense-lump;
       /* ความจริงมีแค่ "พอ/ไม่พอ" — พอร์ตห้ามติดลบ: ส่วนที่ขาด = เงินต้องหาเพิ่ม (กู้/เลื่อนเป้า/ออมเพิ่ม) นับสะสมแยก
          v3.9.23: โต/ถอน "รายถัง" — สินทรัพย์เดิมโตด้วย % ของตัวเอง · เงินเหลือใหม่เข้าพอร์ตตามแผน */
-      const short=POOL.step(ret, net);
+      const short=POOL.step(ret, net, (age>=retAge)?consR():null);   /* v3.9.65: หลังเกษียณทุกก้อน = consR */
+      POOL.addTo('pvd', pvdIn);   /* v3.9.62 */
       spend=POOL.total();
       if(short>0 && depleteAge===null) depleteAge=age;
       shortCum+=short;
       pNav = pNav*(1+pGrow);
       balance = spend + pNav;
-      rows.push({age, income, expense, lump, net, balance, short, shortCum, spend, pNav, passiveIncome, tax:taxYr, bk:POOL.snap()});
+      rows.push({age, income, expense, lump, net, pvdIn, balance, short, shortCum, spend, pNav, passiveIncome, tax:taxYr, bk:POOL.snap()});
     }
     return {rows, feasible:depleteAge===null, depleteAge, targetAge, retAge, startBalance, lumps, shortTotal:shortCum,
             retMode:POOL.mode, startBuckets,
@@ -8760,7 +9006,7 @@ const HENG = (function(){
       if(TAXAUTO) expense += taxYearTotal(y);   /* v3.9.24 */
       const net=income-expense-lump;
       { neg*=(1+ret); let n2=net; if(n2>0&&neg>0){ const t=Math.min(n2,neg); neg-=t; n2-=t; }   /* v3.9.23: ยอดติดลบสะสมคิดดอกเบี้ย · เงินเหลือปีถัดไปใช้คืนก่อน */
-        const sh=SPOOL.step(ret, n2); neg+=sh; balance=SPOOL.total()-neg; }
+        const sh=SPOOL.step(ret, n2, (age>=retAge)?consR():null); neg+=sh; balance=SPOOL.total()-neg; }   /* v3.9.65 */
       if(balance<0 && depleteAge===null) depleteAge=age;
       if(goalsThisYear.length && (balance<0 || (depleteAge!==null && age>=depleteAge))) goalsThisYear.forEach(go=>failedGoals.push({name:go.name,age}));
       spNav=spNav*(1+spGrow);
@@ -9451,7 +9697,12 @@ function taxScheduleHTML(c){
 /* ═══ เปรียบเทียบภาษีสามีภรรยา · ยื่นแยก / ยื่นรวม / ผสม (ม.57 ฉ) ═══ */
 function effTaxState(c){
   const cs=STATE.carriers||[]; const isP=cs[0]&&c.id===cs[0].id;
-  const stored=(STATE.taxByCarrier&&STATE.taxByCarrier[c.id])||(isP?STATE.tax:null)||{};
+  let stored=(STATE.taxByCarrier&&STATE.taxByCarrier[c.id])||(isP?STATE.tax:null)||{};
+  /* v3.9.63: โหมดอัตโนมัติ — ใช้กฎเดียวกับหน้าภาษี (taxPlan): เก็บเฉพาะช่องที่เครื่องคิดเองไม่ได้
+     เดิมเอาค่าเก่าที่เคยบันทึกไว้ทับทั้งหมด ตัวเลขเทียบยื่นรวม/แยกจึงไม่ตรงกับหน้าภาษี (เช่น PVD/ปกส. ของคู่สมรสเป็น 0) */
+  if(HENG.taxAutoOn ? HENG.taxAutoOn() : (typeof taxAutoOn==='function' && taxAutoOn())){
+    const KEEP=['addPension','addRMF','addSSF','addESG','withheld','donation','donationEdu','mortgageInt','spouse'];
+    const k2={}; KEEP.forEach(k=>{ if(stored[k]!=null) k2[k]=stored[k]; }); stored=k2; }
   return Object.assign({}, HENG.taxAuto(c), stored);
 }
 function taxCompareData(){
@@ -9601,6 +9852,7 @@ function renderCouplePanel(){
       <div class="cpl-row"><span>ค่าใช้จ่ายร่วม (ส่วนแบ่ง)/ปี</span><b>${f0(p.expense)}</b></div>
       <div class="cpl-row"><span>เบี้ยประกันตัวเอง/ปี</span><b>${f0(p.premium)}</b></div>
       <div class="cpl-row"><span>สินทรัพย์ลงทุน (ส่วนแบ่ง)</span><b>${f0(p.assets)}</b></div>
+      ${p.pvdYr>0?`<div class="cpl-row"><span>เข้า PVD/ปี (ลูกจ้าง+นายจ้าง)</span><b>${f0(p.pvdYr)}</b></div>`:''}
       <div class="cpl-row res"><span>กระแสเงินสด</span><b>${okTag}</b></div>
       <div class="cpl-row res"><span>เกษียณด้วยตัวเอง</span><b>${retTag}</b></div>
     </div>`;
@@ -9634,8 +9886,8 @@ function renderHolistic(){
     const srTxt = sr!=null ? `<span class="adv-only"> · <b style="color:${successColor(sr)}">🎯 โอกาสสำเร็จ ~${sr}%</b> (${successLabel(sr)} · จำลองตลาดผันผวน 2,000 รอบ ตามความเสี่ยงพอร์ตที่ตั้งไว้)</span><span class="cl-only"> · ${sr>=60?'แผนอยู่ในเกณฑ์มั่นคง':'มีจุดที่ปรับให้มั่นคงขึ้นได้ — ที่ปรึกษาจะแนะนำในนัดถัดไป'}</span>` : '';
     verdictEl.className='h-verdict '+(ok?'ok':'warn');
     verdictEl.innerHTML = ok
-      ? `<span class="hv-ico">✓</span><div><b>เงินพอใช้ตลอดแผน ถึงอายุ ${pf.targetAge}</b><div class="hv-s">ทำทุกเป้าหมาย (บ้าน · รถ · การศึกษา · เกษียณ) พร้อมกันได้ โดยพอร์ตไม่หมดก่อนอายุเป้าหมาย${srTxt}</div></div>`
-      : `<span class="hv-ico">!</span><div><b>เงินเริ่มไม่พอตอนอายุ ${pf.depleteAge}</b><div class="hv-s">ต้องหาเพิ่มรวม ~<b>${fmt0(pf.shortTotal||0)}</b> ตลอดแผน — เลื่อนเป้า · ลดรายจ่าย · เพิ่มรายได้ · เลื่อนเกษียณ${srTxt}</div></div>`;
+      ? `<span class="hv-ico">✓</span><div><b>เงินพอใช้ตลอดแผน ถึงอายุ ${pf.targetAge}</b><div class="hv-s adv-only">ทำทุกเป้าหมาย (บ้าน · รถ · การศึกษา · เกษียณ) พร้อมกันได้ โดยพอร์ตไม่หมดก่อนอายุเป้าหมาย${srTxt}</div></div>`
+      : `<span class="hv-ico">!</span><div><b><span class="adv-only">เงินเริ่มไม่พอตอนอายุ ${pf.depleteAge}</span><span class="cl-only">เงินหมดตอนอายุ ${pf.depleteAge} · ขาดรวม ~${xM1(pf.shortTotal||0)}</span></b><div class="hv-s adv-only">ต้องหาเพิ่มรวม ~<b>${fmt0(pf.shortTotal||0)}</b> ตลอดแผน — เลื่อนเป้า · ลดรายจ่าย · เพิ่มรายได้ · เลื่อนเกษียณ${srTxt}</div><div class="hv-chips cl-only"><span>เลื่อนเป้า</span><span>ลดรายจ่าย</span><span>เพิ่มรายได้</span><span>เลื่อนเกษียณ</span></div></div>`;
   }
   /* v3.9.26: ยืนยันว่าเป้าหมายทุกอันถูกหักเงินในกระแสเงินสดจริง (กันแผนบอกว่า "เงินพอ" ทั้งที่ลืมจ่ายเป้าหมาย) */
   { let host=document.getElementById('goalCoverBox');
@@ -10011,12 +10263,16 @@ function planSuccessRate(){
   mix(Math.round(pf.startBalance||0)); mix(retAge); mix(pf.rows.length);
   mix(Math.round(preMean*1e4)); mix(Math.round(postMean*1e4));
   mix(Math.round(preSD*1e4)); mix(Math.round(postSD*1e4));
-  pf.rows.forEach(r=>{ mix(Math.round(r.net||0)); mix(r.age|0); });
+  pf.rows.forEach(r=>{ mix(Math.round(r.net||0)); mix(Math.round(r.pvdIn||0)); mix(r.age|0); });
   if(_SR_CACHE.key===h) return _SR_CACHE.val;          // แผนไม่เปลี่ยน → คืนเลขเดิม ไม่สุ่มใหม่
   const prev=_SR_RND; _SR_RND=_mulberry32(h||1);
   /* v3.9.24: ความผันผวนใส่เฉพาะ "พอร์ตเงินออมใหม่" — เงินฝาก/สลาก/ทองที่ถืออยู่ไม่ได้แกว่งตามตลาดหุ้น
      (เดิมสุ่มทั้งก้อนรวมเงินฝาก ทำให้โอกาสสำเร็จต่ำกว่าความจริง) */
-  let BK=[]; try{ BK=(HENG.assetBuckets?HENG.assetBuckets():[]).map(b=>({amt:b.amt,ret:b.ret,liq:b.grp==='liquid'})); }catch(e){ BK=[]; }
+  let BK=[]; try{ BK=(HENG.assetBuckets?HENG.assetBuckets():[]).map(b=>({key:b.key,amt:b.amt,ret:b.ret,liq:b.grp==='liquid'})); }catch(e){ BK=[]; }
+  /* v3.9.62: เงินสะสม PVD รายปีเข้าถัง PVD — ยังไม่มีถัง → เพิ่มถังเปล่าท้ายสุด (ถอนท้ายสุดเหมือนตารางจริง) */
+  if(pf.rows.some(r=>(r.pvdIn||0)>0) && !BK.some(b=>b.key==='pvd')){
+    let pr=4.5; try{ const m=((STATE.snap.detail.assets.investMeta)||{}).pvd||{}; if(m.ret!=null&&m.ret!=='') pr=Number(m.ret)||0; }catch(e){}
+    BK.push({key:'pvd',amt:0,ret:pr/100,liq:false}); }
   const assetMode=(function(){ try{ return HENG.retMode&&HENG.retMode()==='asset'; }catch(e){ return false; } })();
   const bk0=BK.reduce((a,b)=>a+b.amt,0);
   const port0=Math.max(0,(pf.startBalance||0)-(assetMode?bk0:0));
@@ -10030,12 +10286,14 @@ function planSuccessRate(){
       port=port*(1+ret);
       bk.forEach(b=>{ b.amt*=(1+b.ret); });
       let net=(r.net||0);
+      const _pv=r.pvdIn||0;
       if(net>=0){ port+=net; }
       else { let need=-net;   /* ลำดับถอนเดียวกับตารางจริง: สภาพคล่อง → พอร์ต → สินทรัพย์ลงทุนอื่น */
         for(let j=0;j<bk.length&&need>0;j++){ if(!bk[j].liq) continue; const t=Math.min(bk[j].amt,need); bk[j].amt-=t; need-=t; }
         if(need>0){ const t=Math.min(Math.max(0,port),need); port-=t; need-=t; }
         for(let j=0;j<bk.length&&need>0;j++){ if(bk[j].liq) continue; const t=Math.min(bk[j].amt,need); bk[j].amt-=t; need-=t; }
         if(need>0.5){ alive=false; break; } }
+      if(_pv>0){ const pb=bk.find(b=>b.key==='pvd'); if(pb) pb.amt+=_pv; else port+=_pv; }   /* v3.9.62 */
       if(port+bk.reduce((a,b)=>a+b.amt,0)<0){ alive=false; break; } }
     if(alive) ok++; }
   _SR_RND=prev;
@@ -10087,7 +10345,7 @@ function renderBudgetOrder(){
   let pfOK=null, pfAge=null; try{ const _p=HENG.proForma(); pfOK=_p.feasible; pfAge=_p.targetAge; }catch(e){}
   const unas=(typeof unassignedAssets==='function')?unassignedAssets():0;
   const unasBox = unas>0
-    ? `<div style="font-size:12px;line-height:1.6;margin-top:8px;border-left:3px solid var(--gold);background:#FBF8EE;border-radius:8px;padding:8px 11px;color:var(--ink-2)">ยังมีสินทรัพย์ <b>${f0(unas)}</b> บาท ที่ยังไม่ได้เลือกว่าเพื่อเป้าหมายไหน (ช่อง "เพื่อพอร์ต" ยังเป็น <i>สำรอง/ทั่วไป</i>) — ก้อนนี้จึงยังไม่ถูกนับเข้าเป้าหมายใด ๆ ในตารางนี้ <a onclick="goPage('p2')" style="color:var(--gold-2);cursor:pointer;text-decoration:underline;white-space:nowrap">ไปเลือกที่หน้า Snapshot →</a></div>`
+    ? `<div class="adv-only" style="font-size:12px;line-height:1.6;margin-top:8px;border-left:3px solid var(--gold);background:#FBF8EE;border-radius:8px;padding:8px 11px;color:var(--ink-2)">ยังมีสินทรัพย์ <b>${f0(unas)}</b> บาท ที่ยังไม่ได้เลือกว่าเพื่อเป้าหมายไหน (ช่อง "เพื่อพอร์ต" ยังเป็น <i>สำรอง/ทั่วไป</i>) — ก้อนนี้จึงยังไม่ถูกนับเข้าเป้าหมายใด ๆ ในตารางนี้ <a onclick="goPage('p2')" style="color:var(--gold-2);cursor:pointer;text-decoration:underline;white-space:nowrap">ไปเลือกที่หน้า Snapshot →</a></div>`
     : '';
   const reconcile = (pfOK && need>0)
     ? `<div style="font-size:12px;line-height:1.6;margin-top:8px;border-left:3px solid var(--sage);background:#EAF4EE;border-radius:8px;padding:8px 11px;color:var(--ink-2)">กระแสเงินสดรวมทั้งแผนบอกว่า <b>เงินพอใช้ถึงอายุ ${pfAge}</b> — ตัวเลข "ออม/เดือน" ข้างล่างเป็นมุมมองที่เข้มกว่า คือแยกกองเงินให้แต่ละเป้าหมายโดยให้เกษียณจองก่อนเต็มจำนวน ใช้ดูว่าเป้าหมายไหนพึ่งพอร์ตรวมอยู่ ไม่ใช่สัญญาณว่าแผนไม่ผ่าน</div>`
@@ -10114,12 +10372,16 @@ function renderProjectionTable(pf){
   const ctx=rows.map((r,i)=>{
     const year=baseBE+(r.age-startAge);
     const portStart=(i===0)?startBal:rows[i-1].balance;
-    const retAmt=r.balance+(r.short||0)-portStart-(r.net||0); // = พอร์ตต้นปี × ผลตอบแทน (บวก short คืนก่อน เพราะ balance ถูก floor ที่ 0)
+    const retAmt=r.balance-(r.short||0)-portStart-(r.net||0)-(r.pvdIn||0); // v3.9.65: เครื่องหมาย short แก้เป็นลบ (เดิม + ทำให้ปีหลังเงินหมดขึ้นผลตอบแทนหลายล้านทั้งที่พอร์ต 0) · v3.9.62: หักเงินสะสม PVD ออกด้วย ไม่ให้ไปปนเป็นผลตอบแทน · = พอร์ตต้นปี × ผลตอบแทน (บวก short คืนก่อน เพราะ balance ถูก floor ที่ 0)
     const actual=actualByYear[year];
     return {r, year, portStart, retAmt, actual, diff:(actual!=null)?(actual-r.balance):null};
   });
   // ── ตารางแนวนอน: ปีอยู่บนสุด (คอลัมน์) · รายการอยู่ซ้าย (แถว) เหมือน Excel ──
-  const head=`<tr><th class="rowlbl cornr">รายการ \\ ปี</th>${ctx.map(c=>`<th>${c.year}<br><span style="font-weight:400;color:var(--muted);font-size:8.5px">อายุ ${c.r.age}</span></th>`).join('')}</tr>`;
+  /* v3.9.65: แกนอายุแสดงทุกผู้วางแผน (เดิมโชว์อายุคนแรกอย่างเดียว คู่ที่อายุห่างกันต้องลบเอง) */
+  const _cs=STATE.carriers||[]; const _a0=Number((_cs[0]||{}).age)||0;
+  const ageLbl=age=>_cs.length>1 ? _cs.map(c=>String(age-(_a0-(Number(c.age)||0)))).join(' / ') : String(age);
+  const cornr=_cs.length>1 ? 'รายการ \\ ปี<br><span style="font-weight:400;font-size:8.5px;color:var(--muted)">อายุ '+_cs.map(shortName).join(' / ')+'</span>' : 'รายการ \\ ปี';
+  const head=`<tr><th class="rowlbl cornr">${cornr}</th>${ctx.map(c=>`<th>${c.year}<br><span style="font-weight:400;color:var(--muted);font-size:8.5px" title="${_cs.map(x=>shortName(x)+' '+(c.r.age-(_a0-(Number(x.age)||0)))).join(' · ')}">อายุ ${ageLbl(c.r.age)}</span></th>`).join('')}</tr>`;
   const row=(label,cell,cls)=>`<tr${cls?' class="'+cls+'"':''}><th class="rowlbl">${label}</th>${ctx.map(cell).join('')}</tr>`;
 
   /* ── v3.9.60 · บรรทัดการออม ──────────────────────────────────────────────
@@ -10140,7 +10402,7 @@ function renderProjectionTable(pf){
   const svTotalAt=age=>svKeys.reduce((a,[k])=>a+svYear(k,age),0)+svExtras.reduce((a,x)=>a+svExtraAt(x,age),0);
   const svRows=[];
   if(svKeys.length||svExtras.length){
-    svRows.push(row('ระบุเป็นเงินออมมีปลายทาง', c=>`<td class="sv-hd"></td>`, 'sv-hdr'));
+    svRows.push(row('เงินออม · จ่ายตัวเองก่อน', c=>`<td class="sv-hd"></td>`, 'sv-hdr'));
     svKeys.forEach(([k,lbl])=>{ svRows.push(row('· '+lbl+' <span class="sv-pen">✎</span>', c=>{
       const v=svYear(k,c.r.age);
       return `<td class="sv-c" contenteditable="true" spellcheck="false" data-k="${k}" data-age="${c.r.age}"`
@@ -10149,17 +10411,39 @@ function renderProjectionTable(pf){
     svExtras.forEach(x=>{ svRows.push(row('· '+x.nm.replace(/[&<>]/g,'').slice(0,26), c=>{
       const v=svExtraAt(x,c.r.age);
       return `<td style="color:${v>0?'var(--ink-2)':'var(--faint)'}">${v>0?fmt0(v):'—'}</td>`; }, 'sv-row')); });
-    svRows.push(row('รวมเงินออมที่ระบุไว้', c=>{ const t=svTotalAt(c.r.age), over=t>(c.r.net||0)+1;
-      return `<td class="${over?'sv-over':''}" style="font-weight:700">${t>0?fmt0(t):'—'}</td>`; }, 'sv-tot'));
+    svRows.push(row('รวมเงินออม', c=>{ const t=svTotalAt(c.r.age);
+      return `<td style="font-weight:700">${t>0?'−'+fmt0(t):'—'}</td>`; }, 'sv-tot'));
   }
 
+  /* ── MINIMAL-sample · เป้าหมายแยกบรรทัด เรียงตามลำดับความสำคัญ (rank เดียวกับตาราง "งบทำได้ถึงข้อไหน")
+     ทริปหลายครั้ง = บรรทัดเดียว · ค่าเทอม = บรรทัดละลูกหนึ่งคน (ชั้นไหนดูใน tooltip) · ยอดทุกช่องมาจาก pf.lumps ตัวเดียวกับ "เป้าหมายก้อน" */
+  const GS=(STATE.goals||[]), DEPS=(STATE.dependents||[]);
+  const gById={}; GS.forEach(g=>{ gById[g.id]=g; });
+  const gKey=g=>{ if(!g) return {k:'?',nm:'เป้าหมายอื่น'};
+    if(g.eduKid){ const d=DEPS.find(x=>x.id===g.eduKid); const kn=d?String(d.name||''):''; return {k:'edu:'+g.eduKid, nm:'ค่าเทอม'+(kn?' · '+kn:'')}; }
+    const base=String(g.name||'').split(/\s*·\s*ครั้งที่|\s*\(ปีที่/)[0].trim(); return {k:'n:'+base, nm:base}; };
+  const grp={}, gOrder=[];
+  (pf.lumps||[]).forEach(l=>{ const g=gById[l.gid]; const K=gKey(g);
+    if(!grp[K.k]){ grp[K.k]={nm:K.nm, rank:(g&&g.rank!=null)?+g.rank:1e9, first:l.age, byAge:{}, tip:{}}; gOrder.push(K.k); }
+    const G=grp[K.k]; G.rank=Math.min(G.rank,(g&&g.rank!=null)?+g.rank:1e9); G.first=Math.min(G.first,l.age);
+    G.byAge[l.age]=(G.byAge[l.age]||0)+(Number(l.amt)||0);
+    (G.tip[l.age]=G.tip[l.age]||[]).push(String(l.name||'').replace(/[<>&"]/g,'')); });
+  gOrder.sort((a,b)=>(grp[a].rank-grp[b].rank)||(grp[a].first-grp[b].first));
+  const goalRows=gOrder.map((k,i)=>{ const G=grp[k];
+    return row('<span class="g-no">เป้าหมาย '+(i+1)+'</span> '+G.nm.replace(/[<>&]/g,''), c=>{ const v=G.byAge[c.r.age]||0;
+      return v>0?`<td style="color:var(--carrier-2)" title="${(G.tip[c.r.age]||[]).join(' · ')}">−${fmt0(v)}</td>`:`<td style="color:var(--faint)">—</td>`; }, 'g-row'); });
   const body=[
     row('รายรับ', c=>`<td>${fmt0(c.r.income)}</td>`),
     row('รายจ่าย', c=>`<td>${fmt0(c.r.expense)}</td>`),
-    row('เป้าหมายก้อน', c=>`<td style="color:${c.r.lump>0?'var(--carrier-2)':'var(--faint)'}">${c.r.lump>0?fmt0(c.r.lump):'—'}</td>`),
-    row('เงินเหลือปีนี้', c=>`<td style="font-weight:700;color:${(c.r.net||0)>=0?'var(--sage-2)':'var(--carrier-2)'}">${(c.r.net||0)>=0?'+':'−'}${fmt0(Math.abs(c.r.net||0))}</td>`, 'sv-net'),
     ...svRows,
+    row('เงินสดก่อนเป้าหมาย', c=>{ const v=(c.r.income||0)-(c.r.expense||0)-svTotalAt(c.r.age); return `<td style="font-weight:700;color:${v>=0?'var(--sage-2)':'var(--carrier-2)'}">${v>=0?'+':'−'}${fmt0(Math.abs(v))}</td>`; }, 'g-pre'),
+    ...goalRows,
+    row('เงินสดหลังเป้าหมาย', c=>{ const v=(c.r.net||0)-svTotalAt(c.r.age); return `<td style="font-weight:700;color:${v>=0?'var(--sage-2)':'var(--carrier-2)'}" title="${v>=0?'เหลือ → เข้าพอร์ต':'ขาด → ดึงจากพอร์ต'}">${v>=0?'+':'−'}${fmt0(Math.abs(v))}</td>`; }, 'sv-net g-post'),
+    /* พอร์ต: เงินออมไม่ได้หายไปไหน — ไหลเข้าพอร์ต · ปลายปี = ต้นปี + เงินออม + เงินสดหลังเป้าหมาย + ผลตอบแทน (ตัวเลขพอร์ตเท่าเดิมทุกปี เพราะ เงินออม + หลังเป้าหมาย = เงินเหลือสุทธิเดิม) */
     row('พอร์ตต้นปี', c=>`<td>${fmt0(c.portStart)}</td>`),
+    ...(svKeys.length||svExtras.length?[row('+ เงินออมเข้าพอร์ต', c=>{ const t=svTotalAt(c.r.age); return t>0?`<td style="color:var(--sage-2)">+${fmt0(t)}</td>`:`<td style="color:var(--faint)">—</td>`; })]:[]),
+    row('+ เงินสดหลังเป้าหมาย', c=>{ const v=(c.r.net||0)-svTotalAt(c.r.age); return `<td style="color:${v>=0?'var(--sage-2)':'var(--carrier-2)'}">${v>=0?'+':'−'}${fmt0(Math.abs(v))}</td>`; }),
+    ...(rows.some(r=>(r.pvdIn||0)>0)?[row('+ เงินสะสม PVD เข้าพอร์ต', c=>(c.r.pvdIn||0)>0?`<td style="color:var(--sage-2)">+${fmt0(c.r.pvdIn)}</td>`:`<td style="color:var(--faint)">—</td>`)]:[]),
     row('ผลตอบแทน (+)', c=>`<td style="color:${c.retAmt>=0?'var(--sage-2)':'var(--carrier-2)'}">${c.retAmt>=0?'+':''}${fmt0(c.retAmt)}</td>`),
     row('พอร์ตปลายปี', c=>`<td style="font-weight:700;color:${(c.r.short||0)>0?'var(--carrier-2)':'var(--ink)'}">${fmt0(c.r.balance)}</td>`),
     ...(rows.some(r=>(r.shortCum||0)>0)?[row('เงินที่ขาด (สะสม)', c=>(c.r.shortCum||0)>0?`<td style="color:var(--carrier-2);font-weight:700">${fmt0(c.r.shortCum)}</td>`:`<td style="color:var(--faint)">—</td>`)]:[]),
@@ -10175,7 +10459,7 @@ function renderProjectionTable(pf){
     <div class="h-note" style="margin-top:8px">เลื่อนซ้าย-ขวาดูปีต่อ ๆ ไป · <b>"อัตราถอน"</b> หลังเกษียณ ควร ≤ 5% (แดง = ถอนเร็วเกินไป)
       ${(svKeys.length||svExtras.length)?`<br><b style="color:var(--gold-2)">ช่องที่มี ✎ พิมพ์ทับได้ทีละปี</b> — แก้ปีไหนกระทบแค่ปีนั้น ปีอื่นคงเดิม (กด Enter หรือคลิกออกเพื่อบันทึก)
       · ยอดที่ใส่<b>ลดหย่อนภาษีของปีนั้นจริง</b> ตัวเลขรายจ่ายและพอร์ตจะขยับตามทันที
-      · <b>เงินออมไม่ใช่รายจ่าย</b> — ทั้งเงินเหลือถูกลงทุนอยู่แล้ว บรรทัดพวกนี้บอกว่าก้อนไหนมีปลายทางอะไร
+      · <b>เงินออมหักจากเงินสดก่อน (จ่ายตัวเองก่อน) แล้วไหลเข้าพอร์ต</b> — ไม่ได้หายไปไหน ดูบรรทัด "+ เงินออมเข้าพอร์ต" · เงินสดหลังเป้าหมายติดลบ = ปีนั้นต้องดึงจากพอร์ตมาจ่าย
       · <b style="color:var(--carrier-2)">แถวรวมขึ้นสีแดง</b> = ปีนั้นระบุออมไว้มากกว่าเงินที่เหลือจริง ต้องลดยอดหรือหาเงินเพิ่ม
       · บรรทัดที่ไม่มี ✎ เป็นเงินออมที่ตั้งชื่อเอง แก้ที่หน้า <a onclick="goPage('p2')" style="color:var(--gold-2);cursor:pointer;text-decoration:underline">Snapshot</a>`:''}</div>`;
   try{ const sc=box.firstElementChild; if(sc&&PROJ_KEEP&&PROJ_SCROLL) sc.scrollLeft=PROJ_SCROLL; }catch(e){}
@@ -10231,9 +10515,9 @@ function projectionSVG(pf){
     laneEnd[pick.k]=x+pick.hw;
     const ly=LANE_Y[pick.k];
     const tip=ls.map(l=>`${l.name} ${Math.round(l.amt).toLocaleString('en-US')} บ.`).join(' · ');
-    return `<line x1="${x.toFixed(1)}" y1="${(ly+4).toFixed(1)}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#C9C2B0" stroke-width=".8" stroke-dasharray="2 2"/>
+    return `<line class="lm-lab" x1="${x.toFixed(1)}" y1="${(ly+4).toFixed(1)}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#C9C2B0" stroke-width=".8" stroke-dasharray="2 2"/>
       <path d="M ${x.toFixed(1)} ${(y-5).toFixed(1)} l 5 5 l -5 5 l -5 -5 Z" fill="#B05048" stroke="#fff" stroke-width="1"><title>อายุ ${age} · ${tip}</title></path>
-      <text x="${x.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" font-size="9.5" fill="#B05048" font-weight="600" font-family="${thai}">${nm}<title>อายุ ${age} · ${tip}</title></text>`;
+      <text class="lm-lab" x="${x.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" font-size="9.5" fill="#B05048" font-weight="600" font-family="${thai}">${nm}<title>อายุ ${age} · ${tip}</title></text>`;
   }).join('');
 
   /* ── คำตอบท้ายแผน: เหลือเท่าไหร่ / หมดเมื่อไหร่ ── */
@@ -10259,7 +10543,7 @@ function projectionSVG(pf){
   const stripAxis=`<line x1="${pad.l}" y1="${baseY.toFixed(1)}" x2="${W-pad.r}" y2="${baseY.toFixed(1)}" stroke="#C9C2B0" stroke-width="1"/>
     <text x="${pad.l-8}" y="${(S.t+8).toFixed(1)}" text-anchor="end" font-size="9" fill="#508B82" font-family="${thai}">+${fmtM(posMax)}</text>
     <text x="${pad.l-8}" y="${S.b}" text-anchor="end" font-size="9" fill="#B05048" font-family="${thai}">−${fmtM(negMax)}</text>
-    <text x="${pad.l}" y="${(S.t-6).toFixed(1)}" font-size="10" font-weight="600" fill="#7A7A7A" font-family="${thai}">เงินเข้า−ออกพอร์ต ต่อปี · <tspan fill="#508B82">เขียว = เหลือเก็บ</tspan> · <tspan fill="#B05048">แดง = ดึงจากพอร์ต</tspan> (รวมเงินก้อน)</text>`;
+    <text class="lm-lab" x="${pad.l}" y="${(S.t-6).toFixed(1)}" font-size="10" font-weight="600" fill="#7A7A7A" font-family="${thai}">เงินเข้า−ออกพอร์ต ต่อปี · <tspan fill="#508B82">เขียว = เหลือเก็บ</tspan> · <tspan fill="#B05048">แดง = ดึงจากพอร์ต</tspan> (รวมเงินก้อน)</text>`;
 
   const xLabels=rows.filter((r,i)=>i%Math.ceil(rows.length/9||1)===0).map(r=>`<text x="${X(r.age).toFixed(1)}" y="${xlY}" text-anchor="middle" font-size="10" fill="#9A9486" font-family="${thai}">${r.age}</text>`).join('');
 
@@ -10340,6 +10624,46 @@ function copyAiPolicyPrompt(btn){
   try{ navigator.clipboard.writeText(AI_POLICY_PROMPT).then(done,()=>{ prompt('คัดลอก prompt นี้:', AI_POLICY_PROMPT); }); }
   catch(e){ prompt('คัดลอก prompt นี้:', AI_POLICY_PROMPT); }
 }
+/* ═══ v3.9.65 · ตารางเบี้ยรายอายุจากรูป (เบี้ยสุขภาพ/โรคร้ายที่ขึ้นตามอายุ) → p.pf ของเล่มนั้น
+   ทำงานแบบเดียวกับ "กรอกจากรูปด้วย AI": คัดลอก prompt → ส่งรูปตารางเบี้ยให้ AI → วาง JSON กลับ
+   อายุในตาราง = อายุผู้เอาประกัน (เจ้าของเล่ม) · ระบบแปลงเป็นแกนอายุผู้วางแผนคนแรกให้เองตอนนำเข้า ═══ */
+const AI_PF_PROMPT=`อ่านรูปตารางเบี้ยประกันรายอายุที่แนบมา (เช่น ตารางเบี้ยสัญญาเพิ่มเติมสุขภาพ/โรคร้ายแรง แยกตามช่วงอายุ) แล้วตอบกลับเป็น JSON เท่านั้น (ไม่ต้องมีคำอธิบาย ไม่ต้องมี markdown) ตามโครงนี้:
+{"no":"เลขกรมธรรม์ถ้ามีในรูป","name":"ชื่อแบบประกัน/สัญญาเพิ่มเติม","rows":[{"from":อายุเริ่ม,"to":อายุสุดท้าย,"amt":เบี้ยต่อปี}, ...]}
+กติกา: อายุเป็นตัวเลขจำนวนเต็ม (อายุผู้เอาประกัน) · เบี้ยเป็นบาทต่อปี ไม่ใส่คอมม่า (ถ้าตารางเป็นรายเดือน ให้คูณ 12) · แถวหนึ่งต่อหนึ่งช่วงอายุที่เบี้ยเท่ากัน เรียงจากอายุน้อยไปมาก ต่อเนื่องกันไม่ทับซ้อน จนถึงอายุสุดท้ายที่ตารางระบุ (เช่น 85 หรือ 99) · ถ้ารูปมีหลายแผน/หลายวงเงิน เลือกเฉพาะแผนที่วงกลม/ไฮไลต์ไว้ ถ้าไม่มีให้ตอบทุกแผนเป็น array ของ object ข้างต้น · ไม่แน่ใจตัวเลขไหนให้ใส่ 0 อย่าเดา`;
+function copyAiPfPrompt(btn){
+  const done=()=>{ if(btn){ const t=btn.textContent; btn.textContent='✓ คัดลอกแล้ว'; setTimeout(()=>btn.textContent=t,1600); } };
+  try{ navigator.clipboard.writeText(AI_PF_PROMPT).then(done,()=>{ prompt('คัดลอก prompt นี้:', AI_PF_PROMPT); }); }
+  catch(e){ prompt('คัดลอก prompt นี้:', AI_PF_PROMPT); }
+}
+/* แปลงอายุผู้เอาประกัน → อายุผู้วางแผนคนแรก (แกนที่ projection ใช้) */
+function polOwnerToPlanAge(p, ownerAge){
+  const cs=STATE.carriers||[]; const c0=cs[0]; if(!c0) return ownerAge;
+  const a0=Number(c0.age)||0;
+  let owner=cs.find(c=>c.id===p.owner); let oa=owner?(Number(owner.age)||a0):null;
+  if(oa==null){ const d=(STATE.dependents||[]).find(x=>x.id===p.owner); oa=d?(Number(d.age)||0):a0; }
+  return (Number(ownerAge)||0)+(a0-oa);
+}
+function importAiPf(i){
+  const el=document.getElementById('aiPfIn-'+i); if(!el) return;
+  let t=(el.value||'').trim(); if(!t){ alert('วางคำตอบ JSON จาก AI ก่อนค่ะ'); return; }
+  t=t.replace(/```[a-z]*/gi,'').trim();
+  const m=t.match(/\[[\s\S]*\]|\{[\s\S]*\}/); if(m) t=m[0];
+  let data; try{ data=JSON.parse(t); }catch(e){ alert('อ่านข้อมูลไม่ได้ — ลองบอก AI ว่า "ตอบเป็น JSON อย่างเดียว ไม่ต้องอธิบาย" แล้ววางใหม่'); return; }
+  if(Array.isArray(data)){ data=data.find(x=>x&&Array.isArray(x.rows))||data[0]; }
+  const rows=(data&&Array.isArray(data.rows))?data.rows:(Array.isArray(data)?data:null);
+  if(!rows||!rows.length){ alert('ไม่พบ rows ในคำตอบ'); return; }
+  const p=policiesArr()[i]; if(!p) return;
+  const out=[]; rows.forEach(r=>{ const from=Math.round(Number(r.from)||0), to=Math.round(Number(r.to)||0), amt=Math.max(0,Number(String(r.amt==null?0:r.amt).replace(/[^\d.]/g,''))||0);
+    if(!(from>0&&amt>0)) return; out.push({from:polOwnerToPlanAge(p,from), to:(to>0?polOwnerToPlanAge(p,to):''), every:1, amt}); });
+  if(!out.length){ alert('ไม่มีแถวที่ใช้ได้ (ต้องมี from และ amt > 0)'); return; }
+  out.sort((a,b)=>a.from-b.from);
+  const a0=Number((STATE.carriers||[])[0]&&STATE.carriers[0].age)||0;
+  const note=(out[0].from>a0)?'\nหมายเหตุ: ช่วงแรกเริ่มหลังอายุปัจจุบัน — ปีก่อนหน้านั้นจะไม่มีเบี้ย ตรวจอีกครั้ง':'';
+  if(!confirm('จะแทนที่ตารางเบี้ยของ "'+(p.name||'กรมธรรม์')+'" ด้วย '+out.length+' ช่วงอายุ (แปลงเป็นอายุผู้วางแผนคนแรก '+out[0].from+'–'+(out[out.length-1].to||'ตลอด')+')?'+note)) return;
+  p.pf=out; if(typeof saveState==='function')saveState(); PFAI_OPEN={}; refreshProtection(); render();
+}
+let PFAI_OPEN={};
+function toggleAiPf(i){ PFAI_OPEN[i]=!PFAI_OPEN[i]; refreshProtection(); }
 function importAiPolicies(){
   const el=document.getElementById('aiPolIn'); if(!el) return;
   let t=(el.value||'').trim();
@@ -10447,8 +10771,16 @@ function pfEditor(i){
   </div>`).join('');
   return `<tr class="polcf-exp"><td colspan="22">
     <div class="cf-h">💸 เบี้ยจ่าย (ตามอายุ) · ${nm} <small style="font-weight:400;color:var(--muted)">(หักเป็นค่าใช้จ่ายในกราฟ projection ตามช่วงอายุที่จ่าย — หยุดเมื่อครบชำระ)</small></div>
-    ${rowsH||'<div class="note" style="font-style:italic;color:var(--faint)">ยังไม่ระบุช่วงอายุ — ตอนนี้ projection หักเบี้ย '+commafy(prem)+' ทุกปีตลอดแผน · กำหนดช่วงอายุ/ครบชำระเพื่อให้หยุดตามจริง</div>'}
+    ${rowsH||'<div class="note" style="font-style:italic;color:var(--faint)">ยังไม่ระบุช่วงอายุ — ตอนนี้ projection หักเบี้ย '+commafy(prem)+((function(){ const L=polPayUntilPlanAge(policiesArr()[i]); return L!=null?' ทุกปีถึงผู้วางแผนอายุ '+L+' (ตามช่อง "ครบชำระเบี้ย" · v3.9.65)':' ทุกปีตลอดแผน'; })())+' · ใส่ตารางนี้เมื่อเบี้ยไม่เท่ากันทุกปี (เช่น สุขภาพขึ้นตามอายุ)</div>'}
     <button class="add-btn" style="margin-top:4px" onclick="addPolicyPF(${i})"><b>+</b> เพิ่มช่วงเบี้ย</button>
+    <button class="add-btn" style="margin-top:4px;margin-left:6px" onclick="toggleAiPf(${i})">🤖 กรอกตารางเบี้ยจากรูปด้วย AI</button>
+    ${PFAI_OPEN[i]?`<div style="margin-top:8px;padding:10px 12px;border:1px dashed var(--gold);border-radius:8px;background:#FBF8EE">
+      <div style="font-size:11.5px;color:var(--gold-2);font-weight:700;margin-bottom:5px">① ถ่าย/crop ตารางเบี้ยรายอายุของสัญญานี้ (ถึงอายุสุดท้ายในตาราง เช่น 85/99) → ② คัดลอก prompt ส่งให้ AI พร้อมรูป → ③ วางคำตอบ JSON ที่นี่</div>
+      <button class="btn" style="font-size:11px;padding:3px 9px" onclick="copyAiPfPrompt(this)">📋 คัดลอก Prompt</button>
+      <textarea id="aiPfIn-${i}" placeholder='{"name":"สุขภาพเหมาจ่าย","rows":[{"from":38,"to":40,"amt":29000},{"from":41,"to":45,"amt":33500}]}' style="width:100%;min-height:60px;margin-top:6px;font-size:11px;font-family:monospace;border:1px solid var(--line);border-radius:6px;padding:6px"></textarea>
+      <button class="btn btn-pri" style="margin-top:5px;font-size:11.5px" onclick="importAiPf(${i})">↧ ใส่ตารางเบี้ยเข้าเล่มนี้</button>
+      <span style="font-size:10.5px;color:var(--muted);margin-left:6px">แทนที่ตารางเดิมของเล่มนี้ · อายุในตาราง = อายุผู้เอาประกัน ระบบแปลงให้เอง</span>
+    </div>`:''}
     ${pf.length===0&&prem>0?`<button class="add-btn" style="margin-top:4px;margin-left:6px" onclick="seedPolicyPF(${i})">↧ เริ่มจากเบี้ยปัจจุบัน ${commafy(prem)}</button>`:''}
   </td></tr>`;
 }
@@ -10839,8 +11171,8 @@ function a4RetireBlock(){
   let pf=null; try{ pf=HENG.proForma(); }catch(e){}
   const a0=Number(c.age)||0, retA=A.retAge||60, life=Number(c.life)||85;
   const expM=(typeof retEffExpenseM==='function')?retEffExpenseM(c,Math.max(1,(STATE.carriers||[]).length)):0;
-  const mode=(c.retireMode||'pct');
-  const MODE={pct:'70% ของค่าใช้จ่ายรวมวันนี้',custom:'ที่ปรึกษากำหนดเอง',pick:'เลือกตามรายการรายจ่าย'};
+  const mode=retHouseholdMode();   /* v3.9.65: โหมดครัวเรือน */
+  const MODE={pct:'70% ของรายจ่ายผันแปรวันนี้',auto70:'70% ของรายจ่ายผันแปรวันนี้',custom:'ที่ปรึกษากำหนดเอง',pick:'เลือกตามรายการรายจ่าย',items:'เลือกตามรายการรายจ่าย'};
   const pen=Number(c.pensionMonthly)||0;
   const cell=(l,v,sub,col)=>`<div class="c"><div class="l">${l}</div><div class="v"${col?` style="color:${col}"`:''}>${v}</div>${sub?`<div class="l" style="margin-top:1px">${sub}</div>`:''}</div>`;
   const row=(l,v,note)=>`<tr><td>${l}${note?`<div style="color:#8A8272;font-size:8.8px;line-height:1.45;margin-top:1px">${note}</div>`:''}</td><td class="n">${v}</td></tr>`;
@@ -12431,6 +12763,8 @@ const xM = n => { n=+n||0; const s=n<0?'−':''; n=Math.abs(n);
   if(n>=1e6) return s+(n/1e6).toFixed(n>=2e7?0:1).replace(/\.0$/,'')+' ล.';
   if(n>=1e3) return s+Math.round(n/1e3)+'K'; return s+Math.round(n); };
 const xF = n => Math.round(+n||0).toLocaleString('en-US');
+/* MINIMAL: ล้านทศนิยม 1 ตำแหน่งเสมอ (27.3 ล.) ให้ตรงกับตัวเลขเต็ม */
+const xM1 = n => { n=+n||0; const s=n<0?'−':''; n=Math.abs(n); return n>=1e6 ? s+(n/1e6).toFixed(1)+' ล.' : s+Math.round(n).toLocaleString('en-US'); };
 
 /* ── series: อดีตจริง + แผนอนาคต ── */
 function execSeries(){
@@ -12612,13 +12946,14 @@ function retVarNowM(){ const d=STATE.snap&&STATE.snap.detail; if(!d) return 0;
    "ค่าใช้จ่ายรวม" = รายจ่ายคงที่ + ผันแปร (รวมรายการเพิ่มที่ active ปีนี้)
    ไม่รวมเงินออม (ไม่ใช่รายจ่าย) และไม่รวมอุปการะผู้พึ่งพิง/ค่าเทอมบุตร-ตามช่วงอายุ
    (สองอย่างหลังมีช่วงเวลาของตัวเอง ตารางกระแสเงินสดคิดแยกให้อยู่แล้ว — กันนับซ้ำ) */
+/* v3.9.65: ฐานของสูตร 70% = รายจ่ายผันแปรเท่านั้น (ไม่รวมภาษี) — เดิมรวมผ่อนบ้าน/รถ ภาษี PVD ปกส. ซึ่งหมดไปตอนเกษียณอยู่แล้ว
+   ทำให้ค่าใช้จ่ายหลังเกษียณสูงเกินจริงมาก (เคส Persona: 82,091 → 61,000/เดือน) · ฐานนี้เป็นของครัวเรือน */
 function retExpenseBaseM(){
   const d=STATE.snap&&STATE.snap.detail;
   if(!d) return (STATE.snap&&STATE.snap.cashflow&&STATE.snap.cashflow.household)||0;
   let t=0;
-  const cv=d.cashflow.var||{};   for(const k in cv) t+=Number(cv[k])||0;
-  const fx=d.cashflow.fixed||{}; for(const k in fx) t+=Number(fx[k])||0;
-  t+=extraActiveNow(retExcludeAuto(d.cashflow.varExtra))+extraActiveNow(retExcludeAuto(d.cashflow.fixedExtra));
+  const cv=d.cashflow.var||{};   for(const k in cv){ if(k==='tax') continue; t+=Number(cv[k])||0; }
+  t+=extraActiveNow(retExcludeAuto(d.cashflow.varExtra));
   return t||((STATE.snap&&STATE.snap.cashflow&&STATE.snap.cashflow.household)||0);
 }
 /* บรรทัดที่ระบบสร้างเองและ "ไม่ใช่ค่าใช้จ่ายประจำที่ตามไปหลังเกษียณ" — ต้องไม่อยู่ในฐาน 70%
@@ -12659,6 +12994,31 @@ function retItemsSumM(c){
   const off=retItemOffMap(c); let t=0;
   retItemsList().forEach(it=>{ if(!off[it.key]) t+=it.m; });
   return t;
+}
+/* v3.9.65 · เงินเฟ้อของรายการหลังเกษียณแต่ละบรรทัด (โหมดเลือกตามรายการ) — ค่ารักษาพยาบาลโตตาม % ของบรรทัดนั้น ไม่ถูกกลืนเป็นเงินเฟ้อทั่วไป */
+function retItemInfPct(key){
+  const d=STATE.snap&&STATE.snap.detail; const gen=Number(STATE.inflation)||((STATE.assume&&STATE.assume.inf)||3);
+  if(!d) return gen;
+  const [grp,k]=String(key).split('.');
+  const pick=(m)=>(m&&m.inf!=null&&m.inf!=='')?Number(m.inf):null;
+  let v=null;
+  if(grp==='v'){ v=pick((d.cashflow.varMeta||{})[k]); }
+  else if(grp==='f'){ v=pick((d.cashflow.fixedMeta||{})[k]); if(v==null) v=0; }
+  else if(grp==='vx'){ const x=(d.cashflow.varExtra||[]).find(z=>z&&z.id===k); v=pick(x); }
+  else if(grp==='fx'){ const x=(d.cashflow.fixedExtra||[]).find(z=>z&&z.id===k); v=pick(x); if(v==null) v=0; }
+  return (v==null)?gen:v;
+}
+/* ค่าใช้จ่ายหลังเกษียณของครัวเรือน "ต่อปี" ในปีที่ y นับจากวันนี้ (ทบเงินเฟ้อแล้ว)
+   โหมดเลือกตามรายการ → ทบรายบรรทัดด้วย % ของบรรทัด · โหมดอื่น → ทบด้วยเงินเฟ้อทั่วไป */
+function retLivingAnnualAt(y){
+  y=Number(y)||0; const gen=(Number(STATE.inflation)||((STATE.assume&&STATE.assume.inf)||3))/100;
+  const c0=(STATE.carriers||[])[0]||{};
+  if(retHouseholdMode()==='items' && retItemsList().length){
+    const off=retItemOffMap(c0); let t=0;
+    retItemsList().forEach(it=>{ if(off[it.key]) return; t+=it.m*12*Math.pow(1+retItemInfPct(it.key)/100, y); });
+    return t;
+  }
+  return retHouseholdExpenseM()*12*Math.pow(1+gen, y);
 }
 /* ค่าใช้จ่ายหลังเกษียณ/เดือน (ค่าเงินวันนี้) ตามโหมดของผู้วางแผนคนนั้น — แหล่งเดียว ทุกสูตรใช้ตัวนี้ */
 /* ═══════════ v3.9.27 · หน้าจอเครื่องคำนวณบำนาญ ปกส. ═══════════ */
@@ -12767,16 +13127,24 @@ function renderSsoCard(){
     </div>
   </div>`;
 }
-function retEffExpenseM(c, nShare){
-  c=c||(STATE.carriers||[])[0]||{}; nShare=Math.max(1,nShare||1);
-  const mode=c.retireMode||(c.retireExpense>0?'custom':'auto70');
+/* v3.9.65 · ค่าใช้จ่ายหลังเกษียณ = ตัวเลขเดียวของ "ทั้งครัวเรือน" ตั้งที่ผู้วางแผนคนแรก (retireMode/retireExpense/retireItemOff)
+   กติกา: ค่าใช้จ่ายร่วมกรอกที่เดียวเป็นของครัวเรือน · ระบบแบ่งรายคน (÷ จำนวนผู้วางแผน) ให้ตอนคิดเป้ารายคน
+   เดิม: แต่ละคนมีโหมดของตัวเอง (custom ไม่หาร · auto70 หาร) → กรอก custom เป็นยอดครัวเรือนแล้วถูกบวกของอีกคนซ้อน = นับซ้ำ
+   โหมดเริ่มต้น = "เลือกตามรายการ" (แบบ CFP) · ถ้ายังไม่มีรายการ ใช้ 70% ของรายจ่ายผันแปรไปก่อน */
+function retHouseholdMode(){ const c=(STATE.carriers||[])[0]||{}; return c.retireMode||(c.retireExpense>0?'custom':'items'); }
+function retHouseholdExpenseM(){
+  const c=(STATE.carriers||[])[0]||{}; const mode=retHouseholdMode();
   if(mode==='custom') return Number(c.retireExpense)||0;
   if(mode==='items'){
-    if(retItemsList().length===0) return 0.7*retExpenseBaseM()/nShare;   /* ยังไม่มีรายการให้ติ๊ก → ใช้สูตร 70% ไปก่อน */
-    return retItemsSumM(c)/nShare;
+    if(retItemsList().length===0) return 0.7*retExpenseBaseM();   /* ยังไม่มีรายการให้ติ๊ก → ใช้สูตร 70% ไปก่อน */
+    return retItemsSumM(c);
   }
   const pct=(Number(c.retireAutoPct)>0?Number(c.retireAutoPct):70)/100;
-  return pct*retExpenseBaseM()/nShare;
+  return pct*retExpenseBaseM();
+}
+function retEffExpenseM(c, nShare){
+  nShare=Math.max(1,nShare||1);
+  return retHouseholdExpenseM()/nShare;
 }
 function setRetMode(mode){ const c=STATE.carriers[0]; if(!c) return;
   c.retireMode=mode;
@@ -12820,18 +13188,21 @@ function renderRetVisit(){
   const save=Math.max(0,retA-now), use=Math.max(0,life-retA), mx=Math.max(save,use,1);
   host.innerHTML=
    '<div class="rv-tl">'+
-    '<div class="rv-c"><div class="cir"><input type="number" value="'+now+'" onchange="setRetVisit(\'age\',this.value)"></div><div class="cl">อายุปัจจุบัน</div></div>'+
-    '<div class="rv-a"><div class="ar">⟶</div><div class="al">สะสมเงินออม<br><b>'+save+' ปี</b></div></div>'+
-    '<div class="rv-c"><div class="cir" style="border-color:var(--carrier,#C8635A)"><input type="number" value="'+retA+'" onchange="setRetVisit(\'retAge\',this.value)"></div><div class="cl">อายุที่จะเกษียณ</div></div>'+
-    '<div class="rv-a"><div class="ar">⟶</div><div class="al">ใช้เงินก้อนนี้<br><b>'+use+' ปี</b></div></div>'+
-    '<div class="rv-c"><div class="cir" style="border-color:var(--sage-2,#6BA89E)"><input type="number" value="'+life+'" onchange="setRetVisit(\'life\',this.value)"></div><div class="cl">อายุสิ้นสุดกองทุน</div></div>'+
+    '<div class="rv-c"><div class="cir"><input type="number" value="'+now+'" onchange="setRetVisit(\'age\',this.value)"></div><div class="cl"><span class="adv-only">อายุปัจจุบัน</span><span class="cl-only">วันนี้</span></div></div>'+
+    '<div class="rv-a"><div class="ar">⟶</div><div class="al"><span class="adv-only">สะสมเงินออม</span><span class="cl-only">เก็บ</span><br><b>'+save+' ปี</b></div></div>'+
+    '<div class="rv-c"><div class="cir" style="border-color:var(--carrier,#C8635A)"><input type="number" value="'+retA+'" onchange="setRetVisit(\'retAge\',this.value)"></div><div class="cl"><span class="adv-only">อายุที่จะเกษียณ</span><span class="cl-only">เกษียณ</span></div></div>'+
+    '<div class="rv-a"><div class="ar">⟶</div><div class="al"><span class="adv-only">ใช้เงินก้อนนี้</span><span class="cl-only">ใช้</span><br><b>'+use+' ปี</b></div></div>'+
+    '<div class="rv-c"><div class="cir" style="border-color:var(--sage-2,#6BA89E)"><input type="number" value="'+life+'" onchange="setRetVisit(\'life\',this.value)"></div><div class="cl"><span class="adv-only">อายุสิ้นสุดกองทุน</span><span class="cl-only">ใช้ถึงอายุ</span></div></div>'+
    '</div>'+
    '<div class="rv-cmp">'+
     '<div class="rv-row"><span class="rv-l">เวลาเก็บเงิน</span><div class="rv-bar"><i style="width:'+(save/mx*100)+'%;background:var(--gold)"></i></div><span class="rv-v">'+save+' ปี</span></div>'+
     '<div class="rv-row"><span class="rv-l">เวลาใช้เงิน</span><div class="rv-bar"><i style="width:'+(use/mx*100)+'%;background:var(--carrier,#C8635A)"></i></div><span class="rv-v">'+use+' ปี</span></div>'+
-    (use>save?'<div class="rv-msg">⚠ เวลาใช้เงินยาวกว่าเวลาเก็บเงินถึง '+(use-save)+' ปี — ทุกปีที่เริ่มช้า ภาระออมต่อเดือนยิ่งสูงขึ้น</div>'
+    (use>save?'<div class="rv-msg"><span class="adv-only">⚠ เวลาใช้เงินยาวกว่าเวลาเก็บเงินถึง '+(use-save)+' ปี — ทุกปีที่เริ่มช้า ภาระออมต่อเดือนยิ่งสูงขึ้น</span><span class="cl-only">⚠ ใช้นานกว่าเก็บ '+(use-save)+' ปี</span></div>'
       :(save>use?'<div class="rv-msg" style="color:var(--sage-2,#6BA89E)">มีเวลาเก็บมากกว่าเวลาใช้ '+(save-use)+' ปี — เริ่มตอนนี้ได้เปรียบที่สุด</div>':''))+
-   '</div>';
+   '</div>'+
+   /* v3.9.65: ผู้วางแผนคนอื่น — วงกลมด้านบนเป็นของคนแรก บอกให้ชัดว่าอีกคนอยู่ตรงไหน */
+   ((STATE.carriers||[]).length>1 ? '<div class="rv-others">'+STATE.carriers.map((x,i)=>{ const rA=calcRetireAge(x)||60, lf=+x.life||90;
+      return '<span'+(i===0?' class="cur"':'')+'><b>'+shortName(x)+'</b> '+(+x.age||0)+' → เกษียณ '+rA+' → ใช้ถึง '+lf+'</span>'; }).join('')+'</div>' : '');
 }
 function renderRetPage(){
   try{ renderRetVisit(); }catch(e){}
@@ -12853,14 +13224,14 @@ function renderRetPage(){
         : '<div class="ll-marks"><span>วันนี้ '+now+' · หยุดงานหลัก '+retA+'</span><span>สุดแผน · '+life+'</span></div></div>'; })()+
     '<div class="note" style="margin-top:14px">ทุก 1 ปีที่ยังสะสม เงินได้ทั้ง "เติม" และ "เวลาทบต้น" — สองแรงพร้อมกัน</div>';
 
-  const mode=c.retireMode||(c.retireExpense>0?'custom':'auto70');
+  const mode=retHouseholdMode();   /* v3.9.65 */
   const baseNow=retExpenseBaseM();
   const pct=Number(c.retireAutoPct)>0?Number(c.retireAutoPct):70;
   const autoV=Math.round(pct/100*baseNow);
   const effM=Math.round(retEffExpenseM(c,1));
   let modeBody='';
   if(mode==='custom'){
-    modeBody='<div style="margin-top:12px;display:flex;align-items:center;gap:10px"><input class="y" style="width:160px;padding:10px;border:1.5px solid var(--line);border-radius:10px;font-size:15px;text-align:right" value="'+xF(c.retireExpense||autoV)+'" onchange="setRetCustom(this.value)"><span class="note">บาท/เดือน (ค่าเงินวันนี้)</span></div>';
+    modeBody='<div style="margin-top:12px;display:flex;align-items:center;gap:10px"><input class="y" style="width:160px;padding:10px;border:1.5px solid var(--line);border-radius:10px;font-size:15px;text-align:right" value="'+xF(c.retireExpense||autoV)+'" onchange="setRetCustom(this.value)"><span class="note">บาท/เดือน (ค่าเงินวันนี้ · ทั้งครัวเรือน)</span></div>';
   } else if(mode==='items'){
     /* v3.9: ดึงรายจ่ายทั้งหมดมาให้ติ๊ก — ติ๊กออก = รายการที่จะไม่มีแล้วหลังเกษียณ */
     const items=retItemsList(); const off=retItemOffMap(c); const sum=Math.round(retItemsSumM(c));
@@ -12881,7 +13252,7 @@ function renderRetPage(){
     }
   } else {
     modeBody='<div style="margin-top:12px" class="bigrow">'+
-      '<div class="bigcard"><div class="k">ค่าใช้จ่ายรวมปัจจุบัน</div><div class="bignum">'+xF(baseNow)+'</div><div class="n">บาท/เดือน (คงที่ + ผันแปร)</div></div>'+
+      '<div class="bigcard"><div class="k">รายจ่ายผันแปรปัจจุบัน · ครัวเรือน</div><div class="bignum">'+xF(baseNow)+'</div><div class="n">บาท/เดือน (ไม่รวมผ่อนหนี้ · ภาษี · PVD)</div></div>'+
       '<div class="bigcard"><div class="k">× <input class="y y-num" style="width:52px;text-align:right;font-size:13px;padding:3px 6px" value="'+pct+'" onchange="setRetAutoPct(this.value)"> % = ใช้หลังเกษียณ</div>'+
         '<div class="bignum"><input class="y" style="width:150px;background:transparent;border:none;border-bottom:1.5px dashed var(--gold);font-family:Georgia,serif;font-size:22px;font-weight:700;text-align:left;padding:0;color:inherit" value="'+xF(autoV)+'" onchange="setRetCustom(this.value)" title="แก้ตัวเลขได้ — แก้แล้วเปลี่ยนเป็นโหมดกำหนดเอง"></div>'+
         '<div class="n">บาท/เดือน (ค่าเงินวันนี้ · แก้เลขได้)</div></div></div>';
@@ -12899,20 +13270,20 @@ function renderRetPage(){
   const polPV=RA?Math.round(RA.policyPV||0):0, penPV=RA?Math.round(RA.pensionPV||0):0;
   const fldsSum=
    '<div class="rv-flds" style="margin-top:14px">'+
-    '<div class="rv-f"><label>เงินก้อนที่เตรียมไว้แล้ว <small>มาจากงบดุล (หน้า Snapshot) — แก้ที่ต้นทาง'+(svCf>0?' · ไม่รวมมูลค่าเวนคืน '+f(svCf)+' ของเล่มที่มีเงินคืน (นับในเงินจากกรมธรรม์แล้ว)':'')+'</small></label>'+
+    '<div class="rv-f"><label><span class="adv-only">เงินก้อนที่เตรียมไว้แล้ว</span><span class="cl-only">มีแล้ววันนี้</span> <small>มาจากงบดุล (หน้า Snapshot) — แก้ที่ต้นทาง'+(svCf>0?' · ไม่รวมมูลค่าเวนคืน '+f(svCf)+' ของเล่มที่มีเงินคืน (นับในเงินจากกรมธรรม์แล้ว)':'')+'</small></label>'+
       '<div class="ro">'+(invest==null?'—':f(invest)+' ฿')+'</div></div>'+
-    '<div class="rv-f"><label>รายได้ที่จะยังมีหลังเกษียณ ต่อปี <small>บำนาญ · ปันผล · ค่าเช่า'+(penPV>0?' · คิดเป็นมูลค่า ณ วันเกษียณ '+f(penPV):'')+'</small></label>'+
+    '<div class="rv-f"><label><span class="adv-only">รายได้ที่จะยังมีหลังเกษียณ ต่อปี</span><span class="cl-only">รายได้หลังเกษียณ /ปี</span> <small>บำนาญ · ปันผล · ค่าเช่า'+(penPV>0?' · คิดเป็นมูลค่า ณ วันเกษียณ '+f(penPV):'')+'</small></label>'+
       '<input value="'+(passY?f(passY):'')+'" placeholder="ไม่มีเว้นว่างได้" onchange="setRetVisit(\'passiveY\',this.value)"></div>'+
     (polPV>0?'<div class="rv-f" style="grid-column:1/-1"><label>เงินคืน/ครบสัญญา/บำนาญจากกรมธรรม์ ณ วันเกษียณ <small>จากทะเบียนกรมธรรม์ (หน้า Protection · ปุ่ม 🎯) — ก่อนเกษียณทบผลตอบแทนถึงวันเกษียณ '+f(RA.policyPre||0)+' · หลังเกษียณคิดลดกลับมา '+f(RA.policyPost||0)+'</small></label>'+
       '<div class="ro">'+f(polPV)+' ฿</div></div>':'')+
    '</div>'+
-   '<div class="rv-sum">'+
-    '<div class="rv-box rv-then"><div class="rv-k">เงินก้อนที่ต้องมี — แบบประมาณเบื้องต้น<br><small>ยังไม่รวมเงินเฟ้อ</small></div><div class="rv-n">'+f(simple)+' ฿</div></div>'+
-    '<div class="rv-box rv-now"><div class="rv-k">เงินก้อนจริงที่ต้องมี — รวมเงินเฟ้อและผลตอบแทนแล้ว<br><small>ตัวเลขที่ Money MRI ใช้วางแผน</small></div><div class="rv-n">'+(real==null?'—':f(real)+' ฿')+'</div></div>'+
+   '<div class="rv-sum cv-hide">'+
+    '<div class="rv-box rv-then cv-hide"><div class="rv-k">เงินก้อนที่ต้องมี — แบบประมาณเบื้องต้น<br><small>ยังไม่รวมเงินเฟ้อ</small></div><div class="rv-n">'+f(simple)+' ฿</div></div>'+
+    '<div class="rv-box rv-now"><div class="rv-k"><span class="adv-only">เงินก้อนจริงที่ต้องมี — รวมเงินเฟ้อและผลตอบแทนแล้ว</span><span class="cl-only">ต้องมี ณ วันเกษียณ</span><br><small>ตัวเลขที่ Money MRI ใช้วางแผน</small></div><div class="rv-n">'+(real==null?'—':f(real)+' ฿')+'</div></div>'+
    '</div>';
   document.getElementById('retModeUI').innerHTML=
     '<div class="modepills">'+
-    '<button class="modepill'+(mode==='auto70'?' on':'')+'" onclick="setRetMode(\'auto70\')">70% ของค่าใช้จ่ายรวม</button>'+
+    '<button class="modepill'+(mode==='auto70'?' on':'')+'" onclick="setRetMode(\'auto70\')">70% ของรายจ่ายผันแปร</button>'+
     '<button class="modepill'+(mode==='custom'?' on':'')+'" onclick="setRetMode(\'custom\')">กำหนดเอง</button>'+
     '<button class="modepill'+(mode==='items'?' on':'')+'" onclick="setRetMode(\'items\')">เลือกตามรายการรายจ่าย</button></div>'+
     modeBody+fldsSum;
@@ -12933,13 +13304,40 @@ function renderRetPage(){
   document.getElementById('retResult').innerHTML=
     '<div class="x-verd" style="display:flex;gap:12px;align-items:center;border-radius:12px;padding:14px 16px;margin-bottom:14px;border:1px solid '+(ok?'var(--sage-soft)':'var(--carrier-soft)')+';background:'+(ok?'#EAF4EE':'#FBEEEC')+'">'+
       '<div style="font-size:20px">'+(ok?'✓':'!')+'</div><div>'+
-      '<b>'+(ok?('เงินพอใช้ถึงอายุ '+life+' — ทำเป้าหมายทุกข้อได้'):('เงินเริ่มไม่พอตอนอายุ '+pf.depleteAge))+'</b>'+
+      '<b>'+(ok?('<span class="adv-only">เงินพอใช้ถึงอายุ '+life+' — ทำเป้าหมายทุกข้อได้</span><span class="cl-only">เงินพอใช้ถึงอายุ '+life+' ✓</span>'):('<span class="adv-only">เงินเริ่มไม่พอตอนอายุ '+pf.depleteAge+'</span><span class="cl-only">เงินหมดตอนอายุ '+pf.depleteAge+'</span>'))+'</b>'+
       '<div class="note">'+(ok?('เหลือส่งต่อ ~'+xM(lastR?lastR.balance:0)+' ณ ปลายแผน'):'ปรับได้: ลดใช้จ่ายหลังเกษียณ · เลื่อนอายุหยุดงาน · เพิ่มการลงทุน — ดูหน้า What-If')+'</div></div></div>'+
-    '<div class="bigrow">'+
+    '<div class="bigrow cv-hide">'+
     '<div class="bigcard"><div class="k">พอร์ต ณ วันหยุดงาน (อายุ '+retA+')</div><div class="bignum">'+xM(atRet?atRet.balance:0)+'</div><div class="n">'+xF(atRet?atRet.balance:0)+' บาท'+((atRet&&atRet.bk&&pf.retMode==='asset')?('<br>สินทรัพย์เดิม '+xM(atRet.bk.liquid+atRet.bk.invest+atRet.bk.retire)+' · เงินออมใหม่ตามแผน '+xM(atRet.bk.port)):'')+'</div></div>'+
     '<div class="bigcard"><div class="k">จุดต่ำสุดหลังเกษียณ</div><div class="bignum">'+(minRow?xM(minRow.balance):'—')+'</div><div class="n">'+(minRow?('ช่วงอายุ '+minRow.age):'')+'</div></div>'+
     '<div class="bigcard"><div class="k">ปลายแผน (อายุ '+life+')</div><div class="bignum" style="color:'+(ok?C.sage:C.carrier)+'">'+(ok?xM(lastR?lastR.balance:0):'0')+'</div><div class="n">'+(ok?'ส่งต่อให้คนข้างหลังได้':'ต้องปรับแผน')+'</div></div></div>'+
-    retWorksheetHTML(c);
+    retKeyHTML(c,pf,retA,life,atRet,ok)+
+    '<div class="cv-hide">'+STATE.carriers.map(x=>retWorksheetHTML(x)).join('')+'</div>'+
+    '<details class="more cl-only"><summary>ดูวิธีคิด'+(STATE.carriers.length>1?' (รายคน)':'')+'</summary>'+STATE.carriers.map(x=>retWorksheetHTML(x)).join('')+'</details>';
+}
+/* MINIMAL (ตัวอย่าง): สรุป key highlight สำหรับมุมมองลูกค้า — ตัวเลขมาจากตัวคำนวณเดิม (HENG.retirement / proForma) ไม่คิดใหม่ */
+/* v3.9.65: สรุปเป้าเกษียณ "ทั้งครัวเรือน" (รวมทุกผู้วางแผน) ให้ตรงกับกราฟองค์รวม + บรรทัดย่อยรายคน
+   เดิมโชว์เฉพาะคนแรก (ครึ่งครัวเรือน) โดยไม่มีป้ายบอก ลูกค้าเทียบกับพอร์ตรวมแล้วงง */
+function retHouseholdPlan(){
+  const cs=STATE.carriers||[]; const per=[]; let A={target:0,expected:0,gap:0,monthly:0}, B={gap:0,monthly:0,retAge:null};
+  cs.forEach(c=>{ let R=null; try{ R=HENG.retirement(c); }catch(e){ return; } const a=R.planA, b=R.planB;
+    per.push({c, a, b}); A.target+=a.target||0; A.expected+=a.expected||0; A.gap+=Math.max(0,a.gap||0); A.monthly+=(a.gap>0?a.monthly:0);
+    if(b){ B.gap+=Math.max(0,b.gap||0); B.monthly+=(b.gap>0?b.monthly:0); B.retAge=Math.max(B.retAge||0,b.retAge); } });
+  return {per, A, B, n:per.length};
+}
+function shortName(c){ return String((c&&c.name)||'').replace(/\(.*?\)/g,'').trim().split(/\s+/)[0]||'ผู้วางแผน'; }
+function retKeyHTML(c,pf,retA,life,atRet,ok){
+  const H=retHouseholdPlan(); if(!H.n) return '';
+  const need=H.A.target, have=H.A.expected, gap=H.A.gap, m=H.A.monthly, B=H.B;
+  const cta = gap>0
+    ? '<div class="kh-cta"><div><div class="k">ต้องออมเพิ่ม · ทั้งครัวเรือน</div>'+(B.retAge?(B.gap>0?'<div class="s">ถ้าเลื่อนเกษียณเป็น '+B.retAge+' → '+xF(Math.round(B.monthly))+' /เดือน</div>':'<div class="s">ถ้าเลื่อนเกษียณเป็น '+B.retAge+' → พอแล้ว ✓</div>'):'')+'</div><div class="v">'+xF(Math.round(m))+' <span style="font-size:14px;font-weight:600">/เดือน</span></div></div>'
+    : '<div class="kh-cta"><div class="k">ออมตามแผนเดิมก็พอ ✓ · ทั้งครัวเรือน</div></div>';
+  const sub = H.n>1 ? '<div class="kh-sub">'+H.per.map(x=>'<div class="kh-sub-r"><b>'+shortName(x.c)+'</b> <span>เกษียณ '+x.a.retAge+' · ต้องมี '+xM1(x.a.target)+' · คาดว่าจะมี '+xM1(x.a.expected)+' · '+(x.a.gap>0?'ขาด '+xM1(x.a.gap)+' → ออมเพิ่ม '+xF(Math.round(x.a.monthly))+' /เดือน':'พอ ✓')+'</span></div>').join('')+'</div>' : '';
+  return '<div class="cl-only">'+
+    '<div class="kh">'+
+      '<div class="kh-i"><div class="k">ต้องมี ณ วันเกษียณ'+(H.n>1?' · ครัวเรือน':'')+'</div><div class="v">'+xM1(need)+'</div></div>'+
+      '<div class="kh-i"><div class="k">คาดว่าจะมี</div><div class="v">'+xM1(have)+'</div></div>'+
+      '<div class="kh-i'+(gap>0?' bad':'')+'"><div class="k">'+(gap>0?'ยังขาด':'ส่วนที่ขาด')+'</div><div class="v">'+(gap>0?xM1(gap):'0 ✓')+'</div></div>'+
+    '</div>'+cta+sub+'</div>';
 }
 /* v3.9.20: ตาราง "วิธีคิดเงินเกษียณ" (① ต้องมี ② แหล่งเงิน ③ ขาด ④ ต้องออม) — ย้ายมาจากโค้ด #h-retire ใน renderHolistic
    ซึ่งไม่มี element รองรับตั้งแต่ย้ายหน้า (dead code) ทำให้แถวเงินจากกรมธรรม์/บำนาญที่เพิ่มใน v3.9.18 ไม่เคยขึ้นจอ */
@@ -12949,7 +13347,9 @@ function retWorksheetHTML(c){
   return '<div class="na-ws" style="margin-top:14px">'+
     '<div class="na-h">วิธีคิดเงินเกษียณ · '+(c.name||'')+' เกษียณ '+a.retAge+' ใช้ถึง '+(a.retAge+a.retireYears)+'</div>'+
     '<div class="na-row"><span>ค่าใช้จ่าย/ปี ณ วันเกษียณ <small>ปรับเงินเฟ้อ '+a.yToRet+' ปี</small></span><span>'+f(a.needAtRet)+'</span></div>'+
-    '<div class="na-row sub"><span>① เงินก้อนที่ต้องมีตอนเกษียณ <small>ใช้ '+a.retireYears+' ปี</small></span><span>'+f(a.target)+'</span></div>'+
+    '<div class="na-row"><span>ค่าครองชีพตลอด '+a.retireYears+' ปี <small>คิดลด ณ วันเกษียณ · รายบรรทัดทบเงินเฟ้อของตัวเอง</small></span><span>'+f(a.targetLiving!=null?a.targetLiving:a.target)+'</span></div>'+
+    (a.premPost>0?'<div class="na-row"><span>+ เบี้ยประกันหลังเกษียณ <small>สุขภาพ/โรคร้าย ตามตารางเบี้ยรายอายุ · คิดลด ณ วันเกษียณ</small></span><span>'+f(a.premPost)+'</span></div>':'')+
+    '<div class="na-row sub"><span>① เงินก้อนที่ต้องมีตอนเกษียณ <small>ใช้ '+a.retireYears+' ปี · รวมเบี้ยหลังเกษียณ</small></span><span>'+f(a.target)+'</span></div>'+
     '<div class="na-grp">② แหล่งเงินที่คาดจะมี ณ วันเกษียณ</div>'+
     '<div class="na-row"><span>เงินก้อนที่เตรียมไว้ เติบโตถึงวันเกษียณ <small>แต่ละบรรทัดโตด้วย %/ปี ของตัวเอง</small></span><span>'+f(a.investAtRet)+'</span></div>'+
     '<div class="na-row"><span>เงินออมใหม่ตามแผน <small>เงินเหลือรายปีที่เข้าพอร์ต ทบต้นถึงวันเกษียณ</small></span><span>'+f(a.plannedAtRet)+'</span></div>'+
@@ -12960,7 +13360,7 @@ function retWorksheetHTML(c){
     '<div class="na-row"><span>③ ส่วนที่ขาด <small>① − ②</small></span><span>'+f(a.gap)+'</span></div>'+
     '<div class="na-row tot"><span>④ ต้องออมเพิ่มจากแผนอีก <small>นอกเหนือจากเงินเหลือที่ออมอยู่ · ทบต้นถึงวันเกษียณ · เพิ่มตามเงินเดือน</small></span><span>'+(a.gap>0?f(a.monthly)+' /เดือน':'พอแล้ว ✓')+'</span></div>'+
     (a.gap>0&&b?'<div class="na-row"><span>ถ้าเลื่อนเกษียณเป็น '+b.retAge+'</span><span>'+(b.gap>0?f(b.monthly)+' /เดือน':'พอแล้ว ✓')+'</span></div>':'')+
-    '<div class="note" style="margin-top:6px">ตารางนี้คิดแบบเงินก้อน ณ วันเกษียณ (เป้าออม) — ยังไม่รวมรายได้อื่นหลังเกษียณ (งานเสริม/ค่าเช่า) และเบี้ย/ค่ารักษาหลังเกษียณ · ส่วนผลลัพธ์ด้านบนคิดปีต่อปีรวมทุกรายการ (จึงบอกอายุที่เงินหมดได้) — ถ้าสองส่วนต่างกัน ให้ยึดผลลัพธ์ด้านบน</div>'+
+    '<div class="note" style="margin-top:6px">ตารางนี้คิดแบบเงินก้อน ณ วันเกษียณ (เป้าออม) — รวมเบี้ยประกันหลังเกษียณตามตารางเบี้ยแล้ว (v3.9.65) · ยังไม่รวมรายได้อื่นหลังเกษียณ (งานเสริม/ค่าเช่า) · ส่วนผลลัพธ์ด้านบนคิดปีต่อปีรวมทุกรายการ (จึงบอกอายุที่เงินหมดได้) — ถ้าสองส่วนต่างกัน ให้ยึดผลลัพธ์ด้านบน</div>'+
   '</div>';
 }
 
