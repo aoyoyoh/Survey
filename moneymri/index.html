@@ -1924,7 +1924,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.84</b><span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.85</b><span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
 </aside>
 
 <main id="main">
@@ -6103,14 +6103,45 @@ function openDepPop(d, anchor){
     <div class="fld"><label>ชื่อ</label><input class="y y-text" id="dd-name" value="${d.name}" style="width:140px"></div>
     <div class="fld"><label>อายุปัจจุบัน</label><div><input class="y y-num sm" id="dd-age" value="${d.age}"> ปี</div></div>
     <div class="fld"><label>${endLabel}</label><div><input class="y y-num sm" id="dd-end" value="${endVal}"> ปี</div></div>
-    <div class="fld"><label>${isChild?'ค่าเลี้ยงดู+เรียน':'อุปการะ'} / เดือน</label><div><input class="y y-num md" id="dd-monthly" value="${fmt(d.monthly)}"> ฿</div></div>
+    <div class="fld"><label>${isChild?'ค่าเลี้ยงดู (ไม่รวมค่าเทอม)':'อุปการะ'} / เดือน</label><div><input class="y y-num md" id="dd-monthly" value="${fmt(d.monthly)}"> ฿</div></div>
+    <div id="dd-cost">${depCostHTML(d, Number(d.monthly)||0)}</div>
     <div class="acts">
       <span class="del" onclick="delDep('${d.id}')">ลบรายการนี้</span>
       <button class="btn btn-pri" onclick="saveDep('${d.id}','${endKey}')">บันทึก</button>
     </div>
   `;
   placePop(anchor);
+  /* v3.9.85: สรุปค่าใช้จ่ายต่อปีอัปเดตตามที่พิมพ์ */
+  ['dd-monthly','dd-age','dd-end'].forEach(k=>{ const el=document.getElementById(k); if(el) el.addEventListener('input',()=>{
+    const m=parseInt(String($('#dd-monthly').value).replace(/[^\d.]/g,''))||0, ag=parseInt($('#dd-age').value)||d.age, en=parseInt($('#dd-end').value)||endVal;
+    const box=document.getElementById('dd-cost'); if(box) box.innerHTML=depCostHTML(Object.assign({},d,{age:ag,[endKey]:en}), m); }); });
   setTimeout(() => { const el = document.getElementById('dd-end'); if(el){ el.focus(); el.select(); } }, 30);
+}
+/* v3.9.85 (อ้อย): กดผู้พึ่งพิงบนไทม์ไลน์ต้องเห็นค่าใช้จ่ายต่อปี — ค่าเลี้ยงดู + ค่าเทอม (ทั้งแบบจ่ายจากกระแสเงินสดและเงินก้อน) */
+function depCostHTML(d, monthly){
+  const f0=n=>Math.round(Math.abs(Number(n)||0)).toLocaleString('en-US');
+  const c0=(STATE.carriers||[])[0]||{}, cAge=Number(c0.age)||0, kAge=Number(d.age)||0;
+  const toAge=Number(d.life||d.endAge)||kAge, yrs=Math.max(0,toAge-kAge);
+  const sh=Math.min(100,Math.max(0,Number(d.share)||100))/100;
+  const rows=[]; let yrNow=0;
+  if(monthly>0){ rows.push(['ค่าเลี้ยงดู', f0(monthly*12)+' /ปี', 'อายุ '+kAge+'–'+toAge+' ('+yrs+' ปี) · รวม '+f0(monthly*12*yrs)+(sh<1?' · ส่วนที่จ่าย '+Math.round(sh*100)+'%':'')]); yrNow+=monthly*12; }
+  else rows.push(['ค่าเลี้ยงดู','<span style="color:var(--carrier-2)">ยังไม่ได้กรอก</span>','']);
+  /* ค่าเทอมจ่ายจากกระแสเงินสด (บรรทัด edu-tut-<kid>|ชั้น) — อายุในบรรทัดเป็นอายุผู้วางแผนคนแรก */
+  const ids=new Set([String(d.id)]); if(d.link) (STATE.dependents||[]).filter(x=>x.link===d.link).forEach(x=>ids.add(String(x.id)));
+  const vx=((STATE.snap&&STATE.snap.detail&&STATE.snap.detail.cashflow&&STATE.snap.detail.cashflow.varExtra)||[])
+    .filter(x=>{ const id=String(x&&x.id||''); return id.indexOf('edu-tut-')===0 && [...ids].some(k=>id.indexOf('edu-tut-'+k+'|')===0); });
+  vx.forEach(x=>{ const a1=kAge+((Number(x.startAge)||cAge)-cAge), a2=kAge+((Number(x.endAge)||cAge)-cAge), y=Math.max(1,a2-a1+1);
+    const lv=String(x.name||'').split('·')[1]||'ค่าเทอม';
+    rows.push(['ค่าเทอม '+lv.trim(), f0((Number(x.monthly)||0)*12)+' /ปี', 'อายุ '+a1+'–'+a2+' ('+y+' ปี) · จ่ายจากกระแสเงินสด · ราคาวันนี้ (โตตามเงินเฟ้อการศึกษา '+(x.inf!=null?x.inf:5)+'%)']);
+    if(a1<=kAge && kAge<=a2) yrNow+=(Number(x.monthly)||0)*12; });
+  /* ค่าเทอมแบบเงินก้อน (ตั้งเป็นเป้าหมาย 🎓) */
+  (STATE.goals||[]).filter(g=>ids.has(String(g.eduKid||g.parent)) && (g.ico==='🎓'||/ค่าเทอม|การศึกษา/.test(g.name||''))).forEach(g=>{
+    const n=Math.max(1,Math.round(Number(g.eduYears)||1)), a1=kAge+((Number(g.age)||cAge)-cAge), per=Math.abs(Number(g.amt)||0)/n;
+    rows.push([String(g.name||'ค่าเทอม').split('(')[0].trim(), f0(per)+' /ปี', 'อายุ '+a1+'–'+(a1+n-1)+' ('+n+' ปี) · เงินก้อน (เป้าหมาย) รวม '+f0(Math.abs(g.amt||0))+(g.split?' · แบ่งครึ่ง':'')]);
+    if(a1<=kAge && kAge<a1+n) yrNow+=per; });
+  return '<div class="ie-head" style="margin-top:8px">ค่าใช้จ่ายต่อปี</div>'
+    +'<table style="width:100%;border-collapse:collapse;font-size:12px">'+rows.map(r=>'<tr><td style="padding:3px 0;color:var(--ink-2)">'+r[0]+(r[2]?'<div style="font-size:10.5px;color:var(--faint);line-height:1.4">'+r[2]+'</div>':'')+'</td><td style="padding:3px 0;text-align:right;white-space:nowrap;font-weight:600;vertical-align:top">'+r[1]+'</td></tr>').join('')
+    +'<tr><td style="padding:5px 0 0;border-top:1px solid var(--line);font-weight:700">รวมปีนี้ (ราคาวันนี้)</td><td style="padding:5px 0 0;border-top:1px solid var(--line);text-align:right;font-weight:700">'+f0(yrNow)+' /ปี</td></tr></table>';
 }
 function saveDep(id, endKey){
   const d = STATE.dependents.find(x => x.id === id);
