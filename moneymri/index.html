@@ -1923,7 +1923,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.75</b><span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.76</b><span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
 </aside>
 
 <main id="main">
@@ -3280,6 +3280,12 @@ function migrate(s){
     if(extra>0){ const c0=cs[0]; const base=(c0.retireMode==='custom'||(!c0.retireMode&&Number(c0.retireExpense)>0))?(Number(c0.retireExpense)||0):0;
       c0.retireExpense=base+extra; c0.retireMode='custom'; cs.slice(1).forEach(c=>{ delete c.retireExpense; delete c.retireMode; }); }
     s._retHouseholdV1=true; } }catch(e){}
+  /* v3.9.76 (อ้อย): วงเงินสุขภาพตามระดับห้องใหม่ รพ.รัฐ 5 ลบ. · เอกชนกลาง 15 ลบ. · เอกชนหรู 25 ลบ.
+     ไฟล์เก่าที่กดเลือกไว้ (1/5/15 ลบ.) → ย้ายตามระดับห้องเดิม ไม่ใช่ตามตัวเลข */
+  try{ if(!s._healthTierV2){ const MAP={1000000:5000000,5000000:15000000,15000000:25000000};
+      (s.carriers||[]).forEach(c=>{ const v=Number(c.healthTarget); if(c.healthTarget!==''&&c.healthTarget!=null&&MAP[v]) c.healthTarget=MAP[v]; });
+      const pr=s.snap&&s.snap.protection; if(pr&&pr.healthTarget!==''&&pr.healthTarget!=null&&MAP[Number(pr.healthTarget)]) pr.healthTarget=MAP[Number(pr.healthTarget)];
+      s._healthTierV2=true; } }catch(e){}
   /* v3.9.2: ไฟล์เดิมที่บันทึกพอร์ตไว้ก่อน — เติมพอร์ต Passive Income และตัวเลขกลม 3/5/7 ให้
      (เฉพาะพอร์ตมาตรฐานที่ยังไม่เคยตั้ง ret เอง · พอร์ตที่ผู้ใช้แก้สัดส่วนเองไม่ถูกแตะ) */
   try{ if(Array.isArray(s.ports)&&s.ports.length){
@@ -9234,7 +9240,9 @@ const HENG = (function(){
   function personalAnnual(c){
     const carriers=STATE.carriers||[];
     const household=(STATE.snap&&STATE.snap.cashflow&&STATE.snap.cashflow.household)||0;
-    return (c&&c.retireExpense>0)? c.retireExpense*12 : (household*12)/Math.max(1,carriers.length);
+    /* v3.9.76: ค่าใช้จ่ายส่วนตัว (ใช้กับทุพพลภาพ) = รายจ่ายผันแปรของบ้าน ÷ จำนวนผู้วางแผน
+       เดิมใช้ c.retireExpense ก่อน — แต่ตั้งแต่ v3.9.65 ช่องนั้นเป็นค่าใช้จ่ายหลังเกษียณ "ทั้งครัวเรือน" ทำให้คนแรกได้ตัวเลขทั้งบ้าน */
+    return (household*12)/Math.max(1,carriers.length);
   }
   function carrierAnnualIncome(c){
     if(c && Array.isArray(c.incomes) && c.incomes.length){
@@ -9251,8 +9259,11 @@ const HENG = (function(){
   function tpd(c){
     const L=needs(c);
     const rr=(1+consR())/(1+inf())-1;
-    const years=Math.max(0,(c.life||CONFIG.lifeExp)-(c.age||0));
-    const pvPersonal=pvAnnuityDue(personalAnnual(c), rr, years);
+    /* v3.9.76 (อ้อย): ทุพพลภาพ = ภาระเดียวกับทุนชีวิต + ค่าใช้จ่ายส่วนตัวอีก 10 ปี
+       (สถิติผู้ทุพพลภาพถาวรอยู่ได้ราว 10 ปี) — คูณตรง ไม่คิดลด · เดิมคิดถึงอายุขัย ทำให้ทุนสูงเกินจริง */
+    const years=Math.min(10, Math.max(0,(c.life||CONFIG.lifeExp)-(c.age||0)));
+    const personalYr=personalAnnual(c);
+    const pvPersonal=personalYr*years;
     const grossNeed=L.A+L.B+pvPersonal;
     const c0=(STATE.carriers||[])[0];
     const existCov=(c._cov&&c._cov.tpd)||0;                                   // ทุน TPD เดิม (รายคน)
@@ -9262,7 +9273,7 @@ const HENG = (function(){
     const missing=[]; if(!existCov) missing.push('tpdCov');
     const netNeed=Math.max(0, grossNeed-L.cAssets);          // ความต้องการหลังหักทรัพย์สิน (ไว้แสดงผล)
     const existIns=L.cLife+existCov+existSS;                 // เฉพาะทุนประกัน+สิทธิ (ไม่ปนทรัพย์สิน)
-    return {need:grossNeed, netNeed, pvPersonal, existing:resources, existIns, gap, missing, years, premium:gap*0.004};
+    return {need:grossNeed, netNeed, pvPersonal, personalYr, existing:resources, existIns, gap, missing, years, premium:gap*0.004};
   }
   /* ทุนที่ 3 — สุขภาพ/ค่ารักษา: โอนความเสี่ยงค่ารักษาก้อนใหญ่ → วงเงินเหมาจ่าย/ปี (default 5 ลบ.) */
   function health(c){
@@ -11072,19 +11083,19 @@ function renderProtectCheck(){
         ...(L.depList||[]).map(d=>'+ ค่าเลี้ยงดู'+d.name+' '+K(d.monthly)+'/ด. × 12 × '+d.years+' ปี = '+K(d.total)),
         '− ทรัพย์สินที่มี (ไม่รวมบ้าน/รถ/ของใช้ส่วนตัว) '+K(L.cAssets)], lifeNet>0?'ต้องการ '+K(lifeNet):'ทรัพย์สินครอบคลุมภาระแล้ว (ขาด 0)')
       +(L.cLife>0?' · ขาด = ต้องการ − ทุนชีวิตที่มี '+K(L.cLife):'');
-    const calcTpd=eq(['ภาระเดียวกับทุนชีวิต '+K(lifeBase),'+ ค่าใช้จ่ายส่วนตัวต่อไปอีก '+T.years+' ปี (มูลค่าวันนี้) '+K(T.pvPersonal),
+    const calcTpd=eq(['ภาระเดียวกับทุนชีวิต '+K(lifeBase),'+ ค่าใช้จ่ายส่วนตัว '+K((T.personalYr||0)/12)+'/ด. × 12 × '+T.years+' ปี = '+K(T.pvPersonal),
         '− ทรัพย์สินที่มี (ไม่รวมบ้าน/รถ/ของใช้ส่วนตัว) '+K(L.cAssets)],'ต้องการ '+K(T.netNeed!=null?T.netNeed:T.need))
       +' · ขาด = ต้องการ − ('+['ทุนชีวิต '+K(L.cLife)+' (จ่ายกรณีทุพพลภาพถาวรด้วย)', tpdCovOwn>0?'ทุน TPD '+K(tpdCovOwn):'', tpdSS>0?'สิทธิประกันสังคม '+K(tpdSS):''].filter(Boolean).join(' + ')+')';
-    const tierNm={1000000:'รพ.รัฐ',5000000:'เอกชนกลาง',15000000:'เอกชนหรู'}[Hh.need];
-    const calcHealth=(Hh.usedDefault?'ค่าเริ่มต้น':'ระดับห้องที่เลือก'+(tierNm?' ('+tierNm+')':''))+' → วงเงินเหมาจ่าย/ปี <b>'+K(Hh.need)+'</b>';
+    const tierNm={5000000:'รพ.รัฐ',15000000:'เอกชนกลาง',25000000:'เอกชนหรู'}[Hh.need];
+    const calcHealth=(Hh.usedDefault?'ยังไม่ได้เลือกระดับห้อง → ค่าเริ่มต้น':'ระดับห้องที่เลือก'+(tierNm?' ('+tierNm+')':''))+' → วงเงินเหมาจ่าย/ปี <b>'+K(Hh.need)+'</b> · รพ.รัฐ 5 ลบ. · เอกชนกลาง 15 ลบ. · เอกชนหรู 25 ลบ.';
     const inc=(function(){ try{ const f2=computeFinancials(); const m=(c.incomes||[]).filter(i=>(i.startAge==null||(c.age||0)>=i.startAge)&&(i.endAge==null||(c.age||0)<=i.endAge)).reduce((s2,i)=>s2+(Number(i.monthly)||0),0); return m>0?m*12:(f2.annualIncome||0)/Math.max(1,cs.length); }catch(e){ return 0; } })();
     const calcCi='รายได้/ปี '+K(Ci.income)+' × 3 ปี (ช่วงพักรักษา) = '+K(Ci.income*3)+' · ขั้นต่ำ 3,000,000 → ใช้ค่าที่มากกว่า = <b>'+K(Ci.need)+'</b>'
       +((Ci.custom!=null&&!isNaN(Ci.custom)&&Number(Ci.custom)>0)?' · ลูกค้าเคยประเมินไว้ '+K(Ci.custom)+' (ไม่ได้ใช้คำนวณ)':'');
     const calcPa=(Pa.usedDefault?'ค่าเริ่มต้น':'ที่ปรึกษากำหนด')+' วงเงินค่ารักษาอุบัติเหตุต่อครั้ง <b>'+K(Pa.need)+'</b>'+(Pa.deathCov>0?' · ทุนชีวิตกรณีอุบัติเหตุ '+K(Pa.deathCov)+' นับรวมในชั้นประกันชีวิตแล้ว':'');
     const rows5=[
       {name:'ประกันชีวิต',      peace:PEACE.life,   note:'ค่าใช้จ่ายสุดท้าย + หนี้ + ผู้พึ่งพิง × ปี − ทรัพย์สิน', need:Math.max(0,L.A+L.B-L.cAssets), base:lifeBase, existing:L.cLife, gap:L.gap, field:'lifeCov', calc:calcLife},
-      {name:'ทุพพลภาพ (TPD)',   peace:PEACE.tpd,    note:'ภาระ + ค่าใช้จ่ายส่วนตัว − ทรัพย์สิน', need:(T.netNeed!=null?T.netNeed:T.need), base:T.need, existing:(T.existIns!=null?T.existIns:T.existing), gap:T.gap, field:'tpdCov', calc:calcTpd, plus:(editable&&((L.cLife||0)+tpdSS)>0)?'+ ทุนชีวิต'+(tpdSS>0?'/ปกส.':'')+' '+K((L.cLife||0)+tpdSS):''},
-      {name:'สุขภาพ',           peace:PEACE.health, note:'วงเงินเหมาจ่ายตามระดับห้อง',              need:Hh.need, existing:Hh.existing, gap:Hh.gap, field:'healthMax', calc:calcHealth},
+      {name:'ทุพพลภาพ (TPD)',   peace:PEACE.tpd,    note:'ทุนชีวิต + ค่าใช้จ่ายส่วนตัว 10 ปี', need:(T.netNeed!=null?T.netNeed:T.need), base:T.need, existing:(T.existIns!=null?T.existIns:T.existing), gap:T.gap, field:'tpdCov', calc:calcTpd, plus:(editable&&((L.cLife||0)+tpdSS)>0)?'+ ทุนชีวิต'+(tpdSS>0?'/ปกส.':'')+' '+K((L.cLife||0)+tpdSS):''},
+      {name:'สุขภาพ',           peace:PEACE.health, note:'รพ.รัฐ 5 · เอกชนกลาง 15 · เอกชนหรู 25 ลบ.',              need:Hh.need, existing:Hh.existing, gap:Hh.gap, field:'healthMax', calc:calcHealth},
       {name:'โรคร้าย (CI)',      peace:PEACE.ci,     note:'รายได้/ปี × 3 ปี · ขั้นต่ำ 3 ลบ.', need:Ci.need, existing:Ci.existing, gap:Ci.gap, field:'ciCov', calc:calcCi},
       {name:'อุบัติเหตุ (PA)',   peace:PEACE.pa,     note:'วงเงินค่ารักษาอุบัติเหตุต่อครั้ง', need:Pa.need, existing:Pa.existing, gap:Pa.gap, field:'paMedMax', opt:true, calc:calcPa}
     ];
@@ -11114,7 +11125,7 @@ function renderProtectCheck(){
   const tierSetFor=c=>{
     const ht=(c.healthTarget!=null&&c.healthTarget!=='')?Number(c.healthTarget):((STATE.snap&&STATE.snap.protection&&STATE.snap.protection.healthTarget)||0);
     const b=(v,l)=>`<button class="${ht==v?'on':''}" onclick="setRoomTier(${v},'${c.id}')">${l}</button>`;
-    return `<div class="pcm-tier">${cs.length>1?`<span class="pt-who">${c.name||'ผู้วางแผน'}</span>`:''}${b(1000000,'รพ.รัฐ')}${b(5000000,'เอกชนกลาง')}${b(15000000,'เอกชนหรู')}</div>`;
+    return `<div class="pcm-tier">${cs.length>1?`<span class="pt-who">${c.name||'ผู้วางแผน'}</span>`:''}${b(5000000,'รพ.รัฐ')}${b(15000000,'เอกชนกลาง')}${b(25000000,'เอกชนหรู')}</div>`;
   };
   const hosp=`<div class="pcm-hosp">
     <div class="pcm-hf"><label>🏥 โรงพยาบาลที่ไว้วางใจ</label><input type="text" class="y" value="${curHosp}" placeholder="พิมพ์ชื่อโรงพยาบาล" onchange="setProtText('hospital',this.value)"></div>
