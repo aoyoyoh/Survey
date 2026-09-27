@@ -1923,7 +1923,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.80</b><span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.83</b><span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
 </aside>
 
 <main id="main">
@@ -4430,7 +4430,7 @@ function renderP2Snapshot(){
   };
   // กลุ่ม 1 · สภาพคล่อง
   setR('snap-r-liq1', r.liqCurrent,      'เท่า', v=>v>=1, v=>v>=0.5, 'เกณฑ์ > 1 เท่า', 'ไม่มีหนี้สั้น');
-  setR('snap-r-liq2', r.liquidity,       'เดือน',v=>v>=3&&v<=6, v=>(v>=1.5&&v<3)||v>6, 'เกณฑ์ 3–6 เดือน');
+  setR('snap-r-liq2', r.liquidity,       'เดือน',v=>v>=6&&v<=12, v=>(v>=3&&v<6)||v>12, 'เกณฑ์ขั้นต่ำ 6 เดือน');   /* v3.9.81 */
   setR('snap-r-liq3', r.liqToNW*100,     '%',    v=>v>=15, v=>v>=10,  'เกณฑ์ > 15%');
   // กลุ่ม 2 · หนี้สิน
   setR('snap-r-da',   r.debtToAsset*100, '%',    v=>v<50,  v=>v<70,   'เกณฑ์ < 50%');
@@ -4450,7 +4450,7 @@ function renderP2Snapshot(){
     : r.liqCurrent>=1?'เงินสดพร้อมใช้ปิดหนี้ระยะสั้นได้ '+(Math.round(r.liqCurrent*10)/10)+' รอบ'
     : 'เงินสดพร้อมใช้ยังไม่พอปิดหนี้ระยะสั้น');
   capR('snap-r-liq2', r.liquidity<1.5?'รายได้หยุดเมื่อไหร่ อยู่ได้ไม่ถึง 2 เดือน'
-    : r.liquidity<3?'รายได้หยุด อยู่ได้ ~'+n0(r.liquidity)+' เดือน — ควรถึง 3 เดือนเป็นอย่างน้อย'
+    : r.liquidity<CONFIG.emergencyMonths?'รายได้หยุด อยู่ได้ ~'+n0(r.liquidity)+' เดือน — ควรถึง '+CONFIG.emergencyMonths+' เดือนเป็นอย่างน้อย'
     : r.liquidity<=6?'รายได้หยุด อยู่ได้ ~'+n0(r.liquidity)+' เดือน — อยู่ในช่วงพอดี'
     : 'สำรองไว้ '+n0(r.liquidity)+' เดือน — เกินจำเป็น ส่วนเกินนำไปลงทุนได้');
   capR('snap-r-liq3', 'เงินพร้อมใช้คิดเป็น '+n0(r.liqToNW*100)+'% ของความมั่งคั่งทั้งหมด');
@@ -6767,7 +6767,7 @@ const TITLES = {p1:'Life Path',p2:'Snapshot ปัจจุบัน',pH:'สุ
 const CONFIG = {
   inflation: 3, eduInflation: 5, medInflation: 8,
   returns: { conservative: 3, moderate: 5, aggressive: 7 },
-  emergencyMonths: 3, lifeExp: 85
+  emergencyMonths: 6, lifeExp: 85   /* v3.9.81 (อ้อย): เงินสำรองฉุกเฉินขั้นต่ำ 6 เดือน (conservative) — fix ไม่ให้แก้ */
 };
 /* ── ประเภทเงินได้ 40(1)-(8) + ค่าใช้จ่ายเหมาจ่ายต่อประเภท (อ้างอิงประมวลรัษฎากร) ── */
 const TAX_TYPES=[
@@ -7620,7 +7620,7 @@ function renderCoach(id){
       : `ตอนนี้รายจ่ายมากกว่ารายรับเดือนละ <b>${fmt0(-f.surplus)}</b> บาท`;
 
     const probs = [];
-    if(r.liquidity   < 3)  probs.push(`กันเงินสำรองฉุกเฉินให้ถึง ${CONFIG.emergencyMonths} เดือน (~${fmt0(emTarget)} บาท)`);
+    if(r.liquidity   < CONFIG.emergencyMonths)  probs.push(`กันเงินสำรองฉุกเฉินให้ถึง ${CONFIG.emergencyMonths} เดือน (~${fmt0(emTarget)} บาท)`);
     if(r.savingRate  < .1) probs.push(`เพิ่มอัตราการออมให้ถึง 10% ของรายได้`);
     if(r.insToIncome < 5)  probs.push(`เพิ่มทุนประกันชีวิตให้ราว 5 เท่าของรายได้ทั้งปี`);
     if(r.debtToAsset >= .5) probs.push(`ทยอยลดหนี้ดอกเบี้ยสูงก่อน`);
@@ -7647,7 +7647,7 @@ function renderCoach(id){
         break;
       case 'p4':
         status = `พีระมิดสร้างจากฐาน — ฐานของคุณ${r.liquidity>=3?'มั่นคงแล้ว':'ยังต้องเสริม'}`;
-        if(r.liquidity<3) acts.push(`เสริมฐาน: เงินสำรองฉุกเฉิน ${CONFIG.emergencyMonths} เดือน`);
+        if(r.liquidity<CONFIG.emergencyMonths) acts.push(`เสริมฐาน: เงินสำรองฉุกเฉิน ${CONFIG.emergencyMonths} เดือน`);
         if(r.insToIncome<5) acts.push('ชั้นคุ้มครอง: เพิ่มทุนประกันให้พอ');
         acts.push('เมื่อฐานแน่นแล้วค่อยขยับเงินไปลงทุนชั้นบน');
         acts = acts.slice(0,3);
@@ -7716,7 +7716,7 @@ function refreshCoach(){ renderCoach(document.querySelector('.page.on')?.id || '
 /* ═══ เฟส 4: hint ชวนคุยประจำการ์ด ratio (p2) — โผล่เฉพาะช่องเหลือง/แดง · advisor-only ═══ */
 const RATIO_TALK={
   'snap-r-liq1':'เงินสดพร้อมใช้ยังน้อยกว่าหนี้ระยะสั้น — ชวนคุยเรื่องพักเงินบางส่วนไว้ใกล้มือ',
-  'snap-r-liq2':'เงินสำรองยังไม่อยู่ช่วงพอดี (3–6 เดือน) — ต่ำไปเสี่ยงสะดุด สูงไปเงินนอนเฉย ชวนคุยเรื่องขนาดกันชนที่ใช่',
+  'snap-r-liq2':'เงินสำรองยังไม่อยู่ช่วงพอดี (ขั้นต่ำ 6 เดือน · เกิน 12 เดือนถือว่าเงินนอนเฉย) — ต่ำไปเสี่ยงสะดุด สูงไปเงินนอนเฉย ชวนคุยเรื่องขนาดกันชนที่ใช่',
   'snap-r-liq3':'เงินสดต่อความมั่งคั่งต่ำ — ชวนคุยเรื่องสภาพคล่องเผื่อจังหวะฉุกเฉินหรือโอกาส',
   'snap-r-da':'หนี้ต่อสินทรัพย์ค่อนข้างสูง — ชวนคุยเรื่องแผนลดหนี้แบบไม่กระทบชีวิตประจำวัน',
   'snap-r-dsr':'ภาระผ่อนกินรายได้มาก — ชวนคุยเรื่องรีไฟแนนซ์หรือจัดลำดับโปะหนี้',
@@ -8448,16 +8448,21 @@ const HENG = (function(){
     const take=b=>need=>{ if(need<=0||b.amt<=0) return need; const t=Math.min(b.amt,need); b.amt-=t; return need-t; };
     return { mode:'asset',
       total:()=>B.reduce((s,b)=>s+b.amt,0)+port,
-      step:(ret,net,flat)=>{
+      step:(ret,net,flat,reserve)=>{
         /* v3.9.65: หลังเกษียณ ทุกก้อนโตด้วยผลตอบแทนหลังเกษียณตัวเดียว (flat = consR) — เดิมหุ้น/กองทุนเดิมโต 5.5–7% ต่อไปเรื่อย ๆ
            ทั้งที่แผนบอกว่าย้ายเป็นพอร์ตเสี่ยงต่ำ · เฉพาะ Passive Income NAV ที่แยกอยู่แล้วไม่แตะ */
         B.forEach(b=>{ b.amt*=(1+((flat!=null)?flat:b.ret)); }); port*=(1+ret);
         if(net>=0){ port+=net; return 0; }
         let need=-net;
-        order.filter(b=>b.liq<4).forEach(b=>{ need=take(b)(need); });          /* 1) สภาพคล่อง */
+        /* v3.9.81 (อ้อย): กันเงินสำรองฉุกเฉิน 6 เดือนของรายจ่ายปีนั้นไว้ในสภาพคล่อง — ใช้เป็นก้อนสุดท้าย
+           ลำดับ: 1) สภาพคล่องส่วนที่เกินเงินสำรอง → 2) พอร์ตเงินออมใหม่ → 3) สินทรัพย์ลงทุนอื่น → 4) RMF/PVD → 5) เงินสำรอง */
+        const liqB=order.filter(b=>b.liq<4);
+        let free=Math.max(0, liqB.reduce((t,b)=>t+b.amt,0)-Math.max(0,Number(reserve)||0));
+        liqB.forEach(b=>{ if(need<=0||free<=0) return; const t=Math.min(b.amt,need,free); b.amt-=t; need-=t; free-=t; });   /* 1) */
         if(need>0){ const t=Math.min(port,need); port-=t; need-=t; }            /* 2) พอร์ตเงินออมใหม่ */
         order.filter(b=>b.liq>=4&&b.liq<8).forEach(b=>{ need=take(b)(need); }); /* 3) สินทรัพย์ลงทุนอื่น */
-        order.filter(b=>b.liq>=8).forEach(b=>{ need=take(b)(need); });          /* 4) RMF/PVD ท้ายสุด */
+        order.filter(b=>b.liq>=8).forEach(b=>{ need=take(b)(need); });          /* 4) RMF/PVD */
+        liqB.forEach(b=>{ need=take(b)(need); });                               /* 5) เงินสำรองฉุกเฉิน ก้อนสุดท้าย */
         return need>0?need:0;
       },
       /* v3.9.62: เงินสะสมเข้ากองทุน (เช่น PVD) — เข้าถังของสินทรัพย์นั้นปลายปี แล้วโตด้วย %/ปี ของถังนั้นตั้งแต่ปีถัดไป
@@ -8583,7 +8588,9 @@ const HENG = (function(){
     const _nC=Math.max(1,carriers.length);
     function atRetFromRows(retAge){
       const row=_pfRows.find(x=>x.age===retAge) || _pfRows[_pfRows.length-1];
-      if(row&&row.bk&&retMode()==='asset') return { existing:(row.bk.liquid+row.bk.invest+row.bk.retire)/_nC, planned:row.bk.port/_nC, fromRows:true };
+      /* v3.9.81: เงินสำรองฉุกเฉิน 6 เดือนไม่นับเป็นเงินเกษียณ (กันไว้ตลอด) */
+      if(row&&row.bk&&retMode()==='asset'){ const rsv=Math.min(row.bk.liquid, (Number(row.expense)||0)/12*CONFIG.emergencyMonths);
+        return { existing:(row.bk.liquid-rsv+row.bk.invest+row.bk.retire)/_nC, planned:row.bk.port/_nC, reserve:rsv/_nC, fromRows:true }; }
       /* โหมด blend: สินทรัพย์เดิมโต r · เงินออมใหม่ = FV ของเงินเหลือรายปี */
       const y0=Number(c.age)||0; let fv=0; _pfRows.forEach(x=>{ if(x.age<=retAge) fv+=((x.net||0)+(x.pvdIn||0))*Math.pow(1+r, retAge-x.age); });
       return { existing:investable*Math.pow(1+r,Math.max(0,retAge-y0)), planned:Math.max(0,fv)/_nC, fromRows:false };
@@ -8615,7 +8622,7 @@ const HENG = (function(){
       const expected=investAtRet+plannedAtRet+retireFundShare+pensionPV+pol.total;  // แหล่งเงินที่คาดมี (v3.9.18: + เงินจากกรมธรรม์ · v3.9.23: + เงินออมใหม่ตามแผน)
       const gap=Math.max(0,target-expected);
       const pmtYr=pmtGrowingAnnuityFV(gap, g, r, yToRet);
-      return {retAge, yToRet, retireYears, needAtRet, target, targetLiving, premPost, investAtRet, plannedAtRet, retireFund:retireFundShare, pensionPV, policyPV:pol.total, policyPre:pol.pre, policyPost:pol.post, expected, gap, monthly:pmtYr/12};
+      return {retAge, yToRet, retireYears, needAtRet, target, targetLiving, premPost, investAtRet, plannedAtRet, reserveAtRet:_ar.reserve||0, retireFund:retireFundShare, pensionPV, policyPV:pol.total, policyPre:pol.pre, policyPost:pol.post, expected, gap, monthly:pmtYr/12};
     }
     const baseAge=calcRetireAge(c);
     return {planA:plan(baseAge), planB:plan(baseAge+5), retAge:baseAge, ret:r};
@@ -9067,7 +9074,7 @@ const HENG = (function(){
       const net=income-expense-lump;
       /* ความจริงมีแค่ "พอ/ไม่พอ" — พอร์ตห้ามติดลบ: ส่วนที่ขาด = เงินต้องหาเพิ่ม (กู้/เลื่อนเป้า/ออมเพิ่ม) นับสะสมแยก
          v3.9.23: โต/ถอน "รายถัง" — สินทรัพย์เดิมโตด้วย % ของตัวเอง · เงินเหลือใหม่เข้าพอร์ตตามแผน */
-      const short=POOL.step(ret, net, (age>=retAge)?consR():null);   /* v3.9.65: หลังเกษียณทุกก้อน = consR */
+      const short=POOL.step(ret, net, (age>=retAge)?consR():null, expense/12*CONFIG.emergencyMonths);   /* v3.9.65: หลังเกษียณทุกก้อน = consR · v3.9.81: กันเงินสำรอง */
       POOL.addTo('pvd', pvdIn);   /* v3.9.62 */
       spend=POOL.total();
       if(short>0 && depleteAge===null) depleteAge=age;
@@ -9167,7 +9174,7 @@ const HENG = (function(){
       if(TAXAUTO) expense += taxYearTotal(y);   /* v3.9.24 */
       const net=income-expense-lump;
       { neg*=(1+ret); let n2=net; if(n2>0&&neg>0){ const t=Math.min(n2,neg); neg-=t; n2-=t; }   /* v3.9.23: ยอดติดลบสะสมคิดดอกเบี้ย · เงินเหลือปีถัดไปใช้คืนก่อน */
-        const sh=SPOOL.step(ret, n2, (age>=retAge)?consR():null); neg+=sh; balance=SPOOL.total()-neg; }   /* v3.9.65 */
+        const sh=SPOOL.step(ret, n2, (age>=retAge)?consR():null, expense/12*CONFIG.emergencyMonths); neg+=sh; balance=SPOOL.total()-neg; }   /* v3.9.65 */
       if(balance<0 && depleteAge===null) depleteAge=age;
       if(goalsThisYear.length && (balance<0 || (depleteAge!==null && age>=depleteAge))) goalsThisYear.forEach(go=>failedGoals.push({name:go.name,age}));
       spNav=spNav*(1+spGrow);
@@ -11927,10 +11934,10 @@ function a4RatioTable(f){
   R.push(row('สภาพคล่อง','สินทรัพย์สภาพคล่องต่อหนี้ระยะสั้น', isFinite(lc)?(Math.round(lc*10)/10):null,'เท่า','> 1 เท่า',
     isFinite(lc)?st3(lc>=1,lc>=0.5):'ok',
     !isFinite(lc)?'ไม่มีหนี้ระยะสั้นให้กังวล':(lc>=1?'เงินสดพร้อมใช้ปิดหนี้ระยะสั้นได้ '+(Math.round(lc*10)/10)+' รอบ':'เงินสดพร้อมใช้ยังไม่พอปิดหนี้ระยะสั้น')));
-  R.push(row('สภาพคล่อง','สภาพคล่องพื้นฐาน (เงินสำรองฉุกเฉิน)', Math.round((r.liquidity||0)*10)/10,'เดือน','3–6 เดือน',
-    st3((r.liquidity||0)>=3&&(r.liquidity||0)<=6, ((r.liquidity||0)>=1.5&&(r.liquidity||0)<3)||(r.liquidity||0)>6),
+  R.push(row('สภาพคล่อง','สภาพคล่องพื้นฐาน (เงินสำรองฉุกเฉิน)', Math.round((r.liquidity||0)*10)/10,'เดือน','≥ 6 เดือน',
+    st3((r.liquidity||0)>=6&&(r.liquidity||0)<=12, ((r.liquidity||0)>=3&&(r.liquidity||0)<6)||(r.liquidity||0)>12),
     (r.liquidity||0)<1.5?'รายได้หยุดเมื่อไหร่ อยู่ได้ไม่ถึง 2 เดือน'
-    :(r.liquidity||0)<3?'รายได้หยุด อยู่ได้ ~'+n0(r.liquidity)+' เดือน — ควรถึง 3 เดือนเป็นอย่างน้อย'
+    :(r.liquidity||0)<CONFIG.emergencyMonths?'รายได้หยุด อยู่ได้ ~'+n0(r.liquidity)+' เดือน — ควรถึง '+CONFIG.emergencyMonths+' เดือนเป็นอย่างน้อย'
     :(r.liquidity||0)<=6?'รายได้หยุด อยู่ได้ ~'+n0(r.liquidity)+' เดือน — อยู่ในช่วงพอดี'
     :'สำรองไว้ '+n0(r.liquidity)+' เดือน — เกินจำเป็น ส่วนเกินนำไปลงทุนได้'));
   R.push(row('สภาพคล่อง','สภาพคล่องต่อความมั่งคั่งสุทธิ', Math.round((r.liqToNW||0)*100),'%','> 15%',
@@ -12152,7 +12159,10 @@ function a4Materialize(){
   /* ── แผนลงมือ ── */
   try{
     const have=Array.isArray(STATE.planActions)&&STATE.planActions.length;
-    if(!have){
+    /* v3.9.82: แผนที่ยังเป็น "ร่างอัตโนมัติ" (ที่ปรึกษายังไม่ได้แก้) ร่างใหม่จากตัวเลขล่าสุดทุกครั้ง
+       เดิมร่างครั้งเดียวแล้วค้างในไฟล์ — ตัวเลขในแผนลงมือจึงไม่ตรงกับหน้าเกราะ 5 ชั้นหลังแก้สูตร */
+    if(have || !have){ try{ actList(); if(!STATE.planActionsSrc) STATE.planActionsSrc='auto'; wrote=true; }catch(e){} }
+    if(false){
       let L=null; try{ L=actBuildDraft(); }catch(e){ console.warn('actBuildDraft failed',e); }
       if(L&&L.length){
         STATE.planActions=L.map(l=>{ const p=String(l).split('|').map(x=>x.trim());
@@ -12164,7 +12174,7 @@ function a4Materialize(){
   /* ── ขอบเขตของแผน ── */
   try{
     const have=Array.isArray(STATE.planGaps)&&STATE.planGaps.length;
-    if(!have){
+    if(!have || STATE.planGapsSrc==='auto'){
       let G=null; try{ G=planGapList(); }catch(e){ console.warn('planGapList failed',e); }
       if(G&&G.length){
         STATE.planGaps=G.map(g=>[String((g&&g[0])||''),String((g&&g[1])||'')]).filter(g=>g[0]);
@@ -13390,7 +13400,7 @@ function renderHealth(){
       : r.liqCurrent>=1?'เงินสดพร้อมใช้ปิดหนี้ระยะสั้นได้ '+(Math.round(r.liqCurrent*10)/10)+' รอบ'
       : 'เงินสดพร้อมใช้ยังไม่พอปิดหนี้ระยะสั้น',
     liq2:r.liquidity<1.5?'รายได้หยุดเมื่อไหร่ อยู่ได้ไม่ถึง 2 เดือน'
-      : r.liquidity<3?'รายได้หยุด อยู่ได้ ~'+n0(r.liquidity)+' เดือน — ควรถึง 3 เดือนเป็นอย่างน้อย'
+      : r.liquidity<CONFIG.emergencyMonths?'รายได้หยุด อยู่ได้ ~'+n0(r.liquidity)+' เดือน — ควรถึง '+CONFIG.emergencyMonths+' เดือนเป็นอย่างน้อย'
       : r.liquidity<=6?'รายได้หยุด อยู่ได้ ~'+n0(r.liquidity)+' เดือน — อยู่ในช่วงพอดี'
       : 'สำรองไว้ '+n0(r.liquidity)+' เดือน — เกินจำเป็น ส่วนเกินนำไปลงทุนได้',
     liq3:'เงินพร้อมใช้คิดเป็น '+n0(r.liqToNW*100)+'% ของความมั่งคั่งทั้งหมด',
@@ -13406,7 +13416,7 @@ function renderHealth(){
   };
   const rows=[
     {l:'สภาพคล่อง (สินทรัพย์คล่อง ÷ หนี้สั้น)', v:r.liqCurrent, disp:r.liqCurrent===Infinity?'ไม่มีหนี้สั้น':r.liqCurrent.toFixed(1)+' เท่า', tgt:1, max:3, ok:r.liqCurrent>=1, note:'ควร ≥ 1 เท่า', cap:cap.liq1},
-    {l:'เงินสำรองฉุกเฉิน', v:r.liquidity, disp:r.liquidity.toFixed(1)+' เดือน', tgt:6, max:12, ok:r.liquidity>=3, note:'ควรมี 3–6 เดือนของค่าใช้จ่าย', cap:cap.liq2},
+    {l:'เงินสำรองฉุกเฉิน', v:r.liquidity, disp:r.liquidity.toFixed(1)+' เดือน', tgt:6, max:12, ok:r.liquidity>=6, note:'ควรมีอย่างน้อย 6 เดือนของค่าใช้จ่าย', cap:cap.liq2},
     {l:'สินทรัพย์คล่อง ต่อ ความมั่งคั่งสุทธิ', v:r.liqToNW*100, disp:(r.liqToNW*100).toFixed(0)+'%', tgt:15, max:60, ok:r.liqToNW>=0.15, note:'ควร ≥ 15%', cap:cap.liq3},
     {l:'หนี้สิน ต่อ สินทรัพย์', v:r.debtToAsset*100, disp:(r.debtToAsset*100).toFixed(0)+'%', tgt:50, max:100, ok:r.debtToAsset<0.5, inv:true, note:'ควร < 50%', cap:cap.da},
     {l:'ภาระผ่อนหนี้ ต่อ รายได้ (DSR)', v:r.dsRatio*100, disp:(r.dsRatio*100).toFixed(0)+'%', tgt:35, max:70, ok:r.dsRatio<0.35, inv:true, note:'ควร < 35–45%', cap:cap.dsr},
@@ -13844,7 +13854,7 @@ function retWorksheetHTML(c){
     (a.premPost>0?'<div class="na-row"><span>+ เบี้ยประกันหลังเกษียณ <small>สุขภาพ/โรคร้าย ตามตารางเบี้ยรายอายุ · คิดลด ณ วันเกษียณ</small></span><span>'+f(a.premPost)+'</span></div>':'')+
     '<div class="na-row sub"><span>① เงินก้อนที่ต้องมีตอนเกษียณ <small>ใช้ '+a.retireYears+' ปี · รวมเบี้ยหลังเกษียณ</small></span><span>'+f(a.target)+'</span></div>'+
     '<div class="na-grp">② แหล่งเงินที่คาดจะมี ณ วันเกษียณ</div>'+
-    '<div class="na-row"><span>เงินก้อนที่เตรียมไว้ เติบโตถึงวันเกษียณ <small>แต่ละบรรทัดโตด้วย %/ปี ของตัวเอง</small></span><span>'+f(a.investAtRet)+'</span></div>'+
+    '<div class="na-row"><span>เงินก้อนที่เตรียมไว้ เติบโตถึงวันเกษียณ <small>แต่ละบรรทัดโตด้วย %/ปี ของตัวเอง'+(a.reserveAtRet>0?' · หักเงินสำรองฉุกเฉิน '+CONFIG.emergencyMonths+' เดือน '+f(a.reserveAtRet)+' ที่กันไว้ตลอด (ใช้เป็นก้อนสุดท้าย)':'')+'</small></span><span>'+f(a.investAtRet)+'</span></div>'+
     '<div class="na-row"><span>เงินออมใหม่ตามแผน <small>เงินเหลือรายปีที่เข้าพอร์ต ทบต้นถึงวันเกษียณ</small></span><span>'+f(a.plannedAtRet)+'</span></div>'+
     (a.retireFund>0?'<div class="na-row"><span>ทุนเกษียณสะสม (PVD/กบข./อื่น)</span><span>'+f(a.retireFund)+'</span></div>':'')+
     (a.pensionPV>0?'<div class="na-row"><span>มูลค่าบำนาญหลังเกษียณ <small>บำนาญคงที่ คิดลด ณ วันเกษียณ</small></span><span>'+f(a.pensionPV)+'</span></div>':'')+
@@ -14401,7 +14411,28 @@ function renderBA(animate){
 /* ═══ v3.9.31 · แผนลงมือ — ร่างจากแผนจริง แล้วที่ปรึกษาแก้ถ้อยคำได้ ═══
    เก็บที่ STATE.planActions = [{t:ทำอะไร, how:ทำยังไง/เท่าไหร่, when:ภายในเมื่อไหร่}]
    เขียนด้วยภาษาที่ลูกค้าอ่านเองรู้เรื่อง เพราะกระดาษแผ่นนี้ลูกค้าเอากลับบ้าน */
-function actList(){ return Array.isArray(STATE.planActions)?STATE.planActions:[]; }
+/* ═══ v3.9.83 (อ้อย): "คำแนะนำต้อง update ตามตัวเลข" ═══
+   ข้อที่เครื่องร่างจากตัวเลข = คำนวณสดทุกครั้งเสมอ (แม้ที่ปรึกษาเคยแก้/เรียงแล้ว)
+   ข้อที่ที่ปรึกษาเพิ่มเอง (ไม่ใช่หัวข้อที่เครื่องร่าง) = เก็บไว้ตามที่พิมพ์ · ลำดับที่ที่ปรึกษาเรียงไว้ = เก็บ (STATE.planActionOrder) */
+const ACT_AUTO_RE=/^(ยืนยันค่าใช้จ่ายจริงต่อเดือน|ส่งประวัติการส่งเงินสมทบประกันสังคม|ซื้อกองทุนลดหย่อนภาษีของปีนี้|เงินสำรองฉุกเฉิน|เติมเงินสำรองฉุกเฉิน|เตรียมทางเลือกเรื่องบ้าน|จัดทำพินัยกรรมฉบับจริง|ทำพินัยกรรม และตรวจ|ทบทวนแผนประจำปี|ค่าเทอม )|— ยังขาดความคุ้มครอง$/;
+function actParse(l){ const p=String(l).split('|').map(x=>x.trim()); return {t:p[0]||'',how:p[1]||'',when:p[2]||''}; }
+function actIsAuto(t, liveT){ t=String(t||'').trim(); if(!t) return false; if(liveT&&liveT.has(t)) return true; if(ACT_AUTO_RE.test(t)) return true;
+  return (STATE.goals||[]).some(g=>{ const n=String(g.name||'').split('(')[0].trim(); return n && t.indexOf(n)===0; }); }
+function actLive(){ try{ return (actBuildDraft()||[]).map(actParse).filter(a=>a.t); }catch(e){ return []; } }
+function actList(){
+  if(!(STATE.carriers||[]).length) return Array.isArray(STATE.planActions)?STATE.planActions:[];
+  const live=actLive(); const liveT=new Set(live.map(a=>a.t));
+  if(!Array.isArray(STATE.planActionsCustom)){   /* ย้ายจากไฟล์เก่า: เก็บเฉพาะข้อที่ที่ปรึกษาเพิ่มเอง */
+    STATE.planActionsCustom=(STATE.planActionsSrc==='advisor'&&Array.isArray(STATE.planActions))
+      ? STATE.planActions.filter(a=>a&&a.t&&!actIsAuto(a.t,liveT)).map(a=>({t:a.t,how:a.how||'',when:a.when||''})) : []; }
+  if(!Array.isArray(STATE.planActionOrder)&&STATE.planActionsSrc==='advisor'&&Array.isArray(STATE.planActions)) STATE.planActionOrder=STATE.planActions.map(a=>a&&a.t).filter(Boolean);   /* คงลำดับที่ที่ปรึกษาเคยจัด */
+  let all=live.concat(STATE.planActionsCustom.filter(a=>!liveT.has(a.t)));
+  const ord=Array.isArray(STATE.planActionOrder)?STATE.planActionOrder:null;
+  if(ord&&ord.length){   /* ข้อใหม่ที่ไม่เคยอยู่ในลำดับ → วางต่อจากข้อก่อนหน้าในลำดับธรรมชาติ (ไม่ไปกองท้าย) */
+    let prev=-1; const keyed=all.map((a,n)=>{ const k=ord.indexOf(a.t); const key=(k>=0)?k:prev+0.001*(n+1); if(k>=0) prev=k; return {a,n,key}; });
+    all=keyed.sort((x,y)=>(x.key-y.key)||(x.n-y.n)).map(x=>x.a); }
+  STATE.planActions=all;   /* สำเนาล่าสุดสำหรับไฟล์/รายงาน */
+  return all; }
 function actBuildDraft(){
   const L=[]; const c=(STATE.carriers||[])[0]||{}; const a0=Number(c.age)||0;
   const f0=n=>Math.round(Math.abs(Number(n)||0)).toLocaleString('en-US');
@@ -14450,7 +14481,12 @@ function actBuildDraft(){
 
   /* 4) เงินสำรองฉุกเฉิน */
   try{ const m=(f&&f.ratios&&f.ratios.liquidity)||0; const need=CONFIG.emergencyMonths;
-    if(m>=need) L.push(['เงินสำรองฉุกเฉิน — เก็บไว้ที่เดิม',
+    /* v3.9.82: สำรองเกิน 12 เดือน = เงินนอนเฉย (สอดคล้องเกณฑ์อัตราส่วน) → กันไว้ 6 เดือน ส่วนเกินแนะนำย้ายไปลงทุน */
+    if(m>12){ const ex=(f&&f.totalEx)||0, keep=ex*need, liq=(f&&f.liquidAssets)||0;
+      L.push(['เงินสำรองฉุกเฉิน — กันไว้ '+need+' เดือน ส่วนที่เกินนำไปลงทุน',
+        'ตอนนี้มี '+f0(liq)+' บาท ใช้ได้ '+Math.round(m)+' เดือน · กันไว้ '+f0(keep)+' บาท ในบัญชีที่ถอนได้ทันที · ส่วนที่เกิน '+f0(Math.max(0,liq-keep))+' บาท ย้ายไปพอร์ตลงทุนตามเป้าหมาย',
+        'เสนอแผน']); }
+    else if(m>=need) L.push(['เงินสำรองฉุกเฉิน — เก็บไว้ที่เดิม',
       'ตอนนี้มี '+f0((f&&f.liquidAssets)||0)+' บาท ใช้ได้ '+Math.round(m)+' เดือน ครบตามเป้าแล้ว อย่าเอาไปลงทุนระยะยาว ต้องถอนได้ทันที',
       'ทบทวนปีละครั้ง']);
     else L.push(['เติมเงินสำรองฉุกเฉินให้ครบ '+need+' เดือน',
@@ -14521,12 +14557,18 @@ function actDraft(){
 }
 function actSave(){
   const ta=document.getElementById('actTxt'); if(!ta) return;
-  STATE.planActions=ta.value.split('\n').map(l=>l.trim()).filter(l=>l&&!/^—.*—$/.test(l))
-    .map(l=>{ const p=l.split('|').map(x=>x.trim()); return {t:p[0]||'',how:p[1]||'',when:p[2]||''}; });
-  STATE.planActionsSrc='advisor';   /* v3.9.45: ผ่านมือที่ปรึกษาแล้ว — ป้ายบนรายงานเปลี่ยนเป็น "ตรวจแล้ว" */
+  const rows=ta.value.split('\n').map(l=>l.trim()).filter(l=>l&&!/^—.*—$/.test(l)).map(actParse).filter(a=>a.t);
+  const liveT=new Set(actLive().map(a=>a.t));
+  /* v3.9.83: ข้อที่เป็นหัวข้อของเครื่อง → ตัวเลขคำนวณสดเสมอ (ถ้อยคำที่แก้ในข้อนั้นจะถูกแทนด้วยตัวเลขล่าสุด) · ข้อที่เพิ่มเอง → เก็บตามที่พิมพ์ */
+  STATE.planActionsCustom=rows.filter(a=>!actIsAuto(a.t,liveT));
+  STATE.planActionOrder=rows.map(a=>a.t);
+  STATE.planActionsSrc='advisor';
   if(typeof saveState==='function') saveState(); renderActions();
 }
-function actMove(i,d){ const A=actList(); const j=i+d; if(j<0||j>=A.length) return;
+
+function actMove(i,d){ const A=actList().slice(); const j=i+d; if(j<0||j>=A.length) return; STATE.planActionsSrc='advisor';
+  { const t=A[i]; A[i]=A[j]; A[j]=t; } STATE.planActionOrder=A.map(a=>a.t);   /* v3.9.83: เก็บแค่ลำดับ — ตัวเลขยังคำนวณสด */
+  if(typeof saveState==='function') saveState(); renderActions(); return;
   const t=A[i]; A[i]=A[j]; A[j]=t; STATE.planActions=A;
   if(typeof saveState==='function') saveState(); renderActions(); }
 function renderActions(){
