@@ -1923,7 +1923,7 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.76</b><span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.77</b><span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
 </aside>
 
 <main id="main">
@@ -9242,7 +9242,20 @@ const HENG = (function(){
     const household=(STATE.snap&&STATE.snap.cashflow&&STATE.snap.cashflow.household)||0;
     /* v3.9.76: ค่าใช้จ่ายส่วนตัว (ใช้กับทุพพลภาพ) = รายจ่ายผันแปรของบ้าน ÷ จำนวนผู้วางแผน
        เดิมใช้ c.retireExpense ก่อน — แต่ตั้งแต่ v3.9.65 ช่องนั้นเป็นค่าใช้จ่ายหลังเกษียณ "ทั้งครัวเรือน" ทำให้คนแรกได้ตัวเลขทั้งบ้าน */
-    return (household*12)/Math.max(1,carriers.length);
+    /* v3.9.77: หักรายการรายจ่ายผันแปรที่เป็นของผู้พึ่งพิง (ชื่อมี ลูก/บุตร/ค่าเทอม หรือชื่อผู้พึ่งพิง) ออกก่อน
+       เพราะค่าเลี้ยงดูผู้พึ่งพิงนับอยู่ในทุนชีวิต (B) แล้ว — ไม่งั้นทุพพลภาพนับซ้ำ */
+    const dl=depLikeVar();
+    return (Math.max(0,household-dl.m)*12)/Math.max(1,carriers.length);
+  }
+  function depLikeVar(){
+    const DC=(STATE.snap&&STATE.snap.detail&&STATE.snap.detail.cashflow)||{};
+    const a0=Number(((STATE.carriers||[])[0]||{}).age)||0;
+    const names=(STATE.dependents||[]).map(d=>String(d.name||'').trim()).filter(n=>n.length>=2);
+    const hit=nm=>/ลูก|บุตร|ค่าเทอม|ผู้พึ่งพิง|ผู้อยู่ในอุปการะ/.test(nm)||names.some(n=>nm.indexOf(n)>=0);
+    const items=(Array.isArray(DC.varExtra)?DC.varExtra:[]).filter(x=>{ const nm=String(x&&x.name||''); const m=Number(x&&x.monthly)||0;
+      const on=(!x.startAge||a0>=x.startAge)&&(!x.endAge||a0<=x.endAge); return m>0&&on&&hit(nm); })
+      .map(x=>({name:String(x.name), m:Number(x.monthly)||0}));
+    return {m:items.reduce((t,x)=>t+x.m,0), items};
   }
   function carrierAnnualIncome(c){
     if(c && Array.isArray(c.incomes) && c.incomes.length){
@@ -9273,7 +9286,8 @@ const HENG = (function(){
     const missing=[]; if(!existCov) missing.push('tpdCov');
     const netNeed=Math.max(0, grossNeed-L.cAssets);          // ความต้องการหลังหักทรัพย์สิน (ไว้แสดงผล)
     const existIns=L.cLife+existCov+existSS;                 // เฉพาะทุนประกัน+สิทธิ (ไม่ปนทรัพย์สิน)
-    return {need:grossNeed, netNeed, pvPersonal, personalYr, existing:resources, existIns, gap, missing, years, premium:gap*0.004};
+    const _dl=depLikeVar(), _hh=(STATE.snap&&STATE.snap.cashflow&&STATE.snap.cashflow.household)||0;
+    return {need:grossNeed, netNeed, pvPersonal, personalYr, depLike:_dl, household:_hh, existing:resources, existIns, gap, missing, years, premium:gap*0.004};
   }
   /* ทุนที่ 3 — สุขภาพ/ค่ารักษา: โอนความเสี่ยงค่ารักษาก้อนใหญ่ → วงเงินเหมาจ่าย/ปี (default 5 ลบ.) */
   function health(c){
@@ -11083,7 +11097,7 @@ function renderProtectCheck(){
         ...(L.depList||[]).map(d=>'+ ค่าเลี้ยงดู'+d.name+' '+K(d.monthly)+'/ด. × 12 × '+d.years+' ปี = '+K(d.total)),
         '− ทรัพย์สินที่มี (ไม่รวมบ้าน/รถ/ของใช้ส่วนตัว) '+K(L.cAssets)], lifeNet>0?'ต้องการ '+K(lifeNet):'ทรัพย์สินครอบคลุมภาระแล้ว (ขาด 0)')
       +(L.cLife>0?' · ขาด = ต้องการ − ทุนชีวิตที่มี '+K(L.cLife):'');
-    const calcTpd=eq(['ภาระเดียวกับทุนชีวิต '+K(lifeBase),'+ ค่าใช้จ่ายส่วนตัว '+K((T.personalYr||0)/12)+'/ด. × 12 × '+T.years+' ปี = '+K(T.pvPersonal),
+    const calcTpd=eq(['ภาระเดียวกับทุนชีวิต '+K(lifeBase),'+ ค่าใช้จ่ายส่วนตัว '+K((T.personalYr||0)/12)+'/ด.'+((T.depLike&&T.depLike.m>0)?' (รายจ่ายผันแปร '+K(T.household)+' − '+T.depLike.items.map(x=>x.name+' '+K(x.m)).join(' − ')+' ที่นับในผู้พึ่งพิงแล้ว'+(cs.length>1?' ÷ '+cs.length+' คน':'')+')':(cs.length>1?' (รายจ่ายผันแปร '+K(T.household)+' ÷ '+cs.length+' คน)':''))+' × 12 × '+T.years+' ปี = '+K(T.pvPersonal),
         '− ทรัพย์สินที่มี (ไม่รวมบ้าน/รถ/ของใช้ส่วนตัว) '+K(L.cAssets)],'ต้องการ '+K(T.netNeed!=null?T.netNeed:T.need))
       +' · ขาด = ต้องการ − ('+['ทุนชีวิต '+K(L.cLife)+' (จ่ายกรณีทุพพลภาพถาวรด้วย)', tpdCovOwn>0?'ทุน TPD '+K(tpdCovOwn):'', tpdSS>0?'สิทธิประกันสังคม '+K(tpdSS):''].filter(Boolean).join(' + ')+')';
     const tierNm={5000000:'รพ.รัฐ',15000000:'เอกชนกลาง',25000000:'เอกชนหรู'}[Hh.need];
