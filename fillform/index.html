@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>แบบฟอร์มข้อมูลวางแผนการเงิน — S41 Financial Clinic</title>
+<link rel="icon" href="data:,">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* ── theme เดียวกับ health.s41clinic.com (Step 1) ── */
+:root{
+  --cream:#F5F2EC; --white:#FFFFFF;
+  --navy:#002366; --navy2:#1a3a6e; --navy-soft:#E9EDF5;
+  --gold:#C8A94A; --gold2:#E8D08A; --gold-soft:#FBF6E6;
+  --gray:#9B9B9B; --gray2:#E5E1D8; --gray3:#F3F0EA;
+  --text:#1C1C2E; --muted:#7A7A8C; --red:#E05252; --green:#3E8E6E;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --thai:'Sarabun','Noto Sans Thai',-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--cream);color:var(--text);font-family:var(--thai);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;min-height:100vh}
+.wrap{max-width:560px;margin:0 auto;padding:14px 16px 120px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:4px 0 12px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{width:52px;height:52px;display:block}
+.brand .wm{font-size:11px;font-weight:800;color:var(--navy);letter-spacing:3.5px;text-transform:uppercase;line-height:1.3}
+.brand .wm small{display:block;font-size:10px;letter-spacing:1.2px;color:var(--muted);font-weight:600;text-transform:none}
+.step-ind{font-size:12px;color:var(--muted);text-align:right;white-space:nowrap}
+.step-ind b{color:var(--navy);font-size:14px}
+.steps{display:flex;gap:4px;margin-bottom:16px}
+.step{flex:1;height:3px;border-radius:2px;background:var(--gray2);transition:all .4s}
+.step.on{background:var(--gold)} .step.cur{background:var(--navy)}
+
+.card{background:#fff;border:1px solid var(--gray2);border-radius:20px;padding:24px 20px;box-shadow:0 4px 48px rgba(0,35,102,.07);animation:up .4s cubic-bezier(.22,1,.36,1)}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+h1{font-size:22px;font-weight:800;color:var(--navy);line-height:1.35;margin-bottom:4px}
+h2{font-size:20px;font-weight:800;color:var(--navy);line-height:1.35;margin-bottom:4px}
+.sub{font-size:13.5px;color:var(--muted);margin-bottom:14px}
+.hint{font-size:12.5px;color:var(--muted);margin-top:6px}
+.sec{margin-top:16px}
+.sec-h{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:800;margin:14px 0 6px}
+.f{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--gray2)}
+.f:last-child{border-bottom:0}
+.f label{flex:1;font-size:15px;line-height:1.35;font-weight:500}
+.f label small{display:block;color:var(--gray);font-size:11.5px;font-weight:400}
+.f .in{display:flex;align-items:center;gap:6px;flex:0 0 auto}
+input[type=text],input[type=number],select{font-family:var(--thai);font-size:16px;color:var(--text);background:var(--gray3);border:1px solid var(--gray2);border-radius:12px;padding:9px 11px;outline:none;min-height:42px}
+input:focus,select:focus{border-color:var(--gold);background:#fff;box-shadow:0 0 0 3px rgba(200,169,74,.18)}
+input.money{width:138px;text-align:right;font-weight:600}
+input.num{width:74px;text-align:center;font-weight:600}
+input.txt{width:100%}
+.unit{font-size:12px;color:var(--gray);width:44px}
+.f.stack{flex-direction:column;align-items:stretch;gap:6px}
+.f.stack .in{width:100%}
+.f.stack input.txt{flex:1}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.chip{border:1.5px solid var(--gray2);background:#fff;border-radius:999px;padding:8px 14px;font-size:14.5px;cursor:pointer;user-select:none;font-family:var(--thai);color:var(--text);min-height:40px;font-weight:500;transition:all .15s}
+.chip.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.chip:active{transform:scale(.98)}
+
+.sub-card{border:1.5px solid var(--gray2);border-radius:14px;padding:10px 12px;margin-top:10px;background:#FCFBF8}
+.sub-card .t{font-size:12px;font-weight:800;color:var(--navy);letter-spacing:1px;text-transform:uppercase;margin-bottom:2px;display:flex;justify-content:space-between;align-items:center}
+.sub-card .t button{border:0;background:none;color:var(--red);font-size:12.5px;cursor:pointer;font-family:var(--thai);letter-spacing:0;text-transform:none;font-weight:600}
+
+.btn{font-family:var(--thai);border:0;border-radius:14px;padding:13px 18px;font-size:16px;font-weight:700;cursor:pointer;min-height:50px;transition:all .15s}
+.btn.primary{background:var(--navy);color:#fff;flex:1}
+.btn.primary:active{background:var(--navy2)}
+.btn.ghost{background:#fff;border:1.5px solid var(--gray2);color:var(--navy)}
+.btn.soft{background:var(--gold-soft);color:var(--navy);border:1.5px solid var(--gold2);font-weight:600;font-size:14.5px;width:100%;margin-top:14px}
+.btn.add{background:#fff;border:1.5px dashed var(--navy2);color:var(--navy);font-weight:600;font-size:14.5px;width:100%;margin-top:10px;min-height:44px}
+.btn:disabled{opacity:.45;cursor:default}
+.nav{position:fixed;left:0;right:0;bottom:0;background:rgba(245,242,236,.96);backdrop-filter:blur(8px);border-top:1px solid var(--gray2);padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
+.nav .row{max-width:560px;margin:0 auto;display:flex;gap:10px}
+.saved{font-size:11.5px;color:var(--gray);text-align:center;margin-top:6px;min-height:14px}
+
+.banner{background:var(--gold-soft);border:1px solid var(--gold2);border-radius:14px;padding:10px 12px;font-size:13.5px;margin-bottom:12px;color:var(--text)}
+.banner b{color:var(--navy)}
+.note{background:var(--navy-soft);border-left:3px solid var(--navy);border-radius:10px;padding:10px 12px;font-size:13.5px;margin-top:12px;color:#243a5e}
+.ok{background:#EAF4EF;border-left:3px solid var(--green);border-radius:10px;padding:10px 12px;font-size:13.5px;margin-top:12px;color:#2b5c47}
+.warn{background:#FBECEC;border-left:3px solid var(--red);border-radius:10px;padding:10px 12px;font-size:13.5px;margin-top:12px;color:#7a3434}
+ul.tips{padding-left:18px;font-size:14.5px;margin-top:8px}
+ul.tips li{margin:4px 0}
+.summary{margin-top:10px;font-size:14.5px}
+.summary div{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--gray2)}
+.summary div b{color:var(--navy)}
+.center{text-align:center}
+.two{display:flex;gap:10px;margin-top:14px}
+.two .btn{flex:1;font-size:14px;padding:11px 8px;min-height:46px}
+.ver{font-size:11px;color:var(--gray);text-align:center;margin-top:18px}
+.hidden{display:none!important}
+@media (max-width:380px){ input.money{width:118px} .f label{font-size:14.5px} }
+
+/* ── สำเนา PDF (พิมพ์) ── */
+#printArea{display:none}
+@media print{
+  @page{size:A4;margin:14mm 14mm 16mm}
+  body{background:#fff;font-size:11pt}
+  .wrap,.nav{display:none!important}
+  #printArea{display:block;color:#1C1C2E;font-family:var(--thai)}
+  .ph{display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #002366;padding-bottom:8pt;margin-bottom:10pt}
+  .ph .l{display:flex;align-items:center;gap:10pt}
+  .ph img{width:44pt;height:44pt}
+  .ph .wm{font-size:9pt;font-weight:800;letter-spacing:3pt;color:#002366;text-transform:uppercase}
+  .ph .wm small{display:block;font-size:8pt;letter-spacing:1pt;color:#7A7A8C;font-weight:600;text-transform:none}
+  .ph .r{text-align:right;font-size:9pt;color:#7A7A8C}
+  .ph .r b{display:block;font-size:13pt;color:#002366}
+  .pt{font-size:15pt;font-weight:800;color:#002366;margin:0 0 2pt}
+  .ps{font-size:9.5pt;color:#7A7A8C;margin-bottom:10pt}
+  .pg{page-break-inside:avoid;margin-bottom:9pt}
+  .pg h3{font-size:10pt;letter-spacing:1.5pt;text-transform:uppercase;color:#C8A94A;border-bottom:1px solid #E5E1D8;padding-bottom:2pt;margin-bottom:3pt;font-weight:800}
+  .pg table{width:100%;border-collapse:collapse;font-size:10pt}
+  .pg td{padding:2pt 0;border-bottom:1px dotted #E5E1D8;vertical-align:top}
+  .pg td.v{text-align:right;font-weight:600;width:38%}
+  .pg table.wide td.v{width:58%}
+  .pg table.pol{font-size:9pt}
+  .pg table.pol th{text-align:right;font-weight:700;color:#7A7A8C;font-size:8pt;padding:0 0 2pt 4pt;border-bottom:1px solid #E5E1D8}
+  .pg table.pol th:first-child,.pg table.pol td:first-child{text-align:left;padding-left:0}
+  .pg table.pol td{text-align:right;padding:2pt 0 2pt 4pt;font-weight:600}
+  .pg td.u{color:#9B9B9B;font-size:8.5pt;width:14%;padding-left:6pt}
+  .pg .empty{color:#9B9B9B;font-style:italic;font-size:9.5pt}
+  .pg h3{margin-top:2pt}
+  .pg .tot td{border-top:1px solid #002366;border-bottom:0;font-weight:800;color:#002366}
+  .cols{display:flex;gap:14pt}
+  .cols .pg{flex:1;min-width:0}
+  .pf{margin-top:12pt;border-top:1px solid #E5E1D8;padding-top:6pt;font-size:8.5pt;color:#7A7A8C;line-height:1.5}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <img src="data:image/png;base64,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" alt="Signature 41">
+      <div class="wm">Signature 41<small>Financial Clinic · Customized for One</small></div>
+    </div>
+    <div class="step-ind" id="stepInd"></div>
+  </header>
+  <div class="steps" id="steps"></div>
+  <div id="inapp" class="banner hidden"></div>
+  <div id="resume" class="banner hidden"></div>
+  <div class="card" id="screen"></div>
+  <div class="ver">S41 Client Form v1.2 · ข้อมูลถูกเก็บไว้ในเครื่องของคุณเท่านั้น จนกว่าจะกดส่งให้ที่ปรึกษา</div>
+</div>
+<div class="nav"><div class="row" id="navRow"></div><div class="saved" id="savedMsg"></div></div>
+<div id="printArea"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   S41 Client Form v1.0 — แบบฟอร์มให้ลูกค้ากรอกเอง (กรณีไม่ได้เจอตัว)
+   ผลลัพธ์: ไฟล์ S41_Client_<ชื่อ>_<วันที่>.json  โครงเดียวกับไฟล์ Step 2 (หมอเงิน v2.6.4)
+   → ที่ปรึกษากด Import ใน Money MRI ได้ทันที · stage:'client'
+   ═══════════════════════════════════════════════════════════════ */
+const VERSION='1.2';
+const LOGO_SRC=document.querySelector('.brand img').getAttribute('src');
+const LS_KEY='s41_client_v1';
+const params=new URLSearchParams(location.search);
+const REF=(params.get('ref')||'').slice(0,40);
+
+/* ---------- ค่าที่กรอก ---------- */
+let V={};            /* ค่าทุกช่อง key → string/number */
+let KIDS=[], PARENTS=[], POLICIES=[], GOALS=[];   /* รายการไดนามิก */
+let cur=0;
+
+/* ---------- ตารางช่องเงิน (id, ป้าย, หน่วย, path ใน snap.detail — ชุดเดียวกับ Step 2) ---------- */
+const UNIT={m:'฿/เดือน',y:'฿/ปี',x:'฿'};
+const MONEY_SCREENS={
+  income:{ title:'รายรับ', sub:'รายได้ที่เข้ามาเป็นประจำ — ตัวเลขประมาณได้ ไม่ต้องเป๊ะ', rows:[
+    ['fi_salary','เงินเดือน / รายได้หลัก','m','special.salary','หลังหักภาษี-ประกันสังคมแล้วก็ได้'],
+    ['fi_bonus','โบนัส','y','cashflow.income.bonus'],
+    ['fi_rental','รายได้ค่าเช่า','m','cashflow.income.rental'],
+    ['fi_interest','ดอกเบี้ย / เงินปันผล','m','cashflow.income.interest'],
+    ['fi_other','รายได้อื่น ๆ','m','cashflow.income.other','ขายของ ฟรีแลนซ์ ค่าคอม ฯลฯ'],
+    ['fi_pension','รายได้หลังเกษียณที่คาดว่าจะมี','m','special.pension','บำนาญ ประกันสังคม ค่าเช่า — ถ้ายังไม่รู้ ข้ามได้'],
+  ]},
+  fixed:{ title:'รายจ่ายผ่อน / จ่ายคงที่', sub:'รายการที่ต้องจ่ายเท่าเดิมทุกเดือนหรือทุกปี', rows:[
+    ['ff_homeLoanPay','ผ่อนบ้าน / คอนโด','m','cashflow.fixed.homeLoanPay'],
+    ['ff_carLoanPay','ผ่อนรถ','m','cashflow.fixed.carLoanPay'],
+    ['ff_creditCardPay','ผ่อนบัตรเครดิต / สินเชื่อ','m','cashflow.fixed.creditCardPay','ยอดที่จ่ายต่อเดือน'],
+    ['ff_lifeIns','เบี้ยประกันชีวิต / สุขภาพ รวมทุกเล่ม','y','cashflow.fixed.lifeIns'],
+    ['ff_carIns','เบี้ยประกันรถ + พ.ร.บ.','y','cashflow.fixed.carIns'],
+    ['ff_condoFee','ค่าส่วนกลาง / หมู่บ้าน','m','cashflow.fixed.condoFee'],
+    ['ff_socialSec','ประกันสังคม','m','cashflow.fixed.socialSec','พนักงานบริษัทส่วนใหญ่ 750'],
+    ['ff_pvdContrib','เงินสะสมกองทุนสำรองเลี้ยงชีพ (PVD)','m','cashflow.fixed.pvdContrib','เฉพาะส่วนที่หักจากเงินเดือนเรา'],
+  ]},
+  vary:{ title:'รายจ่ายใช้ชีวิต', sub:'ค่าใช้จ่ายทั่วไปของครอบครัว — ประมาณจากเดือนปกติ', rows:[
+    ['fv_food','ค่าอาหาร','m','cashflow.var.food'],
+    ['fv_utility','ค่าน้ำ ค่าไฟ อินเทอร์เน็ต','m','cashflow.var.utility'],
+    ['fv_phone','ค่าโทรศัพท์','m','cashflow.var.phone'],
+    ['fv_transport','ค่าเดินทาง น้ำมัน ทางด่วน','m','cashflow.var.transport'],
+    ['fv_personalCare','เสื้อผ้า ของใช้ ดูแลตัวเอง','m','cashflow.var.personalCare'],
+    ['fv_medical','ค่ารักษาพยาบาลที่จ่ายเอง','y','cashflow.var.medical'],
+    ['fv_tax','ภาษีเงินได้ (ที่จ่ายเพิ่มหรือถูกหัก)','y','cashflow.var.tax'],
+    ['fv_recreation','ท่องเที่ยว สันทนาการ','y','cashflow.var.recreation'],
+    ['fv_charity','ทำบุญ บริจาค','y','cashflow.var.charity'],
+    ['fv_otherPersonal','ค่าใช้จ่ายส่วนตัวอื่น ๆ','m','cashflow.var.otherPersonal'],
+    ['fv_living','ค่าใช้จ่ายอื่นที่ไม่เข้าหมวดข้างบน','m','cashflow.var.living'],
+  ]},
+  save:{ title:'เงินออม / ลงทุนต่อเดือน', sub:'เงินที่แบ่งเก็บเป็นประจำ (ไม่ใช่ยอดสะสม — ยอดสะสมอยู่หน้าถัดไป)', rows:[
+    ['fs_normal','เงินออมทั่วไป','m','cashflow.savings.normal','ฝาก / ซื้อกองทุน / หุ้น ที่ทำเป็นประจำ'],
+    ['fs_retire','เงินออมเพื่อวัยเกษียณ','m','cashflow.savings.retire','ไม่รวม PVD ที่หักจากเงินเดือน'],
+    ['fs_rmf','RMF / SSF','y','cashflow.savings.rmf'],
+    ['fs_tesg','Thai ESG','y','cashflow.savings.tesg'],
+  ]},
+  assets:{ title:'ทรัพย์สินที่มีวันนี้', sub:'ยอดคงเหลือหรือมูลค่าโดยประมาณ ณ วันนี้', rows:[
+    ['fa_savings','บัญชีออมทรัพย์ (รวมทุกธนาคาร)','x','assets.liquid.savings'],
+    ['fa_fixedDep','เงินฝากประจำ','x','assets.liquid.fixedDep'],
+    ['fa_moneyFund','กองทุนตลาดเงิน / ตราสารหนี้ระยะสั้น','x','assets.liquid.moneyFund'],
+    ['fa_bond','พันธบัตร / หุ้นกู้','x','assets.invest.bond'],
+    ['fa_stock','หุ้น','x','assets.invest.stock'],
+    ['fa_mutualFund','กองทุนรวม (ไม่รวม RMF)','x','assets.invest.mutualFund'],
+    ['fa_rmf','RMF / SSF / Thai ESG สะสม','x','assets.invest.rmf'],
+    ['fa_pvd','กองทุนสำรองเลี้ยงชีพ (PVD) สะสม','x','assets.invest.pvd','ดูในแอปกองทุน หรือประมาณได้'],
+    ['fa_gold','ทองคำ','x','assets.invest.gold'],
+    ['fa_car','รถยนต์ (ราคาขายต่อวันนี้)','x','assets.personal.car'],
+    ['fa_property','บ้าน / คอนโด / ที่ดิน (ราคาตลาดวันนี้)','x','assets.personal.property'],
+  ]},
+  liab:{ title:'หนี้คงค้าง', sub:'ยอดหนี้ที่เหลือต้องจ่าย ณ วันนี้ (ไม่ใช่ยอดผ่อนต่อเดือน)', rows:[
+    ['fl_creditCard','บัตรเครดิตคงค้าง','x','liab.short.creditCard'],
+    ['fl_otherShort','สินเชื่อส่วนบุคคล / หนี้ระยะสั้นอื่น','x','liab.short.otherShort'],
+    ['fl_carLoan','ยอดหนี้รถคงเหลือ','x','liab.long.carLoan'],
+    ['fl_homeLoan','ยอดหนี้บ้านคงเหลือ','x','liab.long.homeLoan'],
+    ['fl_otherLong','หนี้ระยะยาวอื่น ๆ','x','liab.long.otherLong','กู้ญาติ กู้สหกรณ์ ฯลฯ'],
+  ]},
+};
+
+/* ---------- ลำดับหน้าจอ ---------- */
+const SCREENS=[
+  {id:'intro'},
+  {id:'me',     n:'ข้อมูลตัวเอง'},
+  {id:'family', n:'ครอบครัว'},
+  {id:'income', n:'รายรับ',                money:'income'},
+  {id:'fixed',  n:'รายจ่ายผ่อน / คงที่',   money:'fixed'},
+  {id:'vary',   n:'รายจ่ายใช้ชีวิต',        money:'vary'},
+  {id:'save',   n:'เงินออม',                money:'save'},
+  {id:'assets', n:'ทรัพย์สิน',              money:'assets'},
+  {id:'liab',   n:'หนี้คงค้าง',             money:'liab'},
+  {id:'ins',    n:'ประกันที่มี'},
+  {id:'goals',  n:'เป้าหมาย'},
+  {id:'done'},
+];
+const N_STEPS=SCREENS.length-2;
+
+/* ---------- helpers ---------- */
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+const fmt=n=>Number(n||0).toLocaleString('en-US');
+const numOf=v=>{ const n=Number(String(v==null?'':v).replace(/[^\d.]/g,'')); return isFinite(n)?n:0; };
+const num=id=>numOf(V[id]);
+const txt=id=>String(V[id]==null?'':V[id]).trim();
+function moneyInput(id,ph){ return `<input type="text" class="money" inputmode="numeric" id="${id}" value="${esc(V[id]||'')}" placeholder="${ph||'0'}" oninput="onMoney(this)" autocomplete="off">`; }
+function onMoney(el){ const raw=el.value.replace(/[^\d]/g,''); el.value=raw?Number(raw).toLocaleString('en-US'):''; V[el.id]=el.value; saveSoon(); }
+function onVal(el){ V[el.id]=el.value; saveSoon(); }
+function chipSet(key,val,el){ V[key]=val; el.parentNode.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c===el)); saveSoon(); if(el.dataset.rerender) render(); }
+function chips(key,opts,rerender){ return `<div class="chips">${opts.map(([v,l])=>`<button type="button" class="chip ${V[key]===v?'on':''}" ${rerender?'data-rerender="1"':''} onclick="chipSet('${key}','${v}',this)">${l}</button>`).join('')}</div>`; }
+
+/* ---------- บันทึกอัตโนมัติ (ในเครื่องลูกค้าเท่านั้น) ---------- */
+let saveT=null;
+function saveSoon(){ clearTimeout(saveT); saveT=setTimeout(saveNow,300); }
+function saveNow(){
+  try{
+    localStorage.setItem(LS_KEY, JSON.stringify({v:VERSION,at:Date.now(),cur,V,KIDS,PARENTS,POLICIES,GOALS,ref:REF}));
+    const back=localStorage.getItem(LS_KEY);
+    $('savedMsg').textContent = back ? 'บันทึกในเครื่องแล้ว '+new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}) : 'บันทึกในเครื่องไม่สำเร็จ';
+  }catch(e){ $('savedMsg').textContent='เบราว์เซอร์นี้บันทึกอัตโนมัติไม่ได้ — กรอกให้จบในครั้งเดียว'; }
+}
+function loadSaved(){
+  try{ const raw=localStorage.getItem(LS_KEY); if(!raw) return false;
+    const d=JSON.parse(raw); if(!d||!d.V) return false;
+    V=d.V||{}; KIDS=d.KIDS||[]; PARENTS=d.PARENTS||[]; POLICIES=d.POLICIES||[]; GOALS=d.GOALS||[]; cur=Math.min(d.cur||0,SCREENS.length-1);
+    const when=new Date(d.at||Date.now());
+    $('resume').innerHTML=`กรอกต่อจากที่ค้างไว้ (${when.toLocaleDateString('th-TH')} ${when.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'})}) &nbsp;·&nbsp; <a href="#" onclick="clearAll();return false" style="color:var(--carrier)">เริ่มใหม่</a>`;
+    $('resume').classList.remove('hidden');
+    return true;
+  }catch(e){ return false; }
+}
+function clearAll(){ if(!confirm('ล้างข้อมูลที่กรอกไว้ทั้งหมด แล้วเริ่มใหม่?')) return; try{ localStorage.removeItem(LS_KEY); }catch(e){} V={};KIDS=[];PARENTS=[];POLICIES=[];GOALS=[];cur=0; $('resume').classList.add('hidden'); render(); }
+
+/* ---------- ตรวจว่าอยู่ใน browser ในแอป (LINE/Facebook) ---------- */
+function inAppBrowser(){ const ua=navigator.userAgent||''; return /Line\//i.test(ua)?'LINE':/FBAN|FBAV|FB_IAB/i.test(ua)?'Facebook':/Instagram/i.test(ua)?'Instagram':''; }
+
+/* ═══════════════ RENDER ═══════════════ */
+function render(){
+  const S=SCREENS[cur]; const box=$('screen'); let h='';
+  const stepNo=cur>=1&&cur<=N_STEPS?cur:0;
+  $('stepInd').innerHTML = stepNo?`<b>${stepNo}</b> / ${N_STEPS} · ${S.n}`:(cur===0?'':'เสร็จแล้ว');
+  $('steps').innerHTML = Array.from({length:N_STEPS},(_,i)=>`<div class="step ${i+1<cur?'on':i+1===cur?'cur':''}"></div>`).join('');
+
+  if(S.id==='intro') h=renderIntro();
+  else if(S.id==='me') h=renderMe();
+  else if(S.id==='family') h=renderFamily();
+  else if(S.money) h=renderMoney(S.money);
+  else if(S.id==='ins') h=renderIns();
+  else if(S.id==='goals') h=renderGoals();
+  else if(S.id==='done') h=renderDone();
+  box.innerHTML=h;
+
+  /* nav */
+  let nav='';
+  if(S.id==='intro') nav=`<button class="btn primary" onclick="go(1)">เริ่มกรอก</button>`;
+  else if(S.id==='done') nav=`<button class="btn ghost" onclick="go(-1)">ย้อนกลับ</button><button class="btn primary" onclick="downloadFile()">บันทึกไฟล์ .json ส่งให้ที่ปรึกษา</button>`;
+  else nav=`<button class="btn ghost" onclick="go(-1)">ย้อนกลับ</button><button class="btn primary" onclick="go(1)">${cur===N_STEPS?'ไปหน้าสรุป':'ถัดไป'}</button>`;
+  $('navRow').innerHTML=nav;
+  window.scrollTo({top:0,behavior:'instant'});
+  const ia=inAppBrowser();
+  if(ia && S.id==='done'){ $('inapp').innerHTML=`<b>คุณกำลังเปิดจากแอป ${ia}</b> — การบันทึกไฟล์อาจไม่ทำงาน ให้กดเมนู ⋯ มุมขวาบน แล้วเลือก "เปิดในเบราว์เซอร์" (Safari/Chrome) ข้อมูลที่กรอกไว้จะยังอยู่`; $('inapp').classList.remove('hidden'); }
+  else $('inapp').classList.add('hidden');
+}
+function go(d){ cur=Math.max(0,Math.min(SCREENS.length-1,cur+d)); saveNow(); render(); }
+function skipScreen(rows){ rows.forEach(r=>{ V[r[0]]=''; }); go(1); }
+
+function renderIntro(){
+  return `<h1>แบบฟอร์มข้อมูลวางแผนการเงิน</h1>
+  <div class="sub">สำหรับจัดทำ Money MRI — แผนการเงินส่วนตัวของคุณ</div>
+  <ul class="tips">
+    <li>มี <b>${N_STEPS} หน้า</b> ใช้เวลาประมาณ 10–15 นาที</li>
+    <li><b>ทุกช่องข้ามได้</b> — ไม่รู้ ไม่มี หรือไม่สะดวกบอก ปล่อยว่างไว้ ที่ปรึกษาจะถามเพิ่มทีหลัง</li>
+    <li>ตัวเลข<b>ประมาณได้</b> ไม่ต้องเป๊ะ</li>
+    <li>ระบบ<b>บันทึกอัตโนมัติในเครื่องคุณ</b> ปิดแล้วกลับมากรอกต่อได้จากลิงก์เดิม</li>
+    <li><b>ไม่มีการส่งข้อมูลออกจากเครื่องคุณ</b> — หน้าสุดท้ายคุณจะได้ไฟล์ 2 แบบ: ไฟล์ข้อมูล (.json) ที่คุณเลือกส่งให้ที่ปรึกษาเอง และสำเนา PDF ไว้เก็บเอง</li>
+  </ul>
+  <div class="note">ถ้ามี<b>ยอดในแอปธนาคาร / กองทุน / เล่มประกัน</b>อยู่ใกล้มือจะกรอกได้เร็วขึ้น แต่ไม่จำเป็น</div>`;
+}
+
+function renderMe(){
+  return `<h2>ข้อมูลตัวเอง</h2><div class="sub">พื้นฐานที่ใช้วางแกนเวลาของแผน</div>
+  <div class="f stack"><label>ชื่อ-นามสกุล (หรือชื่อเล่น)</label><div class="in"><input type="text" class="txt" id="cname" value="${esc(V.cname||'')}" oninput="onVal(this)" placeholder="เช่น สมชาย ใจดี"></div></div>
+  <div class="f"><label>อายุปัจจุบัน</label><div class="in"><input type="number" class="num" id="cage" inputmode="numeric" value="${esc(V.cage||'')}" oninput="onVal(this)" placeholder="35"><span class="unit">ปี</span></div></div>
+  <div class="f"><label>อยากเกษียณตอนอายุ<small>ไม่แน่ใจ ใส่ 60</small></label><div class="in"><input type="number" class="num" id="cret" inputmode="numeric" value="${esc(V.cret||'')}" oninput="onVal(this)" placeholder="60"><span class="unit">ปี</span></div></div>
+  <div class="f"><label>หลังเกษียณอยากมีเงินใช้เดือนละ<small>คิดเป็นค่าเงินวันนี้ · ไม่แน่ใจ ข้ามได้ ระบบจะประมาณจากรายจ่ายให้</small></label><div class="in">${moneyInput('cretexp','ข้ามได้')}<span class="unit">฿/เดือน</span></div></div>
+  <div class="sec"><div class="sec-h">ถ้าป่วยหนัก อยากรักษาที่</div>${chips('chosp',[['gov','รพ.รัฐ'],['mid','รพ.เอกชนทั่วไป'],['hi','รพ.เอกชนชั้นนำ']])}</div>
+  <div class="sec"><div class="sec-h">อาชีพ</div>${chips('cjob',[['emp','พนักงานบริษัท'],['gov','ราชการ / รัฐวิสาหกิจ'],['own','ธุรกิจส่วนตัว'],['free','ฟรีแลนซ์'],['other','อื่น ๆ']])}</div>`;
+}
+
+function renderFamily(){
+  const mar=V.cmar;
+  let h=`<h2>ครอบครัว</h2><div class="sub">ใครบ้างที่พึ่งพารายได้ของคุณ — ใช้คำนวณทุนคุ้มครองและค่าเทอม</div>
+  <div class="sec"><div class="sec-h">สถานะ</div>${chips('cmar',[['single','โสด'],['married','มีคู่ / แต่งงาน']],true)}</div>`;
+  if(mar==='married'){
+    h+=`<div class="sub-card"><div class="t">คู่ชีวิต</div>
+      <div class="f"><label>ชื่อ</label><div class="in"><input type="text" class="txt" style="width:150px" id="spname" value="${esc(V.spname||'')}" oninput="onVal(this)" placeholder="ชื่อ"></div></div>
+      <div class="f"><label>อายุ</label><div class="in"><input type="number" class="num" id="spage" inputmode="numeric" value="${esc(V.spage||'')}" oninput="onVal(this)"><span class="unit">ปี</span></div></div>
+      <div class="f stack"><label>คู่ชีวิตมีรายได้ของตัวเองไหม</label>${chips('spinc',[['yes','มี'],['no','ไม่มี / พึ่งพารายได้เรา']],true)}</div>
+      ${V.spinc==='no'?`<div class="f"><label>เราดูแลค่าใช้จ่ายให้เดือนละ<small>ส่วนของคู่ชีวิตเท่านั้น</small></label><div class="in">${moneyInput('spmon')}<span class="unit">฿/เดือน</span></div></div>`:''}
+    </div>`;
+  }
+  h+=`<div class="sec"><div class="sec-h">ลูก</div>${chips('nkids',[['0','ไม่มี'],['1','1 คน'],['2','2 คน'],['3','3 คน'],['4','4 คน']],true)}</div>`;
+  const nk=parseInt(V.nkids||'0')||0;
+  while(KIDS.length<nk) KIDS.push({name:'',age:'',tier:'1',upto:'bachelor',mon:''});
+  for(let i=0;i<nk;i++){ const k=KIDS[i];
+    h+=`<div class="sub-card"><div class="t">ลูกคนที่ ${i+1}</div>
+      <div class="f"><label>ชื่อเล่น</label><div class="in"><input type="text" class="txt" style="width:150px" value="${esc(k.name)}" oninput="KIDS[${i}].name=this.value;saveSoon()"></div></div>
+      <div class="f"><label>อายุ</label><div class="in"><input type="number" class="num" inputmode="numeric" value="${esc(k.age)}" oninput="KIDS[${i}].age=this.value;saveSoon()"><span class="unit">ปี</span></div></div>
+      <div class="f stack"><label>แนวโรงเรียนที่ตั้งใจ<small>ใช้ตารางค่าเทอมมาตรฐานของ S41 ที่ปรึกษาปรับได้ทีหลัง</small></label>
+        <div class="chips">${[['0','รัฐ'],['1','เอกชน'],['2','นานาชาติ']].map(([v,l])=>`<button type="button" class="chip ${k.tier===v?'on':''}" onclick="KIDS[${i}].tier='${v}';saveSoon();render()">${l}</button>`).join('')}</div></div>
+      <div class="f stack"><label>ตั้งใจส่งเรียนถึง</label>
+        <div class="chips">${[['bachelor','ป.ตรี'],['master','ป.โท']].map(([v,l])=>`<button type="button" class="chip ${k.upto===v?'on':''}" onclick="KIDS[${i}].upto='${v}';saveSoon();render()">${l}</button>`).join('')}</div></div>
+      <div class="f"><label>ค่าเลี้ยงดูลูกคนนี้<small>กิน ใช้ กิจกรรม — ไม่รวมค่าเทอม</small></label><div class="in"><input type="text" class="money" inputmode="numeric" value="${esc(k.mon)}" oninput="const r=this.value.replace(/[^\\d]/g,'');this.value=r?Number(r).toLocaleString('en-US'):'';KIDS[${i}].mon=this.value;saveSoon()" placeholder="0"><span class="unit">฿/เดือน</span></div></div>
+    </div>`;
+  }
+  h+=`<div class="sec"><div class="sec-h">พ่อแม่ / ผู้ใหญ่ที่ต้องดูแล</div>${chips('npar',[['0','ไม่มี'],['1','1 คน'],['2','2 คน'],['3','3 คน'],['4','4 คน']],true)}</div>`;
+  const np=parseInt(V.npar||'0')||0;
+  while(PARENTS.length<np) PARENTS.push({name:'',age:'',mon:''});
+  for(let i=0;i<np;i++){ const p=PARENTS[i];
+    h+=`<div class="sub-card"><div class="t">คนที่ ${i+1}</div>
+      <div class="f"><label>เรียกว่า</label><div class="in"><input type="text" class="txt" style="width:150px" value="${esc(p.name)}" oninput="PARENTS[${i}].name=this.value;saveSoon()" placeholder="เช่น คุณแม่"></div></div>
+      <div class="f"><label>อายุ</label><div class="in"><input type="number" class="num" inputmode="numeric" value="${esc(p.age)}" oninput="PARENTS[${i}].age=this.value;saveSoon()"><span class="unit">ปี</span></div></div>
+      <div class="f"><label>ส่งให้ / จ่ายให้เดือนละ</label><div class="in"><input type="text" class="money" inputmode="numeric" value="${esc(p.mon)}" oninput="const r=this.value.replace(/[^\\d]/g,'');this.value=r?Number(r).toLocaleString('en-US'):'';PARENTS[${i}].mon=this.value;saveSoon()" placeholder="0"><span class="unit">฿/เดือน</span></div></div>
+    </div>`;
+  }
+  return h;
+}
+
+function renderMoney(key){
+  const M=MONEY_SCREENS[key];
+  let h=`<h2>${M.title}</h2><div class="sub">${M.sub}</div>`;
+  h+=M.rows.map(r=>`<div class="f"><label>${r[1]}${r[4]?`<small>${r[4]}</small>`:''}</label><div class="in">${moneyInput(r[0])}<span class="unit">${UNIT[r[2]]}</span></div></div>`).join('');
+  const tot=M.rows.reduce((t,r)=>t+num(r[0]),0);
+  h+=`<div class="hint" id="tot_${key}">${tot>0?'กรอกแล้ว '+M.rows.filter(r=>num(r[0])>0).length+' รายการ':'ยังไม่ได้กรอก'}</div>`;
+  if(key!=='income') h+=`<button class="btn soft" onclick='skipScreen(${JSON.stringify(M.rows.map(r=>[r[0]]))})'>ไม่มีรายการในหน้านี้ — ข้ามไป</button>`;
+  return h;
+}
+
+/* ---------- ประกัน ---------- */
+function renderIns(){
+  let h=`<h2>ประกันที่มีอยู่</h2><div class="sub">กรอกเท่าที่รู้ — ที่ปรึกษาจะเติมรายละเอียดจากตารางกรมธรรม์ให้</div>`;
+  if(!POLICIES.length) h+=`<div class="hint">ยังไม่มีรายการ</div>`;
+  POLICIES.forEach((p,i)=>{
+    h+=`<div class="sub-card"><div class="t">เล่มที่ ${i+1}<button onclick="POLICIES.splice(${i},1);saveSoon();render()">ลบ</button></div>
+      <div class="f stack"><label>บริษัท</label><div class="chips">${['AIA','เมืองไทย','ไทยประกัน','กรุงเทพประกัน','FWD','อื่น ๆ'].map(c=>`<button type="button" class="chip ${p.company===c?'on':''}" onclick="POLICIES[${i}].company='${c}';saveSoon();render()">${c}</button>`).join('')}</div></div>
+      <div class="f stack"><label>ชื่อแบบประกัน / ประเภท<small>ตามที่จำได้ เช่น ตลอดชีพ 20/99, สะสมทรัพย์, สุขภาพเหมาจ่าย</small></label><div class="in"><input type="text" class="txt" value="${esc(p.name)}" oninput="POLICIES[${i}].name=this.value;saveSoon()"></div></div>
+      <div class="f"><label>เบี้ยต่อปี</label><div class="in">${pm(i,'premium')}<span class="unit">฿/ปี</span></div></div>
+      <div class="f"><label>จ่ายเบี้ยถึงอายุ<small>หรือปี พ.ศ. ที่จ่ายครบ</small></label><div class="in"><input type="text" class="num" inputmode="numeric" value="${esc(p.payUntil)}" oninput="POLICIES[${i}].payUntil=this.value;saveSoon()"></div></div>
+      <div class="f"><label>ทุนประกันชีวิต<small>เงินที่ครอบครัวได้ถ้าเสียชีวิต</small></label><div class="in">${pm(i,'life')}<span class="unit">฿</span></div></div>
+      <div class="f"><label>วงเงินค่ารักษาพยาบาล<small>ต่อปี (ถ้าเป็นแบบเหมาจ่าย)</small></label><div class="in">${pm(i,'health')}<span class="unit">฿/ปี</span></div></div>
+      <div class="f"><label>ค่าห้อง รพ. ต่อคืน</label><div class="in">${pm(i,'room')}<span class="unit">฿/คืน</span></div></div>
+      <div class="f"><label>ทุนโรคร้ายแรง</label><div class="in">${pm(i,'ciSevere')}<span class="unit">฿</span></div></div>
+    </div>`;
+  });
+  if(POLICIES.length<8) h+=`<button class="btn add" onclick="POLICIES.push({company:'AIA',name:'',premium:'',payUntil:'',life:'',health:'',room:'',ciSevere:''});saveSoon();render()">+ เพิ่มกรมธรรม์</button>`;
+  h+=`<div class="sec"><div class="sec-h">สวัสดิการที่ทำงาน</div>${chips('welf',[['none','ไม่มี'],['sso','ประกันสังคมอย่างเดียว'],['group','มีประกันกลุ่มบริษัท']],true)}
+    ${V.welf==='group'?`<div class="f"><label>ประกันกลุ่ม: ค่าห้องต่อคืน</label><div class="in">${moneyInput('welfroom')}<span class="unit">฿/คืน</span></div></div>
+    <div class="f"><label>ประกันกลุ่ม: วงเงินค่ารักษาต่อครั้ง / ต่อปี</label><div class="in">${moneyInput('welfmed')}<span class="unit">฿</span></div></div>`:''}</div>
+  <div class="note">📷 ถ้าสะดวก <b>ถ่ายรูปหน้า "ตารางสรุปความคุ้มครอง"</b> ของแต่ละเล่ม ส่งให้ที่ปรึกษาพร้อมไฟล์ข้อมูล — จะได้ตัวเลขครบโดยคุณไม่ต้องกรอกเอง</div>
+  ${!POLICIES.length?`<button class="btn soft" onclick="go(1)">ไม่มีประกัน — ข้ามไป</button>`:''}`;
+  return h;
+}
+function pm(i,k){ return `<input type="text" class="money" inputmode="numeric" value="${esc(POLICIES[i][k]||'')}" oninput="const r=this.value.replace(/[^\\d]/g,'');this.value=r?Number(r).toLocaleString('en-US'):'';POLICIES[${i}].${k}=this.value;saveSoon()" placeholder="0">`; }
+
+/* ---------- เป้าหมาย ---------- */
+const GOAL_PRESETS=[['🏠','ซื้อบ้าน'],['🚗','ซื้อรถ'],['✈️','ท่องเที่ยวใหญ่'],['💍','แต่งงาน'],['🏢','เริ่มธุรกิจ'],['🎯','อื่น ๆ']];
+function renderGoals(){
+  let h=`<h2>เป้าหมายที่อยากทำให้ได้</h2><div class="sub">เป้าหมายเงินก้อนใน 1–20 ปีข้างหน้า (ไม่ต้องใส่เกษียณกับค่าเทอม — คิดให้แล้ว)</div>`;
+  if(!GOALS.length) h+=`<div class="hint">ยังไม่มีรายการ</div>`;
+  GOALS.forEach((g,i)=>{
+    h+=`<div class="sub-card"><div class="t">เป้าหมายที่ ${i+1}<button onclick="GOALS.splice(${i},1);saveSoon();render()">ลบ</button></div>
+      <div class="chips">${GOAL_PRESETS.map(([ico,l])=>`<button type="button" class="chip ${g.ico===ico?'on':''}" onclick="GOALS[${i}].ico='${ico}';if(!GOALS[${i}].custom)GOALS[${i}].name='${l}';saveSoon();render()">${ico} ${l}</button>`).join('')}</div>
+      <div class="f stack" style="margin-top:6px"><label>ชื่อเป้าหมาย</label><div class="in"><input type="text" class="txt" value="${esc(g.name)}" oninput="GOALS[${i}].name=this.value;GOALS[${i}].custom=true;saveSoon()"></div></div>
+      <div class="f"><label>ต้องใช้เงินประมาณ<small>ค่าเงินวันนี้</small></label><div class="in"><input type="text" class="money" inputmode="numeric" value="${esc(g.amt)}" oninput="const r=this.value.replace(/[^\\d]/g,'');this.value=r?Number(r).toLocaleString('en-US'):'';GOALS[${i}].amt=this.value;saveSoon()" placeholder="0"><span class="unit">฿</span></div></div>
+      <div class="f"><label>อยากทำให้ได้ในอีก</label><div class="in"><input type="number" class="num" inputmode="numeric" value="${esc(g.yrs)}" oninput="GOALS[${i}].yrs=this.value;saveSoon()" placeholder="5"><span class="unit">ปี</span></div></div>
+    </div>`;
+  });
+  if(GOALS.length<5) h+=`<button class="btn add" onclick="GOALS.push({ico:'🎯',name:'',amt:'',yrs:'',custom:false});saveSoon();render()">+ เพิ่มเป้าหมาย</button>`;
+  h+=`<div class="sec"><div class="sec-h">สิ่งที่อยากให้ที่ปรึกษาช่วยดูเป็นพิเศษ</div>${chips('cfocus',[['retire','เกษียณ'],['protect','คุ้มครองครอบครัว'],['debt','จัดการหนี้'],['invest','ลงทุน / ต่อยอด'],['edu','ทุนการศึกษาลูก'],['tax','ภาษี'],['all','ดูภาพรวมทั้งหมด']])}</div>
+  <div class="f stack" style="margin-top:8px"><label>เรื่องอื่นที่อยากบอกที่ปรึกษา<small>ไม่บังคับ</small></label><div class="in"><input type="text" class="txt" id="cnote" value="${esc(V.cnote||'')}" oninput="onVal(this)" placeholder="เช่น กำลังจะเปลี่ยนงานปีหน้า"></div></div>`;
+  return h;
+}
+
+/* ---------- หน้าสรุป + ส่ง ---------- */
+function renderDone(){
+  const cnt=k=>MONEY_SCREENS[k].rows.filter(r=>num(r[0])>0).length;
+  const name=txt('cname')||'ยังไม่ได้กรอกชื่อ';
+  const missing=[];
+  if(!txt('cname')) missing.push('ชื่อ'); if(!num('cage')) missing.push('อายุ');
+  return `<h2>ตรวจก่อนส่ง</h2><div class="sub">ที่ปรึกษาจะได้รับข้อมูลชุดนี้ไปจัดทำแผน</div>
+  <div class="summary">
+    <div><span>ชื่อ</span><b>${esc(name)}${num('cage')?' · '+num('cage')+' ปี':''}</b></div>
+    <div><span>ครอบครัว</span><b>${V.cmar==='married'?'มีคู่':'โสด'}${(parseInt(V.nkids)||0)?' · ลูก '+V.nkids+' คน':''}${(parseInt(V.npar)||0)?' · ดูแลผู้ใหญ่ '+V.npar+' คน':''}</b></div>
+    <div><span>รายรับ</span><b>${cnt('income')} รายการ</b></div>
+    <div><span>รายจ่าย</span><b>${cnt('fixed')+cnt('vary')} รายการ</b></div>
+    <div><span>เงินออม</span><b>${cnt('save')} รายการ</b></div>
+    <div><span>ทรัพย์สิน / หนี้</span><b>${cnt('assets')} / ${cnt('liab')} รายการ</b></div>
+    <div><span>กรมธรรม์</span><b>${POLICIES.length} เล่ม</b></div>
+    <div><span>เป้าหมาย</span><b>${GOALS.filter(g=>numOf(g.amt)>0).length} รายการ</b></div>
+  </div>
+  ${missing.length?`<div class="warn">ยังไม่ได้กรอก: ${missing.join(', ')} — ส่งได้ แต่ที่ปรึกษาจะต้องถามเพิ่ม <a href="#" onclick="cur=1;render();return false" style="color:var(--carrier)">กลับไปกรอก</a></div>`:''}
+  <div class="note"><b>มี 2 อย่างให้บันทึก</b><br>1. <b>ไฟล์ข้อมูล .json</b> — ไฟล์ชื่อ <b>${esc(fileName())}</b> · คุณเป็นคนส่งให้ที่ปรึกษาเองตามช่องทางที่สะดวก ระบบไม่ส่งอะไรออกจากเครื่องคุณ<br>2. <b>สำเนา PDF</b> — ไว้เก็บเองหรืออ่านทบทวน (ที่ปรึกษานำเข้าระบบจาก PDF ไม่ได้ ต้องใช้ .json)</div>
+  <div id="sendStatus"></div>
+  <div class="two"><button class="btn ghost" onclick="savePdf()">บันทึกสำเนา PDF ให้ตัวเอง</button></div>
+  <div class="hint center" style="margin-top:14px"><a href="#" id="restartLink" onclick="clearAll();return false" style="color:var(--gray)">ล้างข้อมูลทั้งหมดแล้วเริ่มใหม่</a></div>`;
+}
+
+/* ═══════════════ สำเนา PDF สำหรับลูกค้า (window.print → บันทึกเป็น PDF) ═══════════════ */
+function renderPrint(){
+  const name=txt('cname')||'ยังไม่ได้กรอกชื่อ';
+  const d=new Date(); const dateTh=d.toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'});
+  const row=(l,v,u)=>`<tr><td>${esc(l)}</td><td class="v">${v}</td><td class="u">${u||''}</td></tr>`;
+  const money=(l,id,unit)=>num(id)>0?row(l,fmt(num(id)),unit):'';
+  const moneyGrp=(key)=>{ const M=MONEY_SCREENS[key]; const rows=M.rows.filter(r=>num(r[0])>0);
+    if(!rows.length) return `<div class="pg"><h3>${M.title}</h3><div class="empty">ไม่ได้กรอก / ไม่มี</div></div>`;
+    const totM=rows.reduce((t,r)=>t+(r[2]==='y'?num(r[0])/12:num(r[0])),0);
+    const totX=rows.reduce((t,r)=>t+num(r[0]),0);
+    const tot=(key==='assets'||key==='liab')?row('รวม',fmt(Math.round(totX)),'฿'):row('รวมต่อเดือน (รายปี ÷ 12)',fmt(Math.round(totM)),'฿/เดือน');
+    return `<div class="pg"><h3>${M.title}</h3><table>${rows.map(r=>row(r[1],fmt(num(r[0])),UNIT[r[2]])).join('')}<tr class="tot">${tot.replace(/^<tr>|<\/tr>$/g,'')}</tr></table></div>`; };
+  const HOSP={gov:'รพ.รัฐ',mid:'รพ.เอกชนทั่วไป',hi:'รพ.เอกชนชั้นนำ'};
+  const JOB={emp:'พนักงานบริษัท',gov:'ราชการ / รัฐวิสาหกิจ',own:'ธุรกิจส่วนตัว',free:'ฟรีแลนซ์',other:'อื่น ๆ'};
+  const FOC={retire:'เกษียณ',protect:'คุ้มครองครอบครัว',debt:'จัดการหนี้',invest:'ลงทุน / ต่อยอด',edu:'ทุนการศึกษาลูก',tax:'ภาษี',all:'ดูภาพรวมทั้งหมด'};
+  let me=`<div class="pg"><h3>ข้อมูลตัวเอง</h3><table>
+    ${row('ชื่อ',esc(name))}${num('cage')?row('อายุ',num('cage'),'ปี'):''}${num('cret')?row('อยากเกษียณตอนอายุ',num('cret'),'ปี'):''}
+    ${num('cretexp')?row('เงินใช้หลังเกษียณ (ค่าเงินวันนี้)',fmt(num('cretexp')),'฿/เดือน'):''}
+    ${HOSP[V.chosp]?row('ถ้าป่วยหนักอยากรักษาที่',HOSP[V.chosp]):''}${JOB[V.cjob]?row('อาชีพ',JOB[V.cjob]):''}</table></div>`;
+  let fam=''; const nk=parseInt(V.nkids||'0')||0, np=parseInt(V.npar||'0')||0;
+  fam+=row('สถานะ',V.cmar==='married'?'มีคู่ / แต่งงาน':V.cmar==='single'?'โสด':'—');
+  if(V.cmar==='married') fam+=row('คู่ชีวิต',esc(txt('spname')||'-')+(num('spage')?' · '+num('spage')+' ปี':'')+(V.spinc==='no'?' · พึ่งพารายได้เรา'+(num('spmon')?' '+fmt(num('spmon'))+' ฿/เดือน':''):V.spinc==='yes'?' · มีรายได้ของตัวเอง':''));
+  for(let i=0;i<nk;i++){ const k=KIDS[i]||{}; fam+=row('ลูกคนที่ '+(i+1),esc(k.name||'-')+(numOf(k.age)?' · '+numOf(k.age)+' ปี':'')+' · '+['รัฐ','เอกชน','นานาชาติ'][parseInt(k.tier||'1')||0]+' ถึง '+(k.upto==='master'?'ป.โท':'ป.ตรี')+(numOf(k.mon)?' · เลี้ยงดู '+fmt(numOf(k.mon))+' ฿/เดือน':'')); }
+  for(let i=0;i<np;i++){ const p=PARENTS[i]||{}; fam+=row('ดูแล: '+esc(p.name||'ผู้ใหญ่ '+(i+1)),(numOf(p.age)?numOf(p.age)+' ปี':'-')+(numOf(p.mon)?' · ส่งให้ '+fmt(numOf(p.mon))+' ฿/เดือน':'')); }
+  fam=`<div class="pg"><h3>ครอบครัว</h3><table class="wide">${fam}</table></div>`;
+  let ins='';
+  if(!POLICIES.length) ins='<div class="empty">ไม่ได้กรอก / ไม่มี</div>';
+  else ins='<table class="pol"><tr><th>เล่ม · บริษัท · แบบประกัน</th><th>เบี้ย/ปี</th><th>ถึงอายุ</th><th>ทุนชีวิต</th><th>รักษา/ปี</th><th>ห้อง/คืน</th><th>โรคร้าย</th></tr>'+
+    POLICIES.map((p,i)=>`<tr><td>${i+1}. ${esc(p.company||'')} ${esc(p.name||'')}</td><td>${numOf(p.premium)?fmt(numOf(p.premium)):'—'}</td><td>${esc(p.payUntil||'—')}</td><td>${numOf(p.life)?fmt(numOf(p.life)):'—'}</td><td>${numOf(p.health)?fmt(numOf(p.health)):'—'}</td><td>${numOf(p.room)?fmt(numOf(p.room)):'—'}</td><td>${numOf(p.ciSevere)?fmt(numOf(p.ciSevere)):'—'}</td></tr>`).join('')+'</table>';
+  const WELF={none:'ไม่มี',sso:'ประกันสังคมอย่างเดียว',group:'ประกันกลุ่มบริษัท'+(num('welfroom')?' · ค่าห้อง '+fmt(num('welfroom'))+' ฿/คืน':'')+(num('welfmed')?' · วงเงิน '+fmt(num('welfmed'))+' ฿':'')};
+  if(WELF[V.welf]) ins+=`<table class="wide">${row('สวัสดิการที่ทำงาน',WELF[V.welf])}</table>`;
+  ins=`<div class="pg"><h3>ประกันที่มี</h3>${ins}</div>`;
+  const gl=GOALS.filter(g=>numOf(g.amt)>0);
+  let goals=gl.length?'<table>'+gl.map(g=>row((g.ico||'')+' '+esc(g.name||'เป้าหมาย'),fmt(numOf(g.amt))+' ฿ · อีก '+numOf(g.yrs)+' ปี')).join('')+'</table>':'<div class="empty">ไม่ได้กรอก</div>';
+  if(FOC[V.cfocus]||txt('cnote')) goals+=`<table class="wide">${FOC[V.cfocus]?row('อยากให้ช่วยดูเป็นพิเศษ',FOC[V.cfocus]):''}${txt('cnote')?row('เรื่องที่อยากบอกที่ปรึกษา',esc(txt('cnote'))):''}</table>`;
+  goals=`<div class="pg"><h3>เป้าหมาย</h3>${goals}</div>`;
+  $('printArea').innerHTML=`
+    <div class="ph"><div class="l"><img src="${LOGO_SRC}" alt=""><div class="wm">Signature 41<small>Financial Clinic · Customized for One</small></div></div>
+      <div class="r"><b>${esc(name)}</b>สำเนาข้อมูลวางแผนการเงิน · ${dateTh}</div></div>
+    <div class="pt">แบบฟอร์มข้อมูลวางแผนการเงิน (Money MRI)</div>
+    <div class="ps">สำเนาสำหรับผู้กรอก · ตัวเลขเป็นค่าประมาณตามที่กรอกด้วยตนเอง · ที่ปรึกษาจะตรวจสอบและเติมส่วนที่ขาดในนัดหมาย</div>
+    <div class="cols">${me}${fam}</div>
+    <div class="cols">${moneyGrp('income')}${moneyGrp('fixed')}</div>
+    <div class="cols">${moneyGrp('vary')}${moneyGrp('save')}</div>
+    <div class="cols">${moneyGrp('assets')}${moneyGrp('liab')}</div>
+    ${ins}${goals}
+    <div class="pf">เอกสารนี้เป็นสำเนาข้อมูลที่ผู้กรอกบันทึกไว้เอง ไม่ใช่รายงานวิเคราะห์ · ข้อมูลถูกเก็บในเครื่องของผู้กรอกจนกว่าจะส่งไฟล์ให้ที่ปรึกษา · S41 Client Form v${VERSION} · Signature 41 Financial Clinic · health.s41clinic.com</div>`;
+}
+function savePdf(){
+  renderPrint();
+  setStatus('note','เปิดหน้าต่างพิมพ์ของเครื่องแล้ว — เลือก <b>"บันทึกเป็น PDF" / "Save as PDF"</b> (iPhone: กดปุ่มแชร์ในหน้าตัวอย่าง → บันทึกไปที่ไฟล์) · ถ้าไม่มีอะไรขึ้น เบราว์เซอร์นี้ไม่รองรับการพิมพ์ ให้เปิดใน Safari/Chrome');
+  setTimeout(()=>{ try{ window.print(); }catch(e){ setStatus('warn','เปิดหน้าต่างพิมพ์ไม่ได้: '+esc(e.message)); } },50);
+}
+
+/* ═══════════════ สร้างไฟล์ (โครงเดียวกับ Step 2 v2.6.4 · stage:'client') ═══════════════ */
+const EDU_LEVELS=[['อนุบาล',3,3],['ประถม',6,6],['มัธยม',6,12],['ป.ตรี',4,18],['ป.โท',2,22]];
+const EDU_FEE={'อนุบาล':[15000,80000,350000],'ประถม':[20000,120000,500000],'มัธยม':[25000,150000,650000],'ป.ตรี':[40000,150000,400000],'ป.โท':[100000,200000,350000]};
+const eduGoalId=(kidId,lvl)=>{ const str='E'+kidId+'|'+lvl; let h=0; for(let i=0;i<str.length;i++){ h=(h*31+str.charCodeAt(i))>>>0; } return 900000000+(h%99000000); };
+
+function buildClientFile(){
+  const age=num('cage')||35, ra=Math.max(num('cret')||60, age+1), life=85;
+  const nm=txt('cname')||'ลูกค้าใหม่';
+  const est=[];
+
+  const detail={
+    assets:{ liquid:{savings:0,fixedDep:0,moneyFund:0}, liquidExtra:[],
+      invest:{bond:0,stock:0,mutualFund:0,rmf:0,pvd:0,insCash:0,gold:0}, investExtra:[],
+      personal:{jewelry:0,car:0,property:0}, personalExtra:[] },
+    liab:{ short:{utility:0,creditCard:0,otherShort:0}, long:{carLoan:0,homeLoan:0,otherLong:0} },
+    cashflow:{ income:{bonus:0,interest:0,rental:0,other:0}, incomeExtra:[],
+      fixed:{homeLoanPay:0,carLoanPay:0,creditCardPay:0,lifeIns:0,carIns:0,condoFee:0,socialSec:0,pvdContrib:0}, fixedExtra:[],
+      var:{living:0,food:0,utility:0,phone:0,medical:0,tax:0,transport:0,personalCare:0,otherPersonal:0,recreation:0,charity:0}, varExtra:[],
+      savings:{normal:0,retire:0,rmf:0,tesg:0}, savingExtra:[] }
+  };
+  const setPath=(obj,path,val)=>{ const p=path.split('.'); let o=obj; for(let i=0;i<p.length-1;i++) o=o[p[i]]; o[p[p.length-1]]=val; };
+  let filled=0;
+  Object.values(MONEY_SCREENS).forEach(M=>M.rows.forEach(([id,label,per,snap])=>{
+    const raw=num(id); if(!raw) return; filled++;
+    if(snap.startsWith('special')) return;
+    const v=(snap==='cashflow.income.bonus')?raw:(per==='y'?raw/12:raw);
+    setPath(detail,snap,Math.round(v*100)/100);
+  }));
+  /* กันนับเบี้ยซ้ำ: MRI นับเบี้ยจากทะเบียนกรมธรรม์เป็นรายจ่ายอยู่แล้ว
+     → ช่อง "เบี้ยรวมทุกเล่ม" ในงบกระแส เหลือเฉพาะส่วนที่เกินจากเล่มที่ลูกค้ากรอกในทะเบียน */
+  const premSum=POLICIES.reduce((t,p)=>t+numOf(p.premium),0);
+  if(premSum>0 && num('ff_lifeIns')>0){
+    const rest=Math.max(0,num('ff_lifeIns')-premSum);
+    detail.cashflow.fixed.lifeIns=Math.round(rest/12*100)/100;
+    est.push('เบี้ยรวมที่ลูกค้ากรอก '+fmt(num('ff_lifeIns'))+' ฿/ปี · เบี้ยในทะเบียนกรมธรรม์ '+fmt(premSum)+' ฿/ปี → ช่อง "เบี้ยประกันชีวิต" ในงบกระแสตั้งเป็นส่วนต่าง '+fmt(rest)+' ฿/ปี กันนับซ้ำ (เมื่อลงทะเบียนครบทุกเล่มแล้ว ตั้งช่องนี้เป็น 0)');
+  }
+
+  /* ผู้วางแผน + รายได้ */
+  const incomes=[];
+  const salaryM=num('fi_salary');
+  if(salaryM>0) incomes.push({ id:'i1', ico:'💼', name:'เงินเดือน / รายได้หลัก', monthly:salaryM, startAge:age, endAge:Math.max(ra-1,age), growth:3, color:'#C8635A' });
+  else est.push('ลูกค้าไม่ได้กรอกเงินเดือน/รายได้หลัก — ต้องถามก่อนทำแผน');
+  const carrier={ id:'c-primary', name:nm, age, life, retireAge:ra, retireMode:'items', incomes };
+  if(num('cretexp')>0){ carrier.retireExpense=num('cretexp'); carrier.retireMode='custom'; }
+  else est.push('ลูกค้าไม่ได้ระบุเงินใช้หลังเกษียณ — MRI ใช้โหมด "เลือกตามรายการ" จากงบกระแสเงินสดที่กรอก');
+  if(num('fi_pension')>0){ carrier.pensionMonthly=num('fi_pension'); est.push('รายได้หลังเกษียณ '+fmt(num('fi_pension'))+' ฿/เดือน ตามที่ลูกค้าคาด — ยืนยันแหล่งที่มา/ระยะเวลา'); }
+  const HOSP={gov:[5000000,'รพ.รัฐ / ห้องพิเศษ'],mid:[15000000,'รพ.เอกชนทั่วไป'],hi:[25000000,'รพ.เอกชนชั้นนำ']};
+  if(HOSP[V.chosp]) carrier.healthTarget=HOSP[V.chosp][0];
+  const carriers=[carrier];
+
+  /* ผู้พึ่งพิง */
+  const dependents=[]; const eduPlan={}; const eduGoals=[];
+  if(V.cmar==='married'){
+    if(V.spinc==='no'){
+      dependents.push({ id:'d-sp', parent:'c-primary', name:txt('spname')||'คู่ชีวิต', age:num('spage')||age, kind:'spouse', monthly:num('spmon')||0, life:85 });
+    } else if(V.spinc==='yes'){
+      est.push('คู่ชีวิต "'+(txt('spname')||'-')+'" อายุ '+(num('spage')||'-')+' มีรายได้ของตัวเอง — ยังไม่ได้เพิ่มเป็นผู้วางแผนคนที่ 2 ใน MRI (เพิ่มได้ถ้าจะวางแผนร่วมกัน)');
+    }
+  }
+  const nk=parseInt(V.nkids||'0')||0;
+  for(let i=0;i<nk;i++){ const k=KIDS[i]||{}; const kAge=numOf(k.age);
+    const id='d-k'+(i+1);
+    dependents.push({ id, parent:'c-primary', name:(k.name||'').trim()||('บุตรคนที่ '+(i+1)), age:kAge, kind:'child', monthly:numOf(k.mon), endAge:k.upto==='master'?24:22 });
+    const tier=parseInt(k.tier||'1')||0; const plan={pick:{},custom:{}};
+    EDU_LEVELS.forEach(([lvl,yrs,start])=>{
+      if(lvl==='ป.โท' && k.upto!=='master') return;
+      plan.pick[lvl]=tier;
+      const perYear=EDU_FEE[lvl][tier]; const rem=Math.max(0,Math.min(yrs,start+yrs-Math.max(kAge,start)));
+      if(rem<=0) return;
+      eduGoals.push({ id:eduGoalId(id,lvl), name:'ค่าเทอม '+lvl, ico:'🎓', amt:-(perYear*rem), age:Math.round(age+Math.max(0,start-kAge)), eduYears:rem, rank:500+Math.round(age+Math.max(0,start-kAge)), parent:id, split:false, eduAuto:true, eduKid:id });
+    });
+    eduPlan[id]=plan;
+  }
+  if(nk) est.push('ค่าเทอมใช้ตารางมาตรฐาน S41 ตามแนวโรงเรียนที่ลูกค้าเลือก ('+KIDS.slice(0,nk).map(k=>(k.name||'ลูก')+'='+['รัฐ','เอกชน','นานาชาติ'][parseInt(k.tier||'1')||0]).join(', ')+') — ปรับรายชั้นได้ที่หน้าทุนการศึกษาบุตร');
+  const np=parseInt(V.npar||'0')||0;
+  for(let i=0;i<np;i++){ const p=PARENTS[i]||{}; const pa=numOf(p.age)||65;
+    dependents.push({ id:'d-p'+(i+1), parent:'c-primary', name:(p.name||'').trim()||('ผู้ใหญ่ที่ดูแล '+(i+1)), age:pa, kind:'parent', monthly:numOf(p.mon), life:Math.max(85,pa+1) });
+  }
+
+  /* เป้าหมาย */
+  const goals=eduGoals.slice();
+  GOALS.forEach((g,i)=>{ const amt=numOf(g.amt); if(!(amt>0)) return;
+    const yrs=Math.max(0,numOf(g.yrs)); goals.push({ id:Date.now()+i, name:(g.name||'').trim()||'เป้าหมาย', ico:g.ico||'🎯', amt:-amt, age:Math.round(age+yrs), parent:'c-primary', split:false }); });
+
+  /* กรมธรรม์ + คุ้มครอง */
+  const policies=POLICIES.map((p,i)=>({ id:Date.now()+100+i, company:p.company||'', name:(p.name||'').trim(), no:'', saleAge:'', start:'', payUntil:String(p.payUntil||'').trim(), maturity:'', owner:'c-primary',
+    life:numOf(p.life), premium:numOf(p.premium), health:numOf(p.health), accMed:0, hospCash:0, hospCancer:0, cancer:0, ciMid:0, ciSevere:numOf(p.ciSevere), ciCrit:0, care:0, paDeath:0, saving:0, annuity:0, surrender:0 }));
+  const protection={ lifeCov:policies.reduce((t,p)=>t+p.life,0), retireFund:0 };
+  if(HOSP[V.chosp]) protection.hospital=HOSP[V.chosp][1];
+  const roomHave=Math.max(0,...POLICIES.map(p=>numOf(p.room)),num('welfroom'));
+  if(roomHave>0) protection.roomRateHave=roomHave;
+  if(policies.length) est.push('ทะเบียนกรมธรรม์ '+policies.length+' เล่ม กรอกโดยลูกค้าเฉพาะช่องหลัก (เบี้ย/ทุนชีวิต/วงเงินรักษา/โรคร้าย) — เติมช่องอื่นจากรูปตารางความคุ้มครอง');
+  else est.push('ลูกค้าระบุว่าไม่มีกรมธรรม์ (หรือยังไม่ได้กรอก) — ยืนยันอีกครั้ง');
+  if(V.welf==='group') est.push('มีประกันกลุ่มบริษัท: ค่าห้อง '+fmt(num('welfroom'))+' ฿/คืน · วงเงินรักษา '+fmt(num('welfmed'))+' ฿ — ใส่ไว้ที่ค่าห้องที่มีแล้ว ยังไม่ได้ลงทะเบียนกรมธรรม์');
+  est.push('ยังไม่ได้ทำแบบประเมินความเสี่ยง — พอร์ตใน MRI เป็นค่าเริ่มต้น "ปานกลาง" ทำแบบประเมินก่อนคุยแผนลงทุน');
+  if(!filled) est.push('ลูกค้าไม่ได้กรอกตัวเลขงบการเงินเลย');
+
+  const talk={};
+  const JOB={emp:'พนักงานบริษัท',gov:'ราชการ / รัฐวิสาหกิจ',own:'ธุรกิจส่วนตัว',free:'ฟรีแลนซ์',other:'อื่น ๆ'};
+  const FOC={retire:'เกษียณ',protect:'คุ้มครองครอบครัว',debt:'จัดการหนี้',invest:'ลงทุน / ต่อยอด',edu:'ทุนการศึกษาลูก',tax:'ภาษี',all:'ดูภาพรวมทั้งหมด'};
+  if(JOB[V.cjob]) talk['อาชีพ']=JOB[V.cjob];
+  if(FOC[V.cfocus]) talk['อยากให้ช่วยดูเป็นพิเศษ']=FOC[V.cfocus];
+  if(txt('cnote')) talk['เรื่องที่ลูกค้าอยากบอก']=txt('cnote');
+  if(V.welf) talk['สวัสดิการที่ทำงาน']=({none:'ไม่มี',sso:'ประกันสังคมอย่างเดียว',group:'ประกันกลุ่มบริษัท'})[V.welf];
+
+  const visit={
+    source:'S41 Client Form v'+VERSION, visitDate:new Date().toISOString().slice(0,10),
+    advisor:'', advisorRef:REF, filledBy:'client',
+    goalPriority:FOC[V.cfocus]?[FOC[V.cfocus]]:[],
+    budgetMonthly:0, lifeInsuranceSum:protection.lifeCov, educationFundNeeded:0, educationFundPrepared:0,
+    riskProfile:null, gaps:{}, talk, estimates:est,
+    note:'ไฟล์นี้ลูกค้ากรอกเองผ่านแบบฟอร์ม (ไม่ได้เจอตัว) — ตรวจตัวเลขกับลูกค้าก่อนสรุปแผน · ทะเบียนกรมธรรม์กรอกเฉพาะช่องหลัก'
+  };
+  return {
+    stage:'client',
+    app:'S41 Signature 41 Planner', version:'3.8.1', savedAt:new Date().toISOString(),
+    s41:{ clientId:clientId(), name:nm },
+    state:{
+      axisMin:Math.max(age-1,0), axisMax:life+2, snapAge:age, inflation:3,
+      planMode:'combined', splitRatio:50, uiMode:'advance',
+      assume:{ salaryG:3, inf:3, eduInf:5, medInf:8, preRet:5, postRet:3, sdPort:8.9 },
+      portfolio:{ levels:{conservative:3,moderate:5,aggressive:7}, preRetire:'moderate', postRetire:'conservative' },
+      ports:[], carriers, dependents, goals, eduPlan, navLog:[],
+      snap:{ policies, detail, protection },
+      _visit:visit
+    },
+    _visit:visit
+  };
+}
+function clientId(){ if(!V._cid){ V._cid='c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); saveSoon(); } return V._cid; }
+function fileName(){
+  const safe=String(txt('cname')||'ลูกค้าใหม่').replace(/[\\/:*?"<>|]/g,'').replace(/\s+/g,'_').slice(0,40)||'ลูกค้าใหม่';
+  const d=new Date(), p=n=>String(n).padStart(2,'0');
+  return `S41_Client_${safe}_${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}.json`;
+}
+function makeBlob(){ return new Blob([JSON.stringify(buildClientFile(),null,1)],{type:'application/json'}); }
+function setStatus(cls,msg){ const s=$('sendStatus'); if(s) s.innerHTML=`<div class="${cls}">${msg}</div>`; }
+
+function downloadFile(){
+  const name=fileName();
+  try{
+    const url=URL.createObjectURL(makeBlob());
+    const a=document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); },2000);
+    setStatus('note','สั่งบันทึกไฟล์ <b>'+esc(name)+'</b> แล้ว — อยู่ในโฟลเดอร์ "ดาวน์โหลด" (iPhone: แอป Files › ดาวน์โหลด) ส่งไฟล์นี้ให้ที่ปรึกษาตามช่องทางที่คุณสะดวก · ถ้าไม่มีไฟล์ขึ้น แสดงว่าเบราว์เซอร์นี้บล็อกการดาวน์โหลด ให้เปิดลิงก์ใน Safari/Chrome แล้วลองใหม่ (ข้อมูลที่กรอกยังอยู่)');
+  }catch(e){ setStatus('warn','ดาวน์โหลดไม่สำเร็จ: '+esc(e.message)+' — ลองเปิดลิงก์ใน Safari/Chrome'); }
+}
+
+/* ---------- start ---------- */
+loadSaved();
+render();
+</script>
+</body>
+</html>
