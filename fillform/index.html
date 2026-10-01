@@ -31,6 +31,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;pa
 .steps{display:flex;gap:4px;margin-bottom:16px}
 .step{flex:1;height:3px;border-radius:2px;background:var(--gray2);transition:all .4s}
 .step.on{background:var(--gold)} .step.cur{background:var(--navy)}
+.step.skip{background:repeating-linear-gradient(90deg,var(--gray) 0 4px,transparent 4px 8px)}   /* v1.7: หน้าที่ผ่านมาแล้วแต่ยังไม่มีข้อมูล — ไม่ขึ้นสีทองเหมือนหน้าที่กรอกแล้ว */
 
 .card{background:#fff;border:1px solid var(--gray2);border-radius:20px;padding:24px 20px;box-shadow:0 4px 48px rgba(0,35,102,.07);animation:up .4s cubic-bezier(.22,1,.36,1)}
 @keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
@@ -83,14 +84,21 @@ input.txt{width:100%}
 ul.tips{padding-left:18px;font-size:14.5px;margin-top:8px}
 ul.tips li{margin:4px 0}
 .summary{margin-top:10px;font-size:14.5px}
-.summary div{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--gray2)}
-.summary div b{color:var(--navy)}
+.summary div{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid var(--gray2)}
+.summary div span{flex:0 0 auto}
+.summary div b{color:var(--navy);text-align:right}
 .center{text-align:center}
 .two{display:flex;gap:10px;margin-top:14px}
 .two .btn{flex:1;font-size:14px;padding:11px 8px;min-height:46px}
 .ver{font-size:11px;color:var(--gray);text-align:center;margin-top:18px}
 .hidden{display:none!important}
 @media (max-width:380px){ input.money{width:118px} .f label{font-size:14.5px} }
+@media (max-width:340px){ input.money{width:104px} .f{gap:8px} .f label{min-width:0;overflow-wrap:anywhere} header{gap:6px} .step-ind{white-space:normal} }   /* v1.7 (m-14): จอ 320px หน้า "รายจ่ายผ่อน / คงที่" กว้างเกินจอ 2px เพราะป้ายขั้นตอนไม่ยอมตัดบรรทัด */
+.answered{font-size:13px;color:#2b5c47;background:#EAF4EF;border-radius:10px;padding:8px 12px;margin-top:10px}
+.answered a{color:var(--navy)}
+.dflt{font-size:12px;color:#8a6a1f;margin-top:4px}
+.dflt:empty{display:none}
+@media (max-width:420px){ .f.polf{flex-wrap:wrap;row-gap:4px} .f.polf label{flex:1 1 100%} .f.polf .in{margin-left:auto} }   /* v1.7b (AB2-20): การ์ดกรมธรรม์บนจอแคบ — ป้ายเต็มบรรทัด ช่องกรอกขึ้นบรรทัดถัดไป (เดิมป้ายตัด 3–4 บรรทัด) */
 
 /* ── สำเนา PDF (พิมพ์) ── */
 #printArea{display:none}
@@ -118,7 +126,12 @@ ul.tips li{margin:4px 0}
   .pg table.pol th{text-align:right;font-weight:700;color:#7A7A8C;font-size:8pt;padding:0 0 2pt 4pt;border-bottom:1px solid #E5E1D8}
   .pg table.pol th:first-child,.pg table.pol td:first-child{text-align:left;padding-left:0}
   .pg table.pol td{text-align:right;padding:2pt 0 2pt 4pt;font-weight:600}
-  .pg td.u{color:#9B9B9B;font-size:8.5pt;width:14%;padding-left:6pt}
+  .pg td.u{color:#9B9B9B;font-size:8.5pt;width:15%;padding-left:5pt;white-space:nowrap}   /* v1.7: หน่วยในแถวรวมไม่ตัดบรรทัด ("฿/" ขึ้นบรรทัดใหม่) */
+  .pg.flow{page-break-inside:auto}
+  .pg.flow tr{page-break-inside:avoid}
+  .pg .dn{color:#8a6a1f;font-weight:400;font-size:8.5pt}
+  .pbox{border:1px solid #E8D08A;background:#FBF6E6;padding:5pt 7pt;font-size:9pt;margin-bottom:9pt;page-break-inside:avoid}
+  .pbox b{color:#002366}
   .pg .empty{color:#9B9B9B;font-style:italic;font-size:9.5pt}
   .pg h3{margin-top:2pt}
   .pg .tot td{border-top:1px solid #002366;border-bottom:0;font-weight:800;color:#002366}
@@ -141,22 +154,40 @@ ul.tips li{margin:4px 0}
   <div id="inapp" class="banner hidden"></div>
   <div id="resume" class="banner hidden"></div>
   <div class="card" id="screen"></div>
-  <div class="ver">S41 Client Form v1.2 · ข้อมูลถูกเก็บไว้ในเครื่องของคุณเท่านั้น จนกว่าจะกดส่งให้ที่ปรึกษา</div>
+  <div class="ver">S41 Client Form v1.7 · ข้อมูลที่กรอกอยู่ในเครื่องของคุณเท่านั้น ระบบไม่ส่งให้ใคร — คุณเป็นคนส่งไฟล์ให้ที่ปรึกษาเอง</div>
 </div>
 <div class="nav"><div class="row" id="navRow"></div><div class="saved" id="savedMsg"></div></div>
 <div id="printArea"></div>
 
 <script>
 /* ═══════════════════════════════════════════════════════════════
-   S41 Client Form v1.0 — แบบฟอร์มให้ลูกค้ากรอกเอง (กรณีไม่ได้เจอตัว)
-   ผลลัพธ์: ไฟล์ S41_Client_<ชื่อ>_<วันที่>.json  โครงเดียวกับไฟล์ Step 2 (หมอเงิน v2.6.4)
+   S41 Client Form v1.7 — แบบฟอร์มให้ลูกค้ากรอกเอง (กรณีไม่ได้เจอตัว)
+   ผลลัพธ์: ไฟล์ S41_Client_<ชื่อ>_<วันที่>.json  โครงเดียวกับไฟล์ Step 2 (หมอเงิน v2.6.9)
    → ที่ปรึกษากด Import ใน Money MRI ได้ทันที · stage:'client'
+   ───────────────────────────────────────────────────────────────
+   v1.7 (อ้อย 1 ต.ค. 69 — กติกาชุดเดียวกับ MRI v3.9.95 · หมอเงิน v2.6.9)
+   · อายุเกษียณ = ปีสุดท้ายที่ทำงาน: state._retN=1 · เงินเดือน (i1) จบที่อายุเกษียณ · รายได้หลังเกษียณ (i2) เริ่มปีถัดไป + pen:true
+     กรอกอายุเกษียณน้อยกว่าอายุปัจจุบัน → ใช้อายุปัจจุบัน + โน้ต · เท่ากับอายุปัจจุบัน → ใช้ตามที่กรอก
+   · ช่องใหม่ (ตรงกับ 2.1): ใช้เงินถึงอายุ → carrier.life · ชื่อโรงพยาบาล → protection.hospital
+     ต่อเล่ม: ค่ารักษาอุบัติเหตุ/ครั้ง → policies[].accMed + protection.paMedMax · มูลค่าเงินสด → assets.invest.insCash
+     ทุนโรคร้ายรวมทุกเล่ม → protection.ciCov (เดิมอยู่แค่ในทะเบียน)
+   · ดอกเบี้ย / เงินปันผล ถามเป็น "ต่อปี" (ไฟล์เก็บต่อเดือน = ÷12) · ร่างเก่าแปลง ×12 ครั้งเดียว + แจ้งลูกค้า
+   · ข้อความทุกจุดต้องจริง: "ไม่มี" ต้องกดตอบเอง · ค่าตั้งต้นติดป้ายว่าเป็นค่าตั้งต้นทั้งบนจอ สำเนา PDF และโน้ตในไฟล์
+     ไม่บอกว่าบันทึก/ส่งแล้วถ้ายังตรวจไม่ได้ · แนวโรงเรียน/บริษัทประกัน/ไอคอนเป้าหมาย ไม่เลือกให้ล่วงหน้า
+   · ช่องอายุ/จำนวนปี รับเฉพาะจำนวนเต็ม · บันทึกร่างทันทีเมื่อปิดหรือสลับแอป
+   v1.7 รอบแก้ (1 ต.ค. 69 ค่ำ — ผลตรวจ C2 / AB2, อ้อย: "ที่เหลือแก้ตามข้อเสนอมาทั้งหมด") — เลขรุ่นยังเป็น 1.7
+   · ไม่เลือกแนวโรงเรียน → ไม่มีค่าเทอมของลูกคนนั้นในไฟล์ + โน้ต (เหมือน 2.1) · เลือกแนวแต่ไม่เลือก "ส่งเรียนถึง" → ถึง ป.ตรี + โน้ต
+   · ลูกอายุเกินช่วงเรียน → endAge = อายุลูก + โน้ต · ไม่มีรายการรายจ่าย → retireMode 'auto70' (เหมือน 2.1)
+   · ช่วงอายุ/ปีที่ใช้ได้ชุดเดียวกับ 2.1 (อายุ 1–110 · ใช้เงินถึง 2–120 · ลูก 0–60 · เป้าหมาย 0–60 ปี) นอกช่วง = ไม่ได้กรอก + เตือนบนจอ + โน้ต · ไม่ตัด 3 หลักเงียบ ๆ
+   · ใช้เงินถึงอายุ ≤ อายุเกษียณ → จำนวนปีที่ใช้เงินขึ้น "—" (จอ/PDF) เหมือน 2.1
+   · มีร่างค้าง → ต้องเลือก "กรอกต่อของ <ชื่อ>" หรือ "เริ่มใหม่ (ล้างทั้งหมด)" ก่อน · แท็บอื่นกรอกของอีกคน → หยุดบันทึกร่าง
+   · ข้อความ "ร่างยังเก็บอยู่" ตรวจจากที่เก็บจริง · ช่องตัวเลขบอกเมื่อมีตัวอักษรไม่ถูกรับ · แตะปุ่มซ้ำ = ยกเลิก · ลบลูก/ผู้ใหญ่รายคนได้
    ═══════════════════════════════════════════════════════════════ */
-const VERSION='1.2';
+const VERSION='1.7';
 const LOGO_SRC=document.querySelector('.brand img').getAttribute('src');
 const LS_KEY='s41_client_v1';
 const params=new URLSearchParams(location.search);
-const REF=(params.get('ref')||'').slice(0,40);
+let REF=(params.get('ref')||'').slice(0,40);
 
 /* ---------- ค่าที่กรอก ---------- */
 let V={};            /* ค่าทุกช่อง key → string/number */
@@ -167,24 +198,25 @@ let cur=0;
 const UNIT={m:'฿/เดือน',y:'฿/ปี',x:'฿'};
 const MONEY_SCREENS={
   income:{ title:'รายรับ', sub:'รายได้ที่เข้ามาเป็นประจำ — ตัวเลขประมาณได้ ไม่ต้องเป๊ะ', rows:[
-    ['fi_salary','เงินเดือน / รายได้หลัก','m','special.salary','หลังหักภาษี-ประกันสังคมแล้วก็ได้'],
+    ['fi_salary','เงินเดือน / รายได้หลัก','m','special.salary','ยอดก่อนหักภาษีและประกันสังคม (ยอดเต็มตามสลิป)'],   /* v1.4: MRI คิดภาษี/ประกันสังคมจากยอดนี้เอง — เดิมบอกว่า "หลังหักก็ได้" ทำให้ถูกหักซ้ำ */
     ['fi_bonus','โบนัส','y','cashflow.income.bonus'],
     ['fi_rental','รายได้ค่าเช่า','m','cashflow.income.rental'],
-    ['fi_interest','ดอกเบี้ย / เงินปันผล','m','cashflow.income.interest'],
-    ['fi_other','รายได้อื่น ๆ','m','cashflow.income.other','ขายของ ฟรีแลนซ์ ค่าคอม ฯลฯ'],
-    ['fi_pension','รายได้หลังเกษียณที่คาดว่าจะมี','m','special.pension','บำนาญ ประกันสังคม ค่าเช่า — ถ้ายังไม่รู้ ข้ามได้'],
+    ['fi_interest','ดอกเบี้ย / เงินปันผล','y','cashflow.income.interest','รวมทั้งปี'],   /* v1.7 (อ้อย): ถามเป็นต่อปีทั้งสองฟอร์ม — ไฟล์เก็บต่อเดือน (÷12) */
+    ['fi_other','รายได้อื่น ๆ','m','cashflow.income.other','ขายของ ฟรีแลนซ์ ค่าคอม ฯลฯ — เฉพาะส่วนที่ยังไม่ได้รวมในรายได้หลักข้างบน'],
+    ['fi_pension','รายได้หลังเกษียณที่คาดว่าจะมี','m','special.pension','บำนาญ ประกันสังคม — เริ่มได้ปีถัดจากปีสุดท้ายที่ทำงาน · ไม่ต้องรวมค่าเช่า/ดอกเบี้ย/ปันผลที่กรอกในช่องข้างบนแล้ว · ถ้ายังไม่รู้ ข้ามได้'],
   ]},
   fixed:{ title:'รายจ่ายผ่อน / จ่ายคงที่', sub:'รายการที่ต้องจ่ายเท่าเดิมทุกเดือนหรือทุกปี', rows:[
     ['ff_homeLoanPay','ผ่อนบ้าน / คอนโด','m','cashflow.fixed.homeLoanPay'],
     ['ff_carLoanPay','ผ่อนรถ','m','cashflow.fixed.carLoanPay'],
-    ['ff_creditCardPay','ผ่อนบัตรเครดิต / สินเชื่อ','m','cashflow.fixed.creditCardPay','ยอดที่จ่ายต่อเดือน'],
-    ['ff_lifeIns','เบี้ยประกันชีวิต / สุขภาพ รวมทุกเล่ม','y','cashflow.fixed.lifeIns'],
+    ['ff_creditCardPay','ผ่อนบัตรเครดิต / สินเชื่อ','m','cashflow.fixed.creditCardPay','ยอดผ่อนหนี้ต่อเดือน — ไม่รวมของที่รูดแล้วจ่ายเต็มทุกเดือน (ส่วนนั้นอยู่ในหน้ารายจ่ายใช้ชีวิต)'],
+    ['ff_lifeIns','เบี้ยประกันชีวิต / สุขภาพ รวมทุกเล่ม','y','cashflow.fixed.lifeIns','ถ้ากรอกเบี้ยรายเล่มในหน้าประกันด้วย ระบบจะไม่นับซ้ำ'],
     ['ff_carIns','เบี้ยประกันรถ + พ.ร.บ.','y','cashflow.fixed.carIns'],
     ['ff_condoFee','ค่าส่วนกลาง / หมู่บ้าน','m','cashflow.fixed.condoFee'],
     ['ff_socialSec','ประกันสังคม','m','cashflow.fixed.socialSec','พนักงานบริษัทส่วนใหญ่ 750'],
     ['ff_pvdContrib','เงินสะสมกองทุนสำรองเลี้ยงชีพ (PVD)','m','cashflow.fixed.pvdContrib','เฉพาะส่วนที่หักจากเงินเดือนเรา'],
   ]},
-  vary:{ title:'รายจ่ายใช้ชีวิต', sub:'ค่าใช้จ่ายทั่วไปของครอบครัว — ประมาณจากเดือนปกติ', rows:[
+  /* v1.7 (M-03): บอกให้ครบว่ายอดไหนกรอกไปแล้วในหน้าอื่น — MRI บวกทุกหน้าเข้าด้วยกัน */
+  vary:{ title:'รายจ่ายใช้ชีวิต', sub:'ค่าใช้จ่ายทั่วไปของครอบครัว — ไม่ต้องรวมยอดที่กรอกไปแล้วในหน้าอื่น: ค่าเลี้ยงดูลูก เงินดูแลคู่ชีวิต เงินส่งพ่อแม่ (หน้าครอบครัว) · ค่าผ่อนและเบี้ยประกัน (หน้ารายจ่ายผ่อน) · ค่าเทอมลูก (ระบบคิดจากแนวโรงเรียน) · ดูหน่วยท้ายแต่ละช่อง (ต่อเดือน / ต่อปี)', rows:[
     ['fv_food','ค่าอาหาร','m','cashflow.var.food'],
     ['fv_utility','ค่าน้ำ ค่าไฟ อินเทอร์เน็ต','m','cashflow.var.utility'],
     ['fv_phone','ค่าโทรศัพท์','m','cashflow.var.phone'],
@@ -197,11 +229,11 @@ const MONEY_SCREENS={
     ['fv_otherPersonal','ค่าใช้จ่ายส่วนตัวอื่น ๆ','m','cashflow.var.otherPersonal'],
     ['fv_living','ค่าใช้จ่ายอื่นที่ไม่เข้าหมวดข้างบน','m','cashflow.var.living'],
   ]},
-  save:{ title:'เงินออม / ลงทุนต่อเดือน', sub:'เงินที่แบ่งเก็บเป็นประจำ (ไม่ใช่ยอดสะสม — ยอดสะสมอยู่หน้าถัดไป)', rows:[
-    ['fs_normal','เงินออมทั่วไป','m','cashflow.savings.normal','ฝาก / ซื้อกองทุน / หุ้น ที่ทำเป็นประจำ'],
-    ['fs_retire','เงินออมเพื่อวัยเกษียณ','m','cashflow.savings.retire','ไม่รวม PVD ที่หักจากเงินเดือน'],
-    ['fs_rmf','RMF / SSF','y','cashflow.savings.rmf'],
-    ['fs_tesg','Thai ESG','y','cashflow.savings.tesg'],
+  save:{ title:'เงินออม / ลงทุนเป็นประจำ', sub:'ดูหน่วยท้ายแต่ละช่อง (ต่อเดือน / ต่อปี) · เงินที่แบ่งเก็บเป็นประจำ (ไม่ใช่ยอดสะสม — ยอดสะสมอยู่หน้าถัดไป)', rows:[
+    ['fs_normal','เงินออมทั่วไป','m','cashflow.savings.normal','ฝาก / ซื้อกองทุน / หุ้น ที่ทำเป็นประจำ — ไม่รวม RMF / SSF / Thai ESG ที่มีช่องข้างล่าง'],
+    ['fs_retire','เงินออมเพื่อวัยเกษียณ','m','cashflow.savings.retire','ไม่รวม PVD ที่หักจากเงินเดือน และไม่รวม RMF / SSF ที่มีช่องข้างล่าง'],
+    ['fs_rmf','เงินออม RMF / SSF','y','cashflow.savings.rmf'],   /* v1.4: ชื่อเดียวกับ 2.1 และ Step 3 */
+    ['fs_tesg','เงินออม Thai ESG','y','cashflow.savings.tesg'],
   ]},
   assets:{ title:'ทรัพย์สินที่มีวันนี้', sub:'ยอดคงเหลือหรือมูลค่าโดยประมาณ ณ วันนี้', rows:[
     ['fa_savings','บัญชีออมทรัพย์ (รวมทุกธนาคาร)','x','assets.liquid.savings'],
@@ -209,12 +241,13 @@ const MONEY_SCREENS={
     ['fa_moneyFund','กองทุนตลาดเงิน / ตราสารหนี้ระยะสั้น','x','assets.liquid.moneyFund'],
     ['fa_bond','พันธบัตร / หุ้นกู้','x','assets.invest.bond'],
     ['fa_stock','หุ้น','x','assets.invest.stock'],
-    ['fa_mutualFund','กองทุนรวม (ไม่รวม RMF)','x','assets.invest.mutualFund'],
+    ['fa_mutualFund','กองทุนรวม (ไม่รวม RMF)','x','assets.invest.mutualFund','ไม่รวม SSF / Thai ESG และกองทุนตลาดเงิน ที่มีช่องของตัวเอง'],
     ['fa_rmf','RMF / SSF / Thai ESG สะสม','x','assets.invest.rmf'],
     ['fa_pvd','กองทุนสำรองเลี้ยงชีพ (PVD) สะสม','x','assets.invest.pvd','ดูในแอปกองทุน หรือประมาณได้'],
     ['fa_gold','ทองคำ','x','assets.invest.gold'],
     ['fa_car','รถยนต์ (ราคาขายต่อวันนี้)','x','assets.personal.car'],
     ['fa_property','บ้าน / คอนโด / ที่ดิน (ราคาตลาดวันนี้)','x','assets.personal.property'],
+    ['fa_jewelry','เครื่องประดับ','x','assets.personal.jewelry','ราคาขายต่อโดยประมาณ'],   /* v1.4 (อ้อย): มีทุกเครื่องมือ */
   ]},
   liab:{ title:'หนี้คงค้าง', sub:'ยอดหนี้ที่เหลือต้องจ่าย ณ วันนี้ (ไม่ใช่ยอดผ่อนต่อเดือน)', rows:[
     ['fl_creditCard','บัตรเครดิตคงค้าง','x','liab.short.creditCard'],
@@ -250,42 +283,245 @@ const numOf=v=>{ const n=Number(String(v==null?'':v).replace(/[^\d.]/g,'')); ret
 const num=id=>numOf(V[id]);
 const txt=id=>String(V[id]==null?'':V[id]).trim();
 function moneyInput(id,ph){ return `<input type="text" class="money" inputmode="numeric" id="${id}" value="${esc(V[id]||'')}" placeholder="${ph||'0'}" oninput="onMoney(this)" autocomplete="off">`; }
-function onMoney(el){ const raw=el.value.replace(/[^\d]/g,''); el.value=raw?Number(raw).toLocaleString('en-US'):''; V[el.id]=el.value; saveSoon(); }
+/* v1.6: ช่องเงินรับเฉพาะจำนวนเต็มบาท — เดิมลบทุกอย่างที่ไม่ใช่ตัวเลขทิ้ง: พิมพ์ "45000.00" ได้ 4,500,000 · วาง "1,234,567.89" ได้ 123,456,789 · เลขไทยหายทั้งช่อง
+   ตอนนี้: จุดทศนิยมและเลขหลังจุดไม่ถูกรับ (พิมพ์) · เลขที่วาง/เติมมาพร้อมทศนิยมถูกปัดเป็นบาท · เลขไทยแปลงเป็นเลขอารบิก */
+function thaiDigits(s){ return String(s==null?'':s).replace(/[๐-๙]/g,d=>'๐๑๒๓๔๕๖๗๘๙'.indexOf(d)); }
+function moneyClean(v){
+  let t=thaiDigits(v).replace(/[,\s฿]/g,'');
+  const m=t.match(/^(\d+)\.(\d*)$/);
+  if(m) t=m[1];   /* v1.7b (AB2-13): ตัดเศษสตางค์ทิ้งเหมือนตอนพิมพ์ (เดิมวาง "1500.50" ได้ 1,501 แต่พิมพ์ได้ 1,500) */
+  return t.replace(/[^\d]/g,'').replace(/^0+(?=\d)/,'').slice(0,12);   /* สูงสุด 12 หลัก (เดิมรับ 20 หลัก ตัวเลขเพี้ยนเพราะเกินความละเอียด) */
+}
+/* v1.7: ช่องอายุ / จำนวนปี รับเฉพาะจำนวนเต็ม 0–999 — เดิมเป็น type=number: "35.5" ส่งอายุ 35.5 · "-35" กลายเป็น 35 · "1e2" กลายเป็น 12 · ปีเป้าหมาย "-2" กลายเป็น 2
+   ตอนนี้สิ่งที่เห็นในช่อง = สิ่งที่ลงไฟล์เสมอ (เลขที่วางมาพร้อมทศนิยมถูกตัดเหลือจำนวนเต็ม) */
+/* v1.7b (AB2-15): เดิมตัดเหลือ 3 หลักเงียบ ๆ ("2569" → 256) — ตอนนี้รับได้ 4 หลัก แล้วตรวจช่วงที่ใช้ได้ (ชุดเดียวกับหมอเงิน 2.1) และบอกบนจอเมื่อใช้ไม่ได้ */
+function intClean(v){ let t=thaiDigits(v).replace(/[,\s]/g,''); const m=t.match(/^(\d+)\.\d*$/); if(m) t=m[1]; return t.replace(/[^\d]/g,'').slice(0,4); }
+const intOf=v=>{ const t=intClean(v); return t?parseInt(t,10):0; };
+const blank=v=>String(v==null?'':v).trim()==='';
+/* ช่วงที่ใช้ได้ (ตรงกับหมอเงิน 2.1): อายุ / อายุเกษียณ 1–110 · ใช้เงินถึงอายุ 2–120 · อายุลูก 0–60 · อายุผู้ใหญ่/คู่ชีวิต 1–110 · เป้าหมายอีก 0–60 ปี */
+const RANGE={age:[1,110,'อายุ'],ret:[1,110,'อายุ'],life:[2,120,'อายุ'],kid:[0,60,'อายุลูก'],adult:[1,110,'อายุ'],yrs:[0,60,'จำนวนปี']};
+const inRange=(kind,n)=>n>=RANGE[kind][0]&&n<=RANGE[kind][1];
+/* ค่าที่กรอกไว้แต่อยู่นอกช่วง → ข้อความเตือนบนจอ ('' = ว่างหรือใช้ได้) */
+function rangeMsg(kind,v){ if(blank(intClean(v))) return ''; const n=intOf(v); if(inRange(kind,n)) return '';
+  const R=RANGE[kind]; return '⚠ '+n+' ใช้ไม่ได้ — '+R[2]+'ต้องอยู่ระหว่าง '+R[0]+'–'+R[1]+(kind==='yrs'?' ปี':'')+' · ระบบจะไม่ใช้ค่านี้ (ถือว่ายังไม่ได้กรอก) และบอกที่ปรึกษา'; }
+function intInput(id,ph){ return `<input type="text" class="num int" inputmode="numeric" maxlength="4" id="${id}" value="${esc(V[id]||'')}" placeholder="${ph||''}" oninput="onInt(this)" autocomplete="off">`; }
+/* v1.7b (AB2-13/14): ตัวอักษรที่ไม่ใช่ตัวเลข (เช่น "-" "e" ".") ถูกตัดทิ้ง — เดิมตัดเงียบ ๆ ("-35" → 35 · "1e2" → 12) ตอนนี้บอกใต้ช่อง */
+function flashHint(el,msg){ try{ const row=el.closest('.f')||el.parentNode; let h=row.nextElementSibling;
+  if(!h||!h.classList.contains('fh')){ h=document.createElement('div'); h.className='dflt fh'; row.parentNode.insertBefore(h,row.nextSibling); }
+  h.textContent=msg; clearTimeout(h._t); h._t=setTimeout(()=>{ if(h.parentNode) h.remove(); },5000); }catch(e){} }
+function badChars(raw,money){ const t=thaiDigits(raw).replace(/[,\s฿]/g,''); return money?/[^\d.]/.test(t):/[^\d]/.test(t.replace(/^(\d+)\.\d*$/,'$1')); }
+function cleanInt(el){ const raw=el.value; el.value=intClean(raw);
+  if(badChars(raw,false)) flashHint(el,'ช่องนี้รับเฉพาะตัวเลขจำนวนเต็ม — ตัวอักษรอื่น (เช่น - . e) ไม่ถูกรับ ตรวจตัวเลขในช่องอีกครั้ง');
+  return el.value; }
+function onInt(el){ cleanInt(el); V[el.id]=el.value; saveSoon(); updateYears(); const m=el.dataset.rg&&$(el.dataset.rg); if(m) m.textContent=rangeMsg(el.dataset.kind,el.value); }
+/* ช่องอายุ/ปีในรายการ (ลูก ผู้ใหญ่ เป้าหมาย) — ตัดอักษร + เตือนนอกช่วงใต้ช่อง */
+function onIntItem(el,arr,i,key,kind){ cleanInt(el); arr[i][key]=el.value; saveSoon();
+  const m=$(el.dataset.rg); if(m) m.textContent=rangeMsg(kind,el.value)||itemNote(arr,i,kind); }
+/* ข้อความใต้ช่องอายุลูก เมื่ออายุเกินช่วงเรียน (C2-02) */
+function itemNote(arr,i,kind){ if(kind!=='kid'||arr!==KIDS) return ''; const k=KIDS[i]; if(!k||blank(k.age)) return ''; const a=intOf(k.age); if(!inRange('kid',a)) return ''; const e=kidEnd(k);
+  return a>e?'อายุเกินช่วงเรียนที่ตั้งไว้ (ถึง '+e+' ปี) — ไม่มีค่าเทอม · ค่าเลี้ยงดูที่กรอกจะนับแค่ปีนี้ ที่ปรึกษาจะถามว่ายังดูแลต่อถึงเมื่อไร':''; }
+/* v1.7b (AB2-13): หลังกด "." ตัวเลขที่พิมพ์ต่อ (ส่วนสตางค์) ไม่ถูกรับ — เดิมไม่บอกอะไร และยังบล็อกต่อแม้ย้ายเคอร์เซอร์ไปที่อื่นแล้ว
+   ตอนนี้บอกใต้ช่องทุกครั้ง และเลิกบล็อกเมื่อย้ายเคอร์เซอร์ / คลิก / ลบ */
+const isNumField=el=>!!(el&&el.classList&&(el.classList.contains('money')||el.classList.contains('int')));
+document.addEventListener('beforeinput',e=>{ const el=e.target; if(!isNumField(el)) return;
+  if(e.inputType==='insertText' && e.data){
+    if(e.data==='.'){ e.preventDefault(); el._dec=true; flashHint(el,el.classList.contains('money')?'ช่องนี้รับเฉพาะจำนวนเต็มบาท — ไม่ต้องใส่จุดหรือสตางค์ (ตัวเลขหลังจุดจะไม่ถูกรับ)':'ช่องนี้รับเฉพาะจำนวนเต็ม — ไม่ต้องใส่จุด (ตัวเลขหลังจุดจะไม่ถูกรับ)'); return; }
+    if(el._dec && /^[\d๐-๙]$/.test(e.data)){ e.preventDefault(); flashHint(el,'ตัวเลขหลังจุดไม่ถูกรับ (รับเฉพาะจำนวนเต็ม) — ถ้าจะพิมพ์ต่อ ลบหรือคลิกในช่องก่อน'); return; }
+  } else if(/^delete/.test(e.inputType||'')) el._dec=false;
+});
+document.addEventListener('keydown',e=>{ if(isNumField(e.target) && /^(Arrow|Home|End)/.test(e.key)) e.target._dec=false; });
+document.addEventListener('mousedown',e=>{ if(isNumField(e.target)) e.target._dec=false; });
+document.addEventListener('focusout',e=>{ const el=e.target; if(isNumField(el)) el._dec=false; if(saveT) saveNow(); });
+function cleanMoney(el){ const rawIn=el.value; const raw=moneyClean(rawIn); el.value=raw?Number(raw).toLocaleString('en-US'):'';
+  if(badChars(rawIn,true)) flashHint(el,'ช่องนี้รับเฉพาะตัวเลข (จำนวนเต็มบาท) — เครื่องหมายหรือตัวอักษรอื่น (เช่น - e) ไม่ถูกรับ ตรวจตัวเลขในช่องอีกครั้ง');
+  else if(/\.\d*[1-9]/.test(thaiDigits(rawIn))) flashHint(el,'ช่องนี้รับเฉพาะจำนวนเต็มบาท — ตัดสตางค์ (ตัวเลขหลังจุด) ออกแล้ว');
+  else if(thaiDigits(rawIn).replace(/\..*$/,'').replace(/[^\d]/g,'').replace(/^0+(?=\d)/,'').length>12) flashHint(el,'ตัวเลขยาวเกิน 12 หลัก — รับไว้แค่ 12 หลักแรก ตรวจอีกครั้ง');
+  return el.value; }
+function onMoneyItem(el,arr,i,key){ cleanMoney(el); arr[i][key]=el.value; saveSoon(); }
+function onMoney(el){ cleanMoney(el); V[el.id]=el.value;
+  /* v1.7: พิมพ์ยอดในหน้าที่เคยตอบว่า "ไม่มี" → คำตอบ "ไม่มี" ถูกยกเลิก (ไม่ให้สองอย่างขัดกัน) */
+  const S=SCREENS[cur]; if(S&&S.money&&V['none_'+S.money]==='1'&&numOf(el.value)>0){ delete V['none_'+S.money]; const a=$('ans_'+S.money); if(a) a.outerHTML=skipBtn(S.money); }
+  saveSoon(); updateTot(); }
+/* v1.3: ป้าย "กรอกแล้ว N รายการ" ใต้หน้าตัวเลข อัปเดตตามที่พิมพ์ (เดิมค้างว่า "ยังไม่ได้กรอก" จนกว่าจะเปลี่ยนหน้า)
+   v1.7: สามสถานะ — กรอกแล้ว N รายการ / ตอบว่าไม่มี (กดปุ่มเอง) / ยังไม่มีรายการที่มียอดเงิน */
+const moneyCount=k=>MONEY_SCREENS[k].rows.filter(r=>num(r[0])>0).length;
+function totText(k){ const n=moneyCount(k); return n>0?'กรอกแล้ว '+n+' รายการ':(V['none_'+k]==='1'?'ตอบแล้วว่าไม่มีรายการในหน้านี้':'ยังไม่มีรายการที่มียอดเงินในหน้านี้'); }
+function updateTot(){ const S=SCREENS[cur]; if(!S||!S.money) return; const el=$('tot_'+S.money); if(!el) return; el.textContent=totText(S.money); }
+
+/* v1.7: อายุของแผน — ที่เดียว ใช้ทั้งไฟล์ หน้าจอ และสำเนา PDF (ตัวเลขจำนวนปีจึงตรงกันทุกที่)
+   อายุเกษียณ (ra) = ปีสุดท้ายที่ทำงาน · ปีออม = ra − อายุ + 1 (รวมปีนี้) · ปีที่ใช้เงินเกษียณ = life − ra (อายุ ra+1 … life)
+   ไม่ได้กรอก: อายุ 35 · เกษียณ 60 · สิ้นสุดแผน 85 = ค่าตั้งต้นของเครื่องมือ (why บอกว่าเป็นค่าตั้งต้นหรือถูกปรับ) */
+/* v1.7b (C2-05): ค่าที่อยู่นอกช่วง (อายุ/อายุเกษียณ 1–110 · ใช้เงินถึง 2–120) ถือว่าไม่ได้กรอก ใช้ค่าตั้งต้น + บอกบนจอและในไฟล์ (เหมือนหมอเงิน 2.1 retAges)
+   ageBad/raBad/lifeBad = ตัวเลขที่กรอกแต่ใช้ไม่ได้ (0 = ไม่มี) */
+function planAges(){
+  const ageIn=intOf(V.cage), raIn=intOf(V.cret), lifeIn=intOf(V.clife);
+  const ageBad=(!blank(intClean(V.cage))&&!inRange('age',ageIn))?ageIn:null, raBad=(!blank(intClean(V.cret))&&!inRange('ret',raIn))?raIn:null, lifeBad=(!blank(intClean(V.clife))&&!inRange('life',lifeIn))?lifeIn:null;
+  const ageT=ageBad===null?ageIn:0, raT=raBad===null?raIn:0, lifeT=lifeBad===null?lifeIn:0;
+  const age=ageT>0?ageT:35;
+  let ra, raWhy='';
+  if(raT>0){ ra=raT; if(raT<age){ ra=age; raWhy='typedLow'; } }
+  else { ra=60; raWhy='default'; if(60<age){ ra=age; raWhy='defaultLow'; } }
+  let life, lifeWhy='';
+  if(lifeT>0){ life=lifeT; if(lifeT<=ra){ life=ra+1; lifeWhy='typedLow'; } }
+  else { life=85; lifeWhy='default'; if(85<=ra){ life=ra+1; lifeWhy='defaultLow'; } }
+  /* v1.7b (C2-06): อายุที่ใช้เงินถึงไม่เกินอายุเกษียณ → ไฟล์ตั้ง life = ra+1 ตามกติกา แต่จำนวนปีที่ใช้เงินบนจอ/PDF ขึ้น "—" (ไม่นับ 1 ปีที่ระบบตั้งเอง) เหมือน 2.1 */
+  const lifeAdj=(lifeWhy==='typedLow'||lifeWhy==='defaultLow');
+  return {ageT,raT,lifeT,ageBad,raBad,lifeBad,age,ra,life,raWhy,lifeWhy,lifeAdj,saveYrs:ra-age+1,useYrs:life-ra};
+}
+/* จำนวนปีที่ใช้เงินหลังเกษียณ สำหรับแสดงผล — "—" เมื่ออายุขัดกัน */
+function useYrsTxt(A){ return A.lifeAdj?'—':String(A.useYrs); }
+function yearsText(){
+  const A=planAges();
+  const n=[];
+  let s;
+  const bad=[]; if(A.ageBad!==null) bad.push('อายุปัจจุบันที่กรอก ('+A.ageBad+') ใช้ไม่ได้ — ต้องอยู่ระหว่าง 1–110 ปี');
+  if(A.raBad!==null) bad.push('อายุที่ทำงานปีสุดท้ายที่กรอก ('+A.raBad+') ใช้ไม่ได้ — ต้องอยู่ระหว่าง 1–110 ปี');
+  if(A.lifeBad!==null) bad.push('อายุที่ใช้เงินถึงที่กรอก ('+A.lifeBad+') ใช้ไม่ได้ — ต้องอยู่ระหว่าง 2–120 ปี');
+  const badH=bad.length?'<span class="dflt" style="color:var(--red)">⚠ '+bad.join('<br>⚠ ')+' · ระบบจะไม่ใช้ค่านี้ (ถือว่ายังไม่ได้กรอก)<br></span>':'';
+  if(!A.ageT){ s=badH+'กรอกอายุปัจจุบันก่อน ระบบจึงจะนับจำนวนปีให้ได้';
+    if(!A.raT) n.push('ช่อง "ทำงานถึงอายุ" '+(A.raBad!==null?'ใช้ไม่ได้':'ว่าง')+' — ระบบจะใช้ 60 ซึ่งเป็นค่าตั้งต้น และบอกที่ปรึกษาว่าเป็นค่าตั้งต้น');
+    else if(A.raWhy==='typedLow') n.push('อายุที่ทำงานปีสุดท้ายที่กรอก ('+A.raT+') น้อยกว่าอายุตั้งต้น 35 ที่ระบบใช้ตอนยังไม่ได้กรอกอายุ — กรอกอายุปัจจุบันก่อน');
+    if(!A.lifeT) n.push('ช่อง "ใช้เงินถึงอายุ" '+(A.lifeBad!==null?'ใช้ไม่ได้':'ว่าง')+' — ระบบจะใช้ 85 ซึ่งเป็นค่าตั้งต้น และบอกที่ปรึกษาว่าเป็นค่าตั้งต้น');
+    return s+(n.length?'<span class="dflt"><br>'+n.join('<br>')+'</span>':''); }
+  s=badH+'ออมได้อีก <b>'+A.saveYrs+' ปี</b> (อายุ '+A.age+(A.ra>A.age?'–'+A.ra:'')+' รวมปีนี้) · '+(A.lifeAdj?'ใช้เงินหลังเกษียณ <b>— ปี</b> ('+(A.lifeWhy==='typedLow'?'อายุที่กรอกขัดกัน':'ยังไม่ได้กรอกอายุที่ใช้เงินถึง')+')':'ใช้เงินหลังเกษียณ <b>'+A.useYrs+' ปี</b> (อายุ '+(A.ra+1)+(A.life>A.ra+1?'–'+A.life:'')+')');
+  if(A.ageT<15) n.push('อายุ '+A.ageT+' ปี — ตรวจว่าพิมพ์ถูกหรือไม่');
+  if(A.raWhy==='default') n.push((A.raBad!==null?'อายุที่ทำงานปีสุดท้ายใช้ไม่ได้':'ยังไม่ได้กรอกอายุที่ทำงานปีสุดท้าย')+' — ใช้ 60 ซึ่งเป็นค่าตั้งต้น และบอกที่ปรึกษาว่าเป็นค่าตั้งต้น');
+  if(A.raWhy==='defaultLow') n.push((A.raBad!==null?'อายุที่ทำงานปีสุดท้ายใช้ไม่ได้':'ยังไม่ได้กรอกอายุที่ทำงานปีสุดท้าย')+' และค่าตั้งต้น 60 น้อยกว่าอายุปัจจุบัน — ใช้ '+A.age+' (ปีนี้เป็นปีสุดท้ายที่ทำงาน) ไปก่อน');
+  if(A.raWhy==='typedLow') n.push('อายุที่กรอก ('+A.raT+') น้อยกว่าอายุปัจจุบัน — ไฟล์จะใช้ '+A.age+' (ปีนี้เป็นปีสุดท้ายที่ทำงาน) และแจ้งที่ปรึกษาให้ยืนยัน');
+  if(A.lifeWhy==='default') n.push((A.lifeBad!==null?'อายุที่ใช้เงินถึงใช้ไม่ได้':'ยังไม่ได้กรอกอายุที่ใช้เงินถึง')+' — ใช้ 85 ซึ่งเป็นค่าตั้งต้น และบอกที่ปรึกษาว่าเป็นค่าตั้งต้น');
+  if(A.lifeWhy==='defaultLow') n.push((A.lifeBad!==null?'อายุที่ใช้เงินถึงใช้ไม่ได้':'ยังไม่ได้กรอกอายุที่ใช้เงินถึง')+' และค่าตั้งต้น 85 ไม่เกินอายุเกษียณ — ไฟล์ตั้งเป็น '+A.life+' ไปก่อน (ยังไม่นับจำนวนปีที่ใช้เงิน) กรุณากรอกอายุที่ใช้เงินถึง');
+  if(A.lifeWhy==='typedLow') n.push('อายุที่ใช้เงินถึงที่กรอก ('+A.lifeT+') ไม่เกินอายุเกษียณ ('+A.ra+') — ไฟล์จะใช้ '+A.life+' และแจ้งที่ปรึกษาให้ยืนยัน (ยังไม่นับจำนวนปีที่ใช้เงิน)');
+  return s+(n.length?'<span class="dflt"><br>'+n.join('<br>')+'</span>':'');
+}
+function updateYears(){ const el=$('yrHint'); if(el) el.innerHTML=yearsText(); }
 function onVal(el){ V[el.id]=el.value; saveSoon(); }
-function chipSet(key,val,el){ V[key]=val; el.parentNode.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c===el)); saveSoon(); if(el.dataset.rerender) render(); }
-function chips(key,opts,rerender){ return `<div class="chips">${opts.map(([v,l])=>`<button type="button" class="chip ${V[key]===v?'on':''}" ${rerender?'data-rerender="1"':''} onclick="chipSet('${key}','${v}',this)">${l}</button>`).join('')}</div>`; }
+/* v1.7b (AB2-17): แตะปุ่มที่เลือกอยู่ซ้ำ = ยกเลิกการเลือก (กลับเป็น "ไม่ได้ตอบ") — เดิมกดผิดแล้วล้างไม่ได้ */
+function chipSet(key,val,el){ const off=V[key]===val; if(off) delete V[key]; else V[key]=val;
+  el.parentNode.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',!off&&c===el)); saveSoon(); if(el.dataset.rerender) render(true); }
+function chips(key,opts,rerender){ return `<div class="chips">${opts.map(([v,l])=>`<button type="button" class="chip ${V[key]===v?'on':''}" ${rerender?'data-rerender="1"':''} title="แตะซ้ำเพื่อยกเลิก" onclick="chipSet('${key}','${v}',this)">${l}</button>`).join('')}</div>`; }
 
 /* ---------- บันทึกอัตโนมัติ (ในเครื่องลูกค้าเท่านั้น) ---------- */
 let saveT=null;
 function saveSoon(){ clearTimeout(saveT); saveT=setTimeout(saveNow,300); }
+/* v1.7: LAST_SAVE_OK = ผลการบันทึกร่างครั้งล่าสุด (null = ยังไม่เคยลอง) — ข้อความที่บอกว่า "ข้อมูลยังอยู่" อ้างได้เฉพาะเมื่อเป็น true
+   ตรวจโดยอ่านกลับแล้วเทียบกับที่เขียน (เดิมดูแค่ว่ามีอะไรอยู่ในที่เก็บ — ร่างเก่าที่ค้างอยู่ก็ผ่าน) */
+let LAST_SAVE_OK=null;
+/* v1.7b (AB2-04 / NEW_RULES §F): GATE = มีร่างของลูกค้าที่บันทึกไว้ และผู้เปิดยังไม่ได้เลือก "กรอกต่อ" หรือ "เริ่มใหม่" — ระหว่างนี้ไม่แสดงช่องกรอกและไม่เขียนทับร่าง
+   FOREIGN = แท็บอื่นบันทึกร่างของลูกค้าอีกคนทับที่เก็บเดียวกัน — หน้านี้หยุดบันทึกร่าง ไม่ให้ข้อมูลสองคนปนกัน */
+let GATE=null, FOREIGN=false;
 function saveNow(){
+  clearTimeout(saveT); saveT=null;
+  if(GATE) return;
+  if(FOREIGN){ LAST_SAVE_OK=false; $('savedMsg').textContent='หยุดบันทึกร่างแล้ว — มีแท็บอื่นกรอกข้อมูลของอีกคน (ดูข้อความด้านบน)'; return; }
+  if(!V._cid && draftHasContent()) V._cid='c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);   /* รหัสลูกค้าของร่างนี้ — ใช้แยกร่างของคนละคน */
   try{
-    localStorage.setItem(LS_KEY, JSON.stringify({v:VERSION,at:Date.now(),cur,V,KIDS,PARENTS,POLICIES,GOALS,ref:REF}));
-    const back=localStorage.getItem(LS_KEY);
-    $('savedMsg').textContent = back ? 'บันทึกในเครื่องแล้ว '+new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}) : 'บันทึกในเครื่องไม่สำเร็จ';
-  }catch(e){ $('savedMsg').textContent='เบราว์เซอร์นี้บันทึกอัตโนมัติไม่ได้ — กรอกให้จบในครั้งเดียว'; }
+    const payload=JSON.stringify({v:VERSION,at:Date.now(),cur,V,KIDS,PARENTS,POLICIES,GOALS,ref:REF});
+    localStorage.setItem(LS_KEY, payload);
+    LAST_SAVE_OK = localStorage.getItem(LS_KEY)===payload;
+    $('savedMsg').textContent = LAST_SAVE_OK ? 'บันทึกร่างในเครื่องนี้แล้ว '+new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}) : 'บันทึกร่างในเครื่องไม่สำเร็จ — กรอกให้จบในครั้งเดียว';
+  }catch(e){ LAST_SAVE_OK=false; $('savedMsg').textContent='เบราว์เซอร์นี้บันทึกอัตโนมัติไม่ได้ — กรอกให้จบในครั้งเดียว'; }
+}
+/* v1.7 (m-12): ปิดหน้า / สลับแอป ภายใน 0.3 วินาทีหลังพิมพ์ ค่าล่าสุดเคยหาย — บันทึกทันทีเมื่อหน้าถูกซ่อนหรือปิด */
+window.addEventListener('pagehide',()=>{ if(saveT) saveNow(); });
+/* v1.7b: อีกแท็บเขียนร่างของลูกค้าคนอื่น (รหัสลูกค้าต่างกัน) หรือล้างร่าง → หน้านี้หยุดบันทึก และบอกผู้ใช้ */
+window.addEventListener('storage',e=>{ if(e.key!==LS_KEY || GATE) return;
+  let other=null; try{ other=e.newValue?JSON.parse(e.newValue):null; }catch(x){}
+  const oc=other&&other.V&&other.V._cid;
+  if(e.newValue===null ? draftHasContent() : (oc && V._cid && oc!==V._cid)){
+    FOREIGN=true; clearTimeout(saveT); saveT=null; LAST_SAVE_OK=false;
+    const who=other&&other.V&&String(other.V.cname||'').trim();
+    $('resume').innerHTML='<b>หยุดบันทึกร่างในหน้านี้แล้ว</b> — '+(e.newValue===null?'มีแท็บอื่นล้างข้อมูลที่บันทึกไว้':'มีแท็บอื่นกำลังกรอกข้อมูลของ'+(who?' <b>'+esc(who)+'</b>':'อีกคน'))+' · ข้อมูลบนหน้านี้ยังอยู่บนจอ แต่จะไม่ถูกบันทึกเป็นร่าง — ถ้าจะใช้ข้อมูลหน้านี้ ให้กดบันทึกไฟล์ .json จากหน้าตรวจก่อนส่งก่อนปิด';
+    $('resume').classList.remove('hidden'); $('savedMsg').textContent='หยุดบันทึกร่างแล้ว'; }
+});
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden' && saveT) saveNow(); });
+/* เบราว์เซอร์นี้เก็บร่างได้ไหม — ลองเขียน/อ่านจริง (ใช้กับข้อความหน้าแรก) */
+function storageWorks(){ try{ const k=LS_KEY+'_t', v=String(Date.now()); localStorage.setItem(k,v); const ok=localStorage.getItem(k)===v; localStorage.removeItem(k); return ok; }catch(e){ return false; } }
+/* v1.7b (AB2-08): "ร่างยังเก็บอยู่" จริงหรือไม่ — บันทึกครั้งล่าสุดสำเร็จ หรือ (ยังไม่ได้บันทึกหลังเปิดหน้า) ร่างในที่เก็บตรงกับข้อมูลบนจอทุกช่อง
+   เดิมดูแค่ LAST_SAVE_OK ซึ่งเป็น null หลังเปิดหน้าใหม่ → ขึ้นว่า "เก็บร่างไม่ได้" ทั้งที่เพิ่งเปิดร่างมาจากที่เก็บ */
+function draftKept(){
+  if(FOREIGN) return false;
+  if(LAST_SAVE_OK!==null && !saveT) return LAST_SAVE_OK===true;
+  try{ const d=JSON.parse(localStorage.getItem(LS_KEY)||'null'); return !!d && JSON.stringify([d.V,d.KIDS,d.PARENTS,d.POLICIES,d.GOALS])===JSON.stringify([V,KIDS,PARENTS,POLICIES,GOALS]); }catch(e){ return false; }
+}
+function draftHasContent(){
+  return Object.keys(V).some(k=>k.charAt(0)!=='_' && !blank(V[k])) || [KIDS,PARENTS,POLICIES,GOALS].some(a=>Array.isArray(a)&&a.length>0);
+}
+/* v1.7: ร่างที่บันทึกด้วยรุ่นก่อน 1.7 — แปลงครั้งเดียวตอนเปิด */
+function migrateDraft(d){
+  const ver=String(d.v||'0').split('.').map(n=>parseInt(n,10)||0);
+  if(!(ver[0]<1 || (ver[0]===1 && (ver[1]||0)<7))) return;
+  /* ดอกเบี้ย / เงินปันผล เดิมกรอกเป็นต่อเดือน → ช่องใหม่เป็นต่อปี: คูณ 12 แล้วแจ้งลูกค้าให้ตรวจ (เก็บยอดเดิมไว้ใน _intOldM) */
+  const im=numOf(V.fi_interest);
+  if(im>0 && blank(V._intOldM)){ V._intOldM=String(im); V.fi_interest=(im*12).toLocaleString('en-US'); }
+  /* ช่องอายุ / จำนวนปี: ตัดให้เป็นจำนวนเต็มแบบเดียวกับช่องใหม่ */
+  ['cage','cret','spage'].forEach(k=>{ if(!blank(V[k])) V[k]=intClean(V[k]); });
+  /* แนวโรงเรียน / ระดับที่ส่งเรียน: รุ่นเดิมเลือก "เอกชน · ป.ตรี" ให้ล่วงหน้า จึงแยกไม่ออกว่าลูกค้าเลือกเองหรือไม่
+     ค่าที่ไม่ใช่ค่าตั้งต้น = ลูกค้าเลือกเองแน่ (true) · ค่าที่ตรงกับค่าตั้งต้น = 'old' (ไม่ทราบ — ให้ลูกค้าแตะยืนยัน ไฟล์เขียนว่าไม่ทราบ) */
+  KIDS.forEach(k=>{ if(!k) return; if(!blank(k.age)) k.age=intClean(k.age); if(k.tierSet==null) k.tierSet=(String(k.tier)!=='1')?true:'preset'; if(k.tierSet==='old'){ k.tierSet='preset'; k.tier='1'; } if(k.uptoSet==null) k.uptoSet=(k.upto==='master')?true:'old'; });
+  /* บริษัทประกัน: รุ่นเดิมเลือก AIA ให้ล่วงหน้าเมื่อกดเพิ่มกรมธรรม์ — เล่มที่ยังเป็น AIA ติดธงไว้ให้ที่ปรึกษายืนยัน */
+  POLICIES.forEach(q=>{ if(q && q.company==='AIA' && q.coOld==null) q.coOld=true; });
+  PARENTS.forEach(p=>{ if(p && !blank(p.age)) p.age=intClean(p.age); });
+  GOALS.forEach(g=>{ if(g && !blank(g.yrs)) g.yrs=intClean(g.yrs); });
 }
 function loadSaved(){
   try{ const raw=localStorage.getItem(LS_KEY); if(!raw) return false;
     const d=JSON.parse(raw); if(!d||!d.V) return false;
+    if(!REF && d.ref) REF=String(d.ref).slice(0,40);   /* v1.6: เปิดร่างต่อโดยไม่มี ?ref= ในลิงก์ ก็ยังส่งรหัสที่ปรึกษาเดิม */
     V=d.V||{}; KIDS=d.KIDS||[]; PARENTS=d.PARENTS||[]; POLICIES=d.POLICIES||[]; GOALS=d.GOALS||[]; cur=Math.min(d.cur||0,SCREENS.length-1);
-    const when=new Date(d.at||Date.now());
-    $('resume').innerHTML=`กรอกต่อจากที่ค้างไว้ (${when.toLocaleDateString('th-TH')} ${when.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'})}) &nbsp;·&nbsp; <a href="#" onclick="clearAll();return false" style="color:var(--carrier)">เริ่มใหม่</a>`;
-    $('resume').classList.remove('hidden');
+    try{ migrateDraft(d); }catch(e){}
+    /* v1.7 (m-12): ป้าย "กรอกต่อจากที่ค้างไว้" ขึ้นเฉพาะเมื่อมีข้อมูลที่กรอกไว้จริง (เดิมขึ้นแม้ยังไม่ได้พิมพ์อะไร) */
+    if(!draftHasContent()) return true;
+    if(!V._cid) V._cid='c'+Number(d.at||0).toString(36)+'o';   /* ร่างรุ่นเก่าไม่มีรหัสลูกค้า — ตั้งจากเวลาที่บันทึก (ทุกแท็บได้รหัสเดียวกัน) */
+    /* v1.7b (AB2-04): เดิมเปิดร่างต่อให้อัตโนมัติ (ไปหน้าที่ค้าง พร้อมตัวเลขของคนเดิม) — คนที่สองที่เปิดลิงก์เดียวกันพิมพ์ทับแล้วได้ไฟล์ที่ปนข้อมูลสองคน
+       ตอนนี้ต้องเลือกก่อน: กรอกต่อของคนนี้ / เริ่มใหม่ (ล้างทั้งหมด) — ระหว่างนั้นไม่มีช่องให้พิมพ์ */
+    GATE={at:d.at||0, cur};
     return true;
   }catch(e){ return false; }
 }
-function clearAll(){ if(!confirm('ล้างข้อมูลที่กรอกไว้ทั้งหมด แล้วเริ่มใหม่?')) return; try{ localStorage.removeItem(LS_KEY); }catch(e){} V={};KIDS=[];PARENTS=[];POLICIES=[];GOALS=[];cur=0; $('resume').classList.add('hidden'); render(); }
+function gateWhen(){ const w=new Date(GATE.at||Date.now()); return w.toLocaleDateString('th-TH')+' '+w.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}); }
+function renderGate(){
+  const nm=txt('cname'), A=planAges();
+  return `<h2>มีข้อมูลที่กรอกค้างไว้ในเครื่องนี้</h2>
+  <div class="sub">บันทึกไว้เมื่อ ${esc(gateWhen())}</div>
+  <div class="summary"><div><span>ข้อมูลของ</span><b>${nm?esc(nm):'ไม่ได้กรอกชื่อ'}${A.ageT?' · อายุ '+A.ageT+' ปี':''}</b></div></div>
+  <div class="note">ถ้า<b>เป็นข้อมูลของคุณ</b> กด "กรอกต่อ" · ถ้า<b>ไม่ใช่ของคุณ</b> (เช่น ใช้เครื่องร่วมกับคนอื่น) กด "เริ่มใหม่" — ข้อมูลเดิมทั้งหมดจะถูกล้าง เพื่อไม่ให้ข้อมูลสองคนปนกันในไฟล์เดียว</div>
+  ${!blank(V._intOldM)&&V._intAck!=='1'?`<div class="note">${intNoteText()}</div>`:''}
+  <div class="two"><button class="btn primary" id="gateGo" onclick="gateContinue()">กรอกต่อ${nm?' ของ '+esc(nm):''}</button></div>
+  <div class="two"><button class="btn ghost" id="gateNew" onclick="gateNew()">ไม่ใช่ของฉัน — ล้างทั้งหมดแล้วเริ่มใหม่</button></div>`;
+}
+let RESUMED=false;
+function gateContinue(){ cur=GATE.cur; GATE=null; RESUMED=true; saveNow(); render(); }
+function gateNew(){ const g=GATE; GATE=null; if(!clearAll()){ GATE=g; render(); } }
+/* แถบด้านบนหลังเลือก "กรอกต่อ" — บอกว่ากำลังกรอกของใคร + ทางเริ่มใหม่ (ไม่แสดงในหน้าตรวจก่อนส่ง ซึ่งมีลิงก์ล้างข้อมูลของตัวเองอยู่แล้ว) */
+function showResumeBar(){ if(FOREIGN) return; if(!draftHasContent()){ $('resume').classList.add('hidden'); return; }
+  const nm=txt('cname');
+  $('resume').innerHTML=`กำลังกรอกต่อ${nm?'ของ <b>'+esc(nm)+'</b>':''} &nbsp;·&nbsp; <a href="#" onclick="clearAll();return false" style="color:var(--navy)">ไม่ใช่ของฉัน / เริ่มใหม่</a>`
+    +(!blank(V._intOldM)&&V._intAck!=='1'?`<span id="intNoteR"><br>${intNoteText()}</span>`:'');
+  $('resume').classList.toggle('hidden', SCREENS[cur].id==='done'); }
+/* ข้อความแจ้งว่าหน่วยของช่องดอกเบี้ย/ปันผลเปลี่ยน และยอดเดิมถูกแปลงแล้ว (โชว์จนกว่าลูกค้าจะกด "รับทราบ") */
+function intNoteText(){ const o=numOf(V._intOldM); return `<b>หน่วยของช่อง "ดอกเบี้ย / เงินปันผล" เปลี่ยนจากต่อเดือนเป็นต่อปี</b> — ยอดที่เคยกรอก ${fmt(o)} ฿/เดือน ระบบคูณ 12 เป็น ${fmt(o*12)} ฿/ปี ให้แล้ว กรุณาตรวจช่องนี้ในหน้ารายรับ`; }
+function ackInt(){ V._intAck='1'; saveNow(); ['intNote','intNoteR'].forEach(id=>{ const a=$(id); if(a) a.remove(); }); }
+function clearAll(){ const nm=txt('cname'); if(!confirm('ล้างข้อมูลที่กรอกไว้ทั้งหมด'+(nm?' (ของ '+nm+')':'')+' แล้วเริ่มใหม่?')) return false; clearTimeout(saveT); saveT=null; LAST_SAVE_OK=null; RESUMED=false;
+  /* v1.7b: ถ้าแท็บอื่นกำลังใช้ที่เก็บร่างกับลูกค้าอีกคน (FOREIGN) ไม่ลบร่างของแท็บนั้น และหน้านี้ยังไม่บันทึกร่างต่อ */
+  let gone=true; if(FOREIGN) gone='foreign'; else { try{ localStorage.removeItem(LS_KEY); gone=(localStorage.getItem(LS_KEY)===null); }catch(e){ gone=null; } }
+  V={};KIDS=[];PARENTS=[];POLICIES=[];GOALS=[];cur=0; $('resume').classList.add('hidden');
+  /* v1.7: บอกตามจริงถ้าลบร่างในที่เก็บของเบราว์เซอร์ไม่ได้ หรือตรวจไม่ได้ (หน้าจอว่างแล้ว แต่ร่างเก่าอาจกลับมาเมื่อเปิดใหม่) */
+  try{ $('savedMsg').textContent=gone===true?'':gone==='foreign'?'ล้างหน้าจอแล้ว · ไม่ได้ลบร่างของแท็บอื่น และหน้านี้ยังไม่บันทึกร่าง (มีแท็บอื่นใช้อยู่)':gone===false?'ล้างหน้าจอแล้ว แต่ลบร่างที่เก็บในเบราว์เซอร์นี้ไม่สำเร็จ':'ล้างหน้าจอแล้ว · เบราว์เซอร์นี้ไม่ให้เข้าถึงที่เก็บร่าง จึงตรวจไม่ได้ว่ามีร่างเก่าค้างอยู่หรือไม่'; }catch(e){} render(); return true; }
 
 /* ---------- ตรวจว่าอยู่ใน browser ในแอป (LINE/Facebook) ---------- */
 function inAppBrowser(){ const ua=navigator.userAgent||''; return /Line\//i.test(ua)?'LINE':/FBAN|FBAV|FB_IAB/i.test(ua)?'Facebook':/Instagram/i.test(ua)?'Instagram':''; }
 
 /* ═══════════════ RENDER ═══════════════ */
-function render(){
+function render(keepScroll){
+  /* v1.6: กดตัวเลือก/เพิ่ม/ลบรายการ ไม่เด้งกลับบนสุดของหน้า (เดิมเด้งทุกครั้ง — บนมือถือปุ่มที่เพิ่งกดหลุดจอ) · เปลี่ยนหน้าเท่านั้นที่ขึ้นบนสุด */
+  const _y=window.scrollY||0;
+  if(GATE){ $('stepInd').innerHTML=''; $('steps').innerHTML=''; $('screen').innerHTML=renderGate(); $('navRow').innerHTML=''; $('resume').classList.add('hidden'); $('inapp').classList.add('hidden'); window.scrollTo({top:0,behavior:'instant'}); return; }
   const S=SCREENS[cur]; const box=$('screen'); let h='';
   const stepNo=cur>=1&&cur<=N_STEPS?cur:0;
-  $('stepInd').innerHTML = stepNo?`<b>${stepNo}</b> / ${N_STEPS} · ${S.n}`:(cur===0?'':'เสร็จแล้ว');
-  $('steps').innerHTML = Array.from({length:N_STEPS},(_,i)=>`<div class="step ${i+1<cur?'on':i+1===cur?'cur':''}"></div>`).join('');
+  /* v1.7: หน้าสุดท้ายเดิมขึ้น "เสร็จแล้ว" ทั้งที่ยังไม่ได้บันทึกไฟล์ → "ตรวจก่อนส่ง" · แถบขั้นตอน: สีทองเฉพาะหน้าที่มีข้อมูลหรือตอบว่าไม่มี หน้าที่ผ่านมาเฉย ๆ เป็นเส้นประ */
+  $('stepInd').innerHTML = stepNo?`<b>${stepNo}</b> / ${N_STEPS} · ${S.n}`:(cur===0?'':'ตรวจก่อนส่ง');
+  $('steps').innerHTML = Array.from({length:N_STEPS},(_,i)=>{ const st=scrState(SCREENS[i+1]);
+    return `<div class="step ${i+1===cur?'cur':i+1<cur?(st==='empty'?'skip':'on'):''}" title="${esc(SCREENS[i+1].n)}: ${st==='filled'?'มีข้อมูลแล้ว':st==='none'?'ตอบว่าไม่มี':'ยังไม่มีข้อมูล'}"></div>`; }).join('');
 
   if(S.id==='intro') h=renderIntro();
   else if(S.id==='me') h=renderMe();
@@ -299,26 +535,58 @@ function render(){
   /* nav */
   let nav='';
   if(S.id==='intro') nav=`<button class="btn primary" onclick="go(1)">เริ่มกรอก</button>`;
-  else if(S.id==='done') nav=`<button class="btn ghost" onclick="go(-1)">ย้อนกลับ</button><button class="btn primary" onclick="downloadFile()">บันทึกไฟล์ .json ส่งให้ที่ปรึกษา</button>`;
+  else if(S.id==='done') nav=`<button class="btn ghost" onclick="go(-1)">ย้อนกลับ</button><button class="btn primary" onclick="downloadFile()">บันทึกไฟล์ .json ไว้ส่งให้ที่ปรึกษา</button>`;   /* v1.7: ปุ่มนี้บันทึกไฟล์ลงเครื่อง ไม่ได้ส่งให้ใคร */
   else nav=`<button class="btn ghost" onclick="go(-1)">ย้อนกลับ</button><button class="btn primary" onclick="go(1)">${cur===N_STEPS?'ไปหน้าสรุป':'ถัดไป'}</button>`;
   $('navRow').innerHTML=nav;
-  window.scrollTo({top:0,behavior:'instant'});
+  if(RESUMED) showResumeBar();
+  window.scrollTo({top:(keepScroll?_y:0),behavior:'instant'});
   const ia=inAppBrowser();
-  if(ia && S.id==='done'){ $('inapp').innerHTML=`<b>คุณกำลังเปิดจากแอป ${ia}</b> — การบันทึกไฟล์อาจไม่ทำงาน ให้กดเมนู ⋯ มุมขวาบน แล้วเลือก "เปิดในเบราว์เซอร์" (Safari/Chrome) ข้อมูลที่กรอกไว้จะยังอยู่`; $('inapp').classList.remove('hidden'); }
+  /* v1.6: เตือนตั้งแต่หน้าแรก และไม่สัญญาว่าข้อมูลจะตามไปเบราว์เซอร์อื่น (ข้อมูลที่กรอกเก็บอยู่ในเบราว์เซอร์ที่ใช้กรอกเท่านั้น) */
+  if(ia && (S.id==='intro'||S.id==='done')){ $('inapp').innerHTML=(S.id==='intro'
+      ? `<b>คุณกำลังเปิดจากแอป ${ia}</b> — การบันทึกไฟล์ในแอปนี้อาจไม่ทำงาน แนะนำให้เปิดในเบราว์เซอร์ก่อนเริ่มกรอก: กดเมนู ⋯ มุมขวาบน แล้วเลือก "เปิดในเบราว์เซอร์" (Safari/Chrome) · ข้อมูลที่กรอกในแอปนี้จะไม่ตามไปเบราว์เซอร์อื่น`
+      : `<b>คุณกำลังเปิดจากแอป ${ia}</b> — การบันทึกไฟล์อาจไม่ทำงาน ลองกดบันทึกก่อน ถ้าไม่ได้ไฟล์ ${draftKept()?'ร่างที่กรอกยังเก็บอยู่ในแอปนี้ แต่จะไม่ตามไปเบราว์เซอร์อื่น':(storageWorks()&&!FOREIGN?'ร่างที่กรอกล่าสุดยังไม่ได้ถูกเก็บในแอปนี้ — อย่าปิดหน้านี้':'แอปนี้เก็บร่างที่กรอกไม่ได้ — อย่าปิดหน้านี้')} — แจ้งที่ปรึกษาเพื่อหาทางส่งข้อมูล`);   /* v1.7: บอกว่า "ยังอยู่" เฉพาะเมื่อบันทึกร่างครั้งล่าสุดสำเร็จจริง */
+    $('inapp').classList.remove('hidden'); }
   else $('inapp').classList.add('hidden');
 }
 function go(d){ cur=Math.max(0,Math.min(SCREENS.length-1,cur+d)); saveNow(); render(); }
-function skipScreen(rows){ rows.forEach(r=>{ V[r[0]]=''; }); go(1); }
+/* v1.3: ถ้าหน้านี้มีตัวเลขกรอกไว้แล้ว ถามก่อนล้าง — เดิมกด "ไม่มีรายการ — ข้ามไป" แล้วตัวเลขที่กรอกไว้หายเงียบ ๆ */
+/* v1.7: ปุ่มนี้เดิมทำงานเหมือน "ถัดไป" ทุกอย่าง (ซ้ำกัน) และไฟล์แยกไม่ออกว่า "ไม่มี" หรือ "ข้าม"
+   ตอนนี้ = คำตอบ "ไม่มีรายการในหน้านี้" ที่ถูกบันทึกจริง (V.none_<หน้า>) → หน้าสรุป สำเนา PDF และโน้ตในไฟล์บอกได้ว่าลูกค้าตอบเอง
+   ส่วน "ถัดไป" = ไปต่อโดยไม่ได้ตอบ (ถ้าหน้าว่าง ไฟล์จะบอกว่า "ไม่ได้กรอก") */
+function skipScreen(key){
+  const rows=MONEY_SCREENS[key].rows;
+  const n=rows.filter(r=>num(r[0])>0).length;
+  if(n>0 && !confirm('หน้านี้มีตัวเลขที่กรอกไว้แล้ว '+n+' รายการ\n\nกด OK = ล้างตัวเลขในหน้านี้ แล้วบันทึกว่า "ไม่มี"\nกด Cancel = เก็บตัวเลขไว้ (แล้วกด "ถัดไป" แทน)')) return;
+  rows.forEach(r=>{ V[r[0]]=''; }); V['none_'+key]='1'; go(1); }
+const skipBtn=key=>`<button class="btn soft" onclick="skipScreen('${key}')">ไม่มีรายการในหน้านี้ — บันทึกว่า "ไม่มี" แล้วไปต่อ</button>`;
+function unNone(key){ delete V['none_'+key]; saveNow(); render(true); }
+function noIns(){ POLICIES=POLICIES.filter(polFilled); if(POLICIES.length) { render(true); return; } V.none_ins='1'; go(1); }
+function addPolicy(){ delete V.none_ins; POLICIES.push({company:'',name:'',premium:'',payUntil:'',life:'',health:'',room:'',ciSevere:'',accMed:'',cash:''}); saveSoon(); render(true); }
+/* สถานะของแต่ละหน้า: 'filled' = มีข้อมูลที่ลูกค้ากรอก/เลือก · 'none' = ลูกค้ากดตอบว่าไม่มี · 'empty' = ยังไม่มีอะไร (ใช้กับแถบขั้นตอน หน้าสรุป สำเนา PDF) */
+function scrState(S){
+  if(!S) return 'empty';
+  if(S.money) return moneyCount(S.money)>0?'filled':(V['none_'+S.money]==='1'?'none':'empty');
+  if(S.id==='me') return ['cname','cage','cret','clife','cretexp','chosp','chospname','cjob'].some(k=>!blank(V[k]))?'filled':'empty';
+  if(S.id==='family') return ['cmar','nkids','npar'].some(k=>!blank(V[k]))?'filled':'empty';
+  if(S.id==='ins') return (POLICIES.some(polFilled)||!blank(V.welf))?'filled':(V.none_ins==='1'?'none':'empty');
+  if(S.id==='goals') return (GOALS.some(goalTouched)||!blank(V.cfocus)||!blank(V.cnote))?'filled':'empty';
+  return 'empty';
+}
+const goalTouched=g=>!!g && (!blank(g.name)||!blank(g.amt)||!blank(g.yrs)||!blank(g.ico));
 
 function renderIntro(){
+  /* v1.7: ข้อความเรื่องบันทึกอัตโนมัติ ขึ้นตามผลทดสอบจริงของเบราว์เซอร์นี้ (เดิมบอกว่าบันทึกได้เสมอ) และบอกว่าร่างอยู่กับเบราว์เซอร์/เครื่องที่ใช้กรอกเท่านั้น
+     "คุณจะได้ไฟล์ 2 แบบ" → "มีปุ่มให้บันทึก 2 อย่าง" (ระบบสั่งบันทึกได้ แต่ตรวจไม่ได้ว่าเครื่องบันทึกสำเร็จ) */
+  const sv=storageWorks();
   return `<h1>แบบฟอร์มข้อมูลวางแผนการเงิน</h1>
   <div class="sub">สำหรับจัดทำ Money MRI — แผนการเงินส่วนตัวของคุณ</div>
   <ul class="tips">
     <li>มี <b>${N_STEPS} หน้า</b> ใช้เวลาประมาณ 10–15 นาที</li>
-    <li><b>ทุกช่องข้ามได้</b> — ไม่รู้ ไม่มี หรือไม่สะดวกบอก ปล่อยว่างไว้ ที่ปรึกษาจะถามเพิ่มทีหลัง</li>
+    <li><b>ทุกช่องข้ามได้</b> — ไม่รู้ หรือไม่สะดวกบอก ปล่อยว่างไว้ ที่ปรึกษาจะถามเพิ่มทีหลัง · ถ้า<b>ไม่มี</b>จริง ๆ กดปุ่ม "ไม่มี" ของหน้านั้น จะได้ไม่ต้องถามซ้ำ</li>
     <li>ตัวเลข<b>ประมาณได้</b> ไม่ต้องเป๊ะ</li>
-    <li>ระบบ<b>บันทึกอัตโนมัติในเครื่องคุณ</b> ปิดแล้วกลับมากรอกต่อได้จากลิงก์เดิม</li>
-    <li><b>ไม่มีการส่งข้อมูลออกจากเครื่องคุณ</b> — หน้าสุดท้ายคุณจะได้ไฟล์ 2 แบบ: ไฟล์ข้อมูล (.json) ที่คุณเลือกส่งให้ที่ปรึกษาเอง และสำเนา PDF ไว้เก็บเอง</li>
+    ${sv?`<li>ระบบ<b>บันทึกร่างอัตโนมัติในเบราว์เซอร์นี้ของเครื่องคุณ</b> ปิดแล้วกลับมากรอกต่อได้ เมื่อเปิดลิงก์เดิมด้วยเบราว์เซอร์เดิมบนเครื่องเดิม</li>`
+        :`<li><b>เบราว์เซอร์นี้บันทึกร่างอัตโนมัติไม่ได้</b> — ต้องกรอกให้จบในครั้งเดียว (หรือเปิดลิงก์ใน Safari / Chrome แบบปกติ)</li>`}
+    <li><b>ระบบไม่ส่งข้อมูลออกจากเครื่องคุณ</b> — หน้าสุดท้ายมีปุ่มให้บันทึก 2 อย่าง: ไฟล์ข้อมูล (.json) ที่คุณเป็นคนส่งให้ที่ปรึกษาเอง และสำเนา PDF ไว้เก็บเอง</li>
   </ul>
   <div class="note">ถ้ามี<b>ยอดในแอปธนาคาร / กองทุน / เล่มประกัน</b>อยู่ใกล้มือจะกรอกได้เร็วขึ้น แต่ไม่จำเป็น</div>`;
 }
@@ -326,10 +594,13 @@ function renderIntro(){
 function renderMe(){
   return `<h2>ข้อมูลตัวเอง</h2><div class="sub">พื้นฐานที่ใช้วางแกนเวลาของแผน</div>
   <div class="f stack"><label>ชื่อ-นามสกุล (หรือชื่อเล่น)</label><div class="in"><input type="text" class="txt" id="cname" value="${esc(V.cname||'')}" oninput="onVal(this)" placeholder="เช่น สมชาย ใจดี"></div></div>
-  <div class="f"><label>อายุปัจจุบัน</label><div class="in"><input type="number" class="num" id="cage" inputmode="numeric" value="${esc(V.cage||'')}" oninput="onVal(this)" placeholder="35"><span class="unit">ปี</span></div></div>
-  <div class="f"><label>อยากเกษียณตอนอายุ<small>ไม่แน่ใจ ใส่ 60</small></label><div class="in"><input type="number" class="num" id="cret" inputmode="numeric" value="${esc(V.cret||'')}" oninput="onVal(this)" placeholder="60"><span class="unit">ปี</span></div></div>
-  <div class="f"><label>หลังเกษียณอยากมีเงินใช้เดือนละ<small>คิดเป็นค่าเงินวันนี้ · ไม่แน่ใจ ข้ามได้ ระบบจะประมาณจากรายจ่ายให้</small></label><div class="in">${moneyInput('cretexp','ข้ามได้')}<span class="unit">฿/เดือน</span></div></div>
-  <div class="sec"><div class="sec-h">ถ้าป่วยหนัก อยากรักษาที่</div>${chips('chosp',[['gov','รพ.รัฐ'],['mid','รพ.เอกชนทั่วไป'],['hi','รพ.เอกชนชั้นนำ']])}</div>
+  <div class="f"><label>อายุปัจจุบัน</label><div class="in">${intInput('cage','')}<span class="unit">ปี</span></div></div>
+  <div class="f"><label>อยากทำงานถึงอายุเท่าไร<small>ปีสุดท้ายที่ทำงาน — เริ่มใช้เงินเกษียณปีถัดไป · ไม่แน่ใจ เว้นว่างได้</small></label><div class="in">${intInput('cret','')}<span class="unit">ปี</span></div></div>
+  <div class="f"><label>คิดว่าจะใช้เงินถึงอายุเท่าไร<small>แผนจะดูว่าเงินพอใช้ถึงอายุนี้ไหม · ไม่แน่ใจ เว้นว่างได้</small></label><div class="in">${intInput('clife','')}<span class="unit">ปี</span></div></div>
+  <div class="hint" id="yrHint">${yearsText()}</div>
+  <div class="f"><label>หลังเกษียณอยากมีเงินใช้เดือนละ<small>คิดเป็นค่าเงินวันนี้ · ไม่แน่ใจ ข้ามได้ — ที่ปรึกษาจะประมาณจากรายจ่ายที่กรอกในหน้าถัด ๆ ไป</small></label><div class="in">${moneyInput('cretexp','ข้ามได้')}<span class="unit">฿/เดือน</span></div></div>
+  <div class="sec"><div class="sec-h">ถ้าป่วยหนัก อยากรักษาที่</div>${chips('chosp',[['gov','รพ.รัฐ'],['mid','เอกชนกลาง'],['hi','เอกชนหรู']])}
+    <div class="f stack" style="margin-top:8px"><label>ชื่อโรงพยาบาลที่อยากใช้<small>ถ้ามีในใจ · ไม่ทราบ ข้ามได้</small></label><div class="in"><input type="text" class="txt" id="chospname" maxlength="60" value="${esc(V.chospname||'')}" oninput="onVal(this)" placeholder="เช่น รพ.ใกล้บ้าน"></div></div></div>
   <div class="sec"><div class="sec-h">อาชีพ</div>${chips('cjob',[['emp','พนักงานบริษัท'],['gov','ราชการ / รัฐวิสาหกิจ'],['own','ธุรกิจส่วนตัว'],['free','ฟรีแลนซ์'],['other','อื่น ๆ']])}</div>`;
 }
 
@@ -340,111 +611,201 @@ function renderFamily(){
   if(mar==='married'){
     h+=`<div class="sub-card"><div class="t">คู่ชีวิต</div>
       <div class="f"><label>ชื่อ</label><div class="in"><input type="text" class="txt" style="width:150px" id="spname" value="${esc(V.spname||'')}" oninput="onVal(this)" placeholder="ชื่อ"></div></div>
-      <div class="f"><label>อายุ</label><div class="in"><input type="number" class="num" id="spage" inputmode="numeric" value="${esc(V.spage||'')}" oninput="onVal(this)"><span class="unit">ปี</span></div></div>
+      <div class="f"><label>อายุ</label><div class="in">${intInput('spage','').replace('<input ','<input data-rg="rg_spage" data-kind="adult" ')}<span class="unit">ปี</span></div></div><div class="dflt" id="rg_spage">${rangeMsg('adult',V.spage)}</div>
       <div class="f stack"><label>คู่ชีวิตมีรายได้ของตัวเองไหม</label>${chips('spinc',[['yes','มี'],['no','ไม่มี / พึ่งพารายได้เรา']],true)}</div>
-      ${V.spinc==='no'?`<div class="f"><label>เราดูแลค่าใช้จ่ายให้เดือนละ<small>ส่วนของคู่ชีวิตเท่านั้น</small></label><div class="in">${moneyInput('spmon')}<span class="unit">฿/เดือน</span></div></div>`:''}
+      ${V.spinc==='no'?`<div class="f"><label>เราดูแลค่าใช้จ่ายให้เดือนละ<small>ส่วนของคู่ชีวิตเท่านั้น · ยอดนี้ไม่ต้องใส่ซ้ำในหน้ารายจ่าย</small></label><div class="in">${moneyInput('spmon')}<span class="unit">฿/เดือน</span></div></div>`:''}
     </div>`;
   }
   h+=`<div class="sec"><div class="sec-h">ลูก</div>${chips('nkids',[['0','ไม่มี'],['1','1 คน'],['2','2 คน'],['3','3 คน'],['4','4 คน']],true)}</div>`;
   const nk=parseInt(V.nkids||'0')||0;
-  while(KIDS.length<nk) KIDS.push({name:'',age:'',tier:'1',upto:'bachelor',mon:''});
+  /* v1.7: แนวโรงเรียน / ระดับที่ส่งเรียน ไม่เลือกให้ล่วงหน้า (เดิม "เอกชน · ป.ตรี" ติดสีเหมือนลูกค้าเลือกเอง และลงไฟล์ว่า "ลูกค้าเลือก")
+     ถ้าไม่เลือก ไฟล์ใช้ เอกชน · ป.ตรี เป็นค่าตั้งต้น พร้อมโน้ตว่าเป็นค่าตั้งต้น (tierSet / uptoSet = ลูกค้ากดเลือกเอง) */
+  /* v1.7c (อ้อย 1 ต.ค. 23:02): ลูกใหม่ เลือก "เอกชน" ไว้ให้ก่อน (tierSet='preset') ลูกค้าแตะเปลี่ยน/ยกเลิกได้ · ไฟล์บอกว่าเป็นค่าที่ฟอร์มเลือกให้ */
+  while(KIDS.length<nk) KIDS.push({name:'',age:'',tier:'1',upto:'bachelor',mon:'',tierSet:'preset',uptoSet:false});
+  /* v1.7b (C2-01): ไม่เลือกแนวโรงเรียน → ไฟล์ไม่ใส่ค่าเทอมของลูกคนนั้น (เหมือนหมอเงิน 2.1) — เดิมใช้ "เอกชน" เป็นค่าตั้งต้น ซึ่งเป็นตัวเลขที่ลูกค้าไม่ได้บอก
+     (AB2-18): ปุ่ม "ลบ" ต่อคน — เดิมลดได้แค่จำนวน (ลบได้เฉพาะคนสุดท้าย) */
   for(let i=0;i<nk;i++){ const k=KIDS[i];
-    h+=`<div class="sub-card"><div class="t">ลูกคนที่ ${i+1}</div>
+    h+=`<div class="sub-card"><div class="t">ลูกคนที่ ${i+1}<button onclick="removeKid(${i})">ลบ</button></div>
       <div class="f"><label>ชื่อเล่น</label><div class="in"><input type="text" class="txt" style="width:150px" value="${esc(k.name)}" oninput="KIDS[${i}].name=this.value;saveSoon()"></div></div>
-      <div class="f"><label>อายุ</label><div class="in"><input type="number" class="num" inputmode="numeric" value="${esc(k.age)}" oninput="KIDS[${i}].age=this.value;saveSoon()"><span class="unit">ปี</span></div></div>
+      <div class="f"><label>อายุ<small>ยังไม่ถึง 1 ขวบ ใส่ 0</small></label><div class="in"><input type="text" class="num int" inputmode="numeric" maxlength="4" value="${esc(k.age)}" data-rg="rg_k${i}" oninput="onIntItem(this,KIDS,${i},'age','kid')"><span class="unit">ปี</span></div></div><div class="dflt" id="rg_k${i}">${rangeMsg('kid',k.age)||itemNote(KIDS,i,'kid')}</div>
       <div class="f stack"><label>แนวโรงเรียนที่ตั้งใจ<small>ใช้ตารางค่าเทอมมาตรฐานของ S41 ที่ปรึกษาปรับได้ทีหลัง</small></label>
-        <div class="chips">${[['0','รัฐ'],['1','เอกชน'],['2','นานาชาติ']].map(([v,l])=>`<button type="button" class="chip ${k.tier===v?'on':''}" onclick="KIDS[${i}].tier='${v}';saveSoon();render()">${l}</button>`).join('')}</div></div>
+        <div class="chips">${[['0','รัฐ'],['1','เอกชน'],['2','นานาชาติ']].map(([v,l])=>`<button type="button" class="chip ${tierOn(k)&&k.tier===v?'on':''}" onclick="kidChip(${i},'tier','${v}')">${l}</button>`).join('')}</div>
+        ${k.tierSet===true?'':k.tierSet==='preset'?`<div class="dflt">ฟอร์มเลือก "เอกชน" ไว้ให้ก่อน — แตะเปลี่ยนได้ถ้าตั้งใจเป็นแบบอื่น</div>`:(k.tierSet==='old'?`<div class="dflt">ร่างเดิมบันทึกไว้ว่า "เอกชน" แต่ฟอร์มรุ่นก่อนเลือกค่านี้ให้ล่วงหน้า จึงไม่ทราบว่าคุณเลือกเองหรือไม่ — แตะเพื่อยืนยัน · ถ้าไม่แตะ ไฟล์จะยังไม่มีค่าเทอมของลูกคนนี้</div>`:`<div class="dflt">ยังไม่ได้เลือก — ถ้าไม่เลือก ไฟล์จะยังไม่มีค่าเทอมของลูกคนนี้ ที่ปรึกษาจะถามเพิ่ม</div>`)}</div>
       <div class="f stack"><label>ตั้งใจส่งเรียนถึง</label>
-        <div class="chips">${[['bachelor','ป.ตรี'],['master','ป.โท']].map(([v,l])=>`<button type="button" class="chip ${k.upto===v?'on':''}" onclick="KIDS[${i}].upto='${v}';saveSoon();render()">${l}</button>`).join('')}</div></div>
-      <div class="f"><label>ค่าเลี้ยงดูลูกคนนี้<small>กิน ใช้ กิจกรรม — ไม่รวมค่าเทอม</small></label><div class="in"><input type="text" class="money" inputmode="numeric" value="${esc(k.mon)}" oninput="const r=this.value.replace(/[^\\d]/g,'');this.value=r?Number(r).toLocaleString('en-US'):'';KIDS[${i}].mon=this.value;saveSoon()" placeholder="0"><span class="unit">฿/เดือน</span></div></div>
+        <div class="chips">${[['bachelor','ป.ตรี'],['master','ป.โท']].map(([v,l])=>`<button type="button" class="chip ${k.uptoSet===true&&k.upto===v?'on':''}" onclick="kidChip(${i},'upto','${v}')">${l}</button>`).join('')}</div>
+        ${k.uptoSet===true?'':(k.uptoSet==='old'?`<div class="dflt">ร่างเดิมบันทึกไว้ว่า "ป.ตรี" แต่ฟอร์มรุ่นก่อนเลือกค่านี้ให้ล่วงหน้า จึงไม่ทราบว่าคุณเลือกเองหรือไม่ — แตะเพื่อยืนยัน</div>`:`<div class="dflt">ยังไม่ได้เลือก — ถ้าไม่เลือก ${k.tierSet===true?'ไฟล์จะคิดค่าเทอมถึง ป.ตรี (ยังไม่รวม ป.โท) และบอกที่ปรึกษาว่าคุณยังไม่ได้เลือก':'ที่ปรึกษาจะถามเพิ่ม'}</div>`)}</div>
+      <div class="f"><label>ค่าเลี้ยงดูลูกคนนี้<small>กิน ใช้ กิจกรรม — ไม่รวมค่าเทอม · ยอดนี้ไม่ต้องใส่ซ้ำในหน้ารายจ่าย</small></label><div class="in"><input type="text" class="money" inputmode="numeric" value="${esc(k.mon)}" oninput="onMoneyItem(this,KIDS,${i},'mon')" placeholder="0"><span class="unit">฿/เดือน</span></div></div>
     </div>`;
   }
   h+=`<div class="sec"><div class="sec-h">พ่อแม่ / ผู้ใหญ่ที่ต้องดูแล</div>${chips('npar',[['0','ไม่มี'],['1','1 คน'],['2','2 คน'],['3','3 คน'],['4','4 คน']],true)}</div>`;
   const np=parseInt(V.npar||'0')||0;
   while(PARENTS.length<np) PARENTS.push({name:'',age:'',mon:''});
   for(let i=0;i<np;i++){ const p=PARENTS[i];
-    h+=`<div class="sub-card"><div class="t">คนที่ ${i+1}</div>
+    h+=`<div class="sub-card"><div class="t">คนที่ ${i+1}<button onclick="removeParent(${i})">ลบ</button></div>
       <div class="f"><label>เรียกว่า</label><div class="in"><input type="text" class="txt" style="width:150px" value="${esc(p.name)}" oninput="PARENTS[${i}].name=this.value;saveSoon()" placeholder="เช่น คุณแม่"></div></div>
-      <div class="f"><label>อายุ</label><div class="in"><input type="number" class="num" inputmode="numeric" value="${esc(p.age)}" oninput="PARENTS[${i}].age=this.value;saveSoon()"><span class="unit">ปี</span></div></div>
-      <div class="f"><label>ส่งให้ / จ่ายให้เดือนละ</label><div class="in"><input type="text" class="money" inputmode="numeric" value="${esc(p.mon)}" oninput="const r=this.value.replace(/[^\\d]/g,'');this.value=r?Number(r).toLocaleString('en-US'):'';PARENTS[${i}].mon=this.value;saveSoon()" placeholder="0"><span class="unit">฿/เดือน</span></div></div>
+      <div class="f"><label>อายุ</label><div class="in"><input type="text" class="num int" inputmode="numeric" maxlength="4" value="${esc(p.age)}" data-rg="rg_p${i}" oninput="onIntItem(this,PARENTS,${i},'age','adult')"><span class="unit">ปี</span></div></div><div class="dflt" id="rg_p${i}">${rangeMsg('adult',p.age)}</div>
+      <div class="f"><label>ส่งให้ / จ่ายให้เดือนละ<small>ยอดนี้ไม่ต้องใส่ซ้ำในหน้ารายจ่าย</small></label><div class="in"><input type="text" class="money" inputmode="numeric" value="${esc(p.mon)}" oninput="onMoneyItem(this,PARENTS,${i},'mon')" placeholder="0"><span class="unit">฿/เดือน</span></div></div>
     </div>`;
   }
   return h;
 }
 
+/* แนวโรงเรียนที่ใช้ได้: ลูกค้าเลือกเอง หรือฟอร์มเลือกไว้ให้ก่อน (v1.7c) */
+function tierOn(k){ return !!k && (k.tierSet===true || k.tierSet==='preset'); }
+function kidChip(i,key,v){ const k=KIDS[i]; const setK=key+'Set';
+  if((k[setK]===true||k[setK]==='preset') && k[key]===v){ k[setK]=false; k[key]=(key==='tier'?'1':'bachelor'); }   /* แตะซ้ำ = ยกเลิก (AB2-17) */
+  else { k[key]=v; k[setK]=true; }
+  saveSoon(); render(true); }
+/* ลบลูก/ผู้ใหญ่คนที่ i (ตัวกลางก็ได้) แล้วลดจำนวนลง 1 */
+function removeKid(i){ const k=KIDS[i]||{}; const nm=(k.name||'').trim();
+  if((nm||!blank(k.age)||!blank(k.mon)) && !confirm('ลบ "ลูกคนที่ '+(i+1)+(nm?' ('+nm+')':'')+'" และข้อมูลที่กรอกของคนนี้?')) return;
+  KIDS.splice(i,1); const n=Math.max(0,(parseInt(V.nkids||'0')||0)-1); V.nkids=String(n); saveSoon(); render(true); }
+function removeParent(i){ const p=PARENTS[i]||{}; const nm=(p.name||'').trim();
+  if((nm||!blank(p.age)||!blank(p.mon)) && !confirm('ลบ "'+(nm||'ผู้ใหญ่คนที่ '+(i+1))+'" และข้อมูลที่กรอกของคนนี้?')) return;
+  PARENTS.splice(i,1); const n=Math.max(0,(parseInt(V.npar||'0')||0)-1); V.npar=String(n); saveSoon(); render(true); }
 function renderMoney(key){
   const M=MONEY_SCREENS[key];
   let h=`<h2>${M.title}</h2><div class="sub">${M.sub}</div>`;
+  /* v1.7: ร่างเก่ากรอกดอกเบี้ย/ปันผลเป็นต่อเดือน — แจ้งว่าหน่วยเปลี่ยนและยอดถูกคูณ 12 แล้ว จนกว่าจะกดรับทราบ */
+  if(key==='income' && !blank(V._intOldM) && V._intAck!=='1') h+=`<div class="note" id="intNote">${intNoteText()} &nbsp;<a href="#" onclick="ackInt();return false" style="color:var(--navy);font-weight:700">รับทราบ</a></div>`;
   h+=M.rows.map(r=>`<div class="f"><label>${r[1]}${r[4]?`<small>${r[4]}</small>`:''}</label><div class="in">${moneyInput(r[0])}<span class="unit">${UNIT[r[2]]}</span></div></div>`).join('');
-  const tot=M.rows.reduce((t,r)=>t+num(r[0]),0);
-  h+=`<div class="hint" id="tot_${key}">${tot>0?'กรอกแล้ว '+M.rows.filter(r=>num(r[0])>0).length+' รายการ':'ยังไม่ได้กรอก'}</div>`;
-  if(key!=='income') h+=`<button class="btn soft" onclick='skipScreen(${JSON.stringify(M.rows.map(r=>[r[0]]))})'>ไม่มีรายการในหน้านี้ — ข้ามไป</button>`;
+  h+=`<div class="hint" id="tot_${key}">${totText(key)}</div>`;
+  if(key!=='income'){
+    if(V['none_'+key]==='1' && moneyCount(key)===0) h+=`<div class="answered" id="ans_${key}">คุณตอบไว้ว่า <b>ไม่มีรายการในหน้านี้</b> &nbsp;·&nbsp; <a href="#" onclick="unNone('${key}');return false">ยกเลิกคำตอบนี้</a></div>`;
+    else h+=skipBtn(key);
+  }
   return h;
 }
 
 /* ---------- ประกัน ---------- */
 function renderIns(){
-  let h=`<h2>ประกันที่มีอยู่</h2><div class="sub">กรอกเท่าที่รู้ — ที่ปรึกษาจะเติมรายละเอียดจากตารางกรมธรรม์ให้</div>`;
-  if(!POLICIES.length) h+=`<div class="hint">ยังไม่มีรายการ</div>`;
+  /* v1.7: คำตอบ "ไม่มีประกัน" ต้องกดเอง (V.none_ins) · บริษัทไม่เลือกให้ล่วงหน้า (เดิม AIA ติดสีไว้ก่อน แล้วลงไฟล์เป็น AIA)
+     ช่องใหม่ต่อเล่ม: ค่ารักษาอุบัติเหตุ/ครั้ง · มูลค่าเงินสด — ต่อท้ายช่องเดิม */
+  const anyFilled=POLICIES.some(polFilled);
+  let h=`<h2>ประกันที่มีอยู่</h2><div class="sub">ประกันชีวิต / สุขภาพ / อุบัติเหตุ ของตัวคุณเอง — กรอกเท่าที่รู้ ทุกช่องข้ามได้ · ไม่มีเล่มอยู่ใกล้มือ เพิ่ม 1 รายการแล้วใส่ยอดรวมของทุกเล่มก็ได้</div>`;
+  if(!POLICIES.length && V.none_ins!=='1') h+=`<div class="hint">ยังไม่มีรายการ</div>`;
   POLICIES.forEach((p,i)=>{
-    h+=`<div class="sub-card"><div class="t">เล่มที่ ${i+1}<button onclick="POLICIES.splice(${i},1);saveSoon();render()">ลบ</button></div>
-      <div class="f stack"><label>บริษัท</label><div class="chips">${['AIA','เมืองไทย','ไทยประกัน','กรุงเทพประกัน','FWD','อื่น ๆ'].map(c=>`<button type="button" class="chip ${p.company===c?'on':''}" onclick="POLICIES[${i}].company='${c}';saveSoon();render()">${c}</button>`).join('')}</div></div>
+    h+=`<div class="sub-card"><div class="t">เล่มที่ ${i+1}<button onclick="POLICIES.splice(${i},1);saveSoon();render(true)">ลบ</button></div>
+      <div class="f stack"><label>บริษัท</label><div class="chips">${['AIA','เมืองไทย','ไทยประกัน','กรุงเทพประกัน','FWD','อื่น ๆ'].map(c=>`<button type="button" class="chip ${p.company===c&&!p.coOld?'on':''}" onclick="POLICIES[${i}].company=(POLICIES[${i}].company==='${c}'&&!POLICIES[${i}].coOld?'':'${c}');delete POLICIES[${i}].coOld;saveSoon();render(true)">${c}</button>`).join('')}</div>${p.coOld?`<div class="dflt">ร่างเดิมบันทึกไว้ว่า "AIA" แต่ฟอร์มรุ่นก่อนเลือกค่านี้ให้ล่วงหน้า จึงไม่ทราบว่าคุณเลือกเองหรือไม่ — แตะเพื่อยืนยันบริษัท</div>`:''}</div>
       <div class="f stack"><label>ชื่อแบบประกัน / ประเภท<small>ตามที่จำได้ เช่น ตลอดชีพ 20/99, สะสมทรัพย์, สุขภาพเหมาจ่าย</small></label><div class="in"><input type="text" class="txt" value="${esc(p.name)}" oninput="POLICIES[${i}].name=this.value;saveSoon()"></div></div>
-      <div class="f"><label>เบี้ยต่อปี</label><div class="in">${pm(i,'premium')}<span class="unit">฿/ปี</span></div></div>
-      <div class="f"><label>จ่ายเบี้ยถึงอายุ<small>หรือปี พ.ศ. ที่จ่ายครบ</small></label><div class="in"><input type="text" class="num" inputmode="numeric" value="${esc(p.payUntil)}" oninput="POLICIES[${i}].payUntil=this.value;saveSoon()"></div></div>
-      <div class="f"><label>ทุนประกันชีวิต<small>เงินที่ครอบครัวได้ถ้าเสียชีวิต</small></label><div class="in">${pm(i,'life')}<span class="unit">฿</span></div></div>
-      <div class="f"><label>วงเงินค่ารักษาพยาบาล<small>ต่อปี (ถ้าเป็นแบบเหมาจ่าย)</small></label><div class="in">${pm(i,'health')}<span class="unit">฿/ปี</span></div></div>
-      <div class="f"><label>ค่าห้อง รพ. ต่อคืน</label><div class="in">${pm(i,'room')}<span class="unit">฿/คืน</span></div></div>
-      <div class="f"><label>ทุนโรคร้ายแรง</label><div class="in">${pm(i,'ciSevere')}<span class="unit">฿</span></div></div>
+      <div class="f polf"><label>เบี้ยต่อปี<small>เฉพาะเล่มนี้</small></label><div class="in">${pm(i,'premium')}<span class="unit">฿/ปี</span></div></div>
+      <div class="f polf"><label>จ่ายเบี้ยถึงอายุ<small>ใส่เป็นอายุ (เช่น 60) หรือปี พ.ศ. ที่จ่ายครบ (เช่น 2585) ก็ได้</small></label><div class="in"><input type="text" class="num" inputmode="numeric" maxlength="4" value="${esc(p.payUntil)}" oninput="onPayUntil(this,${i})"></div></div>
+      <div class="f polf"><label>ทุนประกันชีวิต<small>เงินที่ครอบครัวได้ถ้าเสียชีวิต</small></label><div class="in">${pm(i,'life')}<span class="unit">฿</span></div></div>
+      <div class="f polf"><label>วงเงินค่ารักษาพยาบาล<small>ต่อปี (ถ้าเป็นแบบเหมาจ่าย)</small></label><div class="in">${pm(i,'health')}<span class="unit">฿/ปี</span></div></div>
+      <div class="f polf"><label>ค่าห้อง รพ. ต่อคืน</label><div class="in">${pm(i,'room')}<span class="unit">฿/คืน</span></div></div>
+      <div class="f polf"><label>ทุนโรคร้ายแรง<small>ไม่ทราบ ข้ามได้</small></label><div class="in">${pm(i,'ciSevere')}<span class="unit">฿</span></div></div>
+      <div class="f polf"><label>ค่ารักษาอุบัติเหตุ ต่อครั้ง<small>ประกันอุบัติเหตุ (PA) จ่ายค่ารักษาให้สูงสุดครั้งละเท่าไร · ไม่ทราบ ข้ามได้</small></label><div class="in">${pm(i,'accMed')}<span class="unit">฿/ครั้ง</span></div></div>
+      <div class="f polf"><label>ถ้ายกเลิกเล่มนี้วันนี้ ได้เงินคืนเท่าไร<small>มูลค่าเงินสด / เวนคืน — ดูในเล่มหรือแอปบริษัท · ไม่ทราบ ข้ามได้</small></label><div class="in">${pm(i,'cash')}<span class="unit">฿</span></div></div>
     </div>`;
   });
-  if(POLICIES.length<8) h+=`<button class="btn add" onclick="POLICIES.push({company:'AIA',name:'',premium:'',payUntil:'',life:'',health:'',room:'',ciSevere:''});saveSoon();render()">+ เพิ่มกรมธรรม์</button>`;
+  if(POLICIES.length<8) h+=`<button class="btn add" onclick="addPolicy()">+ เพิ่มกรมธรรม์</button>`;
   h+=`<div class="sec"><div class="sec-h">สวัสดิการที่ทำงาน</div>${chips('welf',[['none','ไม่มี'],['sso','ประกันสังคมอย่างเดียว'],['group','มีประกันกลุ่มบริษัท']],true)}
     ${V.welf==='group'?`<div class="f"><label>ประกันกลุ่ม: ค่าห้องต่อคืน</label><div class="in">${moneyInput('welfroom')}<span class="unit">฿/คืน</span></div></div>
-    <div class="f"><label>ประกันกลุ่ม: วงเงินค่ารักษาต่อครั้ง / ต่อปี</label><div class="in">${moneyInput('welfmed')}<span class="unit">฿</span></div></div>`:''}</div>
-  <div class="note">📷 ถ้าสะดวก <b>ถ่ายรูปหน้า "ตารางสรุปความคุ้มครอง"</b> ของแต่ละเล่ม ส่งให้ที่ปรึกษาพร้อมไฟล์ข้อมูล — จะได้ตัวเลขครบโดยคุณไม่ต้องกรอกเอง</div>
-  ${!POLICIES.length?`<button class="btn soft" onclick="go(1)">ไม่มีประกัน — ข้ามไป</button>`:''}`;
+    <div class="f"><label>ประกันกลุ่ม: วงเงินค่ารักษา</label><div class="in">${moneyInput('welfmed')}<span class="unit">฿</span></div></div>
+    <div class="f stack"><label>วงเงินนี้เป็นแบบ</label>${chips('welfper',[['visit','ต่อครั้ง'],['year','ต่อปี']])}</div>`:''}</div>
+  <div class="note">📷 ถ้าสะดวก <b>ถ่ายรูปหน้า "ตารางสรุปความคุ้มครอง"</b> ของแต่ละเล่ม ส่งให้ที่ปรึกษาพร้อมไฟล์ข้อมูล — ที่ปรึกษาจะเติมตัวเลขที่เหลือจากรูปให้ คุณไม่ต้องกรอกเองทุกช่อง</div>
+  ${anyFilled?'':(V.none_ins==='1'
+    ?`<div class="answered" id="ans_ins">คุณตอบไว้ว่า <b>ไม่มีประกันของตัวเอง</b> &nbsp;·&nbsp; <a href="#" onclick="unNone('ins');return false">ยกเลิกคำตอบนี้</a></div>`
+    :`<button class="btn soft" onclick="noIns()">ไม่มีประกันของตัวเอง — บันทึกว่า "ไม่มี" แล้วไปต่อ</button>`)}`;
   return h;
 }
-function pm(i,k){ return `<input type="text" class="money" inputmode="numeric" value="${esc(POLICIES[i][k]||'')}" oninput="const r=this.value.replace(/[^\\d]/g,'');this.value=r?Number(r).toLocaleString('en-US'):'';POLICIES[${i}].${k}=this.value;saveSoon()" placeholder="0">`; }
+function pm(i,k){ return `<input type="text" class="money" inputmode="numeric" value="${esc(POLICIES[i][k]||'')}" oninput="onMoneyItem(this,POLICIES,${i},'${k}')" placeholder="0">`; }
+/* v1.7b (AB2-16): "จ่ายเบี้ยถึง" — เลขไทยแปลงเป็นเลขอารบิก (เดิมหายเงียบ ๆ) · ตัวอักษรอื่นไม่ถูกรับ และบอกใต้ช่อง */
+function onPayUntil(el,i){ const raw=el.value; el.value=thaiDigits(raw).replace(/[^\d]/g,'').slice(0,4); if(/[^\d๐-๙]/.test(raw)) flashHint(el,'ช่องนี้รับเฉพาะตัวเลข — ใส่เป็นอายุ (เช่น 60) หรือปี พ.ศ. (เช่น 2585)'); POLICIES[i].payUntil=el.value; saveSoon(); }
 
 /* ---------- เป้าหมาย ---------- */
 const GOAL_PRESETS=[['🏠','ซื้อบ้าน'],['🚗','ซื้อรถ'],['✈️','ท่องเที่ยวใหญ่'],['💍','แต่งงาน'],['🏢','เริ่มธุรกิจ'],['🎯','อื่น ๆ']];
+/* v1.7 (m-13): ชื่อที่ลูกค้าพิมพ์เอง = ชื่อที่ไม่ว่างและไม่ใช่ชื่อของปุ่ม — ดูจากชื่อจริง ไม่ใช้ธง custom ที่ค้างหลังลบชื่อ
+   กดปุ่มที่เลือกอยู่ซ้ำ = ยกเลิกการเลือก · เป้าหมายใหม่ไม่มีปุ่มไหนถูกเลือกไว้ก่อน (เดิม "อื่น ๆ" ติดสีตั้งแต่กดเพิ่ม) */
+function goalChip(i,ico){ const g=GOALS[i]; if(!g) return;
+  const isPreset=n=>GOAL_PRESETS.some(p=>p[1]===String(n||'').trim());
+  const typed=!blank(g.name) && !isPreset(g.name);
+  if(g.ico===ico){ g.ico=''; if(!typed) g.name=''; }
+  else { g.ico=ico; if(!typed) g.name=GOAL_PRESETS.find(p=>p[0]===ico)[1]; }
+  delete g.custom; saveSoon(); render(true); }
 function renderGoals(){
-  let h=`<h2>เป้าหมายที่อยากทำให้ได้</h2><div class="sub">เป้าหมายเงินก้อนใน 1–20 ปีข้างหน้า (ไม่ต้องใส่เกษียณกับค่าเทอม — คิดให้แล้ว)</div>`;
+  let h=`<h2>เป้าหมายที่อยากทำให้ได้</h2><div class="sub">เป้าหมายเงินก้อนใน 1–20 ปีข้างหน้า (ไม่ต้องใส่เกษียณกับค่าเทอมลูก — สองเรื่องนี้คิดจากข้อมูลที่กรอกในหน้าก่อน ๆ อยู่แล้ว)</div>`;
   if(!GOALS.length) h+=`<div class="hint">ยังไม่มีรายการ</div>`;
   GOALS.forEach((g,i)=>{
-    h+=`<div class="sub-card"><div class="t">เป้าหมายที่ ${i+1}<button onclick="GOALS.splice(${i},1);saveSoon();render()">ลบ</button></div>
-      <div class="chips">${GOAL_PRESETS.map(([ico,l])=>`<button type="button" class="chip ${g.ico===ico?'on':''}" onclick="GOALS[${i}].ico='${ico}';if(!GOALS[${i}].custom)GOALS[${i}].name='${l}';saveSoon();render()">${ico} ${l}</button>`).join('')}</div>
-      <div class="f stack" style="margin-top:6px"><label>ชื่อเป้าหมาย</label><div class="in"><input type="text" class="txt" value="${esc(g.name)}" oninput="GOALS[${i}].name=this.value;GOALS[${i}].custom=true;saveSoon()"></div></div>
-      <div class="f"><label>ต้องใช้เงินประมาณ<small>ค่าเงินวันนี้</small></label><div class="in"><input type="text" class="money" inputmode="numeric" value="${esc(g.amt)}" oninput="const r=this.value.replace(/[^\\d]/g,'');this.value=r?Number(r).toLocaleString('en-US'):'';GOALS[${i}].amt=this.value;saveSoon()" placeholder="0"><span class="unit">฿</span></div></div>
-      <div class="f"><label>อยากทำให้ได้ในอีก</label><div class="in"><input type="number" class="num" inputmode="numeric" value="${esc(g.yrs)}" oninput="GOALS[${i}].yrs=this.value;saveSoon()" placeholder="5"><span class="unit">ปี</span></div></div>
+    h+=`<div class="sub-card"><div class="t">เป้าหมายที่ ${i+1}<button onclick="GOALS.splice(${i},1);saveSoon();render(true)">ลบ</button></div>
+      <div class="chips">${GOAL_PRESETS.map(([ico,l])=>`<button type="button" class="chip ${g.ico===ico?'on':''}" onclick="goalChip(${i},'${ico}')">${ico} ${l}</button>`).join('')}</div>
+      <div class="f stack" style="margin-top:6px"><label>ชื่อเป้าหมาย</label><div class="in"><input type="text" class="txt" value="${esc(g.name)}" oninput="GOALS[${i}].name=this.value;saveSoon()"></div></div>
+      <div class="f"><label>ต้องใช้เงินประมาณ<small>ค่าเงินวันนี้</small></label><div class="in"><input type="text" class="money" inputmode="numeric" value="${esc(g.amt)}" oninput="onMoneyItem(this,GOALS,${i},'amt')" placeholder="0"><span class="unit">฿</span></div></div>
+      <div class="f"><label>อยากทำให้ได้ในอีก<small>ไม่ใส่ ระบบจะใช้ 5 ปีไปก่อน และบอกที่ปรึกษา</small></label><div class="in"><input type="text" class="num int" inputmode="numeric" maxlength="4" value="${esc(g.yrs)}" data-rg="rg_g${i}" oninput="onIntItem(this,GOALS,${i},'yrs','yrs')"><span class="unit">ปี</span></div></div><div class="dflt" id="rg_g${i}">${rangeMsg('yrs',g.yrs)}</div>
     </div>`;
   });
-  if(GOALS.length<5) h+=`<button class="btn add" onclick="GOALS.push({ico:'🎯',name:'',amt:'',yrs:'',custom:false});saveSoon();render()">+ เพิ่มเป้าหมาย</button>`;
+  if(GOALS.length<5) h+=`<button class="btn add" onclick="GOALS.push({ico:'',name:'',amt:'',yrs:''});saveSoon();render(true)">+ เพิ่มเป้าหมาย</button>`;
   h+=`<div class="sec"><div class="sec-h">สิ่งที่อยากให้ที่ปรึกษาช่วยดูเป็นพิเศษ</div>${chips('cfocus',[['retire','เกษียณ'],['protect','คุ้มครองครอบครัว'],['debt','จัดการหนี้'],['invest','ลงทุน / ต่อยอด'],['edu','ทุนการศึกษาลูก'],['tax','ภาษี'],['all','ดูภาพรวมทั้งหมด']])}</div>
   <div class="f stack" style="margin-top:8px"><label>เรื่องอื่นที่อยากบอกที่ปรึกษา<small>ไม่บังคับ</small></label><div class="in"><input type="text" class="txt" id="cnote" value="${esc(V.cnote||'')}" oninput="onVal(this)" placeholder="เช่น กำลังจะเปลี่ยนงานปีหน้า"></div></div>`;
   return h;
 }
 
+/* v1.7: ค่าตั้งต้นที่ไฟล์จะใช้แทนช่องที่ลูกค้ายังไม่ได้กรอก/เลือก — แสดงให้ลูกค้าเห็นก่อนส่ง (หน้าสรุป + สำเนา PDF ใช้รายการเดียวกัน)
+   ทุกข้อมีโน้ตคู่กันในไฟล์ให้ที่ปรึกษา (ดู buildClientFile) */
+function defaultsUsed(){
+  const A=planAges(), d=[];
+  const bd=(b,t)=>b!==null?' (ที่กรอก '+b+' ใช้ไม่ได้ — รับ '+t+')':'';
+  if(!A.ageT) d.push('อายุปัจจุบัน — ใช้ 35 ปี'+bd(A.ageBad,'1–110'));
+  if(A.raWhy==='default') d.push('ทำงานถึงอายุ — ใช้ 60 ปี'+bd(A.raBad,'1–110'));
+  if(A.raWhy==='defaultLow') d.push('ทำงานถึงอายุ — ค่าตั้งต้น 60 น้อยกว่าอายุปัจจุบัน จึงใช้ '+A.ra+' ปี (ปีนี้เป็นปีสุดท้ายที่ทำงาน)'+bd(A.raBad,'1–110'));
+  if(A.raWhy==='typedLow') d.push('ทำงานถึงอายุ — คุณกรอก '+A.raT+' ซึ่งน้อยกว่า'+(A.ageT?'อายุปัจจุบัน':'อายุตั้งต้น 35 (ยังไม่ได้กรอกอายุ)')+' จึงใช้ '+A.ra+' ปี (ปีนี้เป็นปีสุดท้ายที่ทำงาน)');
+  if(A.lifeWhy==='default') d.push('ใช้เงินถึงอายุ — ใช้ 85 ปี'+bd(A.lifeBad,'2–120'));
+  if(A.lifeWhy==='defaultLow') d.push('ใช้เงินถึงอายุ — ค่าตั้งต้น 85 ไม่เกินอายุเกษียณ จึงใช้ '+A.life+' ปี (ยังไม่นับจำนวนปีที่ใช้เงิน)'+bd(A.lifeBad,'2–120'));
+  if(A.lifeWhy==='typedLow') d.push('ใช้เงินถึงอายุ — คุณกรอก '+A.lifeT+' ซึ่งไม่เกินอายุเกษียณ จึงใช้ '+A.life+' ปี (ยังไม่นับจำนวนปีที่ใช้เงิน)');
+  if(V.cmar==='married' && V.spinc==='no' && !spAge()) d.push('อายุคู่ชีวิต — ใช้อายุเท่าคุณ ('+A.age+' ปี)'+(spBad()?' (ที่กรอก '+intOf(V.spage)+' ใช้ไม่ได้ — รับ 1–110)':''));
+  const nk=parseInt(V.nkids||'0')||0, np=parseInt(V.npar||'0')||0;
+  for(let i=0;i<nk;i++){ const k=KIDS[i]||{}; const t=[]; const tierOK=tierOn(k); if(k.tierSet==='preset') t.push('แนวโรงเรียน "เอกชน" — ฟอร์มเลือกไว้ให้ก่อน คุณยังไม่ได้เปลี่ยน');
+    if(!kidAgeOK(k)) t.push((blank(intClean(k.age))?'ไม่ได้กรอกอายุ':'อายุที่กรอก ('+intOf(k.age)+') ใช้ไม่ได้ — รับ 0–60')+(tierOK?' จึงคิดค่าเทอมครบทุกชั้นเหมือนอายุ 0':' จึงใช้อายุ 0'));
+    else if(intOf(k.age)>kidEnd(k)) t.push('อายุ '+intOf(k.age)+' เกินช่วงเรียน (ถึง '+kidEnd(k)+') — ไม่มีค่าเทอม และนับการดูแลถึงอายุ '+intOf(k.age)+' (ปีนี้) ไปก่อน');
+    if(tierOK && k.uptoSet!==true) t.push(k.uptoSet==='old'?'ส่งเรียนถึง "ป.ตรี" มาจากร่างเดิม ยังไม่ได้ยืนยันว่าคุณเลือกเอง — คิดถึง ป.ตรี':'ไม่ได้เลือกส่งเรียนถึง — คิดค่าเทอมถึง ป.ตรี (ยังไม่รวม ป.โท)');
+    if(t.length) d.push('ลูกคนที่ '+(i+1)+' — '+t.join(' · ')); }
+  for(let i=0;i<np;i++){ const p=PARENTS[i]||{}; if(!(!blank(intClean(p.age))&&inRange('adult',intOf(p.age)))) d.push('ผู้ใหญ่ที่ดูแลคนที่ '+(i+1)+' — '+(blank(intClean(p.age))?'ไม่ได้กรอกอายุ':'อายุที่กรอก ('+intOf(p.age)+') ใช้ไม่ได้ — รับ 1–110 ·')+' ใช้ 65 ปี'); }
+  GOALS.forEach(g=>{ if(!(numOf(g.amt)>0)) return; const bad=!blank(intClean(g.yrs))&&!inRange('yrs',intOf(g.yrs));
+    if(blank(intClean(g.yrs))||bad) d.push('เป้าหมาย "'+((g.name||'').trim()||'เป้าหมายอื่น ๆ')+'" — '+(bad?'"อีก '+intOf(g.yrs)+' ปี" ใช้ไม่ได้ (รับ 0–60 ปี)':'ไม่ได้ระบุว่าอีกกี่ปี')+' ใช้ 5 ปี'); });
+  return d;
+}
+/* v1.7b (C2-01): สิ่งที่ "ไม่ได้ใส่ในไฟล์" เพราะลูกค้ายังไม่ได้เลือก (ไม่ใช่ค่าตั้งต้น) — ตอนนี้คือค่าเทอมของลูกที่ยังไม่ได้เลือกแนวโรงเรียน */
+function notIncluded(){ const nk=parseInt(V.nkids||'0')||0, out=[];
+  for(let i=0;i<nk;i++){ const k=KIDS[i]||{}; if(tierOn(k)) continue; const kn=(k.name||'').trim();
+    out.push('ค่าเทอมของลูกคนที่ '+(i+1)+(kn?' ('+kn+')':'')+' — '+(k.tierSet==='old'?'ร่างเดิมมี "เอกชน" ที่ฟอร์มรุ่นก่อนเลือกให้ล่วงหน้า ยังไม่ได้ยืนยัน':'ยังไม่ได้เลือกแนวโรงเรียน')); }
+  return out; }
+/* สถานะของหมวด: N รายการ / ตอบว่าไม่มี / ไม่ได้กรอก — ใช้ทั้งหน้าสรุปและสำเนา PDF */
+function secStatus(key){ const n=moneyCount(key); return n>0?n+' รายการ':(V['none_'+key]==='1'?'ตอบว่าไม่มี':'ไม่ได้กรอก'); }
+function famStatus(){ const nk=parseInt(V.nkids||'0')||0, np=parseInt(V.npar||'0')||0;
+  return [ V.cmar==='married'?'มีคู่':V.cmar==='single'?'โสด':'สถานะ: ไม่ได้ตอบ',
+    blank(V.nkids)?'ลูก: ไม่ได้ตอบ':(nk?'ลูก '+nk+' คน':'ไม่มีลูก'),
+    blank(V.npar)?'ผู้ใหญ่ที่ต้องดูแล: ไม่ได้ตอบ':(np?'ดูแลผู้ใหญ่ '+np+' คน':'ไม่มีผู้ใหญ่ที่ต้องดูแล') ].join(' · '); }
+
 /* ---------- หน้าสรุป + ส่ง ---------- */
 function renderDone(){
-  const cnt=k=>MONEY_SCREENS[k].rows.filter(r=>num(r[0])>0).length;
+  /* v1.7: ทุกบรรทัดบอกตามจริง — "โสด" เฉพาะเมื่อลูกค้าเลือกโสด · หมวดที่ว่างแยกเป็น "ตอบว่าไม่มี" กับ "ไม่ได้กรอก" · ค่าตั้งต้นขึ้นรายการให้เห็น
+     เดิม: ไม่ได้ตอบสถานะ ขึ้น "โสด" · ไม่ได้กรอกอะไรเลยก็ขึ้น "0 รายการ" เหมือนตอบแล้ว · "ที่ปรึกษาจะได้รับข้อมูลชุดนี้" ทั้งที่ระบบไม่ได้ส่ง */
+  const A=planAges();
   const name=txt('cname')||'ยังไม่ได้กรอกชื่อ';
   const missing=[];
-  if(!txt('cname')) missing.push('ชื่อ'); if(!num('cage')) missing.push('อายุ');
-  return `<h2>ตรวจก่อนส่ง</h2><div class="sub">ที่ปรึกษาจะได้รับข้อมูลชุดนี้ไปจัดทำแผน</div>
+  if(!txt('cname')) missing.push('ชื่อ'); if(!A.ageT) missing.push('อายุ');
+  const polN=POLICIES.filter(polFilled).length;
+  const gl=GOALS.filter(g=>numOf(g.amt)>0).length, glNo=GOALS.filter(g=>!(numOf(g.amt)>0)&&goalTouched(g)).length;
+  const dfl=defaultsUsed();
+  const mark=w=>!w?'':(/^typed/.test(w)?' (ปรับจากที่กรอก)':' (ค่าตั้งต้น)');
+  return `<h2>ตรวจก่อนส่ง</h2><div class="sub">ข้อมูลชุดนี้จะอยู่ในไฟล์ที่คุณบันทึก — ที่ปรึกษาจะได้รับก็ต่อเมื่อคุณส่งไฟล์ให้</div>
   <div class="summary">
-    <div><span>ชื่อ</span><b>${esc(name)}${num('cage')?' · '+num('cage')+' ปี':''}</b></div>
-    <div><span>ครอบครัว</span><b>${V.cmar==='married'?'มีคู่':'โสด'}${(parseInt(V.nkids)||0)?' · ลูก '+V.nkids+' คน':''}${(parseInt(V.npar)||0)?' · ดูแลผู้ใหญ่ '+V.npar+' คน':''}</b></div>
-    <div><span>รายรับ</span><b>${cnt('income')} รายการ</b></div>
-    <div><span>รายจ่าย</span><b>${cnt('fixed')+cnt('vary')} รายการ</b></div>
-    <div><span>เงินออม</span><b>${cnt('save')} รายการ</b></div>
-    <div><span>ทรัพย์สิน / หนี้</span><b>${cnt('assets')} / ${cnt('liab')} รายการ</b></div>
-    <div><span>กรมธรรม์</span><b>${POLICIES.length} เล่ม</b></div>
-    <div><span>เป้าหมาย</span><b>${GOALS.filter(g=>numOf(g.amt)>0).length} รายการ</b></div>
+    <div><span>ชื่อ</span><b>${esc(name)}${A.ageT?' · '+A.ageT+' ปี':' · ไม่ได้กรอกอายุ'}</b></div>
+    <div><span>แผน</span><b>ทำงานถึงอายุ ${A.ra}${mark(A.raWhy)} · ใช้เงินถึงอายุ ${A.life}${mark(A.lifeWhy)}${A.ageT?' · ออม '+A.saveYrs+' ปี · ใช้เงินหลังเกษียณ '+useYrsTxt(A)+' ปี'+(A.lifeAdj?(A.lifeWhy==='typedLow'?' (อายุที่กรอกขัดกัน)':' (ยังนับไม่ได้ — ยังไม่ได้กรอกอายุที่ใช้เงินถึง)'):''):''}</b></div>
+    <div><span>ครอบครัว</span><b>${famStatus()}</b></div>
+    <div><span>รายรับ</span><b>${moneyCount('income')?moneyCount('income')+' รายการ':'ไม่ได้กรอก'}</b></div>
+    <div><span>รายจ่ายผ่อน / คงที่</span><b>${secStatus('fixed')}</b></div>
+    <div><span>รายจ่ายใช้ชีวิต</span><b>${secStatus('vary')}</b></div>
+    <div><span>เงินออม</span><b>${secStatus('save')}</b></div>
+    <div><span>ทรัพย์สิน</span><b>${secStatus('assets')}</b></div>
+    <div><span>หนี้คงค้าง</span><b>${secStatus('liab')}</b></div>
+    <div><span>กรมธรรม์</span><b>${polN?polN+' เล่ม':(V.none_ins==='1'?'ตอบว่าไม่มี':'ไม่ได้กรอก')}</b></div>
+    <div><span>เป้าหมาย</span><b>${gl?gl+' รายการ':(glNo?'':'ไม่ได้กรอก')}${glNo?(gl?' · ':'')+'ยังไม่ใส่ยอดเงิน '+glNo+' รายการ (ยังไม่เข้าแผน)':''}</b></div>
   </div>
-  ${missing.length?`<div class="warn">ยังไม่ได้กรอก: ${missing.join(', ')} — ส่งได้ แต่ที่ปรึกษาจะต้องถามเพิ่ม <a href="#" onclick="cur=1;render();return false" style="color:var(--carrier)">กลับไปกรอก</a></div>`:''}
+  ${missing.length?`<div class="warn">ยังไม่ได้กรอก: ${missing.join(', ')} — บันทึกไฟล์ได้ แต่ที่ปรึกษาจะต้องถามเพิ่ม <a href="#" onclick="cur=1;render();return false" style="color:var(--navy)">กลับไปกรอก</a></div>`:''}
+  ${!blank(V._intOldM)&&V._intAck!=='1'?`<div class="note" id="intNote">${intNoteText()} &nbsp;<a href="#" onclick="ackInt();return false" style="color:var(--navy);font-weight:700">รับทราบ</a></div>`:''}
+  ${notIncluded().length?`<div class="warn" id="noIncBox"><b>ยังไม่ได้ใส่ในไฟล์ (ที่ปรึกษาจะถามเพิ่ม)</b><br>${notIncluded().map(x=>'• '+esc(x)).join('<br>')} <a href="#" onclick="cur=2;render();return false" style="color:var(--navy)">กลับไปเลือก</a></div>`:''}
+  ${dfl.length?`<div class="note" id="dfltBox"><b>ช่องที่คุณยังไม่ได้กรอก — ไฟล์จะใช้ค่าตั้งต้นของระบบแทน และบอกที่ปรึกษาว่าเป็นค่าตั้งต้น ไม่ใช่คำตอบของคุณ</b><br>${dfl.map(x=>'• '+esc(x)).join('<br>')}</div>`:''}
   <div class="note"><b>มี 2 อย่างให้บันทึก</b><br>1. <b>ไฟล์ข้อมูล .json</b> — ไฟล์ชื่อ <b>${esc(fileName())}</b> · คุณเป็นคนส่งให้ที่ปรึกษาเองตามช่องทางที่สะดวก ระบบไม่ส่งอะไรออกจากเครื่องคุณ<br>2. <b>สำเนา PDF</b> — ไว้เก็บเองหรืออ่านทบทวน (ที่ปรึกษานำเข้าระบบจาก PDF ไม่ได้ ต้องใช้ .json)</div>
   <div id="sendStatus"></div>
   <div class="two"><button class="btn ghost" onclick="savePdf()">บันทึกสำเนา PDF ให้ตัวเอง</button></div>
@@ -453,67 +814,136 @@ function renderDone(){
 
 /* ═══════════════ สำเนา PDF สำหรับลูกค้า (window.print → บันทึกเป็น PDF) ═══════════════ */
 function renderPrint(){
+  /* v1.7: สำเนา PDF ใช้ตัวเลขชุดเดียวกับไฟล์ (planAges · payAgeOf) · ช่องที่ไม่ได้กรอกเขียนว่า "ไม่ได้กรอก/ไม่ได้ตอบ" · ค่าตั้งต้นติดป้าย
+     หมวดว่างแยก "ไม่มี (ผู้กรอกตอบว่าไม่มี)" กับ "ไม่ได้กรอก" (เดิมรวมเป็น "ไม่ได้กรอก / ไม่มี") */
+  const A=planAges();
   const name=txt('cname')||'ยังไม่ได้กรอกชื่อ';
   const d=new Date(); const dateTh=d.toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'});
   const row=(l,v,u)=>`<tr><td>${esc(l)}</td><td class="v">${v}</td><td class="u">${u||''}</td></tr>`;
-  const money=(l,id,unit)=>num(id)>0?row(l,fmt(num(id)),unit):'';
+  const dn=t=>` <span class="dn">(${t})</span>`;
   const moneyGrp=(key)=>{ const M=MONEY_SCREENS[key]; const rows=M.rows.filter(r=>num(r[0])>0);
-    if(!rows.length) return `<div class="pg"><h3>${M.title}</h3><div class="empty">ไม่ได้กรอก / ไม่มี</div></div>`;
-    const totM=rows.reduce((t,r)=>t+(r[2]==='y'?num(r[0])/12:num(r[0])),0);
+    if(!rows.length) return `<div class="pg"><h3>${M.title}</h3><div class="empty">${V['none_'+key]==='1'?'ไม่มี (ผู้กรอกตอบว่าไม่มี)':'ไม่ได้กรอก'}</div></div>`;
+    const totM=rows.filter(r=>r[3]!=='special.pension').reduce((t,r)=>t+(r[2]==='y'?num(r[0])/12:num(r[0])),0);   /* v1.6: ยอดรวมวันนี้ ไม่รวมรายได้หลังเกษียณ */
     const totX=rows.reduce((t,r)=>t+num(r[0]),0);
-    const tot=(key==='assets'||key==='liab')?row('รวม',fmt(Math.round(totX)),'฿'):row('รวมต่อเดือน (รายปี ÷ 12)',fmt(Math.round(totM)),'฿/เดือน');
+    const tot=(key==='assets'||key==='liab')?row('รวม',fmt(Math.round(totX)),'฿'):row(key==='income'&&rows.some(r=>r[3]==='special.pension')?'รวมต่อเดือนวันนี้ (รายปี ÷ 12 · ไม่รวมรายได้หลังเกษียณ)':'รวมต่อเดือน (รายปี ÷ 12)',fmt(Math.round(totM)),'฿/เดือน');
     return `<div class="pg"><h3>${M.title}</h3><table>${rows.map(r=>row(r[1],fmt(num(r[0])),UNIT[r[2]])).join('')}<tr class="tot">${tot.replace(/^<tr>|<\/tr>$/g,'')}</tr></table></div>`; };
-  const HOSP={gov:'รพ.รัฐ',mid:'รพ.เอกชนทั่วไป',hi:'รพ.เอกชนชั้นนำ'};
+  const HOSP={gov:'รพ.รัฐ',mid:'เอกชนกลาง',hi:'เอกชนหรู'};
   const JOB={emp:'พนักงานบริษัท',gov:'ราชการ / รัฐวิสาหกิจ',own:'ธุรกิจส่วนตัว',free:'ฟรีแลนซ์',other:'อื่น ๆ'};
   const FOC={retire:'เกษียณ',protect:'คุ้มครองครอบครัว',debt:'จัดการหนี้',invest:'ลงทุน / ต่อยอด',edu:'ทุนการศึกษาลูก',tax:'ภาษี',all:'ดูภาพรวมทั้งหมด'};
+  const raNote=A.raWhy==='default'?dn('ค่าตั้งต้น — ไม่ได้กรอก'):A.raWhy==='defaultLow'?dn('ไม่ได้กรอก · ค่าตั้งต้น 60 น้อยกว่าอายุปัจจุบัน'):A.raWhy==='typedLow'?dn('กรอก '+A.raT+' ซึ่งน้อยกว่าอายุปัจจุบัน'):'';
+  const lifeNote=A.lifeWhy==='default'?dn('ค่าตั้งต้น — ไม่ได้กรอก'):A.lifeWhy==='defaultLow'?dn('ไม่ได้กรอก · ค่าตั้งต้น 85 ไม่เกินอายุเกษียณ'):A.lifeWhy==='typedLow'?dn('กรอก '+A.lifeT+' ซึ่งไม่เกินอายุเกษียณ'):'';
   let me=`<div class="pg"><h3>ข้อมูลตัวเอง</h3><table>
-    ${row('ชื่อ',esc(name))}${num('cage')?row('อายุ',num('cage'),'ปี'):''}${num('cret')?row('อยากเกษียณตอนอายุ',num('cret'),'ปี'):''}
+    ${row('ชื่อ',esc(name))}${A.ageT?row('อายุ',A.ageT,'ปี'):row('อายุ',(A.ageBad!==null?'ที่กรอก ('+A.ageBad+') ใช้ไม่ได้':'ไม่ได้กรอก')+dn('ไฟล์ใช้ 35 เป็นค่าตั้งต้น'))}
+    ${row('ทำงานถึงอายุ (ปีสุดท้ายที่ทำงาน)',A.ra+raNote,'ปี')}${row('ใช้เงินถึงอายุ',A.life+lifeNote,'ปี')}
+    ${A.ageT?row('เวลาออมก่อนเกษียณ (รวมปีนี้)',A.saveYrs,'ปี')+row('ช่วงใช้เงินหลังเกษียณ',useYrsTxt(A)+(A.lifeAdj?dn(A.lifeWhy==='typedLow'?'อายุที่กรอกขัดกัน':'ยังไม่ได้กรอกอายุที่ใช้เงินถึง'):''),'ปี'):''}
     ${num('cretexp')?row('เงินใช้หลังเกษียณ (ค่าเงินวันนี้)',fmt(num('cretexp')),'฿/เดือน'):''}
-    ${HOSP[V.chosp]?row('ถ้าป่วยหนักอยากรักษาที่',HOSP[V.chosp]):''}${JOB[V.cjob]?row('อาชีพ',JOB[V.cjob]):''}</table></div>`;
+    ${HOSP[V.chosp]?row('ถ้าป่วยหนักอยากรักษาที่',HOSP[V.chosp]):''}${txt('chospname')?row('โรงพยาบาลที่อยากใช้',esc(txt('chospname'))):''}${JOB[V.cjob]?row('อาชีพ',JOB[V.cjob]):''}</table></div>`;
   let fam=''; const nk=parseInt(V.nkids||'0')||0, np=parseInt(V.npar||'0')||0;
-  fam+=row('สถานะ',V.cmar==='married'?'มีคู่ / แต่งงาน':V.cmar==='single'?'โสด':'—');
-  if(V.cmar==='married') fam+=row('คู่ชีวิต',esc(txt('spname')||'-')+(num('spage')?' · '+num('spage')+' ปี':'')+(V.spinc==='no'?' · พึ่งพารายได้เรา'+(num('spmon')?' '+fmt(num('spmon'))+' ฿/เดือน':''):V.spinc==='yes'?' · มีรายได้ของตัวเอง':''));
-  for(let i=0;i<nk;i++){ const k=KIDS[i]||{}; fam+=row('ลูกคนที่ '+(i+1),esc(k.name||'-')+(numOf(k.age)?' · '+numOf(k.age)+' ปี':'')+' · '+['รัฐ','เอกชน','นานาชาติ'][parseInt(k.tier||'1')||0]+' ถึง '+(k.upto==='master'?'ป.โท':'ป.ตรี')+(numOf(k.mon)?' · เลี้ยงดู '+fmt(numOf(k.mon))+' ฿/เดือน':'')); }
-  for(let i=0;i<np;i++){ const p=PARENTS[i]||{}; fam+=row('ดูแล: '+esc(p.name||'ผู้ใหญ่ '+(i+1)),(numOf(p.age)?numOf(p.age)+' ปี':'-')+(numOf(p.mon)?' · ส่งให้ '+fmt(numOf(p.mon))+' ฿/เดือน':'')); }
-  fam=`<div class="pg"><h3>ครอบครัว</h3><table class="wide">${fam}</table></div>`;
+  fam+=row('สถานะ',V.cmar==='married'?'มีคู่ / แต่งงาน':V.cmar==='single'?'โสด':'ไม่ได้ตอบ');
+  if(V.cmar==='married') fam+=row('คู่ชีวิต',esc(txt('spname')||'-')+(spAge()?' · '+spAge()+' ปี':(spBad()?' · อายุที่กรอก ('+intOf(V.spage)+') ใช้ไม่ได้':''))+(V.spinc==='no'?' · พึ่งพารายได้เรา'+(num('spmon')?' '+fmt(num('spmon'))+' ฿/เดือน':''):V.spinc==='yes'?' · มีรายได้ของตัวเอง':' · ไม่ได้ตอบว่ามีรายได้ของตัวเองหรือไม่'));
+  if(blank(V.nkids)) fam+=row('ลูก','ไม่ได้ตอบ'); else if(!nk) fam+=row('ลูก','ไม่มี');
+  for(let i=0;i<nk;i++){ const k=KIDS[i]||{}; const tierOK=tierOn(k);
+    fam+=row('ลูกคนที่ '+(i+1),esc(k.name||'-')+(blank(intClean(k.age))?' · ไม่ได้กรอกอายุ':kidAgeOK(k)?' · '+intOf(k.age)+' ปี':' · อายุที่กรอก ('+intOf(k.age)+') ใช้ไม่ได้')
+      +(tierOK?' · '+['รัฐ','เอกชน','นานาชาติ'][parseInt(k.tier||'1')||0]+(k.tierSet==='preset'?dn('ฟอร์มเลือกไว้ให้ก่อน'):'')+' ถึง '+((k.uptoSet===true&&k.upto==='master')?'ป.โท':'ป.ตรี')+(k.uptoSet===true?'':dn(k.uptoSet==='old'?'ป.ตรี จากร่างเดิม — ยังไม่ได้ยืนยัน':'ไม่ได้เลือก — คิดถึง ป.ตรี'))
+        :' · แนวโรงเรียน: '+(k.tierSet==='old'?'"เอกชน" จากร่างเดิม — ยังไม่ได้ยืนยัน':'ไม่ได้เลือก')+dn('ยังไม่มีค่าเทอมในไฟล์'))
+      +(numOf(k.mon)?' · เลี้ยงดู '+fmt(numOf(k.mon))+' ฿/เดือน':'')); }
+  if(blank(V.npar)) fam+=row('ผู้ใหญ่ที่ต้องดูแล','ไม่ได้ตอบ'); else if(!np) fam+=row('ผู้ใหญ่ที่ต้องดูแล','ไม่มี');
+  for(let i=0;i<np;i++){ const p=PARENTS[i]||{}; const pOK=!blank(intClean(p.age))&&inRange('adult',intOf(p.age)); fam+=row('ดูแล: '+(p.name||'ผู้ใหญ่ '+(i+1)),(pOK?intOf(p.age)+' ปี':(blank(intClean(p.age))?'ไม่ได้กรอกอายุ':'อายุที่กรอก ('+intOf(p.age)+') ใช้ไม่ได้')+dn('ไฟล์ใช้ 65'))+(numOf(p.mon)?' · ส่งให้ '+fmt(numOf(p.mon))+' ฿/เดือน':'')); }
+  /* v1.7 (m-14): ครอบครัวยาว (หลายคน) — พิมพ์เต็มความกว้างและยอมให้ตัดข้ามหน้าได้ (เดิมทั้งก้อนถูกดันไปหน้า 2 หน้า 1 เกือบว่าง) */
+  const famLong=(nk+np)>=4;
+  fam=`<div class="pg${famLong?' flow':''}"><h3>ครอบครัว</h3><table class="wide">${fam}</table></div>`;
   let ins='';
-  if(!POLICIES.length) ins='<div class="empty">ไม่ได้กรอก / ไม่มี</div>';
-  else ins='<table class="pol"><tr><th>เล่ม · บริษัท · แบบประกัน</th><th>เบี้ย/ปี</th><th>ถึงอายุ</th><th>ทุนชีวิต</th><th>รักษา/ปี</th><th>ห้อง/คืน</th><th>โรคร้าย</th></tr>'+
-    POLICIES.map((p,i)=>`<tr><td>${i+1}. ${esc(p.company||'')} ${esc(p.name||'')}</td><td>${numOf(p.premium)?fmt(numOf(p.premium)):'—'}</td><td>${esc(p.payUntil||'—')}</td><td>${numOf(p.life)?fmt(numOf(p.life)):'—'}</td><td>${numOf(p.health)?fmt(numOf(p.health)):'—'}</td><td>${numOf(p.room)?fmt(numOf(p.room)):'—'}</td><td>${numOf(p.ciSevere)?fmt(numOf(p.ciSevere)):'—'}</td></tr>`).join('')+'</table>';
-  const WELF={none:'ไม่มี',sso:'ประกันสังคมอย่างเดียว',group:'ประกันกลุ่มบริษัท'+(num('welfroom')?' · ค่าห้อง '+fmt(num('welfroom'))+' ฿/คืน':'')+(num('welfmed')?' · วงเงิน '+fmt(num('welfmed'))+' ฿':'')};
-  if(WELF[V.welf]) ins+=`<table class="wide">${row('สวัสดิการที่ทำงาน',WELF[V.welf])}</table>`;
+  const POLS=POLICIES.filter(polFilled);
+  const payTxt=p=>{ const dg=thaiDigits(String(p.payUntil==null?'':p.payUntil)).replace(/[^\d]/g,''); if(!dg) return '—'; const c=payAgeOf(p.payUntil,A.age);
+    return c===''?esc(dg)+' (อ่านไม่ออก)':(Number(dg)>120?c+' (ปี '+esc(dg)+')':c); };   /* v1.7 (m-14): พิมพ์อายุที่ไฟล์ใช้ ไม่ใช่เลขดิบที่กรอก (เช่น 2585) */
+  const nz=v=>numOf(v)?fmt(numOf(v)):'—';
+  if(!POLS.length) ins=`<div class="empty">${V.none_ins==='1'?'ไม่มี (ผู้กรอกตอบว่าไม่มีประกันของตัวเอง)':'ไม่ได้กรอก'}</div>`;
+  else { ins='<table class="pol"><tr><th>เล่ม · บริษัท · แบบประกัน</th><th>เบี้ย/ปี</th><th>จ่ายถึงอายุ</th><th>ทุนชีวิต</th><th>รักษา/ปี</th><th>ห้อง/คืน</th><th>โรคร้าย</th><th>อุบัติเหตุ/ครั้ง</th><th>เงินสด</th></tr>'+
+    POLS.map((p,i)=>`<tr><td>${i+1}. ${esc(((p.company||'')+' '+(p.name||'')).trim()||'ไม่ได้ระบุบริษัท / แบบประกัน')}${p.coOld?dn('บริษัทจากร่างเดิม — ยังไม่ได้ยืนยัน'):''}</td><td>${nz(p.premium)}</td><td>${payTxt(p)}</td><td>${nz(p.life)}</td><td>${nz(p.health)}</td><td>${nz(p.room)}</td><td>${nz(p.ciSevere)}</td><td>${nz(p.accMed)}</td><td>${nz(p.cash)}</td></tr>`).join('')+'</table>';
+    const cashSum=POLS.reduce((t,p)=>t+numOf(p.cash),0);
+    if(cashSum>0) ins+=`<table class="wide">${row('มูลค่าเงินสดรวมทุกเล่ม (ในไฟล์นับเป็นทรัพย์สิน)',fmt(cashSum),'฿')}</table>`; }
+  const WELF={none:'ไม่มี',sso:'ประกันสังคมอย่างเดียว',group:'ประกันกลุ่มบริษัท'+(num('welfroom')?' · ค่าห้อง '+fmt(num('welfroom'))+' ฿/คืน':'')+(num('welfmed')?' · วงเงิน '+fmt(num('welfmed'))+' ฿'+({visit:'/ครั้ง',year:'/ปี'}[V.welfper]||''):'')};
+  ins+=`<table class="wide">${row('สวัสดิการที่ทำงาน',WELF[V.welf]||'ไม่ได้ตอบ')}</table>`;
   ins=`<div class="pg"><h3>ประกันที่มี</h3>${ins}</div>`;
-  const gl=GOALS.filter(g=>numOf(g.amt)>0);
-  let goals=gl.length?'<table>'+gl.map(g=>row((g.ico||'')+' '+esc(g.name||'เป้าหมาย'),fmt(numOf(g.amt))+' ฿ · อีก '+numOf(g.yrs)+' ปี')).join('')+'</table>':'<div class="empty">ไม่ได้กรอก</div>';
+  const gl=GOALS.filter(g=>numOf(g.amt)>0), glNo=GOALS.filter(g=>!(numOf(g.amt)>0)&&goalTouched(g));
+  const gName=g=>esc(((g.ico||'')+' '+((g.name||'').trim()||'เป้าหมายอื่น ๆ')).trim());
+  let goals=(gl.length||glNo.length)?'<table class="wide">'+gl.map(g=>`<tr><td>${gName(g)}</td><td class="v">${fmt(numOf(g.amt))+' ฿ · อีก '+(blank(intClean(g.yrs))?'5 ปี'+dn('ไม่ได้ระบุ — ใช้ 5 ปีไปก่อน'):!inRange('yrs',intOf(g.yrs))?'5 ปี'+dn('ที่กรอก '+intOf(g.yrs)+' ปี ใช้ไม่ได้ (รับ 0–60) — ใช้ 5 ปีไปก่อน'):intOf(g.yrs)+' ปี')}</td><td class="u"></td></tr>`).join('')
+      +glNo.map(g=>`<tr><td>${gName(g)}</td><td class="v">ยังไม่ได้ใส่ยอดเงิน — ยังไม่เข้าแผน</td><td class="u"></td></tr>`).join('')+'</table>':'<div class="empty">ไม่ได้กรอก</div>';
   if(FOC[V.cfocus]||txt('cnote')) goals+=`<table class="wide">${FOC[V.cfocus]?row('อยากให้ช่วยดูเป็นพิเศษ',FOC[V.cfocus]):''}${txt('cnote')?row('เรื่องที่อยากบอกที่ปรึกษา',esc(txt('cnote'))):''}</table>`;
   goals=`<div class="pg"><h3>เป้าหมาย</h3>${goals}</div>`;
+  const dfl=defaultsUsed();
+  const dbox=(dfl.length?`<div class="pbox"><b>ช่องที่ไม่ได้กรอก — ไฟล์ใช้ค่าตั้งต้นของระบบแทน (มีหมายเหตุในไฟล์ให้ที่ปรึกษาทราบว่าเป็นค่าตั้งต้น ไม่ใช่คำตอบของผู้กรอก)</b><br>${dfl.map(x=>'• '+esc(x)).join('<br>')}</div>`:'')
+    +(notIncluded().length?`<div class="pbox"><b>ยังไม่ได้ใส่ในไฟล์ (ที่ปรึกษาจะสอบถามเพิ่ม)</b><br>${notIncluded().map(x=>'• '+esc(x)).join('<br>')}</div>`:'')
+    +(!blank(V._intOldM)&&V._intAck!=='1'?`<div class="pbox">${intNoteText()} (ผู้กรอกยังไม่ได้กดรับทราบ)</div>`:'');
   $('printArea').innerHTML=`
     <div class="ph"><div class="l"><img src="${LOGO_SRC}" alt=""><div class="wm">Signature 41<small>Financial Clinic · Customized for One</small></div></div>
       <div class="r"><b>${esc(name)}</b>สำเนาข้อมูลวางแผนการเงิน · ${dateTh}</div></div>
     <div class="pt">แบบฟอร์มข้อมูลวางแผนการเงิน (Money MRI)</div>
-    <div class="ps">สำเนาสำหรับผู้กรอก · ตัวเลขเป็นค่าประมาณตามที่กรอกด้วยตนเอง · ที่ปรึกษาจะตรวจสอบและเติมส่วนที่ขาดในนัดหมาย</div>
-    <div class="cols">${me}${fam}</div>
+    <div class="ps">สำเนาสำหรับผู้กรอก · ตัวเลขเป็นค่าประมาณตามที่กรอกด้วยตนเอง · ส่วนที่ยังขาด ที่ปรึกษาจะสอบถามเพิ่มเติม</div>
+    ${famLong?me+fam:`<div class="cols">${me}${fam}</div>`}
+    ${dbox}
     <div class="cols">${moneyGrp('income')}${moneyGrp('fixed')}</div>
     <div class="cols">${moneyGrp('vary')}${moneyGrp('save')}</div>
     <div class="cols">${moneyGrp('assets')}${moneyGrp('liab')}</div>
     ${ins}${goals}
-    <div class="pf">เอกสารนี้เป็นสำเนาข้อมูลที่ผู้กรอกบันทึกไว้เอง ไม่ใช่รายงานวิเคราะห์ · ข้อมูลถูกเก็บในเครื่องของผู้กรอกจนกว่าจะส่งไฟล์ให้ที่ปรึกษา · S41 Client Form v${VERSION} · Signature 41 Financial Clinic · health.s41clinic.com</div>`;
+    <div class="pf">เอกสารนี้เป็นสำเนาข้อมูลที่ผู้กรอกบันทึกไว้เอง ไม่ใช่รายงานวิเคราะห์ · ระบบไม่ได้ส่งข้อมูลให้ใคร ผู้กรอกเป็นคนส่งไฟล์ข้อมูลให้ที่ปรึกษาเอง · S41 Client Form v${VERSION} · Signature 41 Financial Clinic · health.s41clinic.com</div>`;
 }
 function savePdf(){
   renderPrint();
-  setStatus('note','เปิดหน้าต่างพิมพ์ของเครื่องแล้ว — เลือก <b>"บันทึกเป็น PDF" / "Save as PDF"</b> (iPhone: กดปุ่มแชร์ในหน้าตัวอย่าง → บันทึกไปที่ไฟล์) · ถ้าไม่มีอะไรขึ้น เบราว์เซอร์นี้ไม่รองรับการพิมพ์ ให้เปิดใน Safari/Chrome');
+  /* v1.7 (m-06): เดิมขึ้น "เปิดหน้าต่างพิมพ์ของเครื่องแล้ว" ก่อนจะสั่งพิมพ์จริง และระบบไม่รู้ว่าหน้าต่างขึ้นหรือไม่ */
+  setStatus('note','กำลังสั่งเปิดหน้าต่างพิมพ์ (ระบบตรวจไม่ได้ว่าหน้าต่างขึ้นหรือไม่) — ถ้าขึ้น เลือก <b>"บันทึกเป็น PDF" / "Save as PDF"</b> (iPhone: กดปุ่มแชร์ในหน้าตัวอย่าง → บันทึกไปที่ไฟล์) · ถ้าไม่มีอะไรขึ้น เบราว์เซอร์นี้ไม่รองรับการพิมพ์ ให้เปิดใน Safari/Chrome');
   setTimeout(()=>{ try{ window.print(); }catch(e){ setStatus('warn','เปิดหน้าต่างพิมพ์ไม่ได้: '+esc(e.message)); } },50);
 }
 
-/* ═══════════════ สร้างไฟล์ (โครงเดียวกับ Step 2 v2.6.4 · stage:'client') ═══════════════ */
+/* v1.3: "จ่ายเบี้ยถึง" รับได้ทั้งอายุและปี พ.ศ./ค.ศ. — แปลงเป็น "อายุ" ให้ตรงกับช่องของ MRI · v1.7: ย้ายออกมาให้สำเนา PDF ใช้ตัวเดียวกับไฟล์ */
+function payAgeOf(raw,age){ const d=thaiDigits(String(raw==null?'':raw)).replace(/[^\d]/g,''); if(!d) return ''; const n=Number(d);
+  const beNow=new Date().getFullYear()+543;
+  let r=null;
+  /* v1.7b (AB2-16): ปีที่ผ่านมาแล้ว เดิมถูกปัดเป็นอายุปัจจุบันเงียบ ๆ ("1999" → อายุ 40) — ตอนนี้แปลงตามจริง (น้อยกว่าอายุปัจจุบัน = จ่ายครบแล้ว) และไฟล์มีโน้ตให้ยืนยัน */
+  if(n>=2400&&n<=2700) r=age+(n-beNow);
+  else if(n>=1900&&n<2400) r=age+(n-(beNow-543));
+  if(r!=null && r<0) r=null;
+  else if(n>0&&n<=120) r=n;
+  return (r!=null && r<=120) ? String(r) : ''; }   /* v1.6: ผลลัพธ์เกิน 120 ปี = อ่านไม่ออก ไม่ส่ง (เดิมได้อายุ 413) */
+
+/* ═══════════════ สร้างไฟล์ (โครงเดียวกับ Step 2 หมอเงิน v2.6.9 · stage:'client') ═══════════════ */
 const EDU_LEVELS=[['อนุบาล',3,3],['ประถม',6,6],['มัธยม',6,12],['ป.ตรี',4,18],['ป.โท',2,22]];
 const EDU_FEE={'อนุบาล':[15000,80000,350000],'ประถม':[20000,120000,500000],'มัธยม':[25000,150000,650000],'ป.ตรี':[40000,150000,400000],'ป.โท':[100000,200000,350000]};
+/* v1.6: การ์ดกรมธรรม์ที่กด "+ เพิ่ม" แล้วไม่ได้กรอกอะไรเลย ไม่นับเป็นกรมธรรม์ (เดิมถูกส่งเป็นกรมธรรม์ AIA เปล่า ๆ 1 เล่ม) */
+/* v1.7b (AB2-17): เล่มที่เลือกแค่บริษัท (ยังไม่กรอกตัวเลข) นับเป็นกรมธรรม์ + โน้ตให้ที่ปรึกษา — เดิมถูกตัดทิ้งเงียบ ๆ (บริษัท AIA จากร่างรุ่นเก่าที่เลือกให้ล่วงหน้า ไม่นับ) */
+const polFilled=p=>!!p && ((!blank(p.company)&&!p.coOld) || ['name','premium','payUntil','life','health','room','ciSevere','accMed','cash'].some(k=>String(p[k]==null?'':p[k]).trim()!==''));
+const polHasNum=p=>['premium','payUntil','life','health','room','ciSevere','accMed','cash'].some(k=>numOf(p[k])>0);
+/* อายุจบการดูแลลูก: ป.โท (ลูกค้าเลือก) 24 · อื่น ๆ 22 — ชุดเดียวกับหมอเงิน 2.1 */
+function kidEnd(k){ return (k&&k.uptoSet===true&&k.upto==='master')?24:22; }
+/* อายุลูกที่ใช้ได้ (0–60) — นอกช่วงถือว่าไม่ได้กรอก */
+const spBad=()=>!blank(intClean(V.spage))&&!inRange('adult',intOf(V.spage));
+const spAge=()=>(!blank(intClean(V.spage))&&!spBad())?intOf(V.spage):0;
+const kidAgeOK=k=>!!k&&!blank(intClean(k.age))&&inRange('kid',intOf(k.age));
 const eduGoalId=(kidId,lvl)=>{ const str='E'+kidId+'|'+lvl; let h=0; for(let i=0;i<str.length;i++){ h=(h*31+str.charCodeAt(i))>>>0; } return 900000000+(h%99000000); };
 
 function buildClientFile(){
-  const age=num('cage')||35, ra=Math.max(num('cret')||60, age+1), life=85;
+  const POLS=POLICIES.filter(polFilled);
+  /* v1.7: อายุ / อายุเกษียณ / อายุสิ้นสุดแผน มาจาก planAges() ที่เดียวกับหน้าจอและสำเนา PDF
+     อายุเกษียณ (ra) = ปีสุดท้ายที่ทำงาน (กติกาเดียวกับหมอเงิน v2.6.9 และ MRI v3.9.95):
+       กรอกน้อยกว่าอายุปัจจุบัน → ใช้อายุปัจจุบัน + โน้ต · เท่ากับอายุปัจจุบัน → ใช้ตามที่กรอก · อายุสิ้นสุดแผนต้อง ≥ ra+1 */
+  const A=planAges(); const age=A.age, ra=A.ra, life=A.life;
   const nm=txt('cname')||'ลูกค้าใหม่';
   const est=[];
+  const DFLT=' (ค่าตั้งต้นของฟอร์ม ไม่ใช่คำตอบของลูกค้า)';
+  /* v1.3: บอกที่ปรึกษาเมื่อระบบต้องปรับ/เดาค่าพื้นฐาน · v1.7: ค่าตั้งต้นทุกตัวมีโน้ต (เดิมเกษียณ 60 และสิ้นสุดแผน 85 ไม่มีโน้ต) */
+  /* v1.7b (C2-05): ค่านอกช่วง — ข้อความเดียวกับหมอเงิน 2.1 ("ที่กรอก (X) ใช้ไม่ได้ — ระบบใช้ ... ไปก่อน") */
+  if(!A.ageT) est.push((A.ageBad!==null?'อายุที่กรอก ('+A.ageBad+') ใช้ไม่ได้ (รับ 1–110)':'ลูกค้าไม่ได้กรอกอายุ')+' — ระบบใช้ 35 ปีไปก่อน'+DFLT+' ต้องแก้ก่อนทำแผน');
+  else if(A.ageT>100||A.ageT<15) est.push('ลูกค้ากรอกอายุ '+A.ageT+' ปี — ตรวจว่าพิมพ์ถูกหรือไม่');
+  const raNo=A.raBad!==null?'อายุเกษียณที่ลูกค้ากรอก ('+A.raBad+') ใช้ไม่ได้ (รับ 1–110)':'ลูกค้าไม่ได้กรอกอายุเกษียณ';
+  const lifeNo=A.lifeBad!==null?'อายุสิ้นสุดแผนที่ลูกค้ากรอก ('+A.lifeBad+') ใช้ไม่ได้ (รับ 2–120)':'ลูกค้าไม่ได้กรอกอายุสิ้นสุดแผน';
+  if(A.raWhy==='typedLow') est.push('ลูกค้ากรอกอายุเกษียณ (ปีสุดท้ายที่ทำงาน) '+A.raT+' ซึ่งน้อยกว่า'+(A.ageT?'อายุปัจจุบัน ('+age+')':'อายุตั้งต้น ('+age+' — ลูกค้าไม่ได้กรอกอายุ)')+' — ระบบตั้งเป็น '+ra+' (ปีนี้เป็นปีสุดท้ายที่ทำงาน) ไปก่อน ต้องยืนยันกับลูกค้า');
+  else if(A.raWhy==='default') est.push(raNo+' — ระบบใช้ 60'+DFLT+' = ทำงานถึงอายุ 60 เป็นปีสุดท้าย ต้องยืนยันกับลูกค้า');
+  else if(A.raWhy==='defaultLow') est.push(raNo+' และค่าตั้งต้น 60 น้อยกว่าอายุปัจจุบัน ('+age+') — ระบบตั้งเป็น '+ra+' (ปีนี้เป็นปีสุดท้ายที่ทำงาน) ไปก่อน ต้องยืนยันกับลูกค้า');
+  else if(A.raT===age) est.push('ลูกค้ากรอกอายุเกษียณ '+A.raT+' เท่ากับอายุปัจจุบัน = ปีนี้เป็นปีสุดท้ายที่ทำงาน (ใช้ตามที่กรอก)');
+  /* v1.6: อายุเกษียณ ≥ อายุสิ้นสุดแผน — เดิมส่งไปทั้งอย่างนั้น MRI ขึ้นว่าแผนพอทั้งที่ไม่มีช่วงเกษียณให้คิด */
+  if(A.lifeWhy==='default') est.push(lifeNo+' (ใช้เงินถึงอายุ) — ระบบใช้ 85 ซึ่งเป็นค่าตั้งต้นของเครื่องมือ ไม่ใช่คำตอบของลูกค้า');
+  else if(A.lifeWhy==='defaultLow') est.push(lifeNo+' และค่าตั้งต้น 85 ไม่เกินอายุเกษียณ ('+ra+') — ระบบตั้งอายุสิ้นสุดแผนเป็น '+life+' ไปก่อน ต้องยืนยันอายุและอายุเกษียณกับลูกค้า');
+  else if(A.lifeWhy==='typedLow') est.push('ลูกค้ากรอกอายุสิ้นสุดแผน '+A.lifeT+' ซึ่งไม่เกินอายุเกษียณ ('+ra+') — ระบบตั้งเป็น '+life+' ไปก่อน ต้องยืนยันกับลูกค้า');
 
   const detail={
     assets:{ liquid:{savings:0,fixedDep:0,moneyFund:0}, liquidExtra:[],
@@ -530,12 +960,18 @@ function buildClientFile(){
   Object.values(MONEY_SCREENS).forEach(M=>M.rows.forEach(([id,label,per,snap])=>{
     const raw=num(id); if(!raw) return; filled++;
     if(snap.startsWith('special')) return;
-    const v=(snap==='cashflow.income.bonus')?raw:(per==='y'?raw/12:raw);
+    const v=(snap==='cashflow.income.bonus')?raw:(per==='y'?raw/12:raw);   /* v1.7: ดอกเบี้ย/ปันผล กรอกต่อปี → เก็บต่อเดือน (÷12) เหมือนช่องรายปีอื่น · โบนัสเก็บต่อปีตามสเปค MRI */
     setPath(detail,snap,Math.round(v*100)/100);
   }));
+  if(!blank(V._intOldM)) est.push('ดอกเบี้ย/เงินปันผล: ร่างเดิมของลูกค้ากรอกเป็นต่อเดือน ('+fmt(numOf(V._intOldM))+' ฿/เดือน) — ฟอร์มรุ่นใหม่ถามเป็นต่อปี ระบบคูณ 12 เป็น '+fmt(numOf(V._intOldM)*12)+' ฿/ปี · ยอดในไฟล์ตอนนี้ '+fmt(num('fi_interest'))+' ฿/ปี · '+(V._intAck==='1'?'ลูกค้ากดรับทราบแล้ว':'ลูกค้ายังไม่ได้กดรับทราบ — ยืนยันยอดนี้'));
+  /* v1.7: หมวดที่ไม่มียอด — แยกให้ที่ปรึกษาเห็นว่าลูกค้า "ตอบว่าไม่มี" (กดปุ่มเอง) หรือ "ไม่ได้กรอก" (ไม่ทราบว่าไม่มีหรือข้าม) */
+  { const yes=[], no=[];
+    ['income','fixed','vary','save','assets','liab'].forEach(k=>{ if(moneyCount(k)>0) return; (V['none_'+k]==='1'?yes:no).push(MONEY_SCREENS[k].title); });
+    if(yes.length) est.push('ลูกค้ากดตอบว่า "ไม่มี": '+yes.join(' · '));
+    if(no.length) est.push('ลูกค้าไม่ได้กรอก (ไม่ทราบว่าไม่มีหรือข้าม): '+no.join(' · ')+' — ต้องถาม'); }
   /* กันนับเบี้ยซ้ำ: MRI นับเบี้ยจากทะเบียนกรมธรรม์เป็นรายจ่ายอยู่แล้ว
      → ช่อง "เบี้ยรวมทุกเล่ม" ในงบกระแส เหลือเฉพาะส่วนที่เกินจากเล่มที่ลูกค้ากรอกในทะเบียน */
-  const premSum=POLICIES.reduce((t,p)=>t+numOf(p.premium),0);
+  const premSum=POLS.reduce((t,p)=>t+numOf(p.premium),0);
   if(premSum>0 && num('ff_lifeIns')>0){
     const rest=Math.max(0,num('ff_lifeIns')-premSum);
     detail.cashflow.fixed.lifeIns=Math.round(rest/12*100)/100;
@@ -545,78 +981,160 @@ function buildClientFile(){
   /* ผู้วางแผน + รายได้ */
   const incomes=[];
   const salaryM=num('fi_salary');
-  if(salaryM>0) incomes.push({ id:'i1', ico:'💼', name:'เงินเดือน / รายได้หลัก', monthly:salaryM, startAge:age, endAge:Math.max(ra-1,age), growth:3, color:'#C8635A' });
+  /* v1.7: เงินเดือนได้ถึงปีที่อายุ = อายุเกษียณ (ปีสุดท้ายที่ทำงาน) — เดิมจบที่อายุเกษียณ − 1 */
+  if(salaryM>0) incomes.push({ id:'i1', ico:'💼', name:'เงินเดือน / รายได้หลัก', monthly:salaryM, startAge:age, endAge:Math.max(ra,age), growth:3, color:'#C8635A' });
   else est.push('ลูกค้าไม่ได้กรอกเงินเดือน/รายได้หลัก — ต้องถามก่อนทำแผน');
-  const carrier={ id:'c-primary', name:nm, age, life, retireAge:ra, retireMode:'items', incomes };
+  /* v1.7 (m-08): เดิมเขียนว่า "MRI ใช้โหมดเลือกตามรายการ จากงบกระแสเงินสดที่กรอก" แม้ลูกค้าไม่ได้กรอกรายจ่ายเลย
+     v1.7b (C2-03): ไม่มีรายการรายจ่ายเลย → โหมด 'auto70' (70% ของค่าใช้จ่าย) เหมือนหมอเงิน 2.1 — เดิมส่ง 'items' ซึ่งไม่มีรายการให้เลือก */
+  const expN=moneyCount('fixed')+moneyCount('vary');
+  const carrier={ id:'c-primary', name:nm, age, life, retireAge:ra, retireMode:(expN>0?'items':'auto70'), incomes };
   if(num('cretexp')>0){ carrier.retireExpense=num('cretexp'); carrier.retireMode='custom'; }
-  else est.push('ลูกค้าไม่ได้ระบุเงินใช้หลังเกษียณ — MRI ใช้โหมด "เลือกตามรายการ" จากงบกระแสเงินสดที่กรอก');
-  if(num('fi_pension')>0){ carrier.pensionMonthly=num('fi_pension'); est.push('รายได้หลังเกษียณ '+fmt(num('fi_pension'))+' ฿/เดือน ตามที่ลูกค้าคาด — ยืนยันแหล่งที่มา/ระยะเวลา'); }
-  const HOSP={gov:[5000000,'รพ.รัฐ / ห้องพิเศษ'],mid:[15000000,'รพ.เอกชนทั่วไป'],hi:[25000000,'รพ.เอกชนชั้นนำ']};
+  else est.push(expN>0
+    ? 'ลูกค้าไม่ได้ระบุเงินใช้หลังเกษียณ — MRI ใช้โหมด "เลือกตามรายการ" จากรายจ่ายที่ลูกค้ากรอก ('+expN+' รายการ)'
+    : 'ลูกค้าไม่ได้ระบุเงินใช้หลังเกษียณ และไม่ได้กรอกรายจ่าย — ไฟล์ตั้ง MRI เป็นโหมด 70% ของค่าใช้จ่าย (แบบเดียวกับหมอเงิน 2.1) แต่ตอนนี้ยังไม่มีรายจ่ายให้คิด จึงยังไม่มีตัวเลขค่าใช้จ่ายหลังเกษียณ ต้องถามก่อนสรุปแผนเกษียณ');
+  if(num('fi_pension')>0){
+    carrier.pensionMonthly=num('fi_pension');
+    /* v1.3: ใส่เป็นรายได้บนเส้นเวลาด้วย — เดิมใส่แค่ pensionMonthly ทำให้ตารางกระแสเงินสดล่วงหน้าของ MRI ไม่มีรายได้ก้อนนี้เลย (ทำแบบเดียวกับไฟล์จากหมอเงิน 2.1)
+       v1.7: เริ่มปีถัดจากปีสุดท้ายที่ทำงาน (ra+1) ถึงสิ้นแผน · pen:true = บรรทัดบำนาญ (ที่เก็บเดียวของ MRI v3.9.95) · pensionMonthly = ยอดเดียวกัน */
+    incomes.push({ id:'i2', ico:'🏖️', name:'รายได้หลังเกษียณ (ตามที่ลูกค้าคาด)', monthly:num('fi_pension'), startAge:Math.min(ra+1,life), endAge:life, growth:0, color:'#6BA89E', pen:true });
+    est.push('รายได้หลังเกษียณ '+fmt(num('fi_pension'))+' ฿/เดือน ตามที่ลูกค้าคาด เริ่มอายุ '+Math.min(ra+1,life)+' (ปีถัดจากปีสุดท้ายที่ทำงาน) — ยืนยันแหล่งที่มา/ระยะเวลา');
+    if(num('fi_rental')>0||num('fi_interest')>0) est.push('ลูกค้ากรอกทั้ง "รายได้หลังเกษียณ" และ ค่าเช่า/ดอกเบี้ย-ปันผล — MRI นับค่าเช่าและดอกเบี้ย-ปันผลต่อเนื่องหลังเกษียณอยู่แล้ว ตรวจว่าไม่ใช่เงินก้อนเดียวกัน (กันนับซ้ำ)'); }
+  const HOSP={gov:[5000000,'รพ.รัฐ'],mid:[15000000,'เอกชนกลาง'],hi:[25000000,'เอกชนหรู']};   /* v1.4: ชื่อระดับชุดเดียวกับ MRI และหมอเงิน */
   if(HOSP[V.chosp]) carrier.healthTarget=HOSP[V.chosp][0];
+  else est.push('ลูกค้าไม่ได้เลือกระดับโรงพยาบาล — ไฟล์ไม่ได้ตั้งวงเงินสุขภาพที่ควรมี (MRI จะใช้ค่าเริ่มต้นของ MRI เอง) ต้องถาม');
   const carriers=[carrier];
 
   /* ผู้พึ่งพิง */
   const dependents=[]; const eduPlan={}; const eduGoals=[];
+  /* v1.7: ไม่ได้ตอบ ≠ ไม่มี — บอกที่ปรึกษาว่าข้อไหนลูกค้ายังไม่ได้ตอบ (เดิมไฟล์ออกมาเหมือนคนโสดไม่มีภาระ) */
+  { const na=[]; if(blank(V.cmar)) na.push('สถานะ (โสด / มีคู่)'); if(blank(V.nkids)) na.push('มีลูกหรือไม่'); if(blank(V.npar)) na.push('มีพ่อแม่/ผู้ใหญ่ที่ต้องดูแลหรือไม่');
+    if(na.length) est.push('ลูกค้าไม่ได้ตอบ: '+na.join(' · ')+' — ไฟล์ยังไม่มีผู้พึ่งพิงในส่วนที่ไม่ได้ตอบ ต้องถามก่อนสรุปทุนคุ้มครอง'); }
   if(V.cmar==='married'){
     if(V.spinc==='no'){
-      dependents.push({ id:'d-sp', parent:'c-primary', name:txt('spname')||'คู่ชีวิต', age:num('spage')||age, kind:'spouse', monthly:num('spmon')||0, life:85 });
+      if(!spAge()) est.push((spBad()?'อายุคู่ชีวิตที่กรอก ('+intOf(V.spage)+') ใช้ไม่ได้ (รับ 1–110)':'ลูกค้าไม่ได้กรอกอายุคู่ชีวิต')+' — ระบบใช้อายุเท่าลูกค้า ('+age+') ไปก่อน ต้องยืนยัน');
+      dependents.push({ id:'d-sp', parent:'c-primary', name:txt('spname')||'คู่ชีวิต', age:spAge()||age, kind:'spouse', monthly:num('spmon')||0, life:85 });
     } else if(V.spinc==='yes'){
-      est.push('คู่ชีวิต "'+(txt('spname')||'-')+'" อายุ '+(num('spage')||'-')+' มีรายได้ของตัวเอง — ยังไม่ได้เพิ่มเป็นผู้วางแผนคนที่ 2 ใน MRI (เพิ่มได้ถ้าจะวางแผนร่วมกัน)');
+      est.push('คู่ชีวิต "'+(txt('spname')||'-')+'" อายุ '+(spAge()||'-')+' มีรายได้ของตัวเอง — ยังไม่ได้เพิ่มเป็นผู้วางแผนคนที่ 2 ใน MRI (เพิ่มได้ถ้าจะวางแผนร่วมกัน)');
+    } else {
+      /* v1.3: เดิมถ้าลูกค้าไม่ได้ตอบข้อ "คู่ชีวิตมีรายได้ไหม" ข้อมูลคู่ชีวิต (ชื่อ/อายุ) หายไปทั้งหมด */
+      est.push('ลูกค้าระบุว่ามีคู่ชีวิต'+(txt('spname')?' "'+txt('spname')+'"':'')+(spAge()?' อายุ '+spAge():'')+' แต่ไม่ได้ตอบว่าคู่ชีวิตมีรายได้ของตัวเองหรือไม่ — ยังไม่ได้ใส่ในแผน ต้องถามเพิ่ม');
     }
   }
   const nk=parseInt(V.nkids||'0')||0;
-  for(let i=0;i<nk;i++){ const k=KIDS[i]||{}; const kAge=numOf(k.age);
-    const id='d-k'+(i+1);
-    dependents.push({ id, parent:'c-primary', name:(k.name||'').trim()||('บุตรคนที่ '+(i+1)), age:kAge, kind:'child', monthly:numOf(k.mon), endAge:k.upto==='master'?24:22 });
+  const TIER_N=['รัฐ','เอกชน','นานาชาติ'];
+  /* v1.7b (C2-01): ไม่ได้เลือกแนวโรงเรียน (หรือค่าจากร่างรุ่นเก่าที่ยังไม่ยืนยัน) → ไม่สร้างค่าเทอมของลูกคนนั้น (ไม่มี eduPlan / เป้าหมาย 🎓) + โน้ต — เหมือนหมอเงิน 2.1
+     เลือกแนวโรงเรียนแล้วแต่ไม่ได้เลือก "ส่งเรียนถึง" → คิดถึง ป.ตรี (ชั้นที่ทั้งสองตัวเลือกมีเหมือนกัน) ไม่รวม ป.โท + โน้ต
+     (C2-02): ลูกอายุเกินอายุจบการดูแล (22 / 24) → endAge = อายุปัจจุบันของลูก + โน้ต (เดิมส่ง endAge ต่ำกว่าอายุ ค่าเลี้ยงดูที่กรอกหายจากแผน) */
+  const kidNotes=[], noTier=[];
+  for(let i=0;i<nk;i++){ const k=KIDS[i]||{}; const ageOK=kidAgeOK(k); const kAge=ageOK?intOf(k.age):0;
+    const id='d-k'+(i+1); const kn=(k.name||'').trim(); const kl='ลูกคนที่ '+(i+1)+(kn?' ('+kn+')':'');
+    const tierOK=tierOn(k), master=(k.uptoSet===true&&k.upto==='master'), endT=kidEnd(k);
+    if(!ageOK) est.push(kl+(blank(intClean(k.age))?' ลูกค้าไม่ได้กรอกอายุ':' อายุที่กรอก ('+intOf(k.age)+') ใช้ไม่ได้ (รับ 0–60)')+' — '+(tierOK?'ระบบคิดค่าเทอมครบทุกชั้นเหมือนอายุ 0':'ไฟล์ใช้อายุ 0')+' ต้องยืนยันอายุก่อนทำแผน');
+    if(kAge>endT) est.push(kl+' อายุ '+kAge+' เกินอายุจบการศึกษาที่ตั้งเป้า ('+endT+') — ไม่มีค่าเทอมในแผน ไฟล์ตั้งให้การดูแลจบที่อายุ '+kAge+' ไปก่อน'+(numOf(k.mon)>0?' (ค่าเลี้ยงดู '+fmt(numOf(k.mon))+' ฿/เดือน ที่ลูกค้ากรอก จึงนับแค่ปีนี้)':'')+' ถ้ายังต้องดูแลต่อ แก้อายุสิ้นสุดและค่าเลี้ยงดูใน MRI');
+    dependents.push({ id, parent:'c-primary', name:kn||('บุตรคนที่ '+(i+1)), age:kAge, kind:'child', monthly:numOf(k.mon), endAge:Math.max(endT,kAge) });
+    if(!tierOK){ noTier.push(kl+(k.tierSet==='old'?' (ร่างฟอร์มรุ่นเดิมมี "เอกชน" ที่ฟอร์มเลือกให้ล่วงหน้า — ลูกค้ายังไม่ได้ยืนยัน)':'')); continue; }
     const tier=parseInt(k.tier||'1')||0; const plan={pick:{},custom:{}};
     EDU_LEVELS.forEach(([lvl,yrs,start])=>{
-      if(lvl==='ป.โท' && k.upto!=='master') return;
+      if(lvl==='ป.โท' && !master) return;
       plan.pick[lvl]=tier;
       const perYear=EDU_FEE[lvl][tier]; const rem=Math.max(0,Math.min(yrs,start+yrs-Math.max(kAge,start)));
       if(rem<=0) return;
       eduGoals.push({ id:eduGoalId(id,lvl), name:'ค่าเทอม '+lvl, ico:'🎓', amt:-(perYear*rem), age:Math.round(age+Math.max(0,start-kAge)), eduYears:rem, rank:500+Math.round(age+Math.max(0,start-kAge)), parent:id, split:false, eduAuto:true, eduKid:id });
     });
     eduPlan[id]=plan;
+    kidNotes.push((kn||'ลูกคนที่ '+(i+1))+': '+TIER_N[tier]+(k.tierSet==='preset'?' (ฟอร์มเลือกไว้ให้ก่อน ลูกค้าไม่ได้เปลี่ยน — ถามยืนยัน)':' (ลูกค้าเลือก)')+' ถึง '+(master?'ป.โท (ลูกค้าเลือก)':k.uptoSet===true?'ป.ตรี (ลูกค้าเลือก)':k.uptoSet==='old'?'ป.ตรี (จากร่างฟอร์มรุ่นเดิม — ไม่ทราบว่าลูกค้าเลือกเองหรือเป็นค่าตั้งต้น · ยังไม่รวม ป.โท)':'ป.ตรี (ลูกค้าไม่ได้เลือก "ส่งเรียนถึง" — ใส่ถึง ป.ตรี ยังไม่รวม ป.โท)'));
   }
-  if(nk) est.push('ค่าเทอมใช้ตารางมาตรฐาน S41 ตามแนวโรงเรียนที่ลูกค้าเลือก ('+KIDS.slice(0,nk).map(k=>(k.name||'ลูก')+'='+['รัฐ','เอกชน','นานาชาติ'][parseInt(k.tier||'1')||0]).join(', ')+') — ปรับรายชั้นได้ที่หน้าทุนการศึกษาบุตร');
+  if(kidNotes.length) est.push('ค่าเทอมใช้ตารางมาตรฐาน S41 — '+kidNotes.join(' · ')+' — ปรับรายชั้นได้ที่หน้าทุนการศึกษาบุตร');
+  if(noTier.length) est.push('ยังไม่มีค่าเทอมในไฟล์ของ: '+noTier.join(' · ')+' — ลูกค้ายังไม่ได้เลือก/ยืนยันแนวโรงเรียน ถามลูกค้าแล้วตั้งที่หน้าทุนการศึกษาบุตรใน MRI');
   const np=parseInt(V.npar||'0')||0;
-  for(let i=0;i<np;i++){ const p=PARENTS[i]||{}; const pa=numOf(p.age)||65;
+  for(let i=0;i<np;i++){ const p=PARENTS[i]||{}; const pOK=!blank(intClean(p.age))&&inRange('adult',intOf(p.age)); const pa=pOK?intOf(p.age):65;
+    if(!pOK) est.push('ผู้ใหญ่ที่ดูแลคนที่ '+(i+1)+((p.name||'').trim()?' ('+(p.name||'').trim()+')':'')+(blank(intClean(p.age))?' ลูกค้าไม่ได้กรอกอายุ':' อายุที่กรอก ('+intOf(p.age)+') ใช้ไม่ได้ (รับ 1–110)')+' — ระบบใช้ 65 ปีไปก่อน ต้องยืนยัน');
     dependents.push({ id:'d-p'+(i+1), parent:'c-primary', name:(p.name||'').trim()||('ผู้ใหญ่ที่ดูแล '+(i+1)), age:pa, kind:'parent', monthly:numOf(p.mon), life:Math.max(85,pa+1) });
   }
+  /* v1.7: ฟอร์มไม่ได้ถามว่าจะดูแลคู่ชีวิต/พ่อแม่ถึงเมื่อไร — ตัวเลข 85 ในไฟล์เป็นค่าตั้งต้น ต้องบอกที่ปรึกษา (เดิมไม่มีโน้ต) */
+  if(dependents.some(d=>d.kind==='spouse'||d.kind==='parent')) est.push('คู่ชีวิต/ผู้ใหญ่ที่ดูแล: ฟอร์มไม่ได้ถามว่าจะดูแลถึงเมื่อไร — ไฟล์ตั้งให้ดูแลถึงอายุ 85 ของคนนั้น (ถ้าอายุเกิน 84 แล้ว ตั้งเป็นอีก 1 ปี) เป็นค่าตั้งต้นของฟอร์ม ปรับตามจริง');
 
   /* เป้าหมาย */
   const goals=eduGoals.slice();
-  GOALS.forEach((g,i)=>{ const amt=numOf(g.amt); if(!(amt>0)) return;
-    const yrs=Math.max(0,numOf(g.yrs)); goals.push({ id:Date.now()+i, name:(g.name||'').trim()||'เป้าหมาย', ico:g.ico||'🎯', amt:-amt, age:Math.round(age+yrs), parent:'c-primary', split:false }); });
+  const goalNm=g=>{ const n=(g.name||'').trim(); return (!n||n==='อื่น ๆ'||n==='เป้าหมาย')?'เป้าหมายอื่น ๆ':n; };   /* v1.6: ชื่อเดียวกับหมอเงิน 2.1 */
+  GOALS.forEach((g,i)=>{ const amt=numOf(g.amt);
+    if(!(amt>0)){ /* v1.6: เดิมเป้าหมายที่มีชื่อแต่ไม่ได้ใส่ยอด หายเงียบ ๆ */
+      if(goalTouched(g)) est.push('เป้าหมาย "'+goalNm(g)+'" ลูกค้ายังไม่ได้ใส่ยอดเงิน — ยังไม่เข้าแผน ถามลูกค้าแล้วเพิ่มที่หน้า Goals ของ MRI');
+      return; }
+    /* v1.3: ไม่ได้กรอกจำนวนปี → ใช้ 5 ปี + ติดโน้ต — เดิมกลายเป็นเป้าหมายที่ต้องจ่ายปีนี้ทันที */
+    /* v1.7b (C2-05): จำนวนปีเกิน 60 ใช้ไม่ได้ — ถือว่าไม่ได้ระบุ ตั้ง 5 ปี + โน้ต (ข้อความเดียวกับหมอเงิน 2.1) */
+    const badYrs=!blank(intClean(g.yrs)) && !inRange('yrs',intOf(g.yrs));
+    const blankYrs=blank(intClean(g.yrs)) || badYrs;
+    if(blankYrs) est.push('เป้าหมาย "'+goalNm(g)+'" '+(badYrs?'ระบุ "อีก '+intOf(g.yrs)+' ปี" ซึ่งใช้ไม่ได้ (รับ 0–60 ปี)':'ลูกค้าไม่ได้ระบุว่าอีกกี่ปี')+' — ตั้งไว้ที่อีก 5 ปีไปก่อน');
+    const yrs=blankYrs?5:Math.max(0,intOf(g.yrs)); goals.push({ id:Date.now()+i, name:goalNm(g), ico:g.ico||'🎯', amt:-amt, age:Math.round(age+yrs), parent:'c-primary', split:false }); });
 
   /* กรมธรรม์ + คุ้มครอง */
-  const policies=POLICIES.map((p,i)=>({ id:Date.now()+100+i, company:p.company||'', name:(p.name||'').trim(), no:'', saleAge:'', start:'', payUntil:String(p.payUntil||'').trim(), maturity:'', owner:'c-primary',
-    life:numOf(p.life), premium:numOf(p.premium), health:numOf(p.health), accMed:0, hospCash:0, hospCancer:0, cancer:0, ciMid:0, ciSevere:numOf(p.ciSevere), ciCrit:0, care:0, paDeath:0, saving:0, annuity:0, surrender:0 }));
+  const payAge=raw=>payAgeOf(raw,age);
+  POLS.forEach((p,i)=>{ const d=thaiDigits(String(p.payUntil==null?'':p.payUntil)).replace(/[^\d]/g,''); if(!d) return; const conv=payAge(p.payUntil);
+    if(conv==='') est.push('กรมธรรม์เล่มที่ '+(i+1)+': ลูกค้ากรอก "จ่ายเบี้ยถึง" เป็น "'+d+'" — ระบบอ่านเป็นอายุหรือปีไม่ได้ จึงเว้นว่าง ต้องถามลูกค้า');
+    else if(Number(d)>120) est.push('กรมธรรม์เล่มที่ '+(i+1)+': ลูกค้ากรอก "จ่ายเบี้ยถึง" เป็นปี '+d+' → แปลงเป็นอายุ '+conv+' ให้แล้ว'+(Number(conv)<age?' (น้อยกว่าอายุปัจจุบัน '+age+' = ปีที่จ่ายครบผ่านมาแล้ว) — ยืนยันกับลูกค้า':''));
+    else if(Number(d)<age) est.push('กรมธรรม์เล่มที่ '+(i+1)+': ลูกค้ากรอก "จ่ายเบี้ยถึงอายุ" '+d+' ซึ่งน้อยกว่าอายุปัจจุบัน ('+age+') — ยืนยันกับลูกค้า'); });
+  /* v1.7: ช่องใหม่ต่อเล่ม — accMed (ค่ารักษาอุบัติเหตุ/ครั้ง) ลงทะเบียนกรมธรรม์ · มูลค่าเงินสดรวมทุกเล่มลงงบดุล (assets.invest.insCash) ช่องเดียวกับหมอเงิน 2.1
+     surrender ในทะเบียนคง 0 — MRI บวกทั้งสองช่องเป็นทรัพย์สิน ถ้าใส่ทั้งสองที่จะนับซ้ำ */
+  const policies=POLS.map((p,i)=>({ id:Date.now()+100+i, company:p.company||'', name:(p.name||'').trim(), no:'', saleAge:'', start:'', payUntil:payAge(p.payUntil), maturity:'', owner:'c-primary',
+    life:numOf(p.life), premium:numOf(p.premium), health:numOf(p.health), accMed:numOf(p.accMed), hospCash:0, hospCancer:0, cancer:0, ciMid:0, ciSevere:numOf(p.ciSevere), ciCrit:0, care:0, paDeath:0, saving:0, annuity:0, surrender:0 }));
+  /* v1.7: ยอดรวม "มีอยู่แล้ว" ลง snap.protection ช่องเดียวกับหมอเงิน 2.1 (lifeCov ← s5_life · ciCov ← s3_have · paMedMax ← s4_have)
+     เมื่อมีทะเบียนกรมธรรม์ MRI คิดยอดรวมจากทะเบียนทับเอง — ได้เลขเดียวกันเพราะเป็นผลรวมของเล่มชุดเดียวกัน */
   const protection={ lifeCov:policies.reduce((t,p)=>t+p.life,0), retireFund:0 };
-  if(HOSP[V.chosp]) protection.hospital=HOSP[V.chosp][1];
-  const roomHave=Math.max(0,...POLICIES.map(p=>numOf(p.room)),num('welfroom'));
+  const ciSum=policies.reduce((t,p)=>t+p.ciSevere,0), paSum=policies.reduce((t,p)=>t+p.accMed,0);
+  if(ciSum>0) protection.ciCov=ciSum;
+  if(paSum>0) protection.paMedMax=paSum;
+  if(txt('chospname')) protection.hospital=txt('chospname');   /* ชื่อโรงพยาบาล → ช่อง "โรงพยาบาลที่ไว้วางใจ" ของ MRI (ช่องเดียวกับ s2_hosp ของ 2.1) */
+  const cashList=POLS.map((p,i)=>[i+1,numOf(p.cash)]).filter(x=>x[1]>0), cashSum=cashList.reduce((t,x)=>t+x[1],0);
+  if(cashSum>0){ detail.assets.invest.insCash=cashSum;
+    est.push('มูลค่าเงินสดกรมธรรม์ที่ลูกค้ากรอก รวม '+fmt(cashSum)+' ฿ ('+cashList.map(x=>'เล่มที่ '+x[0]+': '+fmt(x[1])).join(' · ')+') อยู่ที่งบดุลช่อง "มูลค่าเงินสดกรมธรรม์ฯ" — ถ้าจะกรอก "มูลค่าเวนคืน" รายเล่มในทะเบียนกรมธรรม์ ให้ตั้งช่องในงบดุลเป็น 0 กันนับซ้ำ'); }
+  /* v1.3: ระดับ รพ. ไม่ใช่ชื่อโรงพยาบาล — ไม่ใส่ในช่อง "โรงพยาบาลที่ไว้วางใจ" ของ MRI แล้ว (ไปอยู่ใน _visit.hospitalPlan แทน) */
+  const welfRoom=(V.welf==='group'?num('welfroom'):0);   /* v1.6: เปลี่ยนสวัสดิการเป็น ไม่มี/ประกันสังคม แล้ว ค่าห้องที่เคยพิมพ์ไว้ไม่ถูกส่ง */
+  const roomHave=Math.max(0,...POLS.map(p=>numOf(p.room)),welfRoom);
   if(roomHave>0) protection.roomRateHave=roomHave;
-  if(policies.length) est.push('ทะเบียนกรมธรรม์ '+policies.length+' เล่ม กรอกโดยลูกค้าเฉพาะช่องหลัก (เบี้ย/ทุนชีวิต/วงเงินรักษา/โรคร้าย) — เติมช่องอื่นจากรูปตารางความคุ้มครอง');
-  else est.push('ลูกค้าระบุว่าไม่มีกรมธรรม์ (หรือยังไม่ได้กรอก) — ยืนยันอีกครั้ง');
-  if(V.welf==='group') est.push('มีประกันกลุ่มบริษัท: ค่าห้อง '+fmt(num('welfroom'))+' ฿/คืน · วงเงินรักษา '+fmt(num('welfmed'))+' ฿ — ใส่ไว้ที่ค่าห้องที่มีแล้ว ยังไม่ได้ลงทะเบียนกรมธรรม์');
-  est.push('ยังไม่ได้ทำแบบประเมินความเสี่ยง — พอร์ตใน MRI เป็นค่าเริ่มต้น "ปานกลาง" ทำแบบประเมินก่อนคุยแผนลงทุน');
+  /* v1.7 (m-09): ค่าห้องมีหลายแหล่ง ไฟล์เก็บได้ค่าเดียว (ค่าสูงสุด) — เขียนทุกค่าไว้ในโน้ต ไม่ให้ค่าที่เหลือหายเงียบ ๆ */
+  { const rl=POLS.map((p,i)=>[i+1,numOf(p.room)]).filter(x=>x[1]>0).map(x=>'เล่มที่ '+x[0]+': '+fmt(x[1])); if(welfRoom>0) rl.push('ประกันกลุ่ม: '+fmt(welfRoom));
+    if(rl.length>1) est.push('ค่าห้อง รพ. ต่อคืนที่ลูกค้ากรอก — '+rl.join(' · ')+' → "ค่าห้องที่มีแล้ว" ใช้ค่าสูงสุด '+fmt(roomHave)+' ฿/คืน (ไม่ได้บวกกัน) ตรวจว่าเบิกรวมกันได้หรือไม่'); }
+  if(policies.length){ est.push('ทะเบียนกรมธรรม์ '+policies.length+' เล่ม กรอกโดยลูกค้าเฉพาะช่องหลัก (เบี้ย/จ่ายถึงอายุ/ทุนชีวิต/วงเงินรักษา/โรคร้าย/ค่ารักษาอุบัติเหตุ) — เติมช่องอื่นจากรูปตารางความคุ้มครอง');
+    const coOld=POLS.map((p,i)=>p.coOld?i+1:0).filter(Boolean);
+    if(coOld.length) est.push('กรมธรรม์เล่มที่ '+coOld.join(', ')+': บริษัท "AIA" มาจากร่างฟอร์มรุ่นเดิมซึ่งเลือก AIA ให้ล่วงหน้า — ไม่ทราบว่าลูกค้าเลือกเองหรือไม่ ต้องยืนยัน');
+    const anon=policies.map((p,i)=>(!p.company&&!p.name)?i+1:0).filter(Boolean);
+    if(anon.length) est.push('กรมธรรม์เล่มที่ '+anon.join(', ')+' ลูกค้าไม่ได้ระบุบริษัทและแบบประกัน — อาจเป็นยอดรวมของหลายเล่ม ต้องถาม');
+    const noNum=POLS.map((p,i)=>polHasNum(p)?0:i+1).filter(Boolean);
+    if(noNum.length) est.push('กรมธรรม์เล่มที่ '+noNum.join(', ')+' ลูกค้าระบุแค่'+'บริษัท/ชื่อแบบ ยังไม่มีตัวเลข (เบี้ย ทุน วงเงิน เป็น 0 ในทะเบียน) — ขอรูปตารางความคุ้มครองแล้วเติม'); }
+  else est.push(V.none_ins==='1' ? 'ลูกค้ากดตอบว่าไม่มีประกันของตัวเอง — ยืนยันอีกครั้ง' : 'ลูกค้าไม่ได้กรอกกรมธรรม์ (ไม่ทราบว่าไม่มีหรือข้าม) — ต้องถาม');
+  /* v1.7 (m-08): เดิมเขียน "ค่าห้อง 0 ฿/คืน · ใส่ไว้ที่ค่าห้องที่มีแล้ว" แม้ไม่ได้กรอกค่าห้อง หรือค่าห้องของกรมธรรม์สูงกว่า */
+  if(V.welf==='group'){ const wm=num('welfmed');
+    est.push('มีประกันกลุ่มบริษัท: ค่าห้อง '+(welfRoom>0?fmt(welfRoom)+' ฿/คืน':'ไม่ได้กรอก')+' · วงเงินรักษา '+(wm>0?fmt(wm)+' ฿'+({visit:'/ครั้ง',year:'/ปี'}[V.welfper]||' (ไม่ได้ระบุว่าต่อครั้งหรือต่อปี)'):'ไม่ได้กรอก')
+      +(welfRoom>0?(welfRoom>=roomHave?' — ค่าห้องนี้ใส่ไว้ที่ "ค่าห้องที่มีแล้ว"':' — "ค่าห้องที่มีแล้ว" ใช้ค่าห้องจากกรมธรรม์ที่สูงกว่า ('+fmt(roomHave)+' ฿/คืน)'):'')+' · ประกันกลุ่มยังไม่ได้ลงทะเบียนกรมธรรม์'); }
+  else if(blank(V.welf)) est.push('ลูกค้าไม่ได้ตอบเรื่องสวัสดิการที่ทำงาน');
+  /* v1.5: ข้อความเดียวกับหมอเงิน v2.6.7 — ไม่มีแบบประเมินความเสี่ยงใน Step 2 แล้ว */
+  est.push('ผลตอบแทนของแผนใน MRI ใช้พอร์ตเริ่มต้น "ปานกลาง" (ก่อนเกษียณ 5%/ปี · หลังเกษียณ 3%/ปี) — ปรับได้ที่หน้า Portfolio · แบบประเมินความเสี่ยงให้ลูกค้าทำตอนสมัครประกัน/กองทุน');
+  if(salaryM>0) est.push('ฟอร์มไม่ได้ถามอัตราขึ้นเงินเดือน — ไฟล์ตั้งให้เงินเดือนโตปีละ 3% (ค่าตั้งต้น เท่ากับเงินเฟ้อของแผน) ปรับได้ที่บรรทัดรายได้ใน MRI');
   if(!filled) est.push('ลูกค้าไม่ได้กรอกตัวเลขงบการเงินเลย');
 
   const talk={};
   const JOB={emp:'พนักงานบริษัท',gov:'ราชการ / รัฐวิสาหกิจ',own:'ธุรกิจส่วนตัว',free:'ฟรีแลนซ์',other:'อื่น ๆ'};
   const FOC={retire:'เกษียณ',protect:'คุ้มครองครอบครัว',debt:'จัดการหนี้',invest:'ลงทุน / ต่อยอด',edu:'ทุนการศึกษาลูก',tax:'ภาษี',all:'ดูภาพรวมทั้งหมด'};
-  if(JOB[V.cjob]) talk['อาชีพ']=JOB[V.cjob];
+  const profile={}; if(JOB[V.cjob]) profile.job=JOB[V.cjob];   /* v1.3: อาชีพย้ายไปอยู่ใน profile (หัวข้อ "ข้อมูลลูกค้า" ของบันทึกนัด) */
   if(FOC[V.cfocus]) talk['อยากให้ช่วยดูเป็นพิเศษ']=FOC[V.cfocus];
   if(txt('cnote')) talk['เรื่องที่ลูกค้าอยากบอก']=txt('cnote');
   if(V.welf) talk['สวัสดิการที่ทำงาน']=({none:'ไม่มี',sso:'ประกันสังคมอย่างเดียว',group:'ประกันกลุ่มบริษัท'})[V.welf];
 
+  /* v1.7: ไม่มีช่องชื่อ/เบอร์คนที่แนะนำต่อในฟอร์มนี้ และไม่มีคีย์นั้นในไฟล์ (อ้อย 1 ต.ค.: ไม่เก็บเป็นบันทึก) */
   const visit={
-    source:'S41 Client Form v'+VERSION, visitDate:new Date().toISOString().slice(0,10),
+    source:'S41 Client Form v'+VERSION, visitDate:(d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'))(new Date()),   /* v1.6: วันที่ตามเวลาเครื่อง (เดิม UTC) */
     advisor:'', advisorRef:REF, filledBy:'client',
+    /* v1.3: ข้อมูลเชิงคุณภาพให้ที่ปรึกษาเห็นใน MRI (ปุ่ม "บันทึกนัดที่ 1") */
+    profile,
+    /* v1.7 (m-07): เงินดูแลคู่ชีวิตส่งเฉพาะเมื่อคำตอบปัจจุบันคือ "ไม่มีรายได้" (เดิมค่าที่เคยพิมพ์ค้างไปกับ hasIncome:true) */
+    spouse: V.cmar==='married' ? { name:txt('spname')||'', age:spAge()||0, hasIncome:(V.spinc==='yes'?true:V.spinc==='no'?false:null), supportMonthly:(V.spinc==='no'?num('spmon')||0:0) } : null,
+    statedTaxYear:num('fv_tax')||0,
+    hospitalPlan:{ label:HOSP[V.chosp]?HOSP[V.chosp][1]:'', roomNeed:0, roomHave:roomHave||0 },
     goalPriority:FOC[V.cfocus]?[FOC[V.cfocus]]:[],
     budgetMonthly:0, lifeInsuranceSum:protection.lifeCov, educationFundNeeded:0, educationFundPrepared:0,
     riskProfile:null, gaps:{}, talk, estimates:est,
-    note:'ไฟล์นี้ลูกค้ากรอกเองผ่านแบบฟอร์ม (ไม่ได้เจอตัว) — ตรวจตัวเลขกับลูกค้าก่อนสรุปแผน · ทะเบียนกรมธรรม์กรอกเฉพาะช่องหลัก'
+    note:'ไฟล์นี้ลูกค้ากรอกเองผ่านแบบฟอร์ม — ตรวจตัวเลขกับลูกค้าก่อนสรุปแผน'+(policies.length?' · ทะเบียนกรมธรรม์กรอกเฉพาะช่องหลัก':'')   /* v1.7: ตัด "(ไม่ได้เจอตัว)" — ฟอร์มไม่รู้ว่าเจอตัวหรือไม่ */
   };
   return {
     stage:'client',
@@ -624,6 +1142,9 @@ function buildClientFile(){
     s41:{ clientId:clientId(), name:nm },
     state:{
       axisMin:Math.max(age-1,0), axisMax:life+2, snapAge:age, inflation:3,
+      snapYear:new Date().getFullYear(),   /* v1.3: ปีของข้อมูลชุดนี้ */
+      _healthTierV2:true,                  /* v1.3: วงเงินสุขภาพเป็นชุด 5/15/25 ลบ. แล้ว — MRI ไม่ต้องเลื่อนระดับซ้ำ (บั๊กเดิม: รพ.รัฐ กลายเป็นเอกชนกลาง) */
+      _retN:1,                             /* v1.7: อายุเกษียณในไฟล์นี้ = ปีสุดท้ายที่ทำงาน (กติกาใหม่) — MRI ไม่ต้องเลื่อนอายุให้ */
       planMode:'combined', splitRatio:50, uiMode:'advance',
       assume:{ salaryG:3, inf:3, eduInf:5, medInf:8, preRet:5, postRet:3, sdPort:8.9 },
       portfolio:{ levels:{conservative:3,moderate:5,aggressive:7}, preRetire:'moderate', postRetire:'conservative' },
@@ -649,7 +1170,10 @@ function downloadFile(){
     const url=URL.createObjectURL(makeBlob());
     const a=document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click();
     setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); },2000);
-    setStatus('note','สั่งบันทึกไฟล์ <b>'+esc(name)+'</b> แล้ว — อยู่ในโฟลเดอร์ "ดาวน์โหลด" (iPhone: แอป Files › ดาวน์โหลด) ส่งไฟล์นี้ให้ที่ปรึกษาตามช่องทางที่คุณสะดวก · ถ้าไม่มีไฟล์ขึ้น แสดงว่าเบราว์เซอร์นี้บล็อกการดาวน์โหลด ให้เปิดลิงก์ใน Safari/Chrome แล้วลองใหม่ (ข้อมูลที่กรอกยังอยู่)');
+    /* v1.7 (m-06): ระบบสั่งเบราว์เซอร์ให้บันทึกได้ แต่ตรวจไม่ได้ว่าไฟล์ถูกบันทึกจริงหรืออยู่ที่ไหน — เดิมเขียนว่า "อยู่ในโฟลเดอร์ดาวน์โหลด" เป็นข้อเท็จจริง
+       "(ข้อมูลที่กรอกยังอยู่)" บอกเฉพาะเมื่อบันทึกร่างครั้งล่าสุดสำเร็จจริง */
+    saveNow();
+    setStatus('note','สั่งเบราว์เซอร์ให้บันทึกไฟล์ <b>'+esc(name)+'</b> แล้ว — ระบบตรวจไม่ได้ว่าบันทึกสำเร็จหรือไม่ กรุณาเปิดดูว่ามีไฟล์จริงก่อนส่ง · ปกติไฟล์จะอยู่ในโฟลเดอร์ "ดาวน์โหลด" (iPhone: แอป Files › ดาวน์โหลด) แล้วส่งไฟล์นี้ให้ที่ปรึกษาตามช่องทางที่คุณสะดวก · ถ้าไม่มีไฟล์ แสดงว่าเบราว์เซอร์นี้บล็อกการดาวน์โหลด ให้เปิดลิงก์ใน Safari/Chrome แล้วลองใหม่'+(draftKept()?' (ร่างที่กรอกยังเก็บอยู่ในเบราว์เซอร์นี้)':' (เบราว์เซอร์นี้เก็บร่างไม่ได้ — อย่าปิดหน้านี้จนกว่าจะได้ไฟล์)'));
   }catch(e){ setStatus('warn','ดาวน์โหลดไม่สำเร็จ: '+esc(e.message)+' — ลองเปิดลิงก์ใน Safari/Chrome'); }
 }
 
