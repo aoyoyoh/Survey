@@ -1,1 +1,2 @@
 pages rebuild nudge 2026-08-11 (v2.4 deploy stuck in queue - triggering fresh build)
+pages rebuild nudge 2026-10-07 (taxscan v3.4 build cancelled, whole site 404 - triggering fresh build)
