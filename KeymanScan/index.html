@@ -470,6 +470,10 @@ details.src-note summary{font-size:15.5px}
 .panel h3{font-size:19px}
 #s-ctx{display:none}
 @media print{.p-kpis.k4{grid-template-columns:repeat(4,1fr)}}
+.pnav .km-clear{margin-left:auto;padding:6px 12px;border-radius:10px;border:1px solid var(--line);background:var(--paper);font-size:12px;color:var(--carrier-2);font-weight:600;white-space:nowrap}
+.pnav .km-clear:hover{background:#FFF4F2}
+@media(max-width:700px){.pnav .km-clear{margin-left:0}}
+
 </style>
 </head>
 <body>
@@ -848,7 +852,8 @@ const blank=()=>({name:'',age:40,sources:[{type:'40(1)',sub:'sal',amt:0,method:'
   kidsA:0,kidsB:0,parents:0,disabled:0,prenatal:0,sso:0,life:0,health:0,slife:0,phealth:0,pension:0,pvd:0,rmf:0,gpf:0,nsf:0,esg:0,mort:0,solar:0,art:0,se:0,donEdu:0,don:0,party:0,
   dv:0,dvRate:20,intr:0});
 const P=[blank(),blank()];
-P[0].sources[0].amt=1200000; P[1].sso=0;
+P[0].sources[0].amt=0; P[1].sso=0;
+const KM_P_INIT=JSON.parse(JSON.stringify(P));
 let SPOUSE=0;      // 0 ไม่มี · 1 จดทะเบียน ไม่มีเงินได้ · 2 จดทะเบียน มีเงินได้
 let ACT=0;         // คนที่กำลังดู
 let FILING='sep';  // วิธียื่นที่เลือก (คู่สมรสมีเงินได้)
@@ -1303,10 +1308,10 @@ function buildPrint(){
 renderForm(); calc();
 
 /* ══════════ Keyman Scan add-on · บริษัท + 3 ทาง (ต่อยอดจาก Tax Scan 2569) ══════════ */
-const KM_VERSION='5.0';
+const KM_VERSION='5.1';
 const RC={cit:.20,smeEx:300000,smeMid:3000000,smeRate:.15,smeRev:30000000,divWHT:.10,premiumRule:.20,revRule:.05};
 function kmRule(){ const p=Math.max(0,(C.rev||0)-(C.cost||0)-(C.sga||0)), a=Math.round((C.rev||0)*RC.revRule), b=Math.round(p*RC.premiumRule); return {rev:a,profit:b,min:Math.floor(Math.min(a,b)/1000)*1000,which:a<b?'5% ของรายได้':'20% ของกำไร'}; }
-const CDEF={rev:33720750,cost:21465037,sga:11746401,addback:0,paidup:1};
+const CDEF={rev:0,cost:0,sga:0,addback:0,paidup:1};
 const KDEF={amount:100000,grossup:1,useLife:1,auto:1};
 let C=Object.assign({},CDEF), K=Object.assign({},KDEF), PAGE='person', EXPLAIN=false, KL=null;
 try{ const s=JSON.parse(localStorage.getItem('s41km2')||'{}'); if(s.C) C=Object.assign({},CDEF,s.C); if(s.K) K=Object.assign({},KDEF,s.K); }catch(e){}
@@ -1797,6 +1802,18 @@ kmPrint=function(){ _kmPrint50(); const sec=$('km-printsec'); if(!sec||!KL) retu
   const tb=sec.querySelector('.p-box table.km-pt'); if(tb) tb.insertAdjacentHTML('beforeend',`<tr><td>ค่าใช้จ่ายส่วนตัวต่อปี × ปีที่ทุพพลภาพ</td><td>${f0((Q.tpdExp||0)*12)} × ${Q.tpdYears||0}</td></tr><tr class="sub"><td>ทุนทุพพลภาพถาวร</td><td>${f0(cv.tpd)}</td></tr>`);
 };
 kmCalc();
+
+
+/* ══════════ v5.1 ปุ่มล้างข้อมูลทั้งหมด (กรรมการ + บริษัท + ความเสี่ยง) ══════════ */
+function kmResetAll(){
+  if(!confirm('ล้างข้อมูลทั้งหมด (กรรมการ ครอบครัว ลดหย่อน บริษัท ก้อนเงิน ความเสี่ยง) กลับเป็นค่าเริ่มต้น?')) return;
+  try{ localStorage.removeItem(KM_LS_KEY); localStorage.removeItem('s41km2_t'); }catch(e){}
+  KM_P_INIT.forEach((p,i)=>{ Object.keys(P[i]).forEach(k=>delete P[i][k]); Object.assign(P[i],JSON.parse(JSON.stringify(p))); });
+  SPOUSE=0; ACT=0; Q=Object.assign({},QDEF); C=Object.assign({},CDEF); K=Object.assign({},KDEF);
+  renderTabs(); renderForm(); kmBind(); kmQuickRefresh(); calc();
+}
+(function(){ const old=$('km-resetP'); if(old) old.remove();
+  const nav=document.querySelector('.pnav'); if(nav&&!$('km-clearAll')){ const b=document.createElement('button'); b.type='button'; b.id='km-clearAll'; b.className='km-clear'; b.textContent='ล้างข้อมูลทั้งหมด'; b.onclick=kmResetAll; nav.appendChild(b); } })();
 
 </script>
 </body>
