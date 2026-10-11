@@ -159,7 +159,7 @@ details.src-note ul{margin:6px 0 0 18px}
 @media(max-width:900px){.mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--navy);color:#fff;padding:9px 16px;justify-content:space-between;align-items:center;gap:10px;font-size:12.5px;box-shadow:0 -4px 14px rgba(0,0,0,.15)}
 .mbar b{color:#F1D9A7;font-size:16px;font-variant-numeric:tabular-nums}.wrap{padding-bottom:90px}}
 @media print{.mbar{display:none!important}}
-@page{size:A4 portrait;margin:9mm 11mm 9mm}
+@page{size:A4 portrait;margin:11mm 13mm 12mm}
 @media print{
   body{background:#fff;font-size:10pt}
   .wrap{display:none}
@@ -474,30 +474,6 @@ details.src-note summary{font-size:15.5px}
 .pnav .km-clear:hover{background:#FFF4F2}
 @media(max-width:700px){.pnav .km-clear{margin-left:0}}
 
-@media print{
-  .p-grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .p-kpis.k3{grid-template-columns:repeat(3,1fr)}
-  .p-kpi .s2{display:block;font-size:8pt;color:var(--ink-2);margin-top:1px}
-  .p-kpi.best{border-color:#508B82;background:#E6F2EF}
-  .p-verdict{font-size:10pt;color:var(--navy);font-weight:700;margin:2px 0 4px}
-  .p-verdict small{display:block;font-weight:400;color:var(--ink-2);font-size:8.5pt}
-  .p-box table.km-pt td:first-child small{display:none}
-  .p-box table.km-g{font-size:8.5pt;margin-top:2px}
-  .p-box table.km-g td,.p-box table.km-g th{padding:2px 4px}
-  .p-asm{font-size:8pt;color:var(--muted);margin-top:2px;line-height:1.4}
-}
-
-table.km-x{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px}
-table.km-x th{font-size:11px;color:var(--muted);font-weight:600;text-align:right;padding:3px 4px;border-bottom:1px solid var(--line)}
-table.km-x th:first-child,table.km-x td:first-child{text-align:left}
-table.km-x td{padding:4px 4px;border-bottom:1px solid var(--line-2);text-align:right;font-variant-numeric:tabular-nums}
-table.km-x tr.sub td{font-weight:700;color:var(--navy);border-top:1px solid var(--line)}
-table.km-x td .pct{color:var(--sage-2);font-weight:700}
-#km-xcard .note{margin-top:6px}
-@media print{.p-box table.km-x{font-size:8.5pt} .p-box table.km-x td,.p-box table.km-x th{padding:2px 4px}}
-
-@media print{ @page{margin:9mm 11mm 10mm} .p-box{padding:4px 8px;margin-bottom:5px} .p-kpi{padding:4px 8px} .p-kpi b{font-size:12pt} .p-kpi .s2{font-size:7.5pt} .p-box table.km-pt{font-size:8.5pt} .p-box table.km-pt td,.p-box table.km-pt th{padding:1.5px 4px} .p-head{margin-bottom:7px;padding-bottom:4px} .p-head .logo{height:48px} .p-title{font-size:18pt} .p-flag{padding:2px 6px;margin:1px 0} .p-foot{margin-top:4px} }
-@media print{ .p-foot{font-size:7pt;line-height:1.35} .p-asm{font-size:7.5pt} .p-verdict{font-size:9.5pt} .p-verdict small{font-size:8pt} }
 </style>
 </head>
 <body>
@@ -528,13 +504,6 @@ table.km-x td .pct{color:var(--sage-2);font-weight:700}
       <div id="q1-res"></div>
       <div class="actions" style="margin:14px 0 0"><button class="btn btn-pri" onclick="kmPage('corp')">ถัดไป → บริษัท</button><button class="btn" onclick="kmDetail(true)">ดูบันไดภาษี · สูตร</button></div>
     </div>
-    <div class="card" id="km-xcard">
-      <div class="card-h"><div class="card-t">ถ้าลงทุนเพิ่ม ประหยัดภาษีเท่าไหร่</div><div class="card-s">เบี้ยส่วนตัวของกรรมการ ต่อปี</div></div>
-      <div class="line"><div class="lbl">ประกันชีวิต เพิ่ม <small>คุ้มครอง 10 ปีขึ้นไป · ช่องรวมสุขภาพ 100,000</small></div><input class="y" id="x-life" inputmode="numeric"></div>
-      <div class="line"><div class="lbl">ประกันสุขภาพ / โรคร้ายแรง เพิ่ม <small>ลดหย่อนไม่เกิน 25,000 ในช่อง 100,000</small></div><input class="y" id="x-health" inputmode="numeric"></div>
-      <div class="line"><div class="lbl">ประกันบำนาญ เพิ่ม <small>ใช้ช่องชีวิตที่เหลือก่อน แล้ว 15% ของเงินได้ ไม่เกิน 200,000</small></div><input class="y" id="x-pension" inputmode="numeric"></div>
-      <div id="x-res"></div>
-    </div>
     <div class="card">
       <div class="card-h"><div class="card-t">ความเสี่ยงของ Keyman · ฝั่งครอบครัว</div><div class="card-s">ถ้าจากไป ทุพพลภาพ หรือเป็นโรคร้ายแรง</div></div>
       <div class="line"><div class="lbl">หนี้สินส่วนตัวคงค้าง <small>บ้าน รถ ค้ำประกัน</small></div><input class="y" id="q-debt" inputmode="numeric"></div>
@@ -547,9 +516,9 @@ table.km-x td .pct{color:var(--sage-2);font-weight:700}
     </div>
     <div class="rules">
       <h3>กฎปี <span class="yr">2569</span> ที่ต้องรู้</h3>
-      <div class="rule"><span class="bdg ltd">ปีสุดท้าย</span><span>Thai ESG / ESGX ลดหย่อนได้ถึง <b>300,000</b> เฉพาะปี 2567–2569</span></div>
-      <div class="rule"><span class="bdg new">ใหม่ 2569</span><span>ประกันสังคม <b>10,500</b> · โซลาร์หลังคาบ้าน ไม่เกิน <b>200,000</b> (ครั้งเดียว)</span></div>
-      <div class="rule"><span class="bdg ltd">ถึงปี 2570</span><span>งานศิลปะจากศิลปินที่ขึ้นทะเบียน ไม่เกิน <b>100,000</b>/ปี</span></div>
+      <div class="rule"><span class="bdg ltd">ปีสุดท้าย</span><span>Thai ESG / ESGX ลดหย่อนได้ถึง <b>300,000</b> เฉพาะปี 2567–2569 · ปี 2570 เหลือ 100,000 และต้องถือ 8 ปี</span></div>
+      <div class="rule"><span class="bdg new">ใหม่ 2569</span><span>ประกันสังคมลดหย่อนได้ถึง <b>10,500</b> · ติดโซลาร์หลังคาบ้าน ลดหย่อนตามจริงไม่เกิน <b>200,000</b> (3 มี.ค. 69 – 31 ธ.ค. 71 · ใช้ได้ครั้งเดียว)</span></div>
+      <div class="rule"><span class="bdg ltd">ถึงปี 2570</span><span>ซื้องานศิลปะจากศิลปินที่ขึ้นทะเบียน ลดหย่อนไม่เกิน <b>100,000</b>/ปี · ศิลปิน 40(6) หักค่าใช้จ่ายได้ 60%</span></div>
     </div>
   </div>
 </div>
@@ -599,11 +568,18 @@ table.km-x td .pct{color:var(--sage-2);font-weight:700}
     <div class="note">
       <p><b>กฎชุด 2569.6 · ตรวจ 7 ต.ค. 2569</b></p>
       <ul>
-        <li>ประมวลรัษฎากร ม.40, 42 ทวิ–43, 47, 48, 57 · พ.ร.ฎ. 11 (ค่าใช้จ่ายเหมา)</li>
-        <li>ประกันสังคม 10,500 (เพดานค่าจ้าง 17,500 ปี 2569–71) · Thai ESG 300,000 ปี 2567–69 · โซลาร์ 200,000 (พ.ร.ฎ. 805) · งานศิลปะ 100,000 (กฎกระทรวง 400) · วิสาหกิจเพื่อสังคม 100,000</li>
-        <li>คู่สมรส: แยกยื่น / รวมยื่น / แยกเฉพาะ 40(1) ตามแนวกรมสรรพากร</li>
+        <li>ประมวลรัษฎากร มาตรา 40, 42 ทวิ–43, 47, 48, 57 · พระราชกฤษฎีกา (ฉบับที่ 11) ค่าใช้จ่ายเหมา 40(5)–(8) · หนังสือภาษีอากรตามประมวลรัษฎากร 2567 · เอกสารทบทวน CFP 4.2 (AVP Academy)</li>
+        <li>วิธียื่นของคู่สมรส: กรมสรรพากร "การยื่นแบบของสามีภริยา" — แยกยื่น · รวมยื่นในนามคนใดคนหนึ่ง · แยกยื่นเฉพาะ 40(1) ของฝ่ายหนึ่ง ส่วน 40(2)–(8) รวมกับอีกฝ่าย</li>
+        <li>ประกันสังคม: กฎกระทรวง มีผล 1 ม.ค. 2569 — เพดานค่าจ้าง 17,500 (2569–2571)</li>
+        <li>Thai ESG / ESGX: ก.ล.ต. — 2567–2569 ไม่เกิน 300,000 ถือ 5 ปี · 2570–2575 ไม่เกิน 100,000 ถือ 8 ปี</li>
+        <li>เงินได้จากต่างประเทศ: คำสั่งกรมสรรพากร ป.161/2566 และ ป.162/2566</li>
+        <li>โซลาร์หลังคาบ้าน: พระราชกฤษฎีกา (ฉบับที่ 805) พ.ศ. 2569 — ตามจริงไม่เกิน 200,000 · ครั้งเดียว · ≤ 10 kWp · e-Tax Invoice · 3 มี.ค. 2569 – 31 ธ.ค. 2571</li>
+        <li>ซื้องานศิลปะ: กฎกระทรวง (ฉบับที่ 400) พ.ศ. 2568 — ไม่เกิน 100,000/ปี · ปี 2568–2570 · ศิลปินที่ขึ้นทะเบียน · ประณีตศิลปกรรม 40(6) หัก 60% (คำแนะนำ ภ.ง.ด.90 ปี 2568 ของกรมสรรพากร)</li>
+        <li>เงินลงทุนวิสาหกิจเพื่อสังคม: พระราชกฤษฎีกา (ฉบับที่ 735) พ.ศ. 2564 — ไม่เกิน 100,000 · ถือจนกิจการเลิก · ไม่มีวันสิ้นสุด</li>
+        <li>ณ วันที่ตรวจ ยังไม่มีมาตรการช้อปลดหย่อน / เที่ยวลดหย่อน สำหรับปีภาษี 2569 (เที่ยวดีมีคืน 29 ต.ค.–15 ธ.ค. 68 เป็นของปีภาษี 2568) · "สูตรใหม่" รวมเพดานลงทุน 800,000 + TISA ยังเป็นข้อเสนอ ไม่มีผลบังคับใช้</li>
       </ul>
-      <p style="margin-top:6px"><b>สมมติฐาน:</b> ค่าตั้งต้นที่ติดป้ายทุกจุดแก้ได้ · <b>ยังไม่รวม:</b> บุตรบุญธรรม เงินได้ครั้งเดียว ภาษีต่างประเทศ · เป็นการประมาณเพื่อวางแผน ไม่ใช่การยื่นแบบจริง</p>
+      <p style="margin-top:6px"><b>สมมติฐานที่ระบบตั้ง (ติดป้ายทุกจุด):</b> อัตราภาษีบริษัทที่จ่ายปันผล 20% · รายได้และค่าลดหย่อนปีหน้า (กลยุทธ์ 5) · ต้นทุนจริงที่กรอกเพื่อเทียบ (กลยุทธ์ 3) · ภาษีหัก ณ ที่จ่ายไม่กรอก = 0</p>
+      <p style="margin-top:6px"><b>ยังไม่รวม:</b> บุตรบุญธรรม · เงินได้ครั้งเดียวออกจากงาน · ภาษีขายอสังหาฯ · การแบ่งเงินได้ร่วมของคู่สมรสแบบไม่เท่ากัน · เป็นการประมาณเพื่อวางแผน ไม่ใช่การยื่นแบบจริง</p>
     </div>
   </details>
   </div><!-- /detail -->
@@ -618,9 +594,9 @@ table.km-x td .pct{color:var(--sage-2);font-weight:700}
     </div>
     <div class="rules">
       <h3>หลักที่ระบบใช้</h3>
-      <div class="rule"><span class="bdg new">อัตรา</span><span>ทั่วไป <b>20%</b> · SME: 300,000 แรก 0% · ถึง 3 ล้าน <b>15%</b> · เกิน 20%</span></div>
-      <div class="rule"><span class="bdg ltd">หักได้</span><span>เงินเดือน เบี้ย Keyman และภาษีที่ออกให้ เป็นรายจ่ายได้ เมื่อมีมติและทำเป็นการทั่วไป</span></div>
-      <div class="rule"><span class="bdg asm">ห้าม</span><span>รายจ่ายส่วนตัว หรือจ่ายจากกำไรเมื่อสิ้นรอบ → ถูกบวกกลับ (ม.65 ตรี)</span></div>
+      <div class="rule"><span class="bdg new">อัตรา</span><span>ทั่วไป <b>20%</b> · SME (ทุนชำระแล้วไม่เกิน 5 ล้าน และรายได้ไม่เกิน 30 ล้าน): กำไร 300,000 แรกยกเว้น · 300,001–3,000,000 เสีย <b>15%</b> · ส่วนเกิน 20%</span></div>
+      <div class="rule"><span class="bdg ltd">หักได้</span><span>เงินเดือน เบี้ย Keyman และภาษีที่ออกให้กรรมการ เป็นรายจ่ายได้ทั้งก้อน เมื่อมีมติที่ประชุมและทำเป็นการทั่วไป (กค 0811/408 · กค 0702/10867)</span></div>
+      <div class="rule"><span class="bdg asm">ห้าม</span><span>ม.65 ตรี (3)(13)(19): รายจ่ายส่วนตัว · ไม่ใช่เพื่อกิจการ · กำหนดจ่ายจากผลกำไรเมื่อสิ้นรอบ → ถูกบวกกลับ</span></div>
     </div>
   </div>
   <div class="km-cols2">
@@ -668,9 +644,9 @@ table.km-x td .pct{color:var(--sage-2);font-weight:700}
     </div>
     <div class="rules">
       <h3>อ่านผลอย่างไร</h3>
-      <div class="rule"><span class="bdg new">ภาษีรวม</span><span>ภาษีบริษัทบนก้อนนี้ + ภาษีกรรมการที่เพิ่ม · ยิ่งต่ำยิ่งดี</span></div>
-      <div class="rule"><span class="bdg ltd">Keyman ถูกกว่าเมื่อ</span><span>ยังมีช่องลดหย่อนประกันชีวิตว่าง หรือขั้นภาษีกรรมการต่ำกว่า 20%</span></div>
-      <div class="rule"><span class="bdg asm">เงื่อนไข</span><span>เบี้ยไม่เกิน 20% ของกำไร · มีมติและเอกสารครบ ไม่เช่นนั้นถูกบวกกลับ</span></div>
+      <div class="rule"><span class="bdg new">ภาษีรวม</span><span>นิติบุคคลบนก้อนนี้ + บุคคลธรรมดาที่เพิ่มขึ้น · ยิ่งต่ำยิ่งดี แต่ต้องดูด้วยว่าเงิน "ถึงมือ" เป็นเงินสดหรืออยู่ในกรมธรรม์</span></div>
+      <div class="rule"><span class="bdg ltd">คุ้มเมื่อ</span><span>บริษัทเสีย 20% และขั้นภาษีกรรมการหลังรวมเบี้ยต่ำกว่า 20% · ถ้ากรรมการอยู่ขั้น 25% ขึ้นไป ปันผลมักถูกกว่า</span></div>
+      <div class="rule"><span class="bdg asm">เงื่อนไข</span><span>เบี้ยไม่เกิน 20% ของกำไร (คู่มือ) · ปีแรกบริษัทต้องมีกำไร · เอกสารครบทุกขั้น ไม่เช่นนั้นถูกบวกกลับ + เงินเพิ่ม 1.5%/เดือน</span></div>
     </div>
   </div>
   <div class="card">
@@ -736,12 +712,13 @@ table.km-x td .pct{color:var(--sage-2);font-weight:700}
     <summary>ที่มาของกฎ · สมมติฐาน · สิ่งที่ยังไม่รวม (ส่วน Keyman)</summary>
     <div class="note">
       <ul>
-        <li>นิติบุคคล: ทั่วไป 20% · SME ตาม พ.ร.ฎ. 530 (ทุนชำระแล้ว ≤ 5 ล้าน และรายได้ ≤ 30 ล้าน)</li>
-        <li>ปันผล: หัก ณ ที่จ่าย 10% (ม.50(2)) หรือยื่นรวมขอเครดิต (ม.47 ทวิ) ระบบเลือกทางที่ถูกกว่าให้</li>
-        <li>Keyman: ม.40(1), 42(13), 50(1), 65 ตรี · ข้อหารือ กค 0811/408 และ กค 0702/10867 · ภาษีออกให้ทุกทอดวนซ้ำจนลงตัว</li>
-        <li>ภาษีบุคคลใช้เครื่องคิด Tax Scan 2569 รวมลดหย่อนที่กรอกไว้ทั้งหมด</li>
+        <li>ภาษีเงินได้นิติบุคคล: อัตราทั่วไป 20% · SME ตามพระราชกฤษฎีกา (ฉบับที่ 530) และที่แก้ไข: ทุนชำระแล้วไม่เกิน 5 ล้าน และรายได้ไม่เกิน 30 ล้าน</li>
+        <li>เงินปันผล: หัก ณ ที่จ่าย 10% ม.50(2) หรือยื่นรวมขอเครดิต ม.47 ทวิ (เครดิต = ปันผล × อัตราภาษีบริษัท ÷ (100 − อัตรา)) · ระบบใช้อัตราเฉลี่ยของกำไรก้อนที่ปันผล</li>
+        <li>Keyman: ม.40(1), 42(13), 48(1), 50(1), 65 ตรี (3)(13)(19) · ข้อหารือ กค 0811/408 (21 ม.ค. 2543) และ กค 0702/10867 (2 ธ.ค. 2558) · ภาษีออกให้ทุกทอดวนซ้ำจนลงตัว ตามวิธีใน Excel "คำนวณภาษี_Key Man ออกให้ทุกทอด"</li>
+        <li>ภาษีบุคคลธรรมดาใช้เครื่องคิดเดียวกับ Tax Scan 2569 (ชุด 2569.6) ของลูกค้าคนที่ 1 รวมค่าใช้จ่าย ลดหย่อน และบริจาคที่กรอกไว้ทั้งหมด</li>
       </ul>
-      <p style="margin-top:6px"><b>สมมติฐาน:</b> เทียบที่ต้นทุนก่อนภาษีของบริษัทเท่ากันทั้ง 3 ทาง · ปันผลจากกำไรปีนี้ · "ถึงมือ" ทาง Keyman = เบี้ยที่เข้ากรมธรรม์ · <b>ยังไม่รวม:</b> ภาษีมรดก กำไรสะสมข้ามปี ผลตอบแทนของกรมธรรม์ · ให้นักบัญชียืนยันก่อนดำเนินการ</p>
+      <p style="margin-top:6px"><b>สมมติฐาน:</b> ก้อนเงินที่เทียบคือต้นทุนก่อนภาษีของบริษัทเท่ากันทั้ง 3 ทาง · ทางเงินเดือนไม่คิดประกันสังคม · ทางปันผลสมมติว่าปันผลจากกำไรปีนี้ · "ถึงมือ" ทาง Keyman คือเบี้ยที่เข้ากรมธรรม์ ไม่ใช่เงินสด มูลค่าเวนคืนปีแรก ๆ ต่ำกว่าเบี้ย</p>
+      <p style="margin-top:6px"><b>ยังไม่รวม:</b> ภาษีมรดก · กำไรสะสมที่ปันผลข้ามปี · ภาษีธุรกิจเฉพาะ · ค่าธรรมเนียมและผลตอบแทนของกรมธรรม์ · เป็นการประมาณเพื่อวางแผน ไม่ใช่การยื่นแบบจริง ให้นักบัญชีของบริษัทยืนยันก่อนดำเนินการ</p>
     </div>
   </details>
 </div>
@@ -1331,7 +1308,7 @@ function buildPrint(){
 renderForm(); calc();
 
 /* ══════════ Keyman Scan add-on · บริษัท + 3 ทาง (ต่อยอดจาก Tax Scan 2569) ══════════ */
-const KM_VERSION='5.4';
+const KM_VERSION='5.1';
 const RC={cit:.20,smeEx:300000,smeMid:3000000,smeRate:.15,smeRev:30000000,divWHT:.10,premiumRule:.20,revRule:.05};
 function kmRule(){ const p=Math.max(0,(C.rev||0)-(C.cost||0)-(C.sga||0)), a=Math.round((C.rev||0)*RC.revRule), b=Math.round(p*RC.premiumRule); return {rev:a,profit:b,min:Math.floor(Math.min(a,b)/1000)*1000,which:a<b?'5% ของรายได้':'20% ของกำไร'}; }
 const CDEF={rev:0,cost:0,sga:0,addback:0,paidup:1};
@@ -1837,99 +1814,6 @@ function kmResetAll(){
 }
 (function(){ const old=$('km-resetP'); if(old) old.remove();
   const nav=document.querySelector('.pnav'); if(nav&&!$('km-clearAll')){ const b=document.createElement('button'); b.type='button'; b.id='km-clearAll'; b.className='km-clear'; b.textContent='ล้างข้อมูลทั้งหมด'; b.onclick=kmResetAll; nav.appendChild(b); } })();
-
-
-/* ══════════ v5.2 รายงาน PDF ฉบับกระชับ (หน้าเดียว · โหมดละเอียดแนบที่มาของตัวเลขเป็นหน้า 2) ══════════ */
-let KM_TAXPAGE='';
-const _buildPrint52=buildPrint;
-buildPrint=function(){ _buildPrint52(); KM_TAXPAGE=$('printArea').innerHTML; };
-kmPrint=function(){
-  if(!KL) return; const pa=$('printArea'); if(!pa) return;
-  const {A,s,best,worst,profit,taxable,sme,citAll,base}=KL, [dv,sl,km]=s, cv=kmCover(), rl=kmRule(), rm=rooms(base);
-  const today=new Date().toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric'});
-  const logo=document.querySelector('.brand img').src;
-  const head=(t)=>`<div class="p-head"><div style="display:flex;align-items:center;gap:12px"><img class="logo" src="${logo}" alt=""><div class="p-title">${t} <span class="yr">2569</span></div></div><div class="p-meta">กรรมการ <b>${esc(P[0].name||'ลูกค้า')}</b>${AGENT?'<br>ที่ปรึกษา '+esc(AGENT):''}<br>${today}</div></div>`;
-  const tbl=id=>$(id).innerHTML.replace(/class="km c[34]"/g,'class="km-pt"').replace(/<small class="km-formula">[^<]*<\/small>/g,'');
-  const row=(n,v,cls)=>`<tr${cls?' class="'+cls+'"':''}><td>${n}</td><td>${v}</td></tr>`;
-  const inc=base.income||0, lifeLeft=Math.max(0,rm.life.left), penLeft=Math.max(0,rm.pension.left);
-  /* 1 กรรมการ + บริษัท */
-  const box1=`<div class="p-box"><h3>กรรมการตอนนี้</h3><table class="km-pt">
-    ${row('เงินได้ทั้งปี',f0(inc))}${row('เงินได้สุทธิ',f0(base.net))}${row('ภาษีเงินได้บุคคลธรรมดา',f0(base.tax)+' · ขั้น '+pc(base.rate),'sub')}
-    ${row('ช่องลดหย่อนประกันชีวิตที่ยังว่าง',f0(lifeLeft))}${row('ช่องลดหย่อนประกันบำนาญที่ยังว่าง',f0(lifeLeft+penLeft))}</table></div>`;
-  const box2=`<div class="p-box"><h3>บริษัทปีนี้ (คาด)</h3><table class="km-pt">
-    ${row('รายได้รวม',f0(C.rev||0))}${row('กำไรก่อนภาษี',f0(profit))}${row('อัตราภาษี',sme?'SME (0 / 15 / 20%)':'20% ทั่วไป')}${row('ภาษีนิติบุคคล',f0(citAll),'sub')}
-    ${row('เบี้ยแนะนำ · น้อยสุดของ 5% รายได้ ('+f0(rl.rev)+') / 20% กำไร ('+f0(rl.profit)+')','<b>'+f0(rl.min)+'</b>','sub')}</table></div>`;
-  /* 2 ทุนประกัน */
-  const cover=`<div class="p-box"><h3>ทุนประกันที่ต้องมี</h3><div class="p-kpis k3">
-    <div class="p-kpi"><span>จากไป</span><b>${f0(cv.death)} บาท</b><span class="s2">บริษัทประคอง ${Q.months} เดือน ${f0(cv.comp)} + ครอบครัว ${f0(cv.fam)} (หนี้ ${f0(Q.debt)} + ${f0(Q.famExp)}/เดือน × ${Q.famYears} ปี)</span></div>
-    <div class="p-kpi"><span>ทุพพลภาพถาวร</span><b>${f0(cv.tpd)} บาท</b><span class="s2">ทุนจากไป + ค่าใช้จ่ายส่วนตัว ${f0(Q.tpdExp||0)}/เดือน × ${Q.tpdYears||0} ปี</span></div>
-    <div class="p-kpi"><span>โรคร้ายแรง</span><b>${f0(cv.ci)} บาท</b><span class="s2">ค่ารักษา ${f0(Q.ci)} + รายได้ที่หาย ${Q.ciYears} ปี</span></div></div>
-    <div class="p-asm">ทุนจริงปรับตามการพิจารณารับประกัน (ตั้งแต่ 3 ล้านใช้ statement 6 เดือน + งบ 3 ปี)</div></div>`;
-  /* 3 เทียบ 3 ทาง */
-  let cmp='';
-  if(A>0){
-    const tie=worst.total-best.total<0.5, nb=x=>x===best&&!tie;
-    const vd=$('km-verdict'); const vTitle=vd?(vd.querySelector('.v')||{}).textContent||'':'', vDesc=vd?(vd.querySelector('.d')||{}).textContent||'':'';
-    cmp=`<div class="p-box"><h3>เงินออกจากบริษัท ${f0(A)} บาท · เทียบ 3 ทาง</h3>
-      <div class="p-verdict">${esc(vTitle)}<small>${esc(vDesc)}</small></div>
-      <div class="p-kpis k3">${s.map(x=>`<div class="p-kpi ${nb(x)?'best':''}"><span>${x.name}${nb(x)?' · ถูกสุด':''}</span><b>ภาษีรวม ${f0(x.total)} บาท</b><span class="s2">${x.k==='km'?'เข้ากรมธรรม์ '+f0(x.net)+(K.grossup?' · บริษัทออกภาษีให้ '+f0(x.grossT):''):'เงินสดถึงมือ '+f0(x.net)}</span></div>`).join('')}</div>
-      ${tbl('s-tbl')}</div>`;
-    const flags=Array.from($('km-flags').querySelectorAll('.km-flag')).map(f=>`<div class="p-flag"><b>${f.querySelector('b').textContent}</b> · ${f.querySelector('span').textContent}</div>`).join('');
-    if(flags) cmp+=`<div class="p-box"><h3>ข้อสังเกต</h3>${flags}</div>`;
-  } else cmp=`<div class="p-box"><h3>เทียบ 3 ทาง</h3><div class="p-asm">ยังไม่ได้กำหนดก้อนเงินที่จะจ่ายออก (กรอกรายได้/กำไรบริษัท หรือใส่ก้อนเงินเองในขั้นที่ 2)</div></div>`;
-  const foot=`<div class="p-foot">ภาษีบุคคล: Tax Scan 2569 ชุด 2569.6 · เทียบที่ต้นทุนก่อนภาษีของบริษัทเท่ากัน · ปันผลเลือกทางที่ถูกกว่าระหว่างหัก 10% กับยื่นรวมขอเครดิต · ภาษีออกให้ทุกทอดวนซ้ำจนลงตัว · อ้างอิง ม.40(1), 42(13), 50(1), 65 ตรี · กค 0811/408 · กค 0702/10867 · ประมาณเพื่อวางแผน ให้นักบัญชียืนยันก่อนดำเนินการ · S41 Keyman Scan v${KM_VERSION}</div>`;
-  let page1=head('Keyman Scan')+`<div class="p-grid2">${box1}${box2}</div>`+cover+cmp+foot;
-  /* หน้า 2 เฉพาะโหมดละเอียด: ที่มาของตัวเลข */
-  let page2='';
-  if(document.body.classList.contains('km-detail')){
-    page2=`<div class="p-break"></div>`+KM_TAXPAGE;
-    if(A>0){ const g=kmGrossBoth(Math.max(0,km.premium||0));
-      page2+=`<div class="p-break"></div>${head('ที่มาของตัวเลข')}
-        <div class="p-box"><h3>ไล่ขั้นภาษีบริษัท · กำไรก่อนรายการใหม่ ${f0(profit)} · อัตรา ${sme?'SME':'20%'}</h3>${tbl('c-ladder')}</div>
-        <div class="p-box"><h3>ไล่ขั้นภาษีกรรมการ · เงินได้สุทธิเดิม ${f0(base.net)} · ขั้น ${pc(base.rate)}</h3>${tbl('p-ladder')}</div>
-        <div class="p-box"><h3>ภาษีทุกทอด · เบี้ยเท่ากัน ${f0(g.Pm)} บาท</h3><table class="km-g"><tr><th></th><th>กรรมการจ่ายภาษีเอง</th><th>บริษัทออกภาษีให้ทุกทอด</th></tr>
-          <tr><td>ภาษีกรรมการที่เพิ่ม</td><td>${f0(g.a.T)}</td><td>${f0(g.b.T)}</td></tr><tr><td>บริษัทจ่ายรวม</td><td>${f0(g.a.cost)}</td><td>${f0(g.b.cost)}</td></tr><tr><td>ภาษีบริษัทที่ลดลง</td><td>− ${f0(g.a.save)}</td><td>− ${f0(g.b.save)}</td></tr><tr class="sub"><td>ต้นทุนสุทธิของบริษัท</td><td>${f0(g.a.netCost)}</td><td>${f0(g.b.netCost)}</td></tr><tr class="sub"><td>กรรมการควักเอง</td><td>${f0(g.a.own)}</td><td>0</td></tr></table></div>`; }
-  }
-  pa.innerHTML=page1+page2;
-};
-kmCalc();
-
-
-/* ══════════ v5.3 ลงทุนเพิ่ม (เบี้ยส่วนตัว) → ประหยัดภาษีกี่บาท กี่ % ของเบี้ย ══════════ */
-const XDEF={life:0,health:0,pension:0};
-let X=Object.assign({},XDEF);
-try{ const s=JSON.parse(localStorage.getItem(KM_LS_KEY)||'{}'); if(s.X) X=Object.assign({},XDEF,s.X); }catch(e){}
-const _kmSave53=kmSave; kmSave=function(){ _kmSave53(); try{ const s=JSON.parse(localStorage.getItem(KM_LS_KEY)||'{}'); s.X=X; localStorage.setItem(KM_LS_KEY,JSON.stringify(s)); }catch(e){} };
-function kmExtra(){
-  const t0=tOf(0), base=taxCore(t0), steps=[['life','ประกันชีวิต'],['health','สุขภาพ / โรคร้ายแรง'],['pension','บำนาญ']];
-  const t=clone(t0); let prevTax=base.tax, prevAllow=base.allow; const rows=[]; let paid=0;
-  steps.forEach(([k,n])=>{ const amt=Math.max(0,+X[k]||0); if(!(amt>0)) return; t[k]=(+t[k]||0)+amt; const r=taxCore(t);
-    const saved=Math.max(0,prevTax-r.tax), ded=Math.max(0,r.allow-prevAllow); rows.push({k,n,amt,ded,saved,pct:amt>0?saved/amt:0}); prevTax=r.tax; prevAllow=r.allow; paid+=amt; });
-  const fin=taxCore(t);
-  return {rows,paid,saved:Math.max(0,base.tax-fin.tax),ded:Math.max(0,fin.allow-base.allow),rateBefore:base.rate,rateAfter:fin.rate,tax:fin.tax};
-}
-function renderExtra(){
-  const el=$('x-res'); if(!el) return; const r=kmExtra();
-  if(!(r.paid>0)){ el.innerHTML='<div class="note">ใส่เบี้ยที่คิดจะซื้อเพิ่ม ระบบคิดให้ว่าลดหย่อนได้จริงเท่าไหร่ (ตามเพดาน) และประหยัดภาษีกี่บาท</div>'; return; }
-  el.innerHTML=`<table class="km-x"><tr><th>รายการ</th><th>จ่าย</th><th>ลดหย่อนได้</th><th>ประหยัดภาษี</th></tr>
-    ${r.rows.map(x=>`<tr><td>${x.n}</td><td>${f0(x.amt)}</td><td>${f0(x.ded)}${x.ded<x.amt-0.5?' <small style="color:var(--carrier-2)">ติดเพดาน</small>':''}</td><td>${f0(x.saved)} <span class="pct">${pc(x.pct)}</span></td></tr>`).join('')}
-    <tr class="sub"><td>รวม</td><td>${f0(r.paid)}</td><td>${f0(r.ded)}</td><td>${f0(r.saved)} <span class="pct">${pc(r.paid>0?r.saved/r.paid:0)}</span></td></tr></table>
-    <div class="note">% = ภาษีที่ประหยัดต่อเบี้ยที่จ่าย ปีนี้ปีเดียว (ไม่ใช่ผลตอบแทนของกรมธรรม์) · ขั้นภาษี ${pc(r.rateBefore)} → ${pc(r.rateAfter)} · ภาษีหลังลงทุนเพิ่ม ${f0(r.tax)} · คิดเรียงลำดับ ชีวิต → สุขภาพ → บำนาญ${r.ded<r.paid-0.5?' · ส่วนที่เกินเพดานไม่ช่วยลดภาษี':''}</div>`;
-}
-(function(){ const bind=(id,k)=>{ const el=$(id); if(!el) return; el.value=X[k]?(+X[k]).toLocaleString('en-US'):''; el.oninput=()=>{ X[k]=numIn(el); kmCalc(); }; }; bind('x-life','life'); bind('x-health','health'); bind('x-pension','pension'); })();
-const _kmCalc53=kmCalc; kmCalc=function(){ _kmCalc53(); renderExtra(); };
-const _kmResetAll53=kmResetAll;
-kmResetAll=function(){ _kmResetAll53(); X=Object.assign({},XDEF); ['x-life','x-health','x-pension'].forEach(id=>{ const el=$(id); if(el) el.value=''; }); kmCalc(); };
-(function(){ const b=$('km-clearAll'); if(b) b.onclick=kmResetAll; })();
-/* รายงาน: เพิ่มกล่องเมื่อมีการลงทุนเพิ่ม */
-const _kmPrint53=kmPrint;
-kmPrint=function(){ _kmPrint53(); const r=kmExtra(); if(!(r.paid>0)) return; const pa=$('printArea'); const foot=pa.querySelector('.p-foot'); if(!foot) return;
-  const box=`<div class="p-box"><h3>ถ้ากรรมการลงทุนเพิ่ม (เบี้ยส่วนตัว)</h3><table class="km-x"><tr><th>รายการ</th><th>จ่าย</th><th>ลดหย่อนได้</th><th>ประหยัดภาษี</th></tr>
-    ${r.rows.map(x=>`<tr><td>${x.n}</td><td>${f0(x.amt)}</td><td>${f0(x.ded)}</td><td>${f0(x.saved)} (${pc(x.pct)})</td></tr>`).join('')}
-    <tr class="sub"><td>รวม</td><td>${f0(r.paid)}</td><td>${f0(r.ded)}</td><td>${f0(r.saved)} (${pc(r.paid>0?r.saved/r.paid:0)})</td></tr></table>
-    <div class="p-asm">% = ภาษีที่ประหยัดต่อเบี้ยที่จ่าย ปีนี้ปีเดียว ไม่ใช่ผลตอบแทนของกรมธรรม์ · ขั้นภาษี ${pc(r.rateBefore)} → ${pc(r.rateAfter)}</div></div>`;
-  foot.insertAdjacentHTML('beforebegin',box); };
-kmCalc();
 
 </script>
 </body>
