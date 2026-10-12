@@ -1897,7 +1897,7 @@ body.has-visit #main .jbar{padding-right:calc(176px / var(--ui-zoom))}
 
 <div id="app" class="mode-client">
 <button class="view-sw" id="viewSw" type="button" onclick="toggleViewMode()" title="สลับมุมมองลูกค้า/ที่ปรึกษา — ซ่อนด้วย CSS เท่านั้น ข้อมูลไม่หาย">👁 <span id="viewSwTxt">มุมมองลูกค้า</span> ⇄</button>
-<button class="view-sw visit-sw" id="visitBtn" type="button" style="display:none;top:52px;background:#2F4C6B" onclick="openVisitNotes()" title="บันทึกจากหน้าหมอเงิน — คำตอบชวนคุย · gap · งบ · รายการที่ต้องปรับกันนับซ้ำ">📋 บันทึกหมอเงิน</button>
+<button class="view-sw visit-sw" id="visitBtn" type="button" style="display:none;top:52px;background:#2F4C6B" onclick="openVisitNotes()" title="บันทึกจากหน้าหมอการเงิน — คำตอบชวนคุย · gap · งบ · รายการที่ต้องปรับกันนับซ้ำ">📋 บันทึกหมอการเงิน</button>
 <aside id="side">
   <div class="side-logo" id="sideLogo">
     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgCAYAAACLz2ctAAAez0lEQVR42u2dd1hUxxqHf7O7dBAElt67IAiiiL0iSo3YojHGmMSSYhJvrrnGErsmGhM1xlhjNNFUe0NEBREsKB0EpfcmUqXs7nf/gIArJlGjBnHe58Fy9pw5c868fDNzZs4sIyJwOP8WAn4LOFxADheQw+ECcriAHA4XkMMF5HC4gBwuIIfDBeRwATkcLiCHC8jhcAE5XEAOhwvI4QJyOFxADheQw+EC/gtUFGfwl2q4gP8ekb/Ox9Xjn3MJuYDPnqsn11NjTRmy44ORc+MCl5AL+OzITDpDpZnR0DZyhr5lLySGbuY3hQv4bKipKKLowyvQ228+IGQwtvWEaffhOL39DR4FuYBPn0sHlsDUaTjEZs6ssb4aDXU1cB78FquvLkbShT1cQi7g0+PGpf1UU5kPz8BFDACEAhFkJAEAeI5dhaSwbbhdks4l5AI+eSpv51NC6DfwDFretpEBjIkAAHrmLsyuzyRc/v1TfrO4gE+ey78thKVbIAwsXNkf2+iePwHA1esdJpM0Iu7cdh4FuYBPjuSIPdRwtxK9fD5if7ev57gVSL24B2VFN7mEXMB/TkVJJiWd24Y+QSsean8dQztm1/9VXP11Ab95XMAn0Ov9fRFs+rwMPVNH9rDHuA6dwUikgNiQb3gU5AI+PglhO0kqaYTbyHfZox7bN2gl0q7sR1leMpeQC/jolBelUcqFXfAct+Kxju+qb8GcBr6FS78v5DeTC/gYVe+BRXDo9xp0De3Y46bhNGgqE6l2wfVTX/EoyAV8eGJDt5CQhHAZNoP907T6jlmO9GsHUJwTzyXkAj5E1VuQTDej9sNj3Monkp6mrilzHjYbl39fzG8uF/Bher2L4TDwdWjrW7InlaZD30lMRUOMaD53kAv4V0QHbyKRoiqcB7/OnnTanmOXIjP2OIoyrnMJuYDtKc2Np4zo3+AZtPKppK/R1Yi5eM3B5UO8KuYCPqjq/W0xnIbOhKbYlD2tc9h7jGXq2qa4dGQlj4JcwDaunlhHyl26wqnfZPa0z9VnzHLkJYag4OYl4gJyUJgVQ1kxR+ExZuUzOZ+6pi5z856LK4eX8AjI9QOuHFwMF6850NQ2Ys/qnNbuAUxL3wFRvy8hLuCL3O47uprUtYxh7zGWPetzD3n1K1aQGo781Bf3jboXWsC89CuUl3AKfYKW/mt5cPP9GJcPL+MR8EXk+sFP4er9H6hr6rN/Kw9WPbyZ2NQVEb8uIC7gC0TkgWWkoWcLG/cA9m/nZeCktaw44wqyks4TF/BFqHrTIqkw9RyGTt3IOkqeevn/DzFHV/EI+CJw9dAyuPn8t0PlydxxONOz7oWw/R8RF7ATE/HbItIx7Q6rHj6so+Wt//hV7HZuIjLiTxMXsBOSfSOMStIvYtCkdayj5rFn4ELEHl/NI2Cn7PUeWYFefh37TTVz+wHM0H4ozv3wIXEBO1PV+9PHJLboDTOn4ayj57Vv0GJWVZSK9NjjxAXsBGQlhFBpTgwGTFjFnpc8u49ZitgT61BbXUZcwOe96j3xOXoFPF9vpplY92bG3YfjysHOvc5MpxcwbN9cMrDpB1OHQex5y7tnwEJWVZaL1OhDxAV8DkmPPUEVBTfQb+zSpyrf07TDI2gZEkI2oPpOMXEBnzNiTq6DR+Cip3oOIgYmED619A0tXJmliy+uHFzUKcuIEXXO6H52z7ukrmkIj8AFTyX63Yw+THkpZ1BVlgWBQAQdU1eYdx8BY7v+T+V8RzeMJVvPl+HQZzzjAnZwbl0/TEnndyBw7tEnWlgZ149RbvIZVBSlQVG1C8ycvVGUGgFNsQ2YggIKUi+AMUBs7g6T7iNgYtvviZ2/JDeeLuydg5Gz9kND25BxATsotZWldPKbiej/8loYWrr/44LKiDtJeUlnUFGYAkVlTRja9YOxkxfERg4MAM7unk1G9oPg0HcSA5onOuQlnkZpTiwYE0Bs2QtmTl4wtO79j/MSE7yBSnPiMfKtnVzADlv17p5NGmJL9Pad99iFlJl4mvITT+N2fgpEyhowtPGEsZMX9Eyc2qUZunsWGVr1heOg19p9lpMaTnmJISjPjgNTEEHfwhOmTl4wsHJ77Lwd3zSOLHsGwbH/5E4hoagzyZca/RvV3CnEsGlbHrlwcpLOUW7SaZTlJkGopAh9677w7DsFeuauf58We/AuZvaDmJn9IABAbvJ5yk4KwZVDiyFUUCYDaw+YOo2EnnmPR8qr59jlOLd7NozsB5CWrtlzL2GniYDVFQUUvGUyBk3ZBD0z54cqmJwb5yk3MRTluXEQCBWgZ+UBs+7ecmtA/x2hu2eRoXU/OA6c+tDHZCecoZykM6jIT4BIURX6tv1h5jgCYrPuD5VGXOi3VJgehVEzvucCdhTO7HyLtIy7o9eo9/+yUHLTLlJe4mmUZccCAhH0Ld1h2n0kDK16PVZhPo6ActV9fDDlJYbgdkEKFJW7wMC+L0wcR0Bs/NersZ7cPIlMnEfCedDrz7WEnaIKToncT/V1FX8qX97Ny5SXFIySrOtgAPQsesPdbwGMbD3+9cKzdPFmli7eAID0mKOUlxyKyLiPoKSqRYZ2A2DsNOKB6xN6jF2Bc7teh7H9EHqSiyhxAR+RO+XZlBT6DQa/sV1ue1HGVcpOPI3SzGuQyaTQtXBFr1H/hZFD/w5bWNZu/szazb9ZxmuHKTf5LDJjj0JFXZcM7AfCtNswaBvYMADQMbBmdv2m0aXf58Pn7Z94BPy3uHpoORyHzYLYyIEVpkdTfkooijOuQCZtgo5pD/Tw/hCmDgOfuwhh7R7IrN0DUVtZRnlpYchPPouMawehpiEmQ4fBMOk2FC5DprOyrGiKO7uVegybybiAz5jkqJ+ovqYC0qYGHN84lpoa66Fr4ozuI96FuePQTvGYQk1Tl9n3Hgv73mNRc6eEClPDkJMYgptRP0FL34p0THsgM+YQjOwHkdi4G+MCPkPSr/yChsoiZMcfR/ehM2HhPLJTDVPdj7qWHrPtMx62fcYDAOLPbaf06F/RUHUbN6/+CrHx87fs23MtYE+/T1CSEYnSrGtIvfgjbucnk6nTKIhNHTq1iHkp4ZSdcgZVhTehpW8Lcd8+MLLtz9uAzxpj617M2LpX8+OMhBDKSTiFiJ8/gKqGPpl1HwkTp2HQ0Ooc46bleSmUlXAC+WkXAZLA0Kov3HznwcDCjT+G6QhYOnsxS2cv1FSVUl5yKHISg3Ejai+0DRzI3MUHFi7PX/VcfaeQchPPIDcpBHXVxdA2coar1xyYOQ7hY8HPRdQovEm5CSeRn3oBUkkD9C3cYd7DHwZWPZ9YAf7TB9EPIjM+mLLjTuBOURrUtQxh6uwNQ6dh6KIh7nRNi04t4L0U3LpEGfEnUZ4VDQUldRg7DIW5yyhoiS1YRxCwKPM6ZcUdQXHmNSiIVGBoPwDmLr7QNrDu1O1ZEV4QjGw8mZGNZ3Pv+fpxyo0/gYzrB6GhbU7mzqNg6xH0zAv6Tkkm5SScQl7KeTQ11kLP3B29/RfAyMaTvSjl8sIIeC/WPX2ZdU9fVJUXUE5SMG5d+xXJ4TtJbOoEU9cAmNoPeKoCpF09SDkJJ1B9OxeaYhvYD3gN1q4+7EUsixemCv47SnITKDvuOIpvRQJMAYY2njDr4QuxyV9PCnjYKjjvRgRlxB1FRW4cFNW1YeboBROnkdDUMWYv8n0XcfWa0TN1ZnqmzgCA7ORzlBN3Ehd/+g+U1XVaHumMRJeuBu1k+St7SvJTKCfuGArTIgHIYGjbHw4T10HPtDvjd5wL+KeYOw5l5o5DAQCpl36lnMRgpEbuQ1dDOzJ38YVlD+9WgWQASNDmU1VFAeUmNT86aagug7aJM1y834N5t2FcOl4FPz4VRemUk3AKuannIWu4C7GlO2x6j0fSuW8hNu8JDT1LpF39BTXFWVDXMoSZiw+Mug2BehddLh4X8MlSmH6VsmOOojQ3Hk31NYCQQUVNB0a2A2Dawwfa+lZcOi7gsyEjLoSU1TRhZOPBpeMCcp43+DclcbiAHC4gh8MF5HABORwuIOfF4ZkMxZ0OOUffbt2D9KwcdLOzwdSp4+Azyqv1udn2HXspPv46Ro/2hc/oEe2ep50KDqUTp0Jx7VoyKqsqYWFmDNce3eDvPxp9POQnl549F0EHDx5GF01trFw+v11aK1d/SUWFeXhlyivw9Gg/MTUvr5DWrt8Ekkjx7rszYGcnPx/v5q0s2vLtdgiEimhqkgAgKCoqQNJ4F97eXhjlPZx9uvQzul1eiilTJsvlr237JPTxaF65a936zZSdnQtFJRUwBlhYmMDD3RUeHvIre308fxndrW+ASEEBDAwCAYOksR5u7m6Y+srDrRmYfSua4kK3QSprQq+R78HUui1vpUUZlB57HAoKymior4FtzwCIDZ/BXEQieqo/hw4fJzADArQICsYEdCWgC/3340/pj328fF4hAPS/BSvp3mNLS0vJL+AVAowIUCZAn6Bg0pwW1ElBxZzmvD+fSkvLWo9b89lGAlQJ0KJPl62l+/NjatOPAND2nT/Qg/L72dpNBGgQoEZzPlzQbp9TwecIAAFqBBgS8Mc1geZ88AkREbQNuhMgoO27fpQ7vquBCwFC2nnP9m4uw1quR5sAFQLUCQIDWrL889Z9CvKLSaRiRoBBS94UW84PGj5yHD1sWRz4Zjrt/yyQdq/woozkiNbjqipL6ef1E2jr/N70w2f+tGPRAEpPDKOn7QYRPf0I+Pn67QDVY8Gij/HyeH/8sP8g9u37Gb3cXVv30dLSgkikCTU1NbljA4KmI+pCJDR1xHj/vQ/g5zsCyspKKCoqwY/7D+D7PYewccN6jBgxCP5+owAAqqoqEIl0oK4rxuo1mzEmwJt69GhbrEhbtysKs/SgoqT8wPz++PMxKGoYQSgS4cCh09iwfoXc506Odti6dRdqauux6osdqKmsxJx3ZsDaygSurs3XpKenh6qyMigpK8kdq6urg+oyPaioqLRtE+tCpKiKiRNfwtAhnrhw8Rr2/nQMS5ZshL/vSOrp1rx6lp6+PspKyvHeu2/Bwc4WUhlBJm2CjY3VQ5VD1KnNVFtZCFUNPUhrJGCsbVnh+rpK2HsGQUGojJToAwARhCLFzlEFV9yphkCgCEVFJXR3dmJrnJ3wnw9nk1is0yqFVCqFRCKBTCbDvdVV1IVI6BgY4uBvWzGwf9tqo87dHeE1Ygh6u7uQiqoq/P1Gtc1OkREkkibIZFI0NgHvzFmIiLDDrelKJS3nesAI0PmwCEqIS4KqZhcIBQx5WTnYt/93mjyp7dvUTUyM2IwZrwMAPvtyFzXU3EXQS77w9HS/Jw8ySCQSkEz+HBKJpN11ymQESWMNBvbvgzemv8remP4qYuOTKOF6DCIuXkVPtx6QyqSQSqVorKvDSwE+GND/0WZM56RHU3r8SSgqqUMqbcT9o19iA2smNrAGANyIPkgyWXPTolN0Qnr37AaZTISlKzZg6bLPCQDule/+5sAf7P7hEAAB3n93mpx89/LO22+y6dMetFAjQVlBhC7aGrgYfgnrv9ryUHdz748HgKZK+HkPxNTJAQDV4cefjjy4PZWdTyQjgDHcuVP1j++TRCoBABQWFlPd3UbIZAQl5eYoxO6ZddgkaXrktK+f3QZIJBBbuEFZVRMkk/z1RMbO1AtetmQejM3EgEABS5Z+hZmz5v6pDH9EjPCIS5SXVwyVLl0xLsjv0S5IIABQD8du1nh7+gQAQixduQHp6Zn0R3R6EEVFJXT05DkQlPDq5LF4e8ZrYApdcD7sMm6kprXLs0jUVoUJhY+/Sr5UKgVEGtjx/S8YM24aDRk5ATeT0qAlNsBIr8Gt1ySTySBSUcWnS9cjaMIbNHbiW+QfMIk+X7fpL3+5Lp3eQneKMtBF1xLug6dB2tTwpwtqdspesLmZKQs+uZ98/aYit5CwbdsvKC0vpwO/tl9c8Y8IWF5WBll9Hbrom0BHR0duny1bd9HNtAwoKCpBKpWCADTW12D0aG/4jPZiUpkUgADV1dVYvWohOxlygeKir2PO3MU4fnhva8Vyf6kdORqM0rxcWNjawdenuYfet58HRYadwb79B7FsyceP0rX7245f279lgFAJsdeTERudBIGiEnr1dsaXXy6Fpbk5AwAmYCAiCBSVcOFcJIA6AAoAKiAhhnkfvffA8+Smx1BGzAmIRIpwHzETXbQNmVTSQGCCjhIAn81jGCfHbuxC+EEaP+EtXL2ehoO/ncKcDxbQxq9Wyt0H1vKbqasrhkBZFVV3qlFeXg49Pd3Wfb7d/j3ir4UDaGnIK+gBTYUwNDSBz2iv1igqaWqu0jZ9uQTDR07CiWOh2PLtThJ37YoUtI+Ce386CECG118Lat325rRxiLwQhl8OnnpEAdl9f8tvFymI5CN2010EjR2Ni1cSUVaYh1WrPsGA/n3Z/ZG9qbYaaz77BG5uLs2REwRDQ8M/zUXM2W2QSBtg12ssjK1cW2RWAIheLAEBwNTEhF2KPImhw4MoPDIOu/YcwAdz3iIrKwv2R7XIWqa2DxzQhxmbiCn3VhYOHDqFBd3sW9NZsWQ+srImQ0FRGbm5Bdj4zR7U1xnDzdVFTmKhSNSSVl/29qxXacOXW7FszVYoiBQAKMpFoejoWIqKvAbVrkb4Yd8R/PL7KWJEkMoIatrGSE1MxeEjpygwYNRDlZtA0Czb/XGQMQYGAVSUVe7ZVwjIauDvMwI62jrYvnUrlq3cCK8RQ+47VgCSSODZtxcGD/z7NQ7Tky5QVVkWVNXFKM1LxLGdb5OMMUgk9VBW1cKlk1+iof5Nsu3h9a+6+NTbgJevXKNdu39sLYu9e76GspIIdXUNyMsvkKuS2D1tk1cmBACQYMOm7xB99Xrr8f5+o9h7785ks2a8xioqqlFz+zYsrU0wenTzOxfNbUAmVw1+tX45s7K3R3HJbVTcqQQglPt8zw+/Q9oggYyacDM9B0lJaUhMuomU1FuQNt0FIMJ3e3556GtWVVMGYxI0NdyV215bWwsSMCjf93gGABoam7BowXtQUtNGxIUoHDp8gtpV64zJdUj+CplMBolUAomkHpWlmbhTmoPq0hxAJgMTCFFTUYCG2orOHQHPh0XQ0CFjIFBWg4JIRK9OmciOHw+BVCKBhpoSLC0tWhr0IgiFQgjuebln9coF7NCxELoRnwy/oDexaP7b5DN6JFRUlFFRcQcbN+/Ct9/8AECANcvntXUIBAxCobBdx2DTl5/C128qlLpq466wUu6zYyfPA0yKRR/PxLggfzQ2NgEMUFRQQNTla5j+1v9w4WI0cvPyydSk7TVKoaj5POy+Rr1zN3tcj4rCnh8PYvAAT7K1s2HzF66k0sISqGtpoZuDzT0dGAGEQkXU1tXD1NSUTZgQQHu/24dVa7fgpUCf1qpbKBBApKSMqEtXUV/fQFKJDGAyGBgYws21/Vt2ts6DWVddE2JM0FqFN9TX4uKxz9FQfRuefh/BsXdg+7f8BILmrx57Vh2Vp/2k2zdgSstIgSGJjXoQmBEB6rRgUduoh7ffVAJA8xeulnv6npGZSZ59RxGgQ4AGKXaxJT0TNxKomhOgTkJFI9r49Va5Y9Z+sZkAAdk6Dmj3JH/6m3Nb0tKkb77dTUSEr7fsIkCJtMROf/rk3677QAKEtGBxW/5ycwtIsYsdARp04kSo3LHJySmkZ+BEgBYpdrEhbUOX5lEcaNK6L76W29e192gCQGvWbCIiwo0baaSkbkWAKm3ctIOICDm5+aSobkWASetIUvPICcjbd/IjjVj8/MU42rG4P2WlXn7gcT+vH087Fw+gjOTwzjEScuzwXrZg4Qo6dvIcikruwL23I16ZHIQP35/d+is2sH8PKLCx6O5kI3espYUFi4o8iZ0799Dh4yGIT8pATW01HOws0bd3IN54fQr69pX/BiI7W0v4BwTB0sqmXV7WrJqPurpq1NbUwNrKrLXH7R/gi0GDh/7pNcybOxOHD+mjob6udZuikiLGBg5BTVU19PS15fbv1s2BhYcdpBUrv0BEVBzq6howaKgH3pg+GVOnvCyXX69hfWBiqAp7h+bawN7elq1Y9iGFn7+A9PSbLe1nIzb2peF0t14CkYKwNSI23K1F/wGej1Qe+pZu6FJrDpGS6oM/t3CFZq0ZlNV0nkkAfKbvhJSVl5Guzj97TbGsrJx0dXWeqxeAnsR1d1b4S0mczj0S8k+5dOkqxcUldKrfkkuXrzz29RSXlFFERCQVFHSSL7B+Fg3Nx/k5HxZBI0b605igl8nHbwwdOXbqkRrFKTfS/nEj+oMP5z12Gp+v/YouXmzf0J/w8nSaOOk1uh6T8Mhpf7vtOxo8dDSNG/8KDRvhS19+tZk6avk97E+HzFRJaRkNHe5PMTHxD32DI6MuU2JSKhERkpJuUOCYVygk5CwVFhYTESG/oJAuXLjYLr30jEy60SLrjdSblHbzFrXlo5yICFlZORQWfpEiIy/J5enylauUnpEll+bVq9coL6+Alq1cRyeD5XvHO3fvo/ETX6eEhOTW7ZGRUZSZmd0uX9HXYkj+/7HkPXqM3Dbv0WPo/PkIuW1Rl660SyviYmSHFbVDLk50JjQMw4cPhqur/JcO7vvpd1JSUsDYMQEsv6CIvt68FatXfspmzJpDZaUlkIFhzapldCrkLK5fi8H6rzbgk08+QWxcPK1Y8Rl0xNpYtWY9fb97K4qKSrDp620gkiIlJRVjggIp5loMklNSsGfPduru2I2t/+prrF6xGFGXrmLfvn2orqmFpqY2Dh34EVOnzaTS0lLU1tTgv/P+Q/6+3mzhouUUGRUJB4duyMjIxrChg+Su6/CRE0hJSsaKVZ9h3do19MGHH6FJ0oSqymq8NnUKTXttMlu6/DOqrq5BQX4+9v24q/XY0LNheOONqXLpvT17BsIuXMTgwf0x+52PSF1DDSlJSdAVi2n3ri0sPSOT3njzPaipK0MmJdq2dRNMTYwYr4L/5mfr9u/puz372/3Wbvl2B+3YtYeICOmZ2TRt+kwiIrw6bRbl5xfJ7T9z9get/w8YM4lupTdHmU2bt9K69ZsoPiGZfPwnEhHhl18PkV/ABCIi7Nj5A61dv6El3RlyaW7Z+h3lFxRRcMhZeue9tur5vQ/nU2LSDZrw8mvUVtVOo3Nh8hH3ekwCfbJwORERPl+3kZYtb5ux7eM/nogIQROm0LXrce2ufeny1RQcfJbko/5V+mTBMiIiDB7m0/rZ+IlTqaCwiBYsXkE//3qIiAiHj5yiz7/Y2OEiYYfshGhrayMt9Vb7HpNQCHUNdQCAlYUZU1ZuntW857stLDw8Avv3/9baMJdImicjlJSWk7mZKaytmr9b189nFO7cqUTd3Xr069eneT6DghDDhzVHKxVVpZbxYsgNmZ08FULqaqowMtRnuTl5yMnJwNvvvE/TXp9B1VVVyMjMRv/+/Vr37+nuhsbGRvmhuLpaNLRsKy+/DT//UW0jFzY2SE1LJysrS/R0c2kXpTQ0uqCouFhuW1Z2FjQ1NVFWfpt693Jv3W5lZYHa2ruoqqzDqeBTePudObTru51obGjgveCHYVyQHwsPD8eRY83joaWlt+mPIbvo6FgAzdOysjLzAAD5BcX08stjWW5+IVasXkcAcPtOJcrK75CeWIfl5xcgLDySAGD7zr0wMTGCoqIiqqtrAABSqQxVVdUt4krRPKULaGpsnvyZnZ1HsbFJmPLKBNb8sNgOtXWN8OjTDx69+2DShCA42NvgxIlgAEBBQTHt2vk9VFXkH/YysNZxbwsLU2zf8T0AIDExhVLT0mBvZ80q71ShsKisXQ/X12cUtu/chbj4RAKA1LRb9PXmbfDzG4Xa2ruorW0bd757twEioQA2NuZoqJegf//BGDpkCAID/DpcWXfYBSq3fLMBixYvw9ebNhOYELNnz6Lp06awkaPH0CifQHJ2cYVDNzsAwNovNiAu9hoJBIpYtXJpS0SxRmDgGGzY8CUtXvQx5v5nPhiTkpGxOVYuX8DCwyNJXV2lJQIqtEY7RQURlJWa/62k2Dwj+Zut3+FsaDBCQ0NIRU0NRw/9wiaOD6KTJ09AJpXC2sYStjZWzHvkcBo0xIvs7BwwYGBfCIXygUwgYFBTaz7nrBnT2ex35tJwL18CY5j30dzW8wuE7ZtpdrZW7JP/zaN5/1sEkITARJj7wbtw7GbHkpJTSV2jTXY1NRVUV1djzrsz2Ec5eXTw0EGoqWngpTGB/DHMo/7k5Ba0a7cUFpW025aTk99uW0FLD7gtrfzHbgPl5RdSTk4+5d3T1iwoLKb781JUXPpI58jNL3zkPGVl59LT3P9Z/vCREA5vA3K4gBwOF5DDBeRwuIAcLiCHwwXkcAE5HC4ghwvI4XABOVxADocLyOECcjhcQA4XkMPhAnK4gBwOF5DDBeRwuIAcLiCHwwXkcAE5HC4ghwvI4XABOVxADocLyOECcjhcQA4XkMMF5HC4gBwuIIfDBeRwATkcLiCHC8jhcAE5XEAOhwvI4QJyOFxATifj/5H+CgNHsNI4AAAAAElFTkSuQmCC" alt="Signature 41 — Customized for One">
@@ -1947,14 +1947,14 @@ body.has-visit #main .jbar{padding-right:calc(176px / var(--ui-zoom))}
     <div class="sf-grp">
       <div class="sf-lbl">ไฟล์</div>
       <button class="btn" onclick="exportJSON()">💾 บันทึกเป็นไฟล์</button>
-      <button class="btn" onclick="importJSON()" title="เปิดไฟล์ .json ของลูกค้า — จาก Step 2 (หมอเงิน / ฟอร์มลูกค้า) หรือไฟล์ Step 3 ที่บันทึกไว้">📂 เปิดไฟล์ลูกค้า (.json)</button>
+      <button class="btn" onclick="importJSON()" title="เปิดไฟล์ .json ของลูกค้า — จาก Step 2 (หมอการเงิน / ฟอร์มลูกค้า) หรือไฟล์ Step 3 ที่บันทึกไว้">📂 เปิดไฟล์ลูกค้า (.json)</button>
     </div>
   </div>
   <div class="side-base">
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.95</b><span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.99</b><span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
 </aside>
 
 <main id="main">
@@ -2736,8 +2736,8 @@ body.has-visit #main .jbar{padding-right:calc(176px / var(--ui-zoom))}
 
 <div class="modal-bg" id="mVisit" onclick="if(event.target===this)closeModal('mVisit')">
   <div class="modal wide">
-    <div class="m-eye">Visit Notes · บันทึกจากหมอเงิน</div>
-    <h2>สิ่งที่ได้จากหน้าหมอเงิน</h2>
+    <div class="m-eye">Visit Notes · บันทึกจากหมอการเงิน</div>
+    <h2>สิ่งที่ได้จากหน้าหมอการเงิน</h2>
     <div class="m-sub" id="visitMeta"></div>
     <div id="visitBody" style="margin-top:12px;max-height:62vh;overflow:auto"></div>
     <div class="m-acts" style="justify-content:flex-end;margin-top:14px">
@@ -2768,7 +2768,7 @@ body.has-visit #main .jbar{padding-right:calc(176px / var(--ui-zoom))}
     <div class="wel-tip">
       ⚠ <b>เปิดไฟล์จาก Step 2 เพียงครั้งเดียวต่อลูกค้า 1 คน</b> — หลังจากนั้นแก้ไข/เพิ่มทุกอย่างที่นี่ (ทะเบียนกรมธรรม์ · ภาษี · งบดุลจากรูปเขียนมือ)
       เพราะการนำเข้าเป็นแบบ<b>เขียนทับทั้งก้อน</b> — ถ้านำเข้าซ้ำ เครื่องจะถามก่อน และถ้าเลือกแทนที่ งานที่กรอกไว้ในนี้จะหาย (Snapshot รายปีและบันทึก NAV เก็บไว้ให้)<br>
-      💡 <b>เคสใหม่ที่ยังไม่ได้ตรวจ</b> — แนะนำให้กรอกที่<b>หน้าหมอเงิน (Step 2)</b> แล้วบันทึก .json มานำเข้าที่นี่
+      💡 <b>เคสใหม่ที่ยังไม่ได้ตรวจ</b> — แนะนำให้กรอกที่<b>หน้าหมอการเงิน (Step 2)</b> แล้วบันทึก .json มานำเข้าที่นี่
       จะได้งบดุล/กระแสเงินสดครบและตัวเลขตรงกันทั้งระบบ ดีกว่ากรอกใหม่ในนี้
     </div>
 
@@ -5217,7 +5217,7 @@ function toggleUiMode(){
   if(typeof saveState==='function') saveState();
   applyUiMode();
 }
-/* ═══ v3.7: อ่านบันทึกนัดที่ 1 ที่ติดมากับไฟล์ (_visit จากหน้าหมอเงิน) — เดิมติดมาแต่ไม่มีที่ให้ดู ═══ */
+/* ═══ v3.7: อ่านบันทึกนัดที่ 1 ที่ติดมากับไฟล์ (_visit จากหน้าหมอการเงิน) — เดิมติดมาแต่ไม่มีที่ให้ดู ═══ */
 function paintVisitBtn(){
   const b=document.getElementById('visitBtn'); if(!b) return;
   const v=STATE&&STATE._visit;
@@ -5225,10 +5225,10 @@ function paintVisitBtn(){
   document.body.classList.toggle('has-visit', !!(v && STATE.uiMode==='advance'));   /* v3.9.95·M2 (E-20): เว้นที่ขวาของแถบขั้นตอนให้ปุ่มลอย */
 }
 /* ═══ v3.9.92 (อ้อย): บรรทัด "📝 จาก Step 2" ในหน้าที่เกี่ยวข้อง ═══
-   ข้อมูลเชิงคุณค่าที่กรอกใน Step 2 (_visit) เดิมอยู่ในปุ่ม "บันทึกหมอเงิน" ที่เดียว — ที่ปรึกษาต้องกดเปิดเอง
+   ข้อมูลเชิงคุณค่าที่กรอกใน Step 2 (_visit) เดิมอยู่ในปุ่ม "บันทึกหมอการเงิน" ที่เดียว — ที่ปรึกษาต้องกดเปิดเอง
    ตอนนี้แต่ละคำตอบขึ้นใต้หัวหน้าที่เกี่ยวข้องด้วย · เห็นเฉพาะมุมมองที่ปรึกษา (.adv-only) · ไม่พิมพ์ · ไม่อยู่ในรายงาน A4
    ระดับ รพ./ค่าห้อง อยู่ใต้ช่องโรงพยาบาลในหน้า Protection และภาษีที่ลูกค้าบอกอยู่ในหน้า Tax อยู่แล้ว — ไม่ซ้ำที่นี่
-   ผู้ที่ลูกค้าส่งต่อ (ชื่อ/เบอร์บุคคลที่สาม) ไม่ขึ้นตามหน้า — อยู่ในปุ่มบันทึกหมอเงินที่เดียว */
+   ผู้ที่ลูกค้าส่งต่อ (ชื่อ/เบอร์บุคคลที่สาม) ไม่ขึ้นตามหน้า — อยู่ในปุ่มบันทึกหมอการเงินที่เดียว */
 const S2_TALK_PAGE={
   'เวลาว่างชอบทำอะไร':'p1','ความสำเร็จที่ภูมิใจ':'p1','มุมมองต่อการวางแผนการเงิน':'p1',
   'อยากให้ช่วยดูเป็นพิเศษ':'p1','เรื่องที่ลูกค้าอยากบอก':'p1',
@@ -5313,17 +5313,17 @@ function paintStep2Notes(){
       ph.insertAdjacentElement('afterend',box);
     }
     box.hidden=false;
-    box.innerHTML='<div class="s2n-h"><span>📝 จาก Step 2 · ลูกค้าบอกไว้</span><span style="margin-left:auto;font-weight:400;letter-spacing:0;color:var(--muted)">ทั้งหมดอยู่ที่ปุ่ม 📋 บันทึกหมอเงิน มุมขวาบน</span></div>'+
+    box.innerHTML='<div class="s2n-h"><span>📝 จาก Step 2 · ลูกค้าบอกไว้</span><span style="margin-left:auto;font-weight:400;letter-spacing:0;color:var(--muted)">ทั้งหมดอยู่ที่ปุ่ม 📋 บันทึกหมอการเงิน มุมขวาบน</span></div>'+
       items.map(([q,a])=>'<div class="s2n-i"><span class="s2n-q">'+esc(q)+'</span><span class="s2n-a">'+esc(a)+'</span></div>').join('');
   });
 }
 function openVisitNotes(){
-  const v=STATE&&STATE._visit; if(!v){ alert('ไฟล์นี้ไม่มีบันทึกจากหน้าหมอเงิน'); return; }
+  const v=STATE&&STATE._visit; if(!v){ alert('ไฟล์นี้ไม่มีบันทึกจากหน้าหมอการเงิน'); return; }
   const esc=x=>String(x==null?'':x).replace(/&/g,'&amp;').replace(/</g,'&lt;');
   const f=n=>Number(n||0).toLocaleString('en-US');
   const sec=(t,b)=>b?('<div style="margin-top:13px"><div style="font-size:11px;font-weight:700;color:var(--gold-2);letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--line);padding-bottom:3px;margin-bottom:6px">'+t+'</div>'+b+'</div>'):'';
   const kv=(l,x)=>'<div style="display:flex;justify-content:space-between;gap:14px;padding:3px 0;border-bottom:1px dashed var(--line);font-size:12.5px"><span style="color:var(--muted)">'+l+'</span><b style="text-align:right">'+x+'</b></div>';
-  document.getElementById('visitMeta').textContent=(v.visitDate?'ตรวจเมื่อ '+v.visitDate:'')+(v.advisor?' · หมอเงินผู้ตรวจ: '+v.advisor:'')+(v.source?' · '+v.source:'');
+  document.getElementById('visitMeta').textContent=(v.visitDate?'ตรวจเมื่อ '+v.visitDate:'')+(v.advisor?' · หมอการเงินผู้ตรวจ: '+v.advisor:'')+(v.source?' · '+v.source:'');
   let h='';
   /* v3.9.90: ข้อมูลเชิงคุณภาพจาก Step 2 (อาชีพ · ที่ทำงาน · คู่ชีวิต · ความฝันของลูก · ภาษีที่ลูกค้าบอก · ผู้ที่ลูกค้าแนะนำต่อ)
      — เดิมกรอกใน Step 2 แล้วไม่ติดมากับไฟล์ ที่ปรึกษาต้องถามซ้ำ · แสดงเฉพาะมุมมองที่ปรึกษา ไม่ขึ้นในรายงานลูกค้า */
@@ -7363,7 +7363,7 @@ function exportJSON(){
   try{ if(typeof libSaveActive==='function') libSaveActive();
        const lib=libRead(); const rec=lib.clients.find(c=>c.id===lib.activeId); if(rec) s41={clientId:rec.id, name:rec.name}; }catch(e){}
   const data = {
-    stage: 'step3',   /* v3.9.14: ป้ายบอกว่าไฟล์นี้มาจาก Step 3 (ไฟล์หมอเงินเป็น stage:'step2') */
+    stage: 'step3',   /* v3.9.14: ป้ายบอกว่าไฟล์นี้มาจาก Step 3 (ไฟล์หมอการเงินเป็น stage:'step2') */
     version: 'v3',
     exportedAt: new Date().toISOString(),
     rules: { ver:(typeof rulesVer==='function'?rulesVer():''), date:(typeof rulesDate==='function'?rulesDate():'') },
@@ -7603,7 +7603,7 @@ const HOSPITALS = [
 ];
 /* ระดับการศึกษา → ค่าเทอมโดยประมาณ (บาท/ปี, ราคาปัจจุบัน) สำหรับเป็นค่าตั้งต้นเป้าหมายการศึกษา */
 /* ตารางค่าเทอม 2 แกน: ระดับ × ประเภท (ค่าเทอม/ปี ราคาปัจจุบัน) */
-const EDU_LEVELS=[{k:'อนุบาล',yrs:3},{k:'ประถม',yrs:6},{k:'มัธยม',yrs:6},{k:'ป.ตรี',yrs:4},{k:'ป.โท',yrs:2}];  /* v3.7.1: เพิ่ม ป.โท ให้ตรงกับหน้าหมอเงิน (Step 2) */
+const EDU_LEVELS=[{k:'อนุบาล',yrs:3},{k:'ประถม',yrs:6},{k:'มัธยม',yrs:6},{k:'ป.ตรี',yrs:4},{k:'ป.โท',yrs:2}];  /* v3.7.1: เพิ่ม ป.โท ให้ตรงกับหน้าหมอการเงิน (Step 2) */
 const EDU_TYPES=['รัฐ','เอกชน','อินเตอร์'];
 const EDU_FEE={'อนุบาล':[15000,80000,350000],'ประถม':[20000,120000,500000],'มัธยม':[25000,150000,650000],'ป.ตรี':[40000,150000,400000],'ป.โท':[100000,200000,350000]};
 
@@ -10304,7 +10304,7 @@ const HENG = (function(){
   function ci(c){
     const tRaw=protRaw('ciTarget');
     /* v3.9.73 (อ้อย 27 ก.ย. 69): ทุนโรคร้าย = รายได้ต่อปี × 3 ปี (ช่วงพักรักษา) · ไม่มีขั้นต่ำ
-       ยอดที่ลูกค้าประเมินไว้ในหมอเงิน (ciTarget ← s3_need) ไม่ใช้คำนวณแล้ว — โชว์ประกอบในวิธีคิดของที่ปรึกษาเท่านั้น */
+       ยอดที่ลูกค้าประเมินไว้ในหมอการเงิน (ciTarget ← s3_need) ไม่ใช้คำนวณแล้ว — โชว์ประกอบในวิธีคิดของที่ปรึกษาเท่านั้น */
     /* v3.9.74 (อ้อย): รายได้/ปี × 3 แต่ไม่ต่ำกว่า 3 ลบ. (คนไม่มีรายได้ก็ยังต้องมีเงินรักษา) */
     const need=Math.max(PROT_DEFAULTS.ciTarget, Math.round(ciIncome(c)*3));
     const existing=(c._cov&&c._cov.ci)||0;                                    // ทุน CI เดิม (รายคน)
@@ -10314,7 +10314,7 @@ const HENG = (function(){
   /* ทุนที่ 5 — อุบัติเหตุ (PA)
      v3.8.1: วัดที่ "วงเงินค่ารักษาพยาบาลจากอุบัติเหตุ" ไม่ใช่ทุนประกันชีวิตแบบอุบัติเหตุ
      เหตุผล: อุบัติเหตุที่เกิดจริงเกือบทั้งหมดคือบาดเจ็บแล้วต้องรักษา (แขนขาหัก · เย็บแผล · กายภาพ)
-     ไม่ใช่เสียชีวิต — และหน้านัดหมอเงิน (Step 2) ก็ถามเป็น "วงเงินค่ารักษาต่อครั้ง" อยู่แล้ว
+     ไม่ใช่เสียชีวิต — และหน้านัดหมอการเงิน (Step 2) ก็ถามเป็น "วงเงินค่ารักษาต่อครั้ง" อยู่แล้ว
      ส่วนทุนชีวิตกรณีอุบัติเหตุ ถูกนับรวมอยู่ในทุนประกันชีวิต (ชั้นที่ 1) แล้ว ไม่ต้องนับซ้ำ */
   function pa(c){
     const tRaw=protRaw('paMedTarget');
@@ -14229,7 +14229,7 @@ function renderA4Summary(){
       </div></div>`;
     })()}
     <div class="a4-note" style="margin-top:14px">สมมติฐานทั้งหมดที่ใช้ในแผน แยกตามแหล่งที่มา อยู่ในหน้า “สมมติฐาน — ข้อมูลจริง เทียบ สมมติฐาน”</div>
-    <div class="a4-note">รายงานนี้เป็นการประมาณการเพื่อการวางแผนการเงินส่วนบุคคล อ้างอิงข้อมูลที่ลูกค้าให้ไว้ · ใช้สมมติฐานผลตอบแทน/เงินเฟ้อคงที่ ไม่ใช่การรับประกันผลตอบแทน ควรทบทวนทุกปีหรือเมื่อสถานะเปลี่ยน · SIGNATURE 41 — Customized for One</div>
+    <div class="a4-note">รายงานนี้เป็นการประมาณการเพื่อการวางแผนการเงินส่วนบุคคล อ้างอิงข้อมูลที่ลูกค้าให้ไว้ · ใช้สมมติฐานผลตอบแทน/เงินเฟ้อคงที่ ไม่ใช่การรับประกันผลตอบแทน ควรทบทวนทุกปีหรือเมื่อสถานะเปลี่ยน · Designed by CFP® Professional · SIGNATURE 41 — Customized for One</div>
     <div class="a4-note" style="margin-top:5px">${(function(){
       /* v3.9.51: บรรทัดเปิดเผยผลประโยชน์ — มาตรฐานของการให้คำแนะนำที่มีผลิตภัณฑ์ผูกอยู่
          ที่ปรึกษาแก้ข้อความเองได้ที่ STATE.planDisclosure (ว่าง = ใช้ข้อความมาตรฐานนี้) */
