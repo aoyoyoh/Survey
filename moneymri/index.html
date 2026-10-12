@@ -1432,6 +1432,18 @@ nav.pages .jstep .jt small{font-size:9px;color:var(--faint);letter-spacing:.02em
 .y-num,.pol-tbl,.gp-tbl,.tc-tbl,.a4-gtbl,.a4-metric .v,.line .val,.line .lbl,.ratio,.tx-taxbig,.tx-plan-res,.tx-srcexp,.cfbar,.pcm-c b,.rbar-pct{font-variant-numeric:tabular-nums}
 
 
+
+/* ═══ v3.10.0 · มุมมองที่ปรึกษาแบบ minimal (อ้อย 12 ต.ค. 69): คำอธิบายพับไว้ เปิดดูได้ด้วยปุ่ม ⓘ · กล่อง Step 2 ไม่ขึ้นบนหน้า ═══ */
+.s2note{display:none!important}
+body.adv.adv-lite .note, body.adv.adv-lite .h-note, body.adv.adv-lite span.hint, body.adv.adv-lite .xpl, body.adv.adv-lite .pcm-calc,
+body.adv.adv-lite .pyt-hint, body.adv.adv-lite .rt-cap, body.adv.adv-lite .edu-explain, body.adv.adv-lite .card-s, body.adv.adv-lite .ph-eye,
+body.adv.adv-lite small.adv-only, body.adv.adv-lite .ie-hint, body.adv.adv-lite .ph-s span.adv-only, body.adv.adv-lite .coach-talk, .s2line, body.adv.adv-lite .catx-hint, body.adv.adv-lite .sec-h span{display:none!important}
+.xpl-sw{display:none;top:94px;background:#7A7A7A}
+body.adv .xpl-sw{display:inline-flex}
+body.adv.adv-lite .xpl-sw{background:#B5AFA0}
+.visit-sw.has-notice::after{content:"";position:absolute;top:-3px;right:-3px;width:11px;height:11px;border-radius:50%;background:#C8635A;border:2px solid #fff}
+.visit-sw{position:fixed}
+@media print{.xpl-sw{display:none!important}}
 </style>
 <style id="s41-redesign">
 /* ═══════════ S41 REDESIGN LAYER — CI เดิม อ่านง่ายขึ้น สื่อสารด้วยสีชัดขึ้น ═══════════ */
@@ -1897,6 +1909,7 @@ body.has-visit #main .jbar{padding-right:calc(176px / var(--ui-zoom))}
 
 <div id="app" class="mode-client">
 <button class="view-sw" id="viewSw" type="button" onclick="toggleViewMode()" title="สลับมุมมองลูกค้า/ที่ปรึกษา — ซ่อนด้วย CSS เท่านั้น ข้อมูลไม่หาย">👁 <span id="viewSwTxt">มุมมองลูกค้า</span> ⇄</button>
+<button class="view-sw xpl-sw" id="xplSw" type="button" onclick="toggleAdvLite()" title="แสดง/ซ่อนคำอธิบายในมุมมองที่ปรึกษา">ⓘ <span id="xplSwTxt">คำอธิบาย: ซ่อน</span></button>
 <button class="view-sw visit-sw" id="visitBtn" type="button" style="display:none;top:52px;background:#2F4C6B" onclick="openVisitNotes()" title="บันทึกจากหน้าหมอการเงิน — คำตอบชวนคุย · gap · งบ · รายการที่ต้องปรับกันนับซ้ำ">📋 บันทึกหมอการเงิน</button>
 <aside id="side">
   <div class="side-logo" id="sideLogo">
@@ -1954,7 +1967,7 @@ body.has-visit #main .jbar{padding-right:calc(176px / var(--ui-zoom))}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— Foundation —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.9.99</b><span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.10.0</b><span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
 </aside>
 
 <main id="main">
@@ -5197,6 +5210,11 @@ const xPct = age => ((age - STATE.axisMin) / (STATE.axisMax - STATE.axisMin)) * 
 const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
 
 /* ─── โหมดเดียว: มุมมองลูกค้า (=ง่าย) / มุมมองที่ปรึกษา (=ละเอียด) · ข้อมูลชุดเดียว ซ่อนด้วย CSS ไม่ลบ ─── */
+
+/* v3.10.0: คำอธิบายในมุมมองที่ปรึกษา ซ่อนเป็นค่าตั้งต้น (จำต่อเบราว์เซอร์) */
+function advLiteOn(){ try{ return localStorage.getItem('s41_adv_lite')!=='0'; }catch(e){ return true; } }
+function applyAdvLite(){ const on=advLiteOn(); document.body.classList.toggle('adv-lite',on); const t=document.getElementById('xplSwTxt'); if(t) t.textContent='คำอธิบาย: '+(on?'ซ่อน':'แสดง'); }
+function toggleAdvLite(){ try{ localStorage.setItem('s41_adv_lite',advLiteOn()?'0':'1'); }catch(e){} applyAdvLite(); }
 function applyUiMode(){
   const adv = (STATE.uiMode==='advance');
   document.body.classList.toggle('adv', adv);
@@ -5207,6 +5225,7 @@ function applyUiMode(){
   /* v3.9.90: ปุ่ม "บันทึกนัดที่ 1" ต้องตามมุมมองทันที — เดิมวาดเฉพาะใน render() แต่การสลับมุมมองไม่เรียก render()
      ผลคือ นำเข้าไฟล์ (เปิดเป็นมุมมองลูกค้าเสมอ) แล้วสลับเป็นมุมมองที่ปรึกษา ปุ่มไม่ขึ้นจนกว่าจะแก้ข้อมูลสักช่อง */
   try{ paintVisitBtn(); }catch(e){}
+  try{ applyAdvLite(); }catch(e){}   /* v3.10.0 */
   try{ paintStep2Notes(); }catch(e){}   /* v3.9.92 */
   try{ paintPlanNotices(); }catch(e){}  /* v3.9.95 */
 }
@@ -5221,8 +5240,10 @@ function toggleUiMode(){
 function paintVisitBtn(){
   const b=document.getElementById('visitBtn'); if(!b) return;
   const v=STATE&&STATE._visit;
-  b.style.display = (v && STATE.uiMode==='advance') ? 'inline-flex' : 'none';
-  document.body.classList.toggle('has-visit', !!(v && STATE.uiMode==='advance'));   /* v3.9.95·M2 (E-20): เว้นที่ขวาของแถบขั้นตอนให้ปุ่มลอย */
+  let anyN=false; try{ anyN=planNoticeData().any; }catch(e){}
+  const show=!!((v||anyN) && STATE.uiMode==='advance');
+  b.style.display = show ? 'inline-flex' : 'none';
+  document.body.classList.toggle('has-visit', show);   /* v3.9.95·M2 (E-20): เว้นที่ขวาของแถบขั้นตอนให้ปุ่มลอย */
 }
 /* ═══ v3.9.92 (อ้อย): บรรทัด "📝 จาก Step 2" ในหน้าที่เกี่ยวข้อง ═══
    ข้อมูลเชิงคุณค่าที่กรอกใน Step 2 (_visit) เดิมอยู่ในปุ่ม "บันทึกหมอการเงิน" ที่เดียว — ที่ปรึกษาต้องกดเปิดเอง
@@ -5277,48 +5298,35 @@ function step2NotesFor(pid){
    (ก) สิ่งที่เปลี่ยนตอนย้ายข้อมูลเดิมเข้ากติกาใหม่ — กด "รับทราบ" แล้วหาย
    (ข) ค่างวดหนี้ที่ไม่มีปีจบ — แผนนับจ่ายถึงสิ้นแผน จนกว่าจะกรอกปีจบ/ยอดหนี้ */
 function ackMigNotes(){ delete STATE._migNotes; (STATE.carriers||[]).forEach(c=>{ delete c._penAsk; }); if(typeof saveState==='function') saveState(); render(); }
-function paintPlanNotices(){
-  const esc=x=>String(x==null?'':x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  const f0=n=>Math.round(Number(n)||0).toLocaleString('en-US');
+function planNoticeData(){
   const mig=Array.isArray(STATE&&STATE._migNotes)?STATE._migNotes:[];
   let debts=[]; try{ debts=debtNoEndList(); }catch(e){ debts=[]; }
   let incs=[]; try{ incs=workIncNoEndList(); }catch(e){ incs=[]; }
-  ['p1','p10'].forEach(pid=>{
-    const sec=document.getElementById(pid); if(!sec) return;
-    let box=document.getElementById('pn-'+pid);
-    if(!mig.length && !debts.length && !incs.length){ if(box){ box.innerHTML=''; box.hidden=true; } return; }
-    if(!box){ const ph=document.getElementById('s2n-'+pid)||sec.querySelector(':scope > .ph')||sec.querySelector('.ph'); if(!ph) return;
-      box=document.createElement('div'); box.id='pn-'+pid; box.className='s2note adv-only'; box.style.borderStyle='solid';
-      ph.insertAdjacentElement('afterend',box); }
-    box.hidden=false;
-    box.innerHTML=
-      (mig.length?'<div class="s2n-h"><span>🔔 ข้อมูลเดิมถูกปรับเข้ากติกาใหม่ (v3.9.95) — ตรวจก่อนคุยกับลูกค้า</span><button type="button" onclick="ackMigNotes()">รับทราบ ✓</button></div>'+
-        mig.map(t=>'<div class="s2n-i"><span class="s2n-a">• '+esc(t)+'</span></div>').join(''):'')+
-      (debts.length?'<div class="s2n-h" style="margin-top:'+(mig.length?'8px':'0')+'"><span>⚠ ค่างวดหนี้ที่ยังไม่มีปีจบ — แผนนับจ่ายถึงสิ้นแผน</span><button type="button" onclick="goPage(\'p2\')">ไปกรอกที่ Snapshot</button></div>'+
-        debts.map(d=>'<div class="s2n-i"><span class="s2n-a">• '+esc(d.name)+' '+f0(d.m)+' บาท/เดือน — กรอก "ถึงอายุ" ของบรรทัดนี้ หรือยอดหนี้คงเหลือในงบดุล เพื่อให้เครื่องคิดปีจบหนี้</span></div>').join(''):'')+
-      (incs.length?'<div class="s2n-h" style="margin-top:'+((mig.length||debts.length)?'8px':'0')+'"><span>⚠ รายได้ที่ไม่ได้ใส่อายุสิ้นสุด — แผนนับว่าได้ถึงสิ้นแผน (รวมช่วงหลังเกษียณ)</span><button type="button" onclick="goPage(\'p1\')">ไปแก้ที่ Life Path</button></div>'+
-        incs.map(d=>'<div class="s2n-i"><span class="s2n-a">• '+esc(d.name)+(d.who?' ของ '+esc(d.who):'')+' '+f0(d.m)+' บาท/เดือน — เปิดบรรทัดนี้ที่ Life Path แล้วใส่ "ถึงอายุ" ให้ชัด (เว้นว่างแล้วบันทึก = ได้ตลอดชีพ)</span></div>').join(''):'');
-  });
+  return {mig,debts,incs,any:!!(mig.length||debts.length||incs.length)};
+}
+function planNoticeHTML(){
+  const esc=x=>String(x==null?'':x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const f0=n=>Math.round(Number(n)||0).toLocaleString('en-US');
+  const {mig,debts,incs}=planNoticeData(); let h='';
+  const li=t=>'<li style="margin:3px 0">'+t+'</li>';
+  if(mig.length) h+='<div style="font-size:12.5px"><b>ข้อมูลเดิมถูกปรับเข้ากติกาใหม่</b> <button type="button" class="btn-sm" onclick="ackMigNotes();openVisitNotes()" style="margin-left:8px">รับทราบ ✓</button><ul style="margin:4px 0 8px;padding-left:18px">'+mig.map(t=>li(esc(t))).join('')+'</ul></div>';
+  if(debts.length) h+='<div style="font-size:12.5px"><b>ค่างวดหนี้ที่ยังไม่มีปีจบ</b> — แผนนับจ่ายถึงสิ้นแผน<ul style="margin:4px 0 8px;padding-left:18px">'+debts.map(d=>li(esc(d.name)+' '+f0(d.m)+' บาท/เดือน — ใส่ "ถึงอายุ" หรือยอดหนี้คงเหลือในงบดุล')).join('')+'</ul></div>';
+  if(incs.length) h+='<div style="font-size:12.5px"><b>รายได้ที่ไม่ได้ใส่อายุสิ้นสุด</b> — แผนนับว่าได้ถึงสิ้นแผน<ul style="margin:4px 0 8px;padding-left:18px">'+incs.map(d=>li(esc(d.name)+(d.who?' ของ '+esc(d.who):'')+' '+f0(d.m)+' บาท/เดือน — ใส่ "ถึงอายุ" ที่ Life Path')).join('')+'</ul></div>';
+  return h;
+}
+function paintPlanNotices(){
+  /* v3.10.0: ไม่มีกล่องบนหน้าแล้ว — รวมอยู่ในปุ่ม "บันทึกหมอการเงิน" + จุดแดงบนปุ่มเมื่อมีเรื่องต้องตรวจ */
+  ['p1','p10'].forEach(pid=>{ const box=document.getElementById('pn-'+pid); if(box){ box.innerHTML=''; box.hidden=true; } });
+  const b=document.getElementById('visitBtn'); if(!b) return;
+  const any=planNoticeData().any; b.classList.toggle('has-notice',any);
 }
 function paintStep2Notes(){
-  const esc=x=>String(x==null?'':x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  S2_PAGES.forEach(pid=>{
-    const sec=document.getElementById(pid); if(!sec) return;
-    let box=document.getElementById('s2n-'+pid);
-    let items=[]; try{ items=step2NotesFor(pid); }catch(e){ items=[]; }
-    if(!items.length){ if(box){ box.innerHTML=''; box.hidden=true; } return; }
-    if(!box){
-      const ph=sec.querySelector(':scope > .ph')||sec.querySelector('.ph'); if(!ph) return;
-      box=document.createElement('div'); box.id='s2n-'+pid; box.className='s2note adv-only';
-      ph.insertAdjacentElement('afterend',box);
-    }
-    box.hidden=false;
-    box.innerHTML='<div class="s2n-h"><span>📝 จาก Step 2 · ลูกค้าบอกไว้</span><span style="margin-left:auto;font-weight:400;letter-spacing:0;color:var(--muted)">ทั้งหมดอยู่ที่ปุ่ม 📋 บันทึกหมอการเงิน มุมขวาบน</span></div>'+
-      items.map(([q,a])=>'<div class="s2n-i"><span class="s2n-q">'+esc(q)+'</span><span class="s2n-a">'+esc(a)+'</span></div>').join('');
-  });
+  /* v3.10.0 (อ้อย 12 ต.ค. 69): ข้อความจาก Step 2 ไม่ขึ้นบนหน้าอีก — อยู่ในปุ่ม "บันทึกหมอการเงิน" ที่เดียว */
+  S2_PAGES.forEach(pid=>{ const box=document.getElementById('s2n-'+pid); if(box){ box.innerHTML=''; box.hidden=true; } });
 }
 function openVisitNotes(){
-  const v=STATE&&STATE._visit; if(!v){ alert('ไฟล์นี้ไม่มีบันทึกจากหน้าหมอการเงิน'); return; }
+  const v=(STATE&&STATE._visit)||{}; const _pn=planNoticeHTML();
+  if(!(STATE&&STATE._visit) && !_pn){ alert('ไฟล์นี้ไม่มีบันทึกจากหน้าหมอการเงิน'); return; }
   const esc=x=>String(x==null?'':x).replace(/&/g,'&amp;').replace(/</g,'&lt;');
   const f=n=>Number(n||0).toLocaleString('en-US');
   const sec=(t,b)=>b?('<div style="margin-top:13px"><div style="font-size:11px;font-weight:700;color:var(--gold-2);letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--line);padding-bottom:3px;margin-bottom:6px">'+t+'</div>'+b+'</div>'):'';
@@ -5359,11 +5367,13 @@ function openVisitNotes(){
     h+=sec('เสียงของลูกค้าจากบทสนทนา', Object.entries(v.talk).map(([q,ans])=>'<div style="border-left:2px solid var(--gold-2);padding:2px 10px;margin:6px 0"><div style="font-size:10.5px;color:var(--muted)">'+esc(q)+'</div><div style="font-size:13px;font-style:italic">“'+esc(ans)+'”</div></div>').join(''));
   /* v3.9.95 (อ้อย 1 ต.ค.): ชื่อ/เบอร์ผู้ที่ลูกค้าแนะนำต่อ ไม่เก็บและไม่แสดง — ถูกลบออกจากข้อมูลตอนโหลด (migrateV395) */
   if(v.note) h+=sec('หมายเหตุ','<div style="font-size:12.5px;color:var(--muted)">'+esc(v.note)+'</div>');
+  if(_pn) h=sec('🔔 ต้องตรวจก่อนคุยกับลูกค้า',_pn)+h;
   document.getElementById('visitBody').innerHTML=h||'<div style="color:var(--muted)">— ไม่มีรายละเอียด —</div>';
   openModal('mVisit');
 }
 function render(){
   try{ paintVisitBtn(); }catch(e){}
+  try{ applyAdvLite(); }catch(e){}   /* v3.10.0 */
   try{ paintStep2Notes(); }catch(e){}   /* v3.9.92 */
   try{ paintPlanNotices(); }catch(e){}  /* v3.9.95 */
   try{ paintSnapYear(); }catch(e){}
@@ -7555,8 +7565,13 @@ const TAX_TYPES=[
   {k:'40(2)',n:'40(2) รับจ้าง/นายหน้า'},
   {k:'40(3)',n:'40(3) ค่าลิขสิทธิ์'},
   {k:'40(4)',n:'40(4) ดอกเบี้ย/ปันผล'},
-  {k:'40(5)',n:'40(5) ค่าเช่าทรัพย์สิน'},
-  {k:'40(6)',n:'40(6) วิชาชีพอิสระ'},
+  {k:'40(5)',n:'40(5) ค่าเช่าบ้าน/อาคาร (30%)'},
+  {k:'40(5)ที่ดินเกษตร',n:'40(5) ค่าเช่าที่ดินเกษตร (20%)'},
+  {k:'40(5)ที่ดินอื่น',n:'40(5) ค่าเช่าที่ดินอื่น (15%)'},
+  {k:'40(5)ยานพาหนะ',n:'40(5) ค่าเช่ายานพาหนะ (30%)'},
+  {k:'40(5)อื่น',n:'40(5) ค่าเช่าทรัพย์สินอื่น (10%)'},
+  {k:'40(6)',n:'40(6) วิชาชีพอิสระ (30%)'},
+  {k:'40(6)แพทย์',n:'40(6) การประกอบโรคศิลปะ (60%)'},
   {k:'40(7)',n:'40(7) รับเหมา'},
   {k:'40(8)',n:'40(8) ธุรกิจ/อื่นๆ'}
 ];
@@ -7743,8 +7758,8 @@ function taxAutoOn(){ return !(STATE.assume && STATE.assume.taxAuto===false); }
    โหลดไม่ได้/ไฟล์เสีย → ใช้ RULES_FALLBACK ที่ฝังไว้ข้างล่าง แล้วขึ้นเตือนบนหน้าจอ
    ═══════════════════════════════════════════════════════════════════════ */
 const RULES_FALLBACK = {
-  "เวอร์ชัน": "2569.1",
-  "ปรับปรุงเมื่อ": "2026-09-11",
+  "เวอร์ชัน": "2569.4",
+  "ปรับปรุงเมื่อ": "2026-10-07",
   "ผู้แก้ล่าสุด": "S41",
 
   "_อ่านก่อนแก้": [
@@ -7776,8 +7791,13 @@ const RULES_FALLBACK = {
       "40(2)": { "ชื่อ": "รับทำงานให้ ค่านายหน้า", "อัตราร้อยละ": 50, "เพดาน": 100000, "กลุ่มเงินเดือน": true },
       "40(3)": { "ชื่อ": "ค่าลิขสิทธิ์ กู๊ดวิลล์", "อัตราร้อยละ": 50, "เพดาน": 100000 },
       "40(4)": { "ชื่อ": "ดอกเบี้ย เงินปันผล", "อัตราร้อยละ": 0 },
-      "40(5)": { "ชื่อ": "ค่าเช่าทรัพย์สิน", "อัตราร้อยละ": 30 },
+      "40(5)": { "ชื่อ": "ค่าเช่าบ้าน อาคาร โรงเรือน", "อัตราร้อยละ": 30 },
+      "40(5)ที่ดินเกษตร": { "ชื่อ": "ค่าเช่าที่ดินเกษตร", "อัตราร้อยละ": 20 },
+      "40(5)ที่ดินอื่น": { "ชื่อ": "ค่าเช่าที่ดินอื่น", "อัตราร้อยละ": 15 },
+      "40(5)ยานพาหนะ": { "ชื่อ": "ค่าเช่ายานพาหนะ", "อัตราร้อยละ": 30 },
+      "40(5)อื่น": { "ชื่อ": "ค่าเช่าทรัพย์สินอื่น", "อัตราร้อยละ": 10 },
       "40(6)": { "ชื่อ": "วิชาชีพอิสระ", "อัตราร้อยละ": 30 },
+      "40(6)แพทย์": { "ชื่อ": "การประกอบโรคศิลปะ", "อัตราร้อยละ": 60 },
       "40(7)": { "ชื่อ": "รับเหมา", "อัตราร้อยละ": 60 },
       "40(8)": { "ชื่อ": "ธุรกิจ พาณิชย์ อื่น ๆ", "อัตราร้อยละ": 60 }
     },
@@ -7788,6 +7808,8 @@ const RULES_FALLBACK = {
       "คู่สมรสไม่มีเงินได้": 60000,
 
       "บุตรคนละ": 30000,
+      "บุตรคนที่ 2 ขึ้นไปเกิดตั้งแต่ปี 2561 คนละ": 60000,
+      "บิดามารดาในอุปการะสูงสุด (คน)": 4,
       "บุตรอายุไม่เกิน": 25,
       "บุตรไม่ต้องกำลังศึกษาถ้าอายุไม่เกิน": 20,
       "_หมายเหตุบุตร": "โปรแกรมคิด 30,000 เท่ากันทุกคน ยังไม่ได้แยกกรณีบุตรคนที่ 2 ขึ้นไปที่เกิดตั้งแต่ 2561 (สิทธิ 60,000) — ถ้าเจอเคสนั้นต้องบวกมือ",
@@ -7807,7 +7829,7 @@ const RULES_FALLBACK = {
       "RMF ร้อยละของเงินได้": 30,
       "RMF ไม่เกิน": 500000,
       "SSF ร้อยละของเงินได้": 30,
-      "SSF ไม่เกิน": 200000,
+      "SSF ไม่เกิน": [ {"ตั้งแต่ปี":0,"ถึงปี":2567,"ค่า":200000}, {"ตั้งแต่ปี":2568,"ถึงปี":9999,"ค่า":0} ],
       "_หมายเหตุ SSF": "SSF ให้สิทธิถึงปีภาษี 2567 — ถ้าจะปิดสิทธิให้ใส่เป็นชุดตามปีแล้วตั้งค่าเป็น 0 ตั้งแต่ 2568",
       "PVD ร้อยละของค่าจ้าง": 15,
       "PVD ไม่เกิน": 500000,
@@ -7815,7 +7837,8 @@ const RULES_FALLBACK = {
       "_หมายเหตุกลุ่มเกษียณ": "บำนาญ + RMF + SSF + PVD/กบข. รวมกันไม่เกินเพดานนี้",
 
       "ThaiESG ร้อยละของเงินได้": 30,
-      "ThaiESG ไม่เกิน": 300000,
+      "ThaiESG ไม่เกิน": [ {"ตั้งแต่ปี":0,"ถึงปี":2566,"ค่า":100000}, {"ตั้งแต่ปี":2567,"ถึงปี":2569,"ค่า":300000}, {"ตั้งแต่ปี":2570,"ถึงปี":9999,"ค่า":100000} ],
+      "_หมายเหตุ ThaiESG ตามปี": "ก.ล.ต.: 2567–2569 ไม่เกิน 300,000 ถือ 5 ปี · 2570–2575 ไม่เกิน 100,000 ถือ 8 ปี",
       "_หมายเหตุ ThaiESG": "แยกวงจากเพดานรวมกลุ่มเกษียณ",
 
       "ดอกเบี้ยกู้ซื้อบ้านไม่เกิน": 100000,
@@ -9702,7 +9725,7 @@ const HENG = (function(){
     }
     return { income:annualIncome+_bonus0, sources, spouse:false,   /* v3.9.19: income = เงินเดือน+โบนัส ให้ตรงกับ sources */
       /* v3.9.60: นับเฉพาะผู้พึ่งพิงของผู้วางแผนคนนี้ */
-      children: depsOf(deps,c.id,isPrimary,'child').length, parents: depsOf(deps,c.id,isPrimary,'parent').length, disabled:0,
+      children: depsOf(deps,c.id,isPrimary,'child').length, childrenB: taxKidsB(deps,depsOf(deps,c.id,isPrimary,'child')), parents: depsOf(deps,c.id,isPrimary,'parent').length, disabled:0,
       lifeIns: Math.round((+fx.lifeIns||0)*12*cfShareOf(c,'fixed','lifeIns')), healthIns:0, parentHealthIns:0, pensionIns:0,
       /* v3.8: ดึงเงินออม RMF/SSF และ Thai ESG ที่ลูกค้าซื้ออยู่แล้วจากงบกระแสมาลดหย่อนให้ด้วย
          เดิมตั้งเป็น 0 เสมอ → หน้าภาษีคำนวณภาษีสูงเกินจริง แล้วยังไปแนะนำให้ซื้อ RMF เพิ่มทั้งที่ซื้อเต็มอยู่แล้ว */
@@ -9711,10 +9734,21 @@ const HENG = (function(){
       mortgageInt:0, donation:0, donationEdu:0, addPension:0, addRMF:0, addSSF:0, addESG:0,
       withheld:0 };   /* v3.9: ภาษีหัก ณ ที่จ่าย/จ่ายล่วงหน้าทั้งปี — ใช้หายอดต้องชำระเพิ่มหรือขอคืน */
   }
+  /* v3.9.96: นับบุตรที่ได้ 60,000 — ลำดับบุตรนับจากบุตรทั้งบ้าน (อายุมากสุด = คนที่ 1) · ปีเกิด พ.ศ. = ปีของแผน − อายุวันนี้ */
+  function taxKidsB(deps, kidsOfC){
+    const all=(deps||[]).filter(d=>(d.kind||'child')==='child').slice().sort((a,b)=>(Number(b.age)||0)-(Number(a.age)||0));
+    const be0=(typeof snapYearCE==='function'?snapYearCE():2026)+543;
+    return (kidsOfC||[]).filter(d=>{ const rank=all.indexOf(d); const born=be0-(Number(d.age)||0); return rank>=1 && born>=2561; }).length;
+  }
   function taxCore(t){
     let income, expense;
-    if(Array.isArray(t.sources) && t.sources.length){ const e=taxExpense(t.sources); income=Math.max(0,e.income); expense=e.expense; }
-    else { income=Math.max(0,Number(t.income)||0); expense=Math.min(income*0.5,RSALCAP()); }
+    /* v3.9.97 (ภาษีอากรฯ 2567 หัวข้อ 4.2): PVD ส่วนที่เกิน 10,000 เป็นเงินได้ยกเว้น → หักออกจากเงินเดือนก่อนคำนวณค่าใช้จ่าย */
+    const _wage0=(Array.isArray(t.sources)&&t.sources.length)?t.sources.reduce((a,x)=>a+(x.type==='40(1)'?Math.max(0,Number(x.amt)||0):0),0):Math.max(0,Number(t.income)||0);
+    const _pvdEx=Math.max(0,Math.min(+t.pvd||0,_wage0*0.15,500000)-10000);
+    if(Array.isArray(t.sources) && t.sources.length){
+      let _left=_pvdEx; const _src=t.sources.map(x=>{ if(_left>0&&x.type==='40(1)'){ const a=Math.max(0,Number(x.amt)||0), cut=Math.min(a,_left); _left-=cut; return Object.assign({},x,{amt:a-cut}); } return x; });
+      const e=taxExpense(t.sources), e2=taxExpense(_src); income=Math.max(0,e.income); expense=e2.expense; }
+    else { income=Math.max(0,Number(t.income)||0); expense=Math.min(Math.max(0,income-_pvdEx)*0.5,RSALCAP()); }
     /* v3.9.28: ค่าลดหย่อนทุกตัวอ่านจากไฟล์กฎ (rules.json) ตามปีของแถวนั้น */
     const _be=(typeof snapYearCE==='function'?snapYearCE():2026)+543+(Number(t._y)||0);
     const RDy=n=>RD(n,_be);
@@ -9722,27 +9756,44 @@ const HENG = (function(){
     /* ยกเว้นเงินได้ผู้มีอายุตามเกณฑ์ (ประมวลรัษฎากร) */
     const elderly=(Number(t.age)>=RDy('ยกเว้นผู้สูงอายุตั้งแต่อายุ'))?Math.min(RDy('ยกเว้นผู้สูงอายุไม่เกิน'),Math.max(0,income-expense)):0; allow+=elderly;
     if(t.spouse) allow+=RDy('คู่สมรสไม่มีเงินได้');
-    allow+=(+t.children||0)*RDy('บุตรคนละ')+(+t.parents||0)*RDy('บิดามารดาในอุปการะคนละ')+(+t.disabled||0)*RDy('ผู้พิการในอุปการะคนละ');
-    const lifeHealth=Math.min((+t.lifeIns||0)+Math.min(+t.healthIns||0,RDy('เบี้ยสุขภาพตนเองไม่เกิน')),RDy('เบี้ยประกันชีวิตรวมสุขภาพไม่เกิน'));
+    /* v3.9.96: บุตรคนที่ 2 ขึ้นไปที่เกิดตั้งแต่ปี 2561 = 60,000 (t.childrenB นับรวมอยู่ใน t.children) · บิดามารดาไม่เกิน 4 คน */
+    const _kB=Math.min(+t.childrenB||0,+t.children||0), _kA=Math.max(0,(+t.children||0)-_kB);
+    const _kBrate=RDy('บุตรคนที่ 2 ขึ้นไปเกิดตั้งแต่ปี 2561 คนละ')||RDy('บุตรคนละ');
+    const _pMax=RDy('บิดามารดาในอุปการะสูงสุด (คน)')||4;
+    allow+=_kA*RDy('บุตรคนละ')+_kB*_kBrate+Math.min(+t.parents||0,_pMax)*RDy('บิดามารดาในอุปการะคนละ')+(+t.disabled||0)*RDy('ผู้พิการในอุปการะคนละ');
+    const _lhCap=RDy('เบี้ยประกันชีวิตรวมสุขภาพไม่เกิน');
+    const _lhOwn=Math.min((+t.lifeIns||0)+Math.min(+t.healthIns||0,RDy('เบี้ยสุขภาพตนเองไม่เกิน')),_lhCap);
+    /* v3.9.96: เบี้ยบำนาญใช้ช่องประกันชีวิตที่ยังเหลือก่อน (ประมวลรัษฎากร) แล้วส่วนที่เหลือจึงเข้าช่องบำนาญ 15%/200,000 */
+    const pensionSpill=Math.min(+t.pensionIns||0,Math.max(0,_lhCap-_lhOwn));
+    const lifeHealth=_lhOwn+pensionSpill;
     allow+=lifeHealth;
     const parentHealth=Math.min(+t.parentHealthIns||0,RDy('เบี้ยสุขภาพบิดามารดาไม่เกิน')); allow+=parentHealth;
+    const party=Math.min(+t.donationParty||0,10000); allow+=party;   /* v3.9.97: บริจาคพรรคการเมือง ≤ 10,000 */
     /* v3.9.27: ลดหย่อนเงินสมทบ ปกส. = เท่าที่จ่ายจริง แต่ไม่เกิน 5% ของเพดานค่าจ้างปีนั้น × 12
        (เพดาน 2569–71 = 17,500 → 10,500/ปี · 2572–74 = 20,000 → 12,000 · 2575+ = 23,000 → 13,800) */
     const ssCap=(Number(t.ssoCap)>0)?Number(t.ssoCap):(ssoCeilBE(_be)*ssoRate()*12);
     const ss=Math.min(+t.socialSec||0, ssCap); allow+=ss;
-    const pension=Math.min(+t.pensionIns||0,income*RDy('เบี้ยบำนาญร้อยละของเงินได้')/100,RDy('เบี้ยบำนาญไม่เกิน'));
+    const pension=Math.min(Math.max(0,(+t.pensionIns||0)-pensionSpill),income*RDy('เบี้ยบำนาญร้อยละของเงินได้')/100,RDy('เบี้ยบำนาญไม่เกิน'));
     const rmf=Math.min(+t.rmf||0,income*RDy('RMF ร้อยละของเงินได้')/100,RDy('RMF ไม่เกิน'));
     const ssf=Math.min(+t.ssf||0,income*RDy('SSF ร้อยละของเงินได้')/100,RDy('SSF ไม่เกิน'));
-    const pvd=Math.min(+t.pvd||0,income*RDy('PVD ร้อยละของค่าจ้าง')/100,RDy('PVD ไม่เกิน'));
+    /* v3.9.96: PVD 15% ของค่าจ้าง (40(1)) ไม่ใช่ของเงินได้ทั้งหมด — เดิมรายได้ค่าเช่า/ธุรกิจทำให้เพดาน PVD สูงเกินจริง */
+    const _wage=(Array.isArray(t.sources)&&t.sources.length)?t.sources.reduce((a,x)=>a+(x.type==='40(1)'?Math.max(0,Number(x.amt)||0):0),0):income;
+    const pvd=Math.min(+t.pvd||0,_wage*RDy('PVD ร้อยละของค่าจ้าง')/100,RDy('PVD ไม่เกิน'));
     const retireCapped=Math.min(pension+rmf+ssf+pvd,RDy('เพดานรวมกลุ่มเกษียณ')); allow+=retireCapped;
     const esg=Math.min(+t.thaiESG||0,income*RDy('ThaiESG ร้อยละของเงินได้')/100,RDy('ThaiESG ไม่เกิน')); allow+=esg;
     const mort=Math.min(+t.mortgageInt||0,RDy('ดอกเบี้ยกู้ซื้อบ้านไม่เกิน')); allow+=mort;
     const netBD=Math.max(0,income-expense-allow);
     const donCap=netBD*RDy('บริจาคร้อยละของเงินได้หลังหักค่าลดหย่อน')/100;
-    const donEdu=Math.min((+t.donationEdu||0)*RDy('บริจาคเพื่อการศึกษาคูณ'),donCap);
-    const don=Math.min(+t.donation||0,Math.max(0,donCap-donEdu));
+    const _dx=RDy('บริจาคเพื่อการศึกษาคูณ')||2;
+    const donEdu=Math.min((+t.donationEdu||0)*_dx,donCap);
+    /* v3.9.97 (ภาษีอากรฯ 2567 ตัวอย่าง 7.4 ที่ 2): บริจาค 2 เท่าที่ใช้ไม่หมดตกเป็นบริจาคทั่วไป · เพดานบริจาคทั่วไป = 10% ของยอดหลังหักบริจาค 2 เท่า (เดิม 10% ก่อนหัก ลบด้วยบริจาค 2 เท่า) */
+    const _eduLeft=Math.max(0,(+t.donationEdu||0)-donEdu/_dx);
+    const don=Math.min((+t.donation||0)+_eduLeft,Math.max(0,(netBD-donEdu)*RDy('บริจาคร้อยละของเงินได้หลังหักค่าลดหย่อน')/100));
     const net=Math.max(0,netBD-donEdu-don);
-    return {income,expense,allow,net,tax:taxBracket(net),pension,rmf,ssf,pvd,esg,retireCapped,
+    /* v3.9.97: ภาษีวิธีที่ 2 — เงินได้ 40(2)–(8) ตั้งแต่ 1,000,000 เสีย 0.5% ถ้าเกิน 5,000 และสูงกว่าวิธีขั้นบันได */
+    const _inc2=(Array.isArray(t.sources)&&t.sources.length)?t.sources.reduce((a,x)=>a+(x.type!=='40(1)'?Math.max(0,Number(x.amt)||0):0),0):0;
+    const tax1=taxBracket(net), tax2=(_inc2>=1000000)?_inc2*0.005:0, method2=(tax2>5000&&tax2>tax1);
+    return {income,expense,allow,net,tax:method2?tax2:tax1,tax1,tax2,method2,party,pension,pensionSpill,rmf,ssf,pvd,esg,retireCapped,
             lifeHealth,parentHealth,ss,mort,donEdu,don,elderly,deductTotal:expense+allow+donEdu+don};
   }
   /* ═══ v3.9.24 · ภาษีของ "ปีไหนก็ได้" — ใช้ตัวเดียวกันทั้ง projection · หน้าภาษี · งบปีนี้ ═══
@@ -9827,7 +9878,8 @@ const HENG = (function(){
     const kidTo=d=>{ const t=Number(d&&d.taxTo)||0; if(t>0) return Math.min(_kMax,t);
       const e=Number(d&&(d.endAge||d.life))||0; return Math.min(_kMax, Math.max(_kFree, e||_kMax)); };
     /* v3.9.60: นับเฉพาะบุตรของผู้วางแผนคนนี้ */
-    const kids=depsOf(deps,c.id,isPrimary,'child').filter(d=>((Number(d.age)||0)+y)<=kidTo(d)).length;
+    const _kidsArr=depsOf(deps,c.id,isPrimary,'child').filter(d=>((Number(d.age)||0)+y)<=kidTo(d));
+    const kids=_kidsArr.length, kidsB=taxKidsB(deps,_kidsArr);
     /* v3.9.95 (แก้ D-15): ลดหย่อนบิดามารดา — เฉพาะคนที่อายุถึงเกณฑ์ในปีนั้น (60+) และยังอยู่ในช่วงที่อุปการะ (เดิมนับทุกคนทุกปี) */
     const _pMin=60;   /* เกณฑ์อายุบิดามารดาตามประมวลรัษฎากร (ตรงกับป้ายบนหน้าภาษี "อายุ 60+") */
     const par=depsOf(deps,c.id,isPrimary,'parent').filter(d=>{ const a=(Number(d.age)||0)+y, e=Number(d.life||d.endAge)||0; return a>=_pMin && (!e || a<=e); }).length;
@@ -9844,7 +9896,7 @@ const HENG = (function(){
     /* รอบ 2 (ผู้ตรวจ: คงที่ทุกปีไม่ conservative เพราะดอกเบี้ยจริงลดลง): ดอกเบี้ยบ้านที่กรอก = ของปีนี้ แล้วลดลงเป็นเส้นตรงจนเป็น 0 ในปีถัดจากปีจบหนี้ */
     let tMort=0; { const m0=Number(_typ.mortgageInt)||0, a0p=pAge-y;
       if(m0>0){ if(y===0) tMort=m0; else if(_mortEnd && pAge<=_mortEnd){ const n=_mortEnd-a0p+1; tMort=m0*Math.max(0,(n-y))/n; } } }
-    return { age:cAge, sources:merged, spouse:!!_typ.spouse, children:kids, parents:par, disabled:0,
+    return { age:cAge, sources:merged, spouse:!!_typ.spouse, children:kids, childrenB:kidsB, parents:par, disabled:0,
       /* v3.9.63: ค่าลดหย่อนเป็นของคนที่จ่ายจริง — แบ่งตามช่องของแต่ละคนในงบ (เดิมยกให้คนแรกทั้งหมด ทำให้เทียบยื่นรวม/แยกเพี้ยน) */
       lifeIns: dLife + fixAt('lifeIns')*cfShareOf(c,'fixed','lifeIns'), healthIns: dHealth, parentHealthIns: dPar, pensionIns: dPen,
       rmf: svAt('rmf','rmf')*cfShareOf(c,'savings','rmf'), ssf: isPrimary?svAt('ssf','ssf'):0, thaiESG: svAt('tesg','tesg')*cfShareOf(c,'savings','tesg'),
@@ -9881,14 +9933,16 @@ const HENG = (function(){
     const t=Object.assign({},a,stored);
     if(!(Number(t.income)>0)) t.income=a.income;
     const base=taxCore(t); const income=base.income;
-    const head={ pension:Math.max(0,Math.min(income*0.15,200000)-base.pension),
-      rmf:Math.max(0,Math.min(income*0.30,500000)-base.rmf),
-      ssf:Math.max(0,Math.min(income*0.30,200000)-base.ssf),
-      esg:Math.max(0,Math.min(income*0.30,300000)-base.esg),
+    /* v3.9.96: เพดานอ่านจากกฎตามปี (SSF ปิดตั้งแต่ 2568 · Thai ESG 300,000 ถึง 2569) · บำนาญลงได้ทั้งช่องประกันชีวิตที่ยังเหลือ + ช่องบำนาญ */
+    const _lhLeft=Math.max(0,RD('เบี้ยประกันชีวิตรวมสุขภาพไม่เกิน')-(base.lifeHealth||0));
+    const head={ pension:_lhLeft+Math.max(0,Math.min(income*RD('เบี้ยบำนาญร้อยละของเงินได้')/100,RD('เบี้ยบำนาญไม่เกิน'))-base.pension),
+      rmf:Math.max(0,Math.min(income*RD('RMF ร้อยละของเงินได้')/100,RD('RMF ไม่เกิน'))-base.rmf),
+      ssf:Math.max(0,Math.min(income*RD('SSF ร้อยละของเงินได้')/100,RD('SSF ไม่เกิน'))-base.ssf),
+      esg:Math.max(0,Math.min(income*RD('ThaiESG ร้อยละของเงินได้')/100,RD('ThaiESG ไม่เกิน'))-base.esg),
       retireCombined:Math.max(0,500000-base.retireCapped) };
     const KEY={pension:'pensionIns',rmf:'rmf',ssf:'ssf',esg:'thaiESG'};
     const savedIf=(veh,amt)=>{ if(amt<=0) return 0; const t2=Object.assign({},t); t2[KEY[veh]]=(+t[KEY[veh]]||0)+amt; return Math.round(base.tax-taxCore(t2).tax); };
-    const strat={ pension:{add:Math.round(Math.min(head.pension,head.retireCombined))},
+    const strat={ pension:{add:Math.round(Math.min(head.pension,_lhLeft+head.retireCombined))},
       rmf:{add:Math.round(Math.min(head.rmf,head.retireCombined))},
       ssf:{add:Math.round(Math.min(head.ssf,head.retireCombined))},
       esg:{add:Math.round(head.esg)} };
@@ -10545,7 +10599,7 @@ function renderTax(){
     <div class="line tot" style="background:#F4F7FB;border-color:var(--dep-2);margin-top:7px"><div class="lbl">เงินได้รวม ${f0(srcTot.income)} − ค่าใช้จ่าย ${f0(srcTot.expense)}</div><div class="val" style="color:var(--dep-2)">${f0(srcTot.income-srcTot.expense)}</div></div>
     <div class="tx-sec">ครอบครัว (ค่าลดหย่อน)</div>
     ${row('คู่สมรสไม่มีรายได้',`<label style="font-size:12px;display:flex;align-items:center;gap:5px;justify-content:flex-end"><input type="checkbox" ${t.spouse?'checked':''} onchange="setTax('spouse',this.checked)"> มี (60,000)</label>`)}
-    ${row('บุตร','<div style="display:flex;align-items:center;gap:6px;justify-content:flex-end">'+cnt('children')+'<span style="font-size:11px;color:var(--faint)">คน × 30,000</span></div>')}
+    ${row('บุตร','<div style="display:flex;align-items:center;gap:6px;justify-content:flex-end">'+cnt('children')+'<span style="font-size:11px;color:var(--faint)">คน × 30,000'+((+t.childrenB||0)>0?' · ในนี้ '+(+t.childrenB)+' คนได้ 60,000 (คนที่ 2+ เกิดปี 2561+)':'')+'</span></div>')}
     ${row('บิดามารดาในอุปการะ','<div style="display:flex;align-items:center;gap:6px;justify-content:flex-end">'+cnt('parents')+'<span style="font-size:11px;color:var(--faint)">คน × 30,000</span></div>','อายุ 60+ รายได้ไม่เกิน 30,000/ปี')}
     ${row('ผู้พิการในอุปการะ','<div style="display:flex;align-items:center;gap:6px;justify-content:flex-end">'+cnt('disabled')+'<span style="font-size:11px;color:var(--faint)">คน × 60,000</span></div>')}
     <div class="tx-sec">ประกัน (ตามจ่ายจริง · มีเพดาน) · บาท/ปี</div>
@@ -10555,7 +10609,7 @@ function renderTax(){
     <div class="tx-sec">เงินออม/ลงทุนเพื่อเกษียณ (ใช้อยู่) · บาท/ปี</div>
     ${row('ประกันบำนาญ',inp('pensionIns'),'≤ 15% · ≤ 200,000')}
     ${row('RMF',inp('rmf'),'≤ 30% · ≤ 500,000')}
-    ${row('SSF',inp('ssf'),'≤ 30% · ≤ 200,000')}
+    ${RD('SSF ไม่เกิน')>0?row('SSF',inp('ssf'),'≤ 30% · ≤ 200,000'):''}
     ${row('Thai ESG',inp('thaiESG'),'≤ 30% · ≤ 300,000 (แยกเพดาน)')}
     ${row('PVD / กบข.',inp('pvd'),'≤ 15% · อยู่ในเพดานรวม 500,000')}
     ${row('ประกันสังคม',inp('socialSec'),'≤ '+f0(_ssCap)+' (5% ของเพดานค่าจ้างปี '+(snapYearCE()+543)+')')}
@@ -10594,10 +10648,10 @@ function renderTax(){
   const cardHead=`<div class="card">
     <div class="card-h"><div class="card-t">เพดานลดหย่อนที่ยังเหลือ</div><div class="card-s">ช่องที่ยังลงทุนเพิ่มเพื่อลดภาษีได้</div></div>
     <table class="gp-tbl"><thead><tr><th>ช่องทาง</th><th>ใช้ไป</th><th>เพดาน</th><th>เหลือ</th></tr></thead><tbody>
-      ${hr('ประกันบำนาญ',b.pension,Math.min(inc*0.15,200000),P.head.pension)}
+      ${hr('ประกันบำนาญ',b.pension,Math.min(inc*0.15,200000),Math.max(0,Math.min(inc*0.15,200000)-b.pension))}
       ${hr('RMF',b.rmf,Math.min(inc*0.30,500000),P.head.rmf)}
-      ${hr('SSF',b.ssf,Math.min(inc*0.30,200000),P.head.ssf)}
-      ${hr('Thai ESG (แยกเพดาน)',b.esg,Math.min(inc*0.30,300000),P.head.esg)}
+      ${RD('SSF ไม่เกิน')>0?hr('SSF',b.ssf,Math.min(inc*0.30,200000),P.head.ssf):''}
+      ${hr('Thai ESG (แยกเพดาน)',b.esg,Math.min(inc*RD('ThaiESG ร้อยละของเงินได้')/100,RD('ThaiESG ไม่เกิน')),P.head.esg)}
     </tbody></table>
     <div class="line tot" style="background:#FBF8EE;border-color:var(--gold);margin-top:8px"><div class="lbl">กลุ่มเกษียณรวม (บำนาญ+RMF+SSF+PVD) · เพดาน 500,000</div><div class="val" style="color:var(--gold-2)">${inc>0?'เหลือ '+f0(P.head.retireCombined):'— ไม่มีเงินได้'}</div></div>
     <div class="note" style="margin-top:6px">บำนาญ + RMF + SSF + PVD/กบข. + กอช. รวมกัน <b>ไม่เกิน 500,000</b> · Thai ESG แยกอีก ≤ 300,000</div>
@@ -10606,7 +10660,7 @@ function renderTax(){
   // ── Card 4: strategy ──
   const LOCK={pension:'การันตีบำนาญ+คุ้มครองชีวิต · จ่ายต่อเนื่อง ห้ามถอนก่อน',rmf:'ถือถึงอายุ 55 + ลงทุน ≥ 5 ปี · เลือกระดับเสี่ยงได้',ssf:'ถือ 10 ปี · เลือกระดับเสี่ยงได้',esg:'ถือ 5 ปี · หุ้นยั่งยืนไทย'};
   const NAME={pension:'ประกันบำนาญ',rmf:'RMF',ssf:'SSF',esg:'Thai ESG'};
-  const stratRows=['pension','rmf','ssf','esg'].map(k=>{ const s=P.strat[k];
+  const stratRows=['pension','rmf','ssf','esg'].filter(k=>k!=='ssf'||RD('SSF ไม่เกิน')>0).map(k=>{ const s=P.strat[k];
     return `<tr><td><b>${NAME[k]}</b><div style="font-size:10px;color:var(--faint);line-height:1.35">${LOCK[k]}</div></td>
       <td style="text-align:right">${s.add>0?f0(s.add):'—'}</td>
       <td style="text-align:right;color:var(--gold-2);font-weight:700">${s.saved>0?f0(s.saved):'—'}</td>
@@ -10625,9 +10679,9 @@ function renderTax(){
     <div class="tx-plan">
       <div class="tx-plan-h">วางแผนลงทุนเพิ่มปีนี้ — เลื่อนแถบเพื่อดูภาษีที่ประหยัดทันที</div>
       <div class="tx-sld-wrap">
-        ${sld('addPension', Math.min(P.head.pension,P.head.retireCombined),'ประกันบำนาญ')}
+        ${sld('addPension', Math.min(P.head.pension,Math.max(0,RD('เบี้ยประกันชีวิตรวมสุขภาพไม่เกิน')-(b.lifeHealth||0))+P.head.retireCombined),'ประกันบำนาญ')}
         ${sld('addRMF', Math.min(P.head.rmf,P.head.retireCombined),'RMF')}
-        ${sld('addSSF', Math.min(P.head.ssf,P.head.retireCombined),'SSF')}
+        ${RD('SSF ไม่เกิน')>0?sld('addSSF', Math.min(P.head.ssf,P.head.retireCombined),'SSF'):''}
         ${sld('addESG', P.head.esg,'Thai ESG')}
       </div>
       <div class="tx-plan-res">
@@ -10711,7 +10765,7 @@ function taxModeBar(){
   let stated='';
   try{ const sv=Number(STATE._visit&&STATE._visit.statedTaxYear)||0;
     if(sv>0){ const now=auto?Math.round(HENG.taxYearTotal(0)):planY;
-      stated=`<div class="advisor-only" style="padding:0 15px 12px;font-size:12px;color:var(--muted)">📝 ลูกค้าบอกใน Step 2 ว่าจ่ายภาษี <b style="color:var(--ink)">${f0(sv)}</b> บาท/ปี · แผนตอนนี้ใช้ <b style="color:var(--ink)">${f0(now)}</b> บาท/ปี${Math.abs(now-sv)>1?' — ต่างกัน '+f0(Math.abs(now-sv))+' ควรถามที่มาของตัวเลข (เช่น เป็นยอดหลังหัก ณ ที่จ่าย หรือมีลดหย่อนที่ยังไม่ได้กรอก)':''}</div>`; } }catch(e){}
+      stated=`<div class="advisor-only s2line" style="padding:0 15px 12px;font-size:12px;color:var(--muted)">📝 ลูกค้าบอกใน Step 2 ว่าจ่ายภาษี <b style="color:var(--ink)">${f0(sv)}</b> บาท/ปี · แผนตอนนี้ใช้ <b style="color:var(--ink)">${f0(now)}</b> บาท/ปี${Math.abs(now-sv)>1?' — ต่างกัน '+f0(Math.abs(now-sv))+' ควรถามที่มาของตัวเลข (เช่น เป็นยอดหลังหัก ณ ที่จ่าย หรือมีลดหย่อนที่ยังไม่ได้กรอก)':''}</div>`; } }catch(e){}
   return `<div class="card" style="margin-bottom:12px"><div style="padding:11px 15px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
     <b style="font-family:var(--serif);font-size:14px;color:var(--ink)">วิธีคิดภาษีในแผน</b>
     <span class="zoom-sw" style="font-size:11.5px">
@@ -10784,7 +10838,7 @@ function kidDedHTML(){
       <span class="xpl" style="color:var(--muted);font-size:11px">= ปีภาษีสุดท้ายตอนผู้วางแผนอายุ ${lastOwnerAge} · ว่าง = ใช้อายุสิ้นสุดการอุปการะ (${eff})</span>
     </div>`; }).join('');
   return `<div class="card" style="margin-bottom:12px"><div style="padding:10px 15px">
-    <div class="cf-h" style="margin-bottom:3px">ค่าลดหย่อนบุตร 30,000 บาท/คน — นับถึงเมื่อไหร่</div>
+    <div class="cf-h" style="margin-bottom:3px">ค่าลดหย่อนบุตร 30,000 บาท/คน (คนที่ 2 ขึ้นไปที่เกิดตั้งแต่ปี 2561 ได้ 60,000) — นับถึงเมื่อไหร่</div>
     ${rows}
     <div class="note" style="margin-top:5px">กฎหมาย: บุตรอายุไม่เกิน 20 ปีได้โดยไม่มีเงื่อนไข · อายุ 21–25 ปีต้อง<b>กำลังศึกษาอยู่</b> (ระดับ ปวส./อนุปริญญาขึ้นไป) — ถ้าบุตรเรียนจบก่อน 25 ต้องหยุดนับตามปีที่เรียนจบ</div>
   </div></div>`;
@@ -11019,7 +11073,7 @@ function renderTaxCompare(){
   if(!D){ host.innerHTML='<div style="padding:40px;text-align:center;color:#999">ต้องมีผู้วางแผน 2 คน (คู่สมรส) จึงจะเปรียบเทียบได้ — เพิ่มคู่สมรสที่หน้า Life Path</div>'; return; }
   const f0=n=>Math.round(Math.max(0,n||0)).toLocaleString('en-US');
   const pcOf=net=>Math.round(HENG.marginalRate(net)*100)+'%';
-  const TN={'40(1)':'40(1) เงินเดือน','40(2)':'40(2) รับจ้าง/นายหน้า','40(3)':'40(3) ค่าลิขสิทธิ์','40(4)':'40(4) ดอกเบี้ย/ปันผล','40(5)':'40(5) ค่าเช่า','40(6)':'40(6) วิชาชีพอิสระ','40(7)':'40(7) รับเหมา','40(8)':'40(8) ธุรกิจ/อื่นๆ'};
+  const TN={'40(1)':'40(1) เงินเดือน','40(2)':'40(2) รับจ้าง/นายหน้า','40(3)':'40(3) ค่าลิขสิทธิ์','40(4)':'40(4) ดอกเบี้ย/ปันผล','40(5)':'40(5) ค่าเช่า','40(5)ที่ดินเกษตร':'40(5) ค่าเช่าที่ดินเกษตร','40(5)ที่ดินอื่น':'40(5) ค่าเช่าที่ดินอื่น','40(5)ยานพาหนะ':'40(5) ค่าเช่ายานพาหนะ','40(5)อื่น':'40(5) ค่าเช่าทรัพย์สินอื่น','40(6)':'40(6) วิชาชีพอิสระ','40(6)แพทย์':'40(6) โรคศิลปะ','40(7)':'40(7) รับเหมา','40(8)':'40(8) ธุรกิจ/อื่นๆ'};
   // ── การ์ดรายได้ ──
   const icard=(name,srcs,total)=>`<div class="tc-icard"><h3>${name} — รายได้</h3>
     ${srcs.length?srcs.map(s=>`<div class="tc-irow"><span>${TN[s.type]||s.type}</span><b>${f0(s.amt)} ฿</b></div>`).join(''):'<div class="tc-irow"><span style="color:#aaa;font-style:italic">ไม่มีรายได้</span><b></b></div>'}
@@ -12321,7 +12375,7 @@ function renderProtectCheck(){
       const need=Number(pr.roomRate)||Number(hp.roomNeed)||0, have=Number(pr.roomRateHave)||Number(hp.roomHave)||0, lab=hp.label||'';
       if(!(need>0||have>0||lab)) return '';
       const n=x=>Math.round(x).toLocaleString('en-US');
-      return `<div class="advisor-only" style="font-size:11.5px;color:var(--muted);margin:-2px 0 8px">📝 จาก Step 2: ${lab?'ลูกค้าเลือก “'+escA(lab)+'”':''}${need>0?(lab?' · ':'')+'ค่าห้องที่ต้องการ <b style="color:var(--ink)">'+n(need)+'</b> ฿/คืน':''}${have>0?((lab||need>0)?' · ':'')+'มีแล้ว <b style="color:var(--ink)">'+n(have)+'</b> ฿/คืน':''}</div>`; })()}`;
+      return `<div class="advisor-only s2line" style="font-size:11.5px;color:var(--muted);margin:-2px 0 8px">📝 จาก Step 2: ${lab?'ลูกค้าเลือก “'+escA(lab)+'”':''}${need>0?(lab?' · ':'')+'ค่าห้องที่ต้องการ <b style="color:var(--ink)">'+n(need)+'</b> ฿/คืน':''}${have>0?((lab||need>0)?' · ':'')+'มีแล้ว <b style="color:var(--ink)">'+n(have)+'</b> ฿/คืน':''}</div>`; })()}`;
   const totGap=cs.reduce((n,c)=>{try{return n+[HENG.needs(c).gap,HENG.tpd(c).gap,HENG.health(c).gap,HENG.ci(c).gap].filter(g=>g>0).length}catch(e){return n}},0);
   /* v3.8.1: ชั้นที่ยังไม่ได้ตั้งวงเงิน ไม่นับว่าผ่าน — ไม่งั้นจะขึ้น "เกราะครบทุกชั้น ✓" ทั้งที่ยังไม่ได้ประเมิน */
   const totUnset=cs.reduce((n,c)=>{try{return n+[HENG.needs(c).A+HENG.needs(c).B,HENG.tpd(c).need,HENG.health(c).need,HENG.ci(c).need].filter(v=>!(v>0)).length}catch(e){return n}},0);
