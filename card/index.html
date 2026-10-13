@@ -108,6 +108,7 @@ input[type=file]{font-size:13px;width:100%;min-width:0}
 .status{border-radius:10px;padding:10px 12px;font-size:13.5px;display:grid;gap:3px}
 .status.ok{background:#E7F0E8;color:var(--ok)}
 .status.bad{background:#F6E3E1;color:var(--bad)}
+.status.warn{background:#FBF0D9;color:var(--warn)}
 .status ul{margin:2px 0 0;padding-left:18px}
 .dl{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:10px}
 .dl h3{margin:0;font-family:var(--display);font-weight:500;font-size:15px;color:var(--navy)}
@@ -214,7 +215,7 @@ input[type=file]{font-size:13px;width:100%;min-width:0}
       <div class="photoRow">
         <div class="thumb" id="thumb">ยังไม่มีรูป</div>
         <div class="field">
-          <label for="f-photo">รูปครึ่งตัว พื้นหลังสีขาวหรือเทาอ่อน จะตัดพื้นหลังได้สวยที่สุด</label>
+          <label for="f-photo">รูปครึ่งตัวต้นฉบับจากมือถือหรือช่างภาพ พื้นหลังสีขาวหรือเทาอ่อน (ไม่ใช้รูปที่เซฟจาก LINE/Facebook)</label>
           <input id="f-photo" type="file" accept="image/*">
           <label class="check"><input id="f-rmbg" type="checkbox" checked>ลบพื้นหลังสีอ่อนอัตโนมัติ</label>
           <span class="small">ถ้ารูปมีพื้นหลังลาย ให้ลบพื้นหลังก่อนด้วยแอปอื่น แล้วอัปโหลดเป็น PNG พื้นใส</span>
@@ -564,9 +565,9 @@ function qrSvg(text){
 function qrUrl(){const c=(S.code||'').trim();return c?QR_BASE+encodeURIComponent(c):QR_BASE;}
 
 /* ---------- card render ---------- */
-let issues=[];
+let issues=[],warns=[],photoPx=0;
 function update(){
-  issues=[];
+  issues=[];warns=[];
   // title auto
   if(S.titleAuto){const a=autoTitle();S.title=a[0];S.sub1=a[1];S.sub2=a[2];}
   ['title','sub1','sub2'].forEach(k=>{const el=$('f-'+k);if(document.activeElement!==el)el.value=S[k];});
@@ -585,7 +586,7 @@ function update(){
   if(S.showQR){$('c-qrsvg').innerHTML=qrSvg(qrUrl());}
   $('qrurl').textContent=S.showQR?('QR จะพาไปที่ '+qrUrl()+(S.code.trim()?'':'  (ยังไม่ใส่รหัสตัวแทน lead จะไม่เข้าชื่อคุณ)')):'';
   const ph=$('photo');
-  if(S.photo){ph.src=S.photo;ph.hidden=false;$('photoPh').style.display='none';$('thumb').style.backgroundImage=`url(${S.photo})`;$('thumb').textContent='';$('sliders').hidden=false;}
+  if(S.photo){if(ph.getAttribute('src')!==S.photo){photoPx=0;loadImg(S.photo).then(i=>{photoPx=i.naturalHeight;fitAndCheck();});}ph.src=S.photo;ph.hidden=false;$('photoPh').style.display='none';$('thumb').style.backgroundImage=`url(${S.photo})`;$('thumb').textContent='';$('sliders').hidden=false;}
   else{ph.hidden=true;ph.removeAttribute('src');$('photoPh').style.display='';$('thumb').style.backgroundImage='';$('thumb').textContent='ยังไม่มีรูป';$('sliders').hidden=true;}
   const ff=$('faceFront');ff.style.setProperty('--ph',S.ps+'%');ff.style.setProperty('--px',(-S.px)+'cqw');ff.style.setProperty('--py',(-S.py)+'cqw');
   $('f-ps').value=S.ps;$('f-px').value=S.px;$('f-py').value=S.py;
@@ -638,12 +639,14 @@ function fitAndCheck(){
   if(colsBottom>limit)issues.push('ด้านหลังสูงเกิน: ลดจำนวนคุณวุฒิหรือรายการบริการ');
   if(!S.name.trim())issues.push('ยังไม่ได้ใส่ชื่อ');
   if(!S.phone.trim())issues.push('ยังไม่ได้ใส่เบอร์โทร');
+  if(S.photo&&photoPx&&photoPx<600)warns.push('รูปความละเอียดต่ำ (สูง '+photoPx+' พิกเซล) ส่ง LINE ได้ แต่ถ้าสั่งพิมพ์อาจไม่คม แนะนำใช้รูปต้นฉบับจากมือถือ ไม่ใช่รูปที่เซฟจาก LINE/Facebook');
   renderStatus();
 }
 function renderStatus(){
-  const ok=!issues.length;
-  const html=ok?'<strong>การ์ดพร้อมดาวน์โหลด</strong><span>ตรวจแล้ว ไม่มีข้อความตกขอบหรือทับกัน</span>':`<strong>ยังดาวน์โหลดไม่ได้</strong><ul>${issues.map(i=>`<li>${esc(i)}</li>`).join('')}</ul>`;
-  [$('status'),$('mstatus')].forEach(el=>{el.className=(el.id==='mstatus'?'step mobileOnly ':'')+'status '+(ok?'ok':'bad');el.innerHTML=html;});
+  const ok=!issues.length,w=ok&&warns.length;
+  const html=!ok?`<strong>ยังดาวน์โหลดไม่ได้</strong><ul>${issues.map(i=>`<li>${esc(i)}</li>`).join('')}</ul>`:
+    w?`<strong>ดาวน์โหลดได้ แต่มีข้อควรระวัง</strong><ul>${warns.map(i=>`<li>${esc(i)}</li>`).join('')}</ul>`:'<strong>การ์ดพร้อมดาวน์โหลด</strong><span>ตรวจแล้ว ไม่มีข้อความตกขอบหรือทับกัน</span>';
+  [$('status'),$('mstatus')].forEach(el=>{el.className=(el.id==='mstatus'?'step mobileOnly ':'')+'status '+(!ok?'bad':w?'warn':'ok');el.innerHTML=html;});
   document.querySelectorAll('[data-dl]').forEach(b=>b.disabled=!ok);
 }
 
@@ -695,7 +698,7 @@ async function renderFace(which,mode,pxWidth){
   const clone=src.cloneNode(true);clone.removeAttribute('id');clone.querySelectorAll('[id]').forEach(n=>n.removeAttribute('id'));
   wrap.appendChild(clone);stage.appendChild(wrap);
   // copy runtime letter-spacing (em based) already on clone inline styles; recompute name fit at new size is proportional (cqw)
-  await document.fonts.ready;await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+  await document.fonts.ready;await new Promise(r=>setTimeout(r,80));
   const ratio=pxWidth/baseW;
   const url=await htmlToImage.toPng(wrap,{pixelRatio:ratio,fontEmbedCSS:FONT_CSS,cacheBust:false,backgroundColor:mode==='print'?undefined:null});
   stage.innerHTML='';return url;
