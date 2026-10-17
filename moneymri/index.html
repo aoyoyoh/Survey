@@ -2984,7 +2984,7 @@ body.adv.has-visit #main .jbar{padding-right:350px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— รากฐาน —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.10.12</b><span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.10.19</b><span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
 </aside>
 
 <main id="main">
@@ -11223,7 +11223,7 @@ const HENG = (function(){
     }
     return { income:annualIncome+_bonus0, sources, spouse:false,   /* v3.9.19: income = เงินเดือน+โบนัส ให้ตรงกับ sources */
       /* v3.9.60: นับเฉพาะผู้พึ่งพิงของผู้วางแผนคนนี้ */
-      children: depsOf(deps,c.id,isPrimary,'child').length, childrenB: taxKidsB(deps,depsOf(deps,c.id,isPrimary,'child')), parents: depsOf(deps,c.id,isPrimary,'parent').length, disabled:0,
+      children: taxKidsOf(deps,c,isPrimary).length, childrenB: taxKidsB(deps,taxKidsOf(deps,c,isPrimary)),   /* v3.10.19 */ parents: depsOf(deps,c.id,isPrimary,'parent').length, disabled:0,
       lifeIns: Math.round((+fx.lifeIns||0)*12*cfShareOf(c,'fixed','lifeIns')), healthIns:0, parentHealthIns:0, pensionIns:0,
       /* v3.8: ดึงเงินออม RMF/SSF และ Thai ESG ที่ลูกค้าซื้ออยู่แล้วจากงบกระแสมาลดหย่อนให้ด้วย
          เดิมตั้งเป็น 0 เสมอ → หน้าภาษีคำนวณภาษีสูงเกินจริง แล้วยังไปแนะนำให้ซื้อ RMF เพิ่มทั้งที่ซื้อเต็มอยู่แล้ว */
@@ -11234,7 +11234,8 @@ const HENG = (function(){
   }
   /* v3.9.96: นับบุตรที่ได้ 60,000 — ลำดับบุตรนับจากบุตรทั้งบ้าน (อายุมากสุด = คนที่ 1) · ปีเกิด พ.ศ. = ปีของแผน − อายุวันนี้ */
   function taxKidsB(deps, kidsOfC){
-    const all=(deps||[]).filter(d=>(d.kind||'child')==='child').slice().sort((a,b)=>(Number(b.age)||0)-(Number(a.age)||0));
+    /* v3.10.19: บุตรที่แชร์ระหว่างผู้วางแผน 2 คนเก็บเป็น 2 ระเบียน (d.link) — เดิมนับเป็น 2 คนในลำดับ ทำให้คนที่ 2 ได้ 60,000 ผิด */
+    const _sl=new Set(); const all=(deps||[]).filter(d=>{ if((d.kind||'child')!=='child') return false; if(d.link){ if(_sl.has(d.link)) return false; _sl.add(d.link); } return true; }).sort((a,b)=>(Number(b.age)||0)-(Number(a.age)||0));
     const be0=(typeof snapYearCE==='function'?snapYearCE():2026)+543;
     return (kidsOfC||[]).filter(d=>{ const rank=all.indexOf(d); const born=be0-(Number(d.age)||0); return rank>=1 && born>=2561; }).length;
   }
@@ -11259,7 +11260,8 @@ const HENG = (function(){
     const _kB=Math.min(+t.childrenB||0,+t.children||0), _kA=Math.max(0,(+t.children||0)-_kB);
     const _kBrate=RDy('บุตรคนที่ 2 ขึ้นไปเกิดตั้งแต่ปี 2561 คนละ')||RDy('บุตรคนละ');
     const _pMax=RDy('บิดามารดาในอุปการะสูงสุด (คน)')||4;
-    allow+=_kA*RDy('บุตรคนละ')+_kB*_kBrate+Math.min(+t.parents||0,_pMax)*RDy('บิดามารดาในอุปการะคนละ')+(+t.disabled||0)*RDy('ผู้พิการในอุปการะคนละ');
+    const kidsAllow=_kA*RDy('บุตรคนละ')+_kB*_kBrate;   /* v3.10.19 */
+    allow+=kidsAllow+Math.min(+t.parents||0,_pMax)*RDy('บิดามารดาในอุปการะคนละ')+(+t.disabled||0)*RDy('ผู้พิการในอุปการะคนละ');
     const _lhCap=RDy('เบี้ยประกันชีวิตรวมสุขภาพไม่เกิน');
     const _lhOwn=Math.min((+t.lifeIns||0)+Math.min(+t.healthIns||0,RDy('เบี้ยสุขภาพตนเองไม่เกิน')),_lhCap);
     /* v3.9.96: เบี้ยบำนาญใช้ช่องประกันชีวิตที่ยังเหลือก่อน (ประมวลรัษฎากร) แล้วส่วนที่เหลือจึงเข้าช่องบำนาญ 15%/200,000 */
@@ -11293,7 +11295,7 @@ const HENG = (function(){
     const _inc2=(Array.isArray(t.sources)&&t.sources.length)?t.sources.reduce((a,x)=>a+(x.type!=='40(1)'?Math.max(0,Number(x.amt)||0):0),0):0;
     const tax1=taxBracket(net), tax2=(_inc2>=1000000)?_inc2*0.005:0, method2=(tax2>5000&&tax2>tax1);
     return {income,expense,allow,net,tax:method2?tax2:tax1,tax1,tax2,method2,party,pension,pensionSpill,rmf,ssf,pvd,esg,retireCapped,
-            lifeHealth,parentHealth,ss,mort,donEdu,don,elderly,deductTotal:expense+allow+donEdu+don};
+            lifeHealth,parentHealth,ss,mort,donEdu,don,elderly,kidsAllow,deductTotal:expense+allow+donEdu+don};
   }
   /* ═══ v3.9.24 · ภาษีของ "ปีไหนก็ได้" — ใช้ตัวเดียวกันทั้ง projection · หน้าภาษี · งบปีนี้ ═══
      y = ปีที่นับจากวันนี้ (0 = ปีปัจจุบัน) · รายได้/ค่าลดหย่อนทุกตัวเดินตามช่วงอายุของตัวเอง */
@@ -11377,7 +11379,7 @@ const HENG = (function(){
     const kidTo=d=>{ const t=Number(d&&d.taxTo)||0; if(t>0) return Math.min(_kMax,t);
       const e=Number(d&&(d.endAge||d.life))||0; return Math.min(_kMax, Math.max(_kFree, e||_kMax)); };
     /* v3.9.60: นับเฉพาะบุตรของผู้วางแผนคนนี้ */
-    const _kidsArr=depsOf(deps,c.id,isPrimary,'child').filter(d=>((Number(d.age)||0)+y)<=kidTo(d));
+    const _kidsArr=taxKidsOf(deps,c,isPrimary).filter(d=>((Number(d.age)||0)+y)<=kidTo(d));   /* v3.10.19: คู่สมรส = บุตรทุกคนทั้งสองฝ่าย */
     const kids=_kidsArr.length, kidsB=taxKidsB(deps,_kidsArr);
     /* v3.9.95 (แก้ D-15): ลดหย่อนบิดามารดา — เฉพาะคนที่อายุถึงเกณฑ์ในปีนั้น (60+) และยังอยู่ในช่วงที่อุปการะ (เดิมนับทุกคนทุกปี) */
     const _pMin=60;   /* เกณฑ์อายุบิดามารดาตามประมวลรัษฎากร (ตรงกับป้ายบนหน้าภาษี "อายุ 60+") */
@@ -12306,6 +12308,22 @@ function setTaxAutoMode(on){ if(!STATE.assume) STATE.assume={};
    บุตรที่แชร์ค่าเลี้ยงดูระหว่างผู้วางแผน 2 คน เก็บเป็น 2 ระเบียน ผูกกันด้วย d.link (คนละ parent)
    เดิมช่องนับลดหย่อนยกทุกระเบียนให้ผู้วางแผนคนแรก (isPrimary ? ทั้งหมด : 0)
    → คนแรกได้ลดหย่อนบุตรซ้ำสองเท่า คนที่สองได้ 0 ทั้งที่กฎหมายให้พ่อและแม่ที่มีเงินได้คนละ 30,000 ต่อบุตร 1 คน */
+/* ═══ v3.10.19 · ลดหย่อนบุตรได้ทั้งสองฝ่าย (อ้อยเคาะ 17 ต.ค. 69) ═══
+   ประมวลรัษฎากร: สามีภริยาที่ต่างมีเงินได้และแยกยื่น หักลดหย่อนบุตรได้เต็มจำนวนทั้งสองฝ่าย
+   (ภาษีอากรฯ 2567 หน้า 67 ข้อ 5 · หน้า 78 หมายเหตุ ③ · เอกสาร AVP CFP 4.2 หน้า 49)
+   เดิม (v3.9.60) บุตรแต่ละคนผูกกับผู้วางแผนที่บันทึกไว้คนเดียว อีกฝ่ายได้ 0 → ภาษีคู่สมรสสูงกว่าจริง
+   ตอนนี้: แผนคู่ → ผู้วางแผนทั้งสองคนนับบุตรทุกคนในบ้าน (ไม่ซ้ำ) · แผนคนเดียว → เหมือนเดิม
+   ยื่นรวม: บุตรหักได้ครั้งเดียว → taxCompareData บวกส่วนที่ซ้ำกลับ (kidOverlap)
+   ค่าเลี้ยงดู/ทุนประกัน/ภาระใครภาระมัน ยังแบ่งตามระเบียนเดิม ไม่เปลี่ยน */
+function taxKidsOf(deps, c, isPrimary){
+  const cs=STATE.carriers||[];
+  if(cs.length<2) return depsOf(deps, c&&c.id, isPrimary, 'child');
+  const seen=new Set();
+  return (deps||[]).filter(d=>{
+    if((d.kind||'child')!=='child') return false;
+    if(d.link){ if(seen.has(d.link)) return false; seen.add(d.link); }
+    return true; });
+}
 function depsOf(deps, cid, isPrimary, kind){
   return (deps||[]).filter(d=>{
     const k=d.kind||'child';
@@ -12551,9 +12569,12 @@ function taxCompareData(){
   const bothEarn=sepA.income>0 && sepB.income>0;
   const spouseAllow=bothEarn?0:60000;                            // ลดหย่อนคู่สมรสได้เมื่ออีกฝ่ายไม่มีรายได้
   const jIncome=sepA.income+sepB.income, jExpense=sepA.expense+sepB.expense;
-  const jNet=Math.max(0, sepA.net+sepB.net+mortOverlap-spouseAllow);
+  // v3.10.19: ยื่นรวมหักบุตรได้ครั้งเดียว — บวกกลับเฉพาะส่วนที่ทั้งสองฝ่ายหักซ้ำได้จริง (ฝ่ายที่รายได้ไม่พอหัก ไม่นับ)
+  const _usedA=Math.max(0,sepA.income-sepA.expense-sepA.net), _usedB=Math.max(0,sepB.income-sepB.expense-sepB.net);
+  const kidOverlap=Math.min(sepA.kidsAllow||0, sepB.kidsAllow||0, _usedA, _usedB);
+  const jNet=Math.max(0, sepA.net+sepB.net+mortOverlap+kidOverlap-spouseAllow);
   const jAllow=Math.max(0,jIncome-jExpense-jNet);
-  const joint={income:jIncome,expense:jExpense,allow:jAllow,net:jNet,tax:HENG.taxBracket(jNet),spouseAllow,mortOverlap};
+  const joint={income:jIncome,expense:jExpense,allow:jAllow,net:jNet,tax:HENG.taxBracket(jNet),spouseAllow,mortOverlap,kidOverlap};
   // ── 3) ผสม — แยกเฉพาะเงินเดือน 40(1) · รวมรายได้อื่นไว้ฝ่ายที่ภาษีต่ำกว่า ──
   const pool=[...oth(sA),...oth(sB)];
   const candA={a:core(sA,[...sal(sA),...pool]), b:core(sB,sal(sB)), to:'a'}; candA.total=candA.a.tax+candA.b.tax;
@@ -17427,10 +17448,10 @@ function actBuildDraft(){
         'ตอนนี้มี '+f0(liq)+' บาท ใช้ได้ '+Math.round(m)+' เดือน · กันไว้ '+f0(keep)+' บาท ในบัญชีที่ถอนได้ทันที · ส่วนที่เกิน '+f0(Math.max(0,liq-keep))+' บาท ย้ายไปพอร์ตลงทุนตามเป้าหมาย',
         'เสนอแผน']); }
     else if(m>=need) L.push(['เงินสำรองฉุกเฉิน — เก็บไว้ที่เดิม',
-      'ตอนนี้มี '+f0((f&&f.liquidAssets)||0)+' บาท ใช้ได้ '+Math.round(m)+' เดือน ครบตามเป้าแล้ว อย่าเอาไปลงทุนระยะยาว ต้องถอนได้ทันที',
+      'ตอนนี้มี '+f0((f&&f.liquidAssets)||0)+' บาท ใช้ได้ '+(Math.floor(m*10)/10)+' เดือน ครบตามเป้าแล้ว อย่าเอาไปลงทุนระยะยาว ต้องถอนได้ทันที',
       'ทบทวนปีละครั้ง']);
     else L.push(['เติมเงินสำรองฉุกเฉินให้ครบ '+need+' เดือน',
-      'ตอนนี้มี '+f0((f&&f.liquidAssets)||0)+' บาท ใช้ได้ '+Math.round(m)+' เดือน — เก็บในบัญชีที่ถอนได้ทันที',
+      'ตอนนี้มี '+f0((f&&f.liquidAssets)||0)+' บาท ใช้ได้ '+(Math.floor(m*10)/10)+' เดือน — เก็บในบัญชีที่ถอนได้ทันที',
       'ภายใน 12 เดือน']);
   }catch(e){}
 
@@ -18295,5 +18316,615 @@ function setUiZoom(z, silent){
   setUiZoom(z, true);
 })();
 </script>
+
+<style id="s41-v31015-a4">
+/* v3.10.15 · รายงาน PDF ฉบับกระชับ: หัวข้อที่ไหลต่อจากหน้าก่อนเว้นช่องให้หายใจ แต่ไม่ขึ้นหน้าใหม่ */
+#a4Summary .a4-ptitle.a4-pt-flow{margin-top:22px}
+/* ตารางกระแสเงินสดล่วงหน้า: แถวกระชับขึ้น (3 แผ่น → 2 แผ่น) ตัวอักษรยังอ่านชัด */
+#a4Summary .a4-cft{font-size:10.2px}
+#a4Summary .a4-cft td{padding:2.5px 5px;line-height:1.32}
+#a4Summary .a4-cft th{padding:4px 5px}
+#a4Summary .a4-cft td.ev{font-size:9.4px}
+/* ทะเบียนกรมธรรม์ในแนวตั้ง */
+#a4Summary .a4-sheet.a4-pol-port .a4-batbl,#a4Summary .a4-sheet.a4-pol-port .a4-rt{font-size:10px}
+#a4Summary .a4-sheet.a4-pol-port table td,#a4Summary .a4-sheet.a4-pol-port table th{padding-left:4px;padding-right:4px}
+/* ฉบับย่อ: ช่องเขียนตอบกลับย่อเหลือ 3 บรรทัด · ส่วนที่ซ้ำกับหน้าอื่นซ่อน */
+#a4Summary:not(.a4-full) .a4-cmp-hide{display:none!important}
+#a4Summary:not(.a4-full) .a4-dup{display:none!important}
+/* ปก: เต็มหน้า A4 แนวตั้ง — แบรนด์บน · ชื่อลูกค้ากลางหน้า · ผู้จัดทำล่าง */
+#a4Summary .a4-cover{min-height:calc(297mm - 20mm - 2px);justify-content:flex-start;padding-top:4mm}
+#a4Summary .a4-cover .cv-line{margin:14px 0 0}
+#a4Summary .a4-cover .cv-ico{margin:auto auto 22px}
+#a4Summary .a4-cover .cv-ico svg{width:150px;height:150px}
+#a4Summary .a4-cover .cv-arche{font-size:44px}
+#a4Summary .a4-cover .cv-type{font-size:15px;margin-top:10px}
+#a4Summary .a4-cover .cv-tag{font-size:13.5px;margin-top:18px;margin-bottom:auto}
+#a4Summary .a4-cover .cv-meta{margin-top:0;border-top:2px solid #002366;padding-top:18px}
+#a4Summary .a4-cover .cv-meta::before{content:none}
+#a4Summary .a4-cover .cv-foot{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#8A6A1F;font-weight:700;margin-top:18px;text-align:center}
+</style>
+<script id="s41-v31015-a4-js">
+/* ═══ v3.10.15 · รายงานแผนการเงิน (PDF) ฉบับกระชับ ═══
+   1) a4Compact(): รวมแผ่นแนวตั้งที่ต่อกันเป็น "สายเดียว" แล้วให้ a4Paginate() ตัดหน้าตามเนื้อหา — หมดปัญหาหน้าโล่งครึ่งหน้า
+   2) a4Paginate(): หน้าที่ตัดต่อใช้หัวข้อ "ล่าสุดก่อนรอยตัด" + (ต่อ) ไม่ใช่หัวข้อแรกของแผ่น · หัวข้อไม่ค้างท้ายหน้า
+   3) ทะเบียนกรมธรรม์: ถ้าตารางพอดีแนวตั้ง → อยู่ต่อจากเกราะคุ้มครองในหน้าเดียว (ไม่แยกแผ่นแนวนอนทั้งแผ่น)
+   4) ฉบับย่อ: กล่อง "เขียนตอบกลับ" เหลือ 3 บรรทัด  — ตัวเลขทุกตัวไม่เกี่ยว (จัดหน้าอย่างเดียว) */
+function a4Compact(){
+  const host=document.getElementById('a4Summary'); if(!host) return;
+  /* 4) ฉบับย่อ: บรรทัดว่างให้เขียน เหลือ 3 */
+  host.querySelectorAll(':scope > .a4-sheet').forEach(sh=>{
+    const kids=[...sh.children].filter(k=>k.nodeType===1);
+    let hdr=kids.findIndex(k=>/^เรื่องอื่นที่อยากบอก/.test((k.textContent||'').trim()));
+    if(hdr>=0){ let n=0; for(let i=hdr+1;i<kids.length;i++){ const k=kids[i]; if(k.tagName!=='DIV'||k.className||k.textContent.trim()) break; if(++n>3) k.classList.add('a4-cmp-hide'); } }
+  });
+  /* 2a) ฉบับย่อ: ส่วนที่ซ้ำกับหน้าอื่น → ซ่อน (ฉบับเต็มยังมี)
+     · กราฟเส้น "เส้นทางความมั่งคั่ง" ทั้งชีวิต (ซ้ำกับกราฟแท่งหน้า X) · ตาราง "ข้อมูลจริงจากลูกค้า" ในหน้าสมมติฐาน (ซ้ำกับปก/II/IV) · ตาราง "พอร์ตจริงวันนี้" (ซ้ำกับงบดุล II) */
+  const DUP=[/^เส้นทางความมั่งคั่ง — ที่ทำได้จริง/, /^ข้อมูลจริงจากลูกค้า/, /^พอร์ตจริงวันนี้/];
+  host.querySelectorAll('.a4-sec').forEach(sec=>{
+    const t=(sec.textContent||'').replace(/\s+/g,' ').trim(); if(!DUP.some(re=>re.test(t))) return;
+    sec.classList.add('a4-dup'); let n=sec.nextElementSibling;
+    while(n && !n.classList.contains('a4-sec') && !n.classList.contains('a4-ptitle')){ n.classList.add('a4-dup'); n=n.nextElementSibling; }
+  });
+  /* ปก: บรรทัดท้าย */
+  host.querySelectorAll('.a4-cover').forEach(c=>{ if(!c.querySelector('.cv-foot')){ const f=document.createElement('div'); f.className='cv-foot'; f.textContent='Signature 41 · Customized for One'; c.appendChild(f); } });
+  /* 2b) แผ่น "เส้นทางความมั่งคั่ง" ใช้หัวแบรนด์ใหญ่ (.a4-h) แทนหัวข้อ → เปลี่ยนเป็นหัวข้อ XII ทบทวนรายปี ให้ไหลต่อกับหน้าอื่นได้ */
+  host.querySelectorAll(':scope > .a4-sheet').forEach(sh=>{
+    if(sh.querySelector('.a4-cover')) return;
+    sh.querySelectorAll(':scope > .a4-h, :scope > .a4-fit > .a4-h').forEach(h=>{
+      const pt=document.createElement('div'); pt.className='a4-ptitle';
+      pt.innerHTML='<span class="n">XII</span><span class="t">ทบทวนรายปี · เส้นทางความมั่งคั่ง</span><span class="ref">หน้า XII ในเครื่องมือ</span>';
+      h.replaceWith(pt);
+    });
+  });
+  /* 3) ทะเบียนกรมธรรม์ → แนวตั้ง ถ้าตารางไม่ล้น */
+  host.querySelectorAll(':scope > .a4-sheet.a4-land').forEach(sh=>{
+    const pt=sh.querySelector(':scope > .a4-ptitle, :scope > .a4-fit > .a4-ptitle');
+    if(!pt||!/ทะเบียนกรมธรรม์/.test(pt.textContent||'')) return;
+    if(sh.querySelector('.a4-cft')) return;
+    sh.classList.remove('a4-land'); sh.classList.add('a4-pol-port');
+    const over=[...sh.querySelectorAll('table')].some(t=>t.scrollWidth>t.clientWidth+2 || t.getBoundingClientRect().right>sh.getBoundingClientRect().right-20);
+    if(over){ sh.classList.add('a4-land'); sh.classList.remove('a4-pol-port'); }
+  });
+  /* 1) รวมแผ่นแนวตั้งที่ติดกัน (ยกเว้นปก และแผ่นแนวนอน) */
+  let guard=0;
+  for(;;){
+    if(++guard>80) break;
+    const sheets=[...host.querySelectorAll(':scope > .a4-sheet')];
+    let done=true;
+    for(let i=1;i<sheets.length-1;i++){
+      const a=sheets[i], b=sheets[i+1];
+      if(a.querySelector('.a4-cover')||b.querySelector('.a4-cover')) continue;
+      if(a.classList.contains('a4-land')||b.classList.contains('a4-land')) continue;
+      const ia=a4Fit(a), ib=a4Fit(b);
+      [...ib.querySelectorAll(':scope > .a4-ptitle')].forEach(p=>p.classList.add('a4-pt-flow'));
+      while(ib.firstChild) ia.appendChild(ib.firstChild);
+      b.remove(); done=false; break;
+    }
+    if(done) break;
+  }
+}
+function a4Paginate(){
+  const host=document.getElementById('a4Summary'); if(!host) return;
+  const MM=96/25.4, RUN=30;
+  let guard=0;
+  for(let si=0; si<host.children.length; si++){
+    if(++guard>300) break;
+    const sh=host.children[si];
+    if(!sh.classList.contains('a4-sheet')||sh.querySelector('.a4-cover')) continue;
+    const inner=a4Fit(sh); inner.style.transform=''; inner.style.width='';
+    const cs=getComputedStyle(sh);
+    const PH=(sh.classList.contains('a4-land')?210:297)*MM;
+    const avail=PH-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-RUN-4;
+    if(inner.scrollHeight<=avail/0.95) continue;
+    const top0=inner.getBoundingClientRect().top;
+    const kids=[...inner.children].filter(k=>getComputedStyle(k).display!=='none');
+    const idx=kids.findIndex(k=>k.getBoundingClientRect().bottom-top0>avail);
+    if(idx<0) continue;
+    const k=kids[idx];
+    /* v3.10.15: ชิ้นนี้ล้นไม่ถึง 8px (เส้นขอบ/ปัดเศษ) → นับว่าพอดีหน้า ตัดหน้า "หลัง" ชิ้นนี้แทน (ย่อ ≤5% ชดเชย) */
+    const tiny = k.getBoundingClientRect().bottom-top0-avail < 8;
+    if(tiny && k===kids[kids.length-1]) continue;
+    if(k.tagName==='DIV' && getComputedStyle(k).display==='block' && k.children.length>1
+       && !k.classList.contains('a4-ptitle') && !k.querySelector(':scope > .a4-ptitle')){
+      while(k.firstChild) k.parentNode.insertBefore(k.firstChild,k); k.remove(); si--; continue; }
+    const tbl = tiny ? null : (k.tagName==='TABLE' ? k : ((k.children.length===1 && k.firstElementChild.tagName==='TABLE') ? k.firstElementChild : null));
+    let head=null;
+    /* v3.10.15: ตารางสั้น (ไม่ถึง 1/3 หน้า) ย้ายไปทั้งตาราง ไม่ตัดแยก 2-3 แถวให้ดูขาด */
+    const small = tbl && (k.getBoundingClientRect().height < avail*0.34);
+    if(tbl && tbl.tBodies[0] && !small){
+      a4LockCols(tbl);
+      const rows=[...tbl.tBodies[0].rows];
+      let cut=rows.findIndex(r=>r.getBoundingClientRect().bottom-top0>avail);
+      /* v3.10.15: แถวคำอธิบายล้วน (ทุกช่องเป็น .sub) ต้องอยู่กับแถวแม่ — แถวที่มี .sub ปนกับข้อมูลปกติ (เช่น แผนลงมือ) ตัดได้ */
+      const subRow=r=>r.cells.length>0 && [...r.cells].every(c=>c.classList.contains('sub'));
+      while(cut>0 && subRow(rows[cut])) cut--;
+      while(cut>0 && rows[cut-1].classList.contains('own')) cut--;
+      if(cut>0){
+        const clone=k.cloneNode(true);
+        const ct=(clone.tagName==='TABLE')?clone:clone.firstElementChild;
+        const crow=[...ct.tBodies[0].rows]; crow.slice(0,cut).forEach(r=>r.remove());
+        rows.slice(cut).forEach(r=>r.remove());
+        head=clone;
+      }
+    }
+    let from;
+    if(head) from=idx+1;
+    else if(tiny) from=idx+1;
+    else{
+      from=idx;
+      /* หัวข้อ (ทั้ง .a4-sec และหัวหน้า .a4-ptitle) ไปพร้อมเนื้อหา ไม่ค้างท้ายหน้า */
+      const isHead=x=>x.classList.contains('a4-sec')||x.classList.contains('a4-ptitle');
+      const isLead=(x,i)=>!isHead(x) && x.getBoundingClientRect().height<48 && i>0 && isHead(kids[i-1]);   /* บรรทัดอธิบายสั้นใต้หัวข้อ ไปพร้อมหัวข้อ */
+      while(from>0 && (isHead(kids[from-1]) || isLead(kids[from-1],from-1))) from--;
+      const firstBody=kids.findIndex(x=>!x.classList.contains('a4-ptitle'));
+      if(from<=firstBody) continue;
+    }
+    const nsh=document.createElement('div'); nsh.className=sh.className;
+    const ninner=document.createElement('div'); ninner.className='a4-fit'; nsh.appendChild(ninner);
+    /* v3.10.15: หัวข้อของหน้าต่อ = หัวข้อล่าสุดก่อนรอยตัด (เนื้อหาไหลต่อกันหลายหัวข้อในแผ่นเดียว) */
+    let pt=null; for(let j=from-1;j>=0;j--){ if(kids[j].classList.contains('a4-ptitle')){ pt=kids[j]; break; } }
+    const movesTitle = !head && kids[from] && kids[from].classList.contains('a4-ptitle');
+    if(pt && !movesTitle){ const c2=pt.cloneNode(true); c2.classList.remove('a4-pt-flow'); const t=c2.querySelector('.t'); if(t) t.textContent=t.textContent.replace(/\s*\(ต่อ\)$/,'')+' (ต่อ)'; ninner.appendChild(c2); }
+    if(head) ninner.appendChild(head);
+    kids.slice(from).forEach(x=>{ if(x.classList.contains('a4-ptitle')) x.classList.remove('a4-pt-flow'); ninner.appendChild(x); });
+    sh.after(nsh);
+  }
+}
+(function(){
+  /* รวมแผ่นครั้งเดียวต่อการเปิดรายงาน — beforeprint เรียก a4FitSheets() ซ้ำ ต้องไม่รวม/ตัดใหม่ (เดิมทำให้หัวข้อโผล่ซ้ำท้ายหน้าตอนพิมพ์) */
+  const _fit=a4FitSheets, _open=openA4;
+  openA4=function(){ const h=document.getElementById('a4Summary'); if(h) h.dataset.compact=''; return _open.apply(this,arguments); };
+  a4FitSheets=function(){ const h=document.getElementById('a4Summary');
+    if(h && h.dataset.compact!=='1'){ try{ a4Compact(); }catch(e){ console.warn('a4Compact',e); } h.dataset.compact='1'; return _fit.apply(this,arguments); }
+    return; /* พิมพ์: แผ่นถูกจัดไว้แล้ว ไม่ต้องจัดใหม่ */
+  };
+})();
+</script>
+<style id="s41-v31016-client">
+/* ═══ v3.10.16–17 · รายงานลูกค้าฉบับกระชับ (อ้อยเคาะ preview2 · 15 ต.ค. 69 · v3.10.17: งบดุลสองฝั่ง + อัตราส่วนการเงินหน้าสรุป + งบกระแสเงินสดสองคอลัมน์) ═══
+   ฉบับย่อ (ลูกค้า) = ชุดใหม่ 9 หัวข้อ · ฉบับเต็ม (ที่ปรึกษา) = ชุดเดิมทุกหน้า
+   ตัวอักษรเนื้อหา ≥ 10pt (13.4px) · ตัวเล็กสุด 9pt (12px) เฉพาะหัว-ท้ายกระดาษ/หมายเหตุ */
+#a4Summary .a4c-sheet{position:relative;font-family:var(--thai);color:#1E2333;font-size:14.5px;line-height:1.5;
+  padding:13mm 15mm 14mm;box-sizing:border-box}
+#a4Summary .a4c-sheet *{box-sizing:border-box}
+#a4Summary .a4c-run{position:absolute;left:15mm;right:15mm;top:6mm;display:flex;justify-content:space-between;font-size:12px;color:#5E6272}
+#a4Summary .a4c-run b{color:#B8963E;letter-spacing:.12em;font-weight:700}
+#a4Summary .a4c-foot{position:absolute;left:15mm;right:15mm;bottom:6mm;display:flex;justify-content:space-between;font-size:12px;color:#5E6272}
+#a4Summary .a4c-body{display:flex;flex-direction:column}
+#a4Summary .a4c-h1{display:flex;align-items:center;gap:11px;font-size:22px;font-weight:700;color:#16244A;margin:0 0 12px;padding-bottom:7px;border-bottom:2px solid #16244A;line-height:1.3}
+#a4Summary .a4c-blk + .a4c-blk .a4c-h1{margin-top:22px}
+#a4Summary .a4c-h1 .num{flex:0 0 27px;height:27px;border-radius:50%;background:#B8963E;color:#fff;font-size:15px;display:inline-flex;align-items:center;justify-content:center}
+#a4Summary .a4c-h1 .sub{font-size:13px;font-weight:400;color:#5E6272;margin-left:4px}
+#a4Summary .a4c-h2{font-size:16.5px;font-weight:700;color:#16244A;margin:16px 0 6px;display:flex;justify-content:space-between;align-items:baseline}
+#a4Summary .a4c-h2 .cap{font-size:13px;font-weight:600;color:#5E6272}
+#a4Summary .a4c-lead{font-size:13.5px;color:#5E6272;margin:-4px 0 10px}
+#a4Summary .a4c-note{font-size:12.5px;color:#5E6272;margin:4px 0 0;line-height:1.5}
+#a4Summary .a4c-note i,#a4Summary .a4c-legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin:0 4px 0 10px;vertical-align:-1px}
+#a4Summary .a4c-note i:first-child,#a4Summary .a4c-legend i:first-child{margin-left:0}
+#a4Summary .a4c-legend{font-size:12.5px;color:#5E6272;margin-top:4px}
+#a4Summary .a4c-legend .dash{display:inline-block;width:20px;border-top:2px dashed #B8963E;margin:0 4px 0 12px;vertical-align:3px}
+/* hero */
+#a4Summary .a4c-hero{display:flex;gap:15px;align-items:center;border-radius:11px;padding:14px 18px;margin-bottom:12px;background:#FBEDEA;border:1.3px solid #E7B9AF}
+#a4Summary .a4c-hero.ok{background:#E9F2EC;border-color:#B6D3BF}
+#a4Summary .a4c-hero .hi{flex:0 0 40px;height:40px;border-radius:50%;background:#B4412F;color:#fff;font-weight:700;font-size:22px;display:flex;align-items:center;justify-content:center}
+#a4Summary .a4c-hero.ok .hi{background:#3D7A55}
+#a4Summary .a4c-hero .ht{font-size:20px;font-weight:700;color:#B4412F;line-height:1.35}
+#a4Summary .a4c-hero.ok .ht{color:#2F6446}
+#a4Summary .a4c-hero .hs{font-size:14px}
+/* kpi */
+#a4Summary .a4c-kpis{display:flex;gap:10px;margin-bottom:6px}
+#a4Summary .a4c-kpi{flex:1;border:1px solid #E4DDCF;border-radius:9px;padding:10px 13px;background:#fff}
+#a4Summary .a4c-kpi span{display:block;font-size:12.5px;color:#5E6272}
+#a4Summary .a4c-kpi b{display:block;font-size:22px;color:#16244A;line-height:1.3;font-variant-numeric:tabular-nums}
+#a4Summary .a4c-kpi em{font-style:normal;font-size:12.5px;color:#5E6272}
+#a4Summary .a4c-kpi.bad b{color:#B4412F}#a4Summary .a4c-kpi.good b{color:#3D7A55}
+#a4Summary .a4c-sum{display:flex;gap:16px;align-items:center;margin:4px 0 8px}
+#a4Summary .a4c-sum .l{flex:0 0 470px}#a4Summary .a4c-sum .r{flex:1;display:flex;flex-direction:column;gap:10px}
+#a4Summary .a4c-radar{position:relative;width:470px;height:430px}
+#a4Summary .a4c-radar svg{position:absolute;left:0;top:0}
+#a4Summary .a4c-rl{position:absolute;width:120px;margin-left:-60px;margin-top:-19px;text-align:center;line-height:1.2}
+#a4Summary .a4c-rl b{display:block;font-size:21px}
+#a4Summary .a4c-rl span{font-size:14px;font-weight:600;color:#1E2333}
+#a4Summary .a4c-warn{margin-top:12px;background:#F6F1E7;border-left:4px solid #B4412F;padding:10px 14px;font-size:14px;border-radius:0 8px 8px 0}
+/* tables */
+#a4Summary .a4c-tbl{width:100%;border-collapse:collapse;margin:6px 0 4px;font-size:14px}
+#a4Summary .a4c-tbl th{text-align:left;font-weight:600;font-size:12.5px;color:#5E6272;border-bottom:1.4px solid #16244A;padding:5px 7px}
+#a4Summary .a4c-tbl td{padding:6px 7px;border-bottom:1px solid #EEE8DC;vertical-align:top}
+#a4Summary .a4c-tbl .n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+#a4Summary .a4c-tbl .s{font-size:12.5px;color:#5E6272}
+#a4Summary .a4c-tbl.tight td{padding:4px 7px}
+#a4Summary .a4c-tbl tr.grp td{font-weight:600;color:#16244A;background:#FAF7F1}
+#a4Summary .a4c-tbl td.ind{padding-left:28px}
+#a4Summary .a4c-tbl tr.tot td{font-weight:700;color:#16244A;border-top:1.6px solid #16244A}
+#a4Summary .a4c-tbl tr.tot.bad td{color:#B4412F}
+#a4Summary .a4c-tbl tr.hl td{background:#FAF3E3}
+#a4Summary .a4c-tbl.cft{font-size:13.4px}#a4Summary .a4c-tbl.cft td{padding:4px 6px}
+#a4Summary .a4c-dot{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:8px;vertical-align:-1px}
+#a4Summary .a4c-stk{display:flex;height:18px;border-radius:5px;overflow:hidden;background:#EEE8DC;margin:4px 0 6px}
+#a4Summary .a4c-fl{display:flex;align-items:center;gap:10px}
+#a4Summary .a4c-fl span{flex:0 0 34px;color:#5E6272;font-size:13px}
+#a4Summary .a4c-fl .a4c-stk{flex:1;margin:3px 0}
+#a4Summary .a4c-fl b{flex:0 0 90px;text-align:right;font-variant-numeric:tabular-nums}
+#a4Summary .a4c-bs{display:flex;gap:18px;align-items:flex-start}#a4Summary .a4c-bs>div{flex:1;min-width:0}
+#a4Summary .a4c-bsh{font-size:13px;font-weight:700;color:#5E6272;letter-spacing:.06em;margin:6px 0 0}
+#a4Summary .a4c-bs .a4c-tbl{font-size:13.4px}#a4Summary .a4c-bs td.ind{padding-left:22px}
+#a4Summary .a4c-nw{margin-top:14px;border:1.4px solid #16244A;border-radius:10px;padding:10px 14px}
+#a4Summary .a4c-nw span{display:block;font-size:13px;color:#5E6272}#a4Summary .a4c-nw b{display:block;font-size:24px;color:#16244A;font-variant-numeric:tabular-nums}
+#a4Summary .a4c-nw em{font-style:normal;font-size:12.5px;color:#5E6272}
+#a4Summary .a4c-rcs{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;margin-top:2px}
+#a4Summary .a4c-rc{border:1px solid #E4DDCF;border-left:4px solid;border-radius:7px;padding:5px 11px 5px;background:#fff}
+#a4Summary .a4c-rc .h{display:flex;justify-content:space-between;gap:8px;align-items:baseline;font-size:13.4px;font-weight:600;color:#16244A;line-height:1.3}
+#a4Summary .a4c-rc .h b{font-size:16px;white-space:nowrap;font-variant-numeric:tabular-nums}
+#a4Summary .a4c-rc .s{font-size:12.5px;color:#5E6272}#a4Summary .a4c-rc .s .pl{font-weight:700}
+#a4Summary .a4c-rc .c{font-size:12.5px;color:#1E2333;line-height:1.4}
+/* protection bars */
+#a4Summary .a4c-sh{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid #EEE8DC}
+#a4Summary .a4c-sh .nm{flex:0 0 27%;font-weight:600;font-size:15px;color:#16244A}
+#a4Summary .a4c-sh .nm small{display:block;font-weight:400;font-size:12.5px;color:#5E6272}
+#a4Summary .a4c-sh .tr{flex:1;height:14px;background:#EEE8DC;border-radius:7px;overflow:hidden}
+#a4Summary .a4c-sh .tr i{display:block;height:100%}
+#a4Summary .a4c-sh .vv{flex:0 0 36%;text-align:right;font-size:13.4px;line-height:1.5}
+/* timeline */
+#a4Summary .a4c-tl .r{display:flex;align-items:center;margin-bottom:7px}
+#a4Summary .a4c-tl .nm{flex:0 0 150px;font-weight:600;font-size:13.4px;color:#16244A;line-height:1.25;padding-right:6px}
+#a4Summary .a4c-tl .tt{position:relative;flex:1;height:26px;background:#F7F3EA;border-radius:5px}
+#a4Summary .a4c-tl .seg{position:absolute;top:0;height:26px;border-radius:5px;overflow:hidden}
+#a4Summary .a4c-tl .seg span{position:absolute;left:7px;top:3px;color:#fff;font-size:12.5px;font-weight:600;white-space:nowrap}
+#a4Summary .a4c-tl .tt.pins{height:50px;background:none;border-top:1px solid #D8CFBE;border-radius:0}
+#a4Summary .a4c-tl .pin{position:absolute;top:-5px}
+#a4Summary .a4c-tl .pin i{display:block;width:9px;height:9px;border-radius:50%;background:#B8963E;margin-left:-4.5px}
+#a4Summary .a4c-tl .pin span{position:absolute;left:-48px;width:96px;text-align:center;top:8px;font-size:12px;line-height:1.2}
+#a4Summary .a4c-tl .pin.lo span{top:27px}
+#a4Summary .a4c-tl .pin.re span{left:auto;right:-4px;text-align:right}#a4Summary .a4c-tl .pin.le span{left:-4px;text-align:left}
+#a4Summary .a4c-tl .nm small{font-size:12px}
+#a4Summary[data-a4c] .a4-cover .cv-meta .l,#a4Summary[data-a4c] .a4-cover .cv-meta small,#a4Summary[data-a4c] .a4-cover .cv-foot{font-size:12.5px}
+#a4Summary[data-a4c] .a4-cover .cv-meta .v{font-size:15px}
+#a4Summary .a4c-tl .tt.ticks{height:16px;background:none}
+#a4Summary .a4c-tl .tt.ticks span{position:absolute;transform:translateX(-50%);font-size:12px;color:#5E6272}
+/* retirement */
+#a4Summary .a4c-act{background:#16244A;color:#fff;border-radius:10px;padding:11px 17px;margin:8px 0 4px;font-size:16px}
+#a4Summary .a4c-act span{color:#D9DDEA;font-size:14px}
+#a4Summary .a4c-act.ok{background:#E9F2EC;color:#2F6446}#a4Summary .a4c-act.ok span{color:#2F6446}
+#a4Summary .a4c-assume{margin-top:12px;background:#F6F1E7;border-radius:8px;padding:10px 14px;font-size:12.5px;line-height:1.55}
+/* todo */
+#a4Summary .a4c-todo td{padding:10px 7px}
+#a4Summary .a4c-todo .cb{width:22px;font-size:17px;color:#16244A}
+#a4Summary .a4c-todo .no{width:22px;color:#B8963E;font-weight:700}
+#a4Summary .a4c-todo .dl{width:27%;text-align:right;font-weight:600;color:#B4412F;font-size:13.4px}
+#a4Summary .a4c-sign{display:flex;gap:40px;margin-top:40px;font-size:13px;color:#5E6272}
+#a4Summary .a4c-sign>div{flex:1}#a4Summary .a4c-sign .ln{border-bottom:1px solid #1E2333;height:34px;margin-bottom:5px}
+#a4Summary .a4c-disc{margin-top:24px;font-size:12px;color:#5E6272;line-height:1.6}
+@media print{ #a4Summary .a4c-sheet{padding:13mm 15mm 14mm} }
+</style>
+<script id="s41-v31016-client-js">
+/* ═══ v3.10.16 · รายงานลูกค้าฉบับกระชับ (ปุ่ม "รายงานแผนการเงิน (PDF)") ═══
+   อ้อยเคาะ 15 ต.ค. 69 จาก preview2:
+   1 สรุปแผน (ใยแมงมุม + ตัวเลข 3 ตัว) · 2 ภาพการเงินวันนี้ (กระแสเงินสด + ทรัพย์สิน) · 3 ไทม์ไลน์ครอบครัว
+   4 เกราะคุ้มครอง · 5 ภาษี · 6 เกษียณ + กราฟพอร์ต · 7 เป้าหมาย · 8 กระแสเงินสดล่วงหน้า (ทุก 5 ปี + ปีสำคัญ) · 9 สิ่งที่ต้องทำต่อ
+   - ทุกตัวเลขดึงจากเครื่องคำนวณเดิม (computeFinancials · HENG.proForma · goalRows · domainReadiness · HENG.taxPlan · actList) ไม่มีสูตรใหม่
+   - ความคุ้มครองชีวิต/ทุพพลภาพ ใช้ชุด "ต้องการ/มีแล้ว" เดียวกับหน้า IV บนเว็บและแผนลงมือ (p5need/p5have) — เดิมรายงานใช้อีกชุด ทำให้สองหน้าขัดกัน
+   - ฉบับเต็ม (ที่ปรึกษา) = รายงานชุดเดิมทุกหน้า ไม่แตะ */
+(function(){
+const NAVY='#16244A', GOLD='#B8963E', RED='#B4412F', GREEN='#3D7A55', AMBER='#C08A1E', MUTE='#5E6272', BLUE='#6E8FB8', GREY='#9AA3B5';
+const N=v=>Math.round(Math.abs(Number(v)||0)).toLocaleString('en-US');
+const SN=v=>(v<0?'−':'')+N(v);
+const E=s=>String(s==null?'':s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+const col=p=>p>=90?GREEN:(p>=60?AMBER:RED);
+const T=(fn,d)=>{ try{ const v=fn(); return (v===undefined||v===null||(typeof v==='number'&&!isFinite(v)))?d:v; }catch(e){ console.warn('a4c',e); return d; } };
+const cnt={n:0}; const H1=(t,sub)=>`<div class="a4c-h1"><span class="num">${++cnt.n}</span>${t}${sub?`<span class="sub">${sub}</span>`:''}</div>`;
+
+function a4cData(){
+  const c=STATE.carriers[0], f=computeFinancials(), pf=T(()=>HENG.proForma(),{rows:[],depleteAge:null,targetAge:c.life||85,retAge:c.retireAge||60});
+  const RD=T(()=>domainReadiness(),{domains:[],overall:0}), GR=T(()=>goalRows(),[]);
+  return {c,f,pf,RD,GR,a0:Number(c.age)||0,be0:T(()=>a4BeYear(),new Date().getFullYear()+543)};
+}
+
+/* ── 1 สรุป ── */
+function secSummary(D){
+  const {f,pf,RD,GR}=D, dom=k=>(RD.domains||[]).find(d=>d.key===k);
+  const prot=GR.filter(r=>/^🛡/.test(r.name||''));
+  const pr=re=>prot.find(r=>re.test(r.name||''));
+  const pct=(h,n)=>n>0?Math.max(0,Math.min(100,Math.round(h/n*100))):null;
+  const life=pr(/ชีวิต/), tpd=pr(/ทุพพลภาพ|TPD/), hl=pr(/สุขภาพ/), ci=pr(/โรคร้าย|CI/);
+  const pv=(r,useP5)=>!r?null:(useP5&&r.p5need!=null?pct(r.p5have,r.p5need):pct(r.have,r.need));
+  const ax=[['สำรองฉุกเฉิน',dom('emergency')&&dom('emergency').pct],['เกษียณ',dom('retire')&&dom('retire').pct],
+    ['คุ้มครองชีวิต',pv(life,true)],['ทุพพลภาพ',pv(tpd,true)],['ประกันสุขภาพ',pv(hl)],['โรคร้ายแรง',pv(ci)],
+    ['การศึกษาบุตร',dom('edu')&&dom('edu').pct],['ภาษี',dom('tax')&&dom('tax').pct]].filter(a=>a[1]!=null);
+  let radar='';
+  if(ax.length>=3){
+    const W=470,Hh=430,CX=235,CY=208,R=148, P=(i,r)=>{const a=-Math.PI/2+i*2*Math.PI/ax.length; return [CX+r*Math.cos(a),CY+r*Math.sin(a)];};
+    const poly=(r,fn)=>ax.map((_,i)=>P(i,fn?fn(i):r).map(v=>v.toFixed(1)).join(',')).join(' ');
+    let g=''; [.25,.5,.75].forEach(l=>g+=`<polygon points="${poly(R*l)}" fill="none" stroke="#E4DDCF" stroke-width="1"/>`);
+    g+=`<polygon points="${poly(R)}" fill="none" stroke="${GOLD}" stroke-width="1.8" stroke-dasharray="5 4"/>`;
+    ax.forEach((_,i)=>{const [x,y]=P(i,R); g+=`<line x1="${CX}" y1="${CY}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#E4DDCF"/>`;});
+    g+=`<polygon points="${poly(0,i=>R*Math.max(.03,ax[i][1]/100))}" fill="${NAVY}" fill-opacity=".16" stroke="${NAVY}" stroke-width="2.6" stroke-linejoin="round"/>`;
+    let lb='';
+    ax.forEach(([n,v],i)=>{ const [x,y]=P(i,R*Math.max(.03,v/100)); g+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="6" fill="${col(v)}" stroke="#fff" stroke-width="2"/>`;
+      const [lx,ly]=P(i,R+40); lb+=`<div class="a4c-rl" style="left:${lx.toFixed(0)}px;top:${ly.toFixed(0)}px"><b style="color:${col(v)}">${v}%</b><span>${n}</span></div>`; });
+    radar=`<div class="a4c-radar"><svg width="${W}" height="${Hh}" viewBox="0 0 ${W} ${Hh}">${g}</svg>${lb}</div>
+      <div class="a4c-legend"><i style="background:${GREEN}"></i>พร้อม ≥90% <i style="background:${AMBER}"></i>ใกล้ครบ <i style="background:${RED}"></i>ควรเร่ง <span class="dash"></span>เป้าหมาย 100%</div>`;
+  }
+  const dep=pf.depleteAge, tgt=pf.targetAge;
+  const axisNote=STATE.carriers.length>1?' (นับตามอายุของ'+E(String(STATE.carriers[0].name||'').split(' (')[0])+' · แผนจบเมื่อคู่ชีวิตคนสุดท้ายถึงอายุขัย)':'';
+  const hero= dep==null
+    ? `<div class="a4c-hero ok"><div class="hi">✓</div><div><div class="ht">ตามแผนตอนนี้ เงินพอใช้ตลอดแผน ถึงอายุ ${tgt} ปี</div><div class="hs">ทำตามแผนลงมือท้ายเล่มเพื่อรักษาระดับนี้ไว้${axisNote}</div></div></div>`
+    : `<div class="a4c-hero"><div class="hi">!</div><div><div class="ht">ตามแผนตอนนี้ เงินพอใช้ถึงอายุ ${dep} ปี</div><div class="hs">เป้าหมายคือ ${tgt} ปี — ${dep<tgt?'ยังขาดอีก '+(tgt-dep)+' ปี ':''}ปรับได้ด้วยการออมเพิ่ม ลดรายจ่าย หรือทำงานนานขึ้น${axisNote}</div></div></div>`;
+  const liqM=(f.ratios&&f.ratios.liquidity)||0, m1=Math.round(liqM*10)/10;
+  const kpi=`<div class="a4c-kpi"><span>ความมั่งคั่งสุทธิวันนี้</span><b>${SN(f.netWorth)}</b><em>บาท</em></div>
+    <div class="a4c-kpi ${f.freeCash<0?'bad':''}"><span>เงินเหลือแต่ละเดือน</span><b>${SN(f.freeCash)}</b><em>บาท/เดือน (หลังหักเงินออม)</em></div>
+    <div class="a4c-kpi"><span>เงินสำรองฉุกเฉิน</span><b>${m1>=24?'24+':m1} เดือน</b><em>${N(f.liquidAssets)} บาท</em></div>`;
+  const warn=f.freeCash<0?`<div class="a4c-warn"><b>เรื่องแรกที่ต้องแก้:</b> รายจ่ายรวมเงินออมสูงกว่ารายรับเดือนละ ${N(-f.freeCash)} บาท แผนจะเดินได้ต้องปรับรายจ่าย ยอดออม หรือรายได้ก่อน</div>`:'';
+  return `<div class="a4c-blk" data-new="1">${H1('สรุปแผนของคุณ')}${hero}
+    <div class="a4c-sum"><div class="l">${radar}</div><div class="r">${kpi}</div></div>${warn}
+    <div class="a4c-note">จุดที่อยู่ใกล้กลางวง คือด้านที่ควรทำก่อน · รายละเอียดแต่ละด้านอยู่ในหน้าถัดไป</div>${ratioCards(f)}</div>`;
+}
+/* อัตราส่วนทางการเงิน 8 ตัว — ใช้ตัวเลข/เกณฑ์/คำอธิบายชุดเดียวกับหน้า III (a4RatioTable) แล้วจัดเป็นการ์ด */
+function ratioCards(f){
+  const tmp=document.createElement('div'); tmp.innerHTML=T(()=>a4RatioTable(f),''); const tb=tmp.querySelector('tbody'); if(!tb) return '';
+  const C={ok:GREEN,warn:AMBER,bad:RED,na:MUTE}; let grp='', cards=[];
+  [...tb.rows].forEach(r=>{ if(r.classList.contains('grp')){ grp=r.textContent.trim(); return; }
+    const td=r.cells; if(td.length<4) return; const cap=td[0].querySelector('div'); const capT=cap?cap.textContent.trim():''; if(cap) cap.remove();
+    const pill=td[3].querySelector('.pill'); const st=pill?(['ok','warn','bad','na'].find(k=>pill.classList.contains(k))||'na'):'na';
+    cards.push(`<div class="a4c-rc" style="border-left-color:${C[st]}"><div class="h"><span>${E(td[0].textContent.trim())}</span><b style="color:${C[st]}">${E(td[1].textContent.trim())}</b></div>
+      <div class="s"><span class="pl" style="color:${C[st]}">${E(pill?pill.textContent.trim():'')}</span> · เกณฑ์ ${E(td[2].textContent.trim())}</div></div>`); });
+  if(!cards.length) return '';
+  return `<div class="a4c-h2">วิเคราะห์สุขภาพการเงินวันนี้ <span class="cap">อัตราส่วนทางการเงิน ${cards.length} ตัว</span></div><div class="a4c-rcs">${cards.join('')}</div>
+    <div class="a4c-note">เกณฑ์เป็นช่วงที่ใช้กันทั่วไปในการวางแผนการเงินส่วนบุคคล ไม่ใช่กฎตายตัว</div>`;
+}
+
+/* ── 2 ภาพการเงินวันนี้ ── */
+function stack(parts,total){ return '<div class="a4c-stk">'+parts.filter(p=>p[1]>0).map(p=>`<div style="width:${(p[1]/total*100).toFixed(2)}%;background:${p[2]}"></div>`).join('')+'</div>'; }
+function secToday(D){
+  const f=D.f, cs=STATE.carriers;
+  const out=(f.fixedEx||0)+(f.varEx||0)+(f.savings||0), mx=Math.max(f.totalIn||0,out,1);
+  const inc=cs.map(c=>[(cs.length>1?'เงินได้ประจำ · '+String(c.name||'').split(' ')[0]:'เงินได้ประจำ'), T(()=>(c.incomes||[]).filter(i=>!i.pen&&(i.startAge||0)<=(c.age||0)&&(i.endAge==null||i.endAge>=(c.age||0))).reduce((s,i)=>s+(i.monthly||0),0),0)]);
+  const incSum=inc.reduce((s,x)=>s+x[1],0); const otherIn=Math.max(0,(f.totalIn||0)-incSum);
+  const grp=(name,c,tot,lines)=>`<tr class="grp"><td><i class="a4c-dot" style="background:${c}"></i>${name}</td><td class="n">${N(tot)}</td></tr>`
+     +lines.filter(l=>Math.round(l[1])>0).map(l=>`<tr><td class="ind">${E(l[0])}</td><td class="n">${N(l[1])}</td></tr>`).join('');
+  let tIn=grp('รายรับ',GREEN,f.totalIn,inc.concat([['โบนัส · ดอกเบี้ย · รายได้อื่น (เฉลี่ยต่อเดือน)',otherIn]]));
+  let t=grp('รายจ่ายคงที่',NAVY,f.fixedEx,[['ผ่อนหนี้ (บ้าน · รถ · บัตร ฯลฯ)',f.debtService],['เบี้ยประกัน',f.insurance],['ประกันสังคม · PVD · คงที่อื่น',f.fixedOther]]);
+  t+=grp('รายจ่ายผันแปร',GOLD,f.varEx,[['ค่าใช้จ่ายในบ้าน · กิน · เดินทาง · ส่วนตัว',f.household],['ค่าเลี้ยงดูผู้อยู่ในอุปการะ',f.depExpense],['ภาษี',f.tax],['อื่น ๆ',f.supportOther]]);
+  tIn+=grp('เงินออม / ลงทุน',BLUE,f.savings,[]);
+  tIn+=`<tr class="tot"><td>รายจ่ายรวม</td><td class="n">${N((f.fixedEx||0)+(f.varEx||0))}</td></tr><tr class="tot ${f.freeCash<0?'bad':''}"><td>เหลือ / ขาด ต่อเดือน</td><td class="n">${SN(f.freeCash)}</td></tr>`;
+  const tOut=t;
+  const ins=Math.max(0,(f.totalAssets||0)-(f.liquidAssets||0)-(f.investAssets||0)-(f.personalAssets||0));
+  const bs=[['สภาพคล่อง',f.liquidAssets,BLUE],['ลงทุน',f.investAssets,NAVY],['ใช้ส่วนตัว',f.personalAssets,GOLD],['มูลค่าเวนคืนกรมธรรม์',ins,GREY]];
+  /* งบดุล: รายการย่อยจากหน้า II · ยอดรวมแต่ละกลุ่มใช้ตัวเลขชุดเดียวกับเครื่องคำนวณ (ส่วนต่าง → "อื่น ๆ") */
+  const LB={savings:'เงินฝากออมทรัพย์',fixedDep:'เงินฝากประจำ',moneyFund:'กองทุนตลาดเงิน',cash:'เงินสด',bond:'ตราสารหนี้ / กองทุนตราสารหนี้',stock:'หุ้น',mutualFund:'กองทุนรวม',
+    rmf:'RMF / SSF / Thai ESG',ssf:'SSF',pvd:'กองทุนสำรองเลี้ยงชีพ / กบข.',gold:'ทองคำ',insCash:'มูลค่าเงินสดกรมธรรม์',property:'บ้าน / คอนโด / ที่ดิน',car:'รถยนต์',jewelry:'เครื่องประดับ / ของมีค่า',
+    creditCard:'บัตรเครดิต',utility:'ค่าสาธารณูปโภคค้างจ่าย',otherShort:'หนี้ระยะสั้นอื่น',homeLoan:'สินเชื่อบ้าน',carLoan:'สินเชื่อรถยนต์',otherLong:'หนี้ระยะยาวอื่น'};
+  const dd=(STATE.snap&&STATE.snap.detail)||{}, A=dd.assets||{}, Lb=dd.liab||{};
+  const items=(obj,extra)=>{ const r=[]; for(const k in (obj||{})){ const v=Number(obj[k])||0; if(v>0) r.push([LB[k]||k,v]); }
+    (Array.isArray(extra)?extra:[]).forEach(x=>{ const v=Number(x&&(x.amt!=null?x.amt:x.value))||0; if(v>0) r.push([String(x.name||'อื่น ๆ'),v]); }); return r; };
+  const polSur=((STATE.snap&&STATE.snap.policies)||[]).reduce((t,p)=>t+(Number(p.surrender)||0),0);
+  const gRows=(nm,c,tot,its)=>{ if(!(Math.round(tot)>0)) return ''; const sum=its.reduce((s,x)=>s+x[1],0), d=tot-sum; if(Math.abs(d)>=1) its=its.concat([[(polSur>0&&Math.abs(d-polSur)<1)?'มูลค่าเงินสดกรมธรรม์ (จากทะเบียนกรมธรรม์)':'อื่น ๆ',d]]);
+    return `<tr class="grp"><td><i class="a4c-dot" style="background:${c}"></i>${nm}</td><td class="n">${N(tot)}</td></tr>`+its.map(x=>`<tr><td class="ind">${E(x[0])}</td><td class="n">${N(x[1])}</td></tr>`).join(''); };
+  let ta=gRows('สินทรัพย์สภาพคล่อง',BLUE,f.liquidAssets,items(A.liquid,A.liquidExtra))+gRows('สินทรัพย์ลงทุน',NAVY,f.investAssets,items(A.invest,A.investExtra))
+    +gRows('สินทรัพย์ใช้ส่วนตัว',GOLD,f.personalAssets,items(A.personal,A.personalExtra))+gRows('มูลค่าเวนคืนกรมธรรม์',GREY,ins,[]);
+  ta+=`<tr class="tot"><td>สินทรัพย์รวม</td><td class="n">${N(f.totalAssets)}</td></tr>`;
+  let tl=gRows('หนี้สินระยะสั้น',RED,f.shortLiab,items(Lb.short))+gRows('หนี้สินระยะยาว','#8A3A32',f.longLiab,items(Lb.long));
+  if(!(f.totalLiab>0)) tl+=`<tr><td class="s">ไม่มีหนี้สิน</td><td></td></tr>`;
+  tl+=`<tr class="tot"><td>หนี้สินรวม</td><td class="n">${N(f.totalLiab)}</td></tr>`;
+  const dr=f.totalAssets>0?Math.round(f.totalLiab/f.totalAssets*100):0;
+  return `<div class="a4c-blk">${H1('ภาพการเงินวันนี้')}<div class="a4c-h2">งบกระแสเงินสด · ต่อเดือน</div>
+    <div class="a4c-fl"><span>เข้า</span>${stack([['in',f.totalIn,GREEN]],mx)}<b>${N(f.totalIn)}</b></div>
+    <div class="a4c-fl"><span>ออก</span>${stack([['fx',f.fixedEx,NAVY],['vx',f.varEx,GOLD],['sv',f.savings,BLUE]],mx)}<b>${N(out)}</b></div>
+    <div class="a4c-bs"><div><table class="a4c-tbl tight">${tIn}</table></div><div><table class="a4c-tbl tight">${tOut}</table></div></div></div>
+    <div class="a4c-blk"><div class="a4c-h2">งบดุล · ณ วันนี้</div>${stack(bs.map(x=>['',x[1],x[2]]),Math.max(1,f.totalAssets))}
+    <div class="a4c-bs"><div><div class="a4c-bsh">สินทรัพย์</div><table class="a4c-tbl tight">${ta}</table></div>
+    <div><div class="a4c-bsh">หนี้สิน</div><table class="a4c-tbl tight">${tl}</table>
+    <div class="a4c-nw"><span>ความมั่งคั่งสุทธิ</span><b>${SN(f.netWorth)}</b><em>สินทรัพย์ − หนี้สิน · หนี้คิดเป็น ${dr}% ของสินทรัพย์</em></div></div></div></div>`;
+}
+
+/* ── 3 ไทม์ไลน์ครอบครัว ── */
+function secTimeline(D){
+  const X=T(()=>a4TimeAxis(),null); if(!X) return '';
+  const pf=D.pf, a0=X.a0, A1=Math.max(pf.targetAge||X.life, a0+5), span=A1-a0, pos=a=>Math.max(0,Math.min(100,(a-a0)/span*100));
+  const seg=(s,e,c,t)=>e<=s?'':`<div class="seg" style="left:${pos(s).toFixed(2)}%;width:${(pos(e)-pos(s)).toFixed(2)}%;background:${c}"><span>${E(t)}</span></div>`;
+  let rows='';
+  const dep=pf.depleteAge, retA=pf.retAge||X.retA;
+  STATE.carriers.forEach((c,i)=>{ const off=(c.age||0)-a0;
+    const r=T(()=>calcRetireAge(c),c.retireAge||60)-off, end=Math.min(A1,(Number(c.life)||85)-off);
+    let s=seg(a0,Math.min(r,end),NAVY,'ทำงาน')+seg(r,Math.min(end,dep||end),GOLD,'เกษียณ');
+    if(dep&&dep<end) s+=seg(dep,end,'#E7B9AF','เงินหมด');
+    rows+=`<div class="r"><div class="nm">${E(String(c.name||'').split(' (')[0])}<br><small style="font-weight:400;color:${MUTE}">ตอนนี้ ${c.age} ปี</small></div><div class="tt">${s}</div></div>`; });
+  (X.T||[]).filter(t=>t.g==='คนที่เราดูแล').forEach(t=>{ const nm=String(t.nm||'').split(' · ')[0], now=(String(t.nm).match(/ตอนนี้\s*(\d+)/)||[])[1];
+    rows+=`<div class="r"><div class="nm">${E(nm)}${now?`<br><small style="font-weight:400;color:${MUTE}">ตอนนี้ ${now} ปี</small>`:''}</div><div class="tt">${seg(Math.max(a0,t.f),Math.min(A1,t.t),BLUE,'ดูแล '+(t.v||''))}</div></div>`; });
+  (X.T||[]).filter(t=>t.g==='ภาระรายเดือน' && /ผ่อน/.test(t.nm||'') && t.t<Math.min(A1,X.life)).forEach(t=>{
+    rows+=`<div class="r"><div class="nm">${E(t.nm)}</div><div class="tt">${seg(Math.max(a0,t.f),t.t,GREY,'ถึงอายุ '+t.t+' · '+(t.v||''))}</div></div>`; });
+  /* หมุดเหตุการณ์: เป้าหมายเงินก้อน (ไม่รวมค่าเทอมรายปี) + เกษียณ + เงินหมด */
+  const pins=[]; const seen={};
+  (STATE.goals||[]).filter(g=>g.amt<0 && T(()=>goalType(g),'')!=='edu').forEach(g=>{ const k=String(g.name||'').split(' · ')[0].split(' (')[0];
+    if(seen[k]) return; seen[k]=1; pins.push([g.age,k]); });
+  pins.push([retA,'เกษียณ']); if(dep) pins.push([dep,'เงินหมด']);
+  pins.sort((x,y)=>x[0]-y[0]);
+  const pinH=pins.slice(0,8).map((p,k)=>`<div class="pin${k%2?' lo':''}${pos(p[0])>86?' re':(pos(p[0])<12?' le':'')}" style="left:${pos(p[0]).toFixed(2)}%"><i></i><span>${E(p[1])} · <b>${p[0]}</b></span></div>`).join('');
+  let ticks=''; for(let a=Math.ceil(a0/5)*5;a<=A1;a+=5) ticks+=`<span style="left:${pos(a).toFixed(2)}%">${a}</span>`;
+  return `<div class="a4c-blk">${H1('ไทม์ไลน์ครอบครัว')}<div class="a4c-lead">แกนคืออายุของ${E(String(STATE.carriers[0].name||'').split(' (')[0])} · ใครต้องดูแลถึงเมื่อไร · เงินก้อนใหญ่จะออกปีไหน</div>
+    <div class="a4c-tl">${rows}<div class="r"><div class="nm">เหตุการณ์</div><div class="tt pins">${pinH}</div></div><div class="r"><div class="nm"></div><div class="tt ticks">${ticks}</div></div></div></div>`;
+}
+
+/* ── 4 เกราะคุ้มครอง ── */
+function secProtect(D){
+  const prot=D.GR.filter(r=>/^🛡/.test(r.name||'')); if(!prot.length) return '';
+  const pols=(STATE.snap&&STATE.snap.policies)||[]; const prem=pols.reduce((s,p)=>s+(Number(p.premium)||0),0);
+  const rows=prot.map(r=>{ const p5=(r.p5need!=null); const need=p5?r.p5need:r.need, have=p5?r.p5have:r.have, gap=Math.max(0,need-have);
+    const nm=String(r.name).replace(/^🛡\s*/,'');
+    if(!(need>0)) return `<div class="a4c-sh"><div class="nm">${E(nm)}</div><div class="tr"></div><div class="vv" style="color:${MUTE}">ยังไม่ได้ตั้งวงเงินที่ควรมี</div></div>`;
+    const pc=Math.min(100,have/need*100), c=gap<=0?GREEN:col(pc);
+    return `<div class="a4c-sh"><div class="nm">${E(nm)}${p5?'<small>หลังหักทรัพย์สินที่มี</small>':''}</div><div class="tr"><i style="width:${pc.toFixed(1)}%;background:${c}"></i></div>
+      <div class="vv">ต้องการ <b>${N(need)}</b><br>มีแล้ว ${N(have)} · ${gap<=0?`<span style="color:${GREEN}">ครบแล้ว ✓</span>`:`<span style="color:${RED}">ขาด ${N(gap)}</span>`}</div></div>`; }).join('');
+  return `<div class="a4c-blk">${H1('เกราะคุ้มครอง')}<div class="a4c-lead">ถ้าเกิดเหตุวันนี้ ต้องมีความคุ้มครองเท่าไร · มีแล้วเท่าไร · ยังขาดเท่าไร</div>${rows}
+    ${pols.length?`<div class="a4c-note">กรมธรรม์ที่มีอยู่ ${pols.length} เล่ม · เบี้ยรวม ${N(prem)} บาท/ปี</div>`:''}</div>`;
+}
+
+/* ── 5 ภาษี ── */
+function secTax(D){
+  const cs=STATE.carriers; let inc=0,tax=0,save=0; const ch=[];
+  cs.forEach(c=>{ const P=T(()=>HENG.taxPlan(c),null); if(!P) return; inc+=P.base.income||0; tax+=P.base.tax||0;
+    const best=Math.max(...['pension','rmf','ssf'].map(k=>(P.strat[k]&&P.strat[k].saved)||0)); save+=best+((P.strat.esg&&P.strat.esg.saved)||0);
+    const who=cs.length>1?' · '+String(c.name||'').split(' ')[0]:'';
+    [['pension','ประกันบำนาญ','คุ้มครองชีวิต + รับบำนาญ'],['rmf','RMF','ถือถึงอายุ 55 และอย่างน้อย 5 ปี'],['ssf','SSF','ถือ 10 ปี'],['esg','Thai ESG','ถือ 5 ปี · เพดานแยกจากกลุ่มเกษียณ']].forEach(([k,n,d])=>{
+      const s=P.strat[k]; if(s&&s.saved>0) ch.push(`<tr><td><b>${n}</b>${who} <span class="s">· ${d}</span></td><td class="n">${N(s.add)}</td><td class="n">${N(s.saved)}</td></tr>`); }); });
+  if(!(inc>0)) return '';
+  return `<div class="a4c-blk">${H1('ภาษีปีนี้',cs.length>1?'รวมทั้งครัวเรือน':'')}<div class="a4c-kpis">
+    <div class="a4c-kpi"><span>เงินได้ทั้งปี</span><b>${N(inc)}</b><em>บาท</em></div>
+    <div class="a4c-kpi"><span>ภาษีที่ต้องจ่าย</span><b>${N(tax)}</b><em>บาท</em></div>
+    <div class="a4c-kpi ${save>0?'good':''}"><span>ประหยัดได้อีกสูงสุด</span><b>${N(save)}</b><em>บาท/ปี</em></div></div>
+    ${ch.length?`<table class="a4c-tbl"><thead><tr><th>ช่องทางลดหย่อนที่ยังใช้ได้</th><th class="n">ลงเพิ่มได้</th><th class="n">ประหยัดภาษี</th></tr></thead><tbody>${ch.join('')}</tbody></table>
+    <div class="a4c-note">ประกันบำนาญ · RMF · SSF ใช้เพดานกลุ่มเกษียณร่วมกัน (รวมไม่เกิน 500,000) — ไม่จำเป็นต้องลงเต็มทุกช่อง</div>`:''}</div>`;
+}
+
+/* ── 6 เกษียณ + กราฟพอร์ต ── */
+function portChart(pf){
+  const rows=pf.rows||[]; if(!rows.length) return '';
+  const W=700,H=250,L=58,B=34,Tp=10, mx0=Math.max(...rows.map(r=>r.balance||0),1);
+  const st=Math.pow(10,Math.floor(Math.log10(mx0))), stepM=[1,2,2.5,5,10].map(k=>k*st).find(s=>mx0/s<=5)||st*10, mx=Math.ceil(mx0/stepM)*stepM;
+  const bw=(W-L-8)/rows.length, y=v=>H-B-(v/mx)*(H-B-Tp);
+  let g='';
+  for(let v=0;v<=mx+1;v+=stepM){ g+=`<line x1="${L}" x2="${W-4}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}" stroke="#E4DDCF"/><text x="${L-7}" y="${(y(v)+4.5).toFixed(1)}" text-anchor="end" font-size="13" fill="${MUTE}">${(v/1e6).toLocaleString('en-US',{maximumFractionDigits:1})} ล.</text>`; }
+  rows.forEach((r,i)=>{ const x=L+i*bw, v=r.balance||0;
+    if(v<=0.5) g+=`<rect x="${(x+0.5).toFixed(1)}" y="${Tp}" width="${(bw-1).toFixed(1)}" height="${H-B-Tp}" fill="#F7E3DE"/>`;
+    else g+=`<rect x="${(x+1).toFixed(1)}" y="${y(v).toFixed(1)}" width="${Math.max(1,bw-2).toFixed(1)}" height="${(H-B-y(v)).toFixed(1)}" fill="${r.retired?GOLD:NAVY}" rx="1.5"/>`;
+    if(r.age%5===0) g+=`<text x="${(x+bw/2).toFixed(1)}" y="${H-B+19}" text-anchor="middle" font-size="13" fill="${MUTE}">${r.age}</text>`; });
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block">${g}</svg>`;
+}
+function secRetire(D){
+  const {pf,GR}=D; const R=GR.find(r=>/^🏖️ เกษียณ/.test(r.name||''));
+  let k='';
+  if(R && !R.noInfo){ const gap=Math.max(0,R.gap||0);
+    k=`<div class="a4c-kpis"><div class="a4c-kpi"><span>ต้องมี ณ วันเกษียณ${R.retAge?' (อายุ '+R.retAge+')':''}</span><b>${N(R.need)}</b><em>บาท</em></div>
+      <div class="a4c-kpi"><span>คาดว่าจะมี</span><b>${N(R.have)}</b><em>บาท</em></div>
+      <div class="a4c-kpi ${gap>0?'bad':'good'}"><span>${gap>0?'ยังขาด':'ส่วนเกิน'}</span><b>${N(gap>0?gap:(R.have-R.need))}</b><em>บาท</em></div></div>`;
+    if(gap>0 && R.pmt>0) k+=`<div class="a4c-act"><b>ต้องออมเพิ่มเดือนละ ${N(R.pmt)} บาท</b> &nbsp;<span>เพื่อให้ถึงเป้าเงินเกษียณ</span></div>`;
+    else if(gap<=0) k+=`<div class="a4c-act ok"><b>เงินเกษียณพอตามเป้า</b> &nbsp;<span>${E(R.act||'')}</span></div>`;
+    else k+=`<div class="a4c-act"><b>${E(R.act||'')}</b></div>`;
+  } else if(R) k=`<div class="a4c-note">${E(R.act||'ยังสรุปเรื่องเกษียณไม่ได้')}</div>`;
+  const dep=pf.depleteAge;
+  return `<div class="a4c-blk">${H1('เกษียณและพอร์ตตลอดชีวิต')}${k}
+    <div class="a4c-h2">มูลค่าพอร์ตตลอดชีวิต <span class="cap">เกษียณอายุ ${pf.retAge}${dep?` · <span style="color:${RED}">เงินหมดอายุ ${dep}</span>`:' · เงินพอตลอดแผน'}</span></div>
+    ${portChart(pf)}<div class="a4c-note"><i style="background:${NAVY}"></i>ก่อนเกษียณ <i style="background:${GOLD}"></i>หลังเกษียณ${dep?' <i style="background:#F7E3DE"></i>ปีที่เงินหมด':''} · มูลค่าพอร์ตปลายปี (ล้านบาท) · แกนคืออายุของผู้วางแผนคนแรก</div></div>`;
+}
+
+/* ── 7 เป้าหมาย ── */
+function secGoals(D){
+  const {pf,GR}=D; const dep=pf.depleteAge;
+  const rows=GR.filter(r=>!/^🛡/.test(r.name||'') && !/^🏖️ เกษียณ/.test(r.name||''));
+  /* รวมกลุ่มแบบหน้าเว็บ: ค่าเทอมรายคน = แถวเดียว · ทริปหลายครั้ง = แถวเดียว */
+  const G={}; const order=[];
+  rows.forEach(r=>{ const g=(STATE.goals||[]).find(x=>String(x.id)===String(r.gid))||{};
+    const kid=g.eduKid?((STATE.dependents||[]).find(d=>d.id===g.eduKid)||{}).name:'';
+    const base=String(r.name||'').replace(/\s*·\s*ครั้งที่\s*\d+/,'').replace(/\s*\(ปีที่.*$/,'');
+    const key=g.eduKid?('🎓 ค่าเทอม · '+kid):base;
+    if(!G[key]){ G[key]={nm:key,a1:g.age,a2:g.age,need:0,pmt:0,n:0,bad:0}; order.push(key); }
+    const o=G[key]; o.a1=Math.min(o.a1,g.age); o.a2=Math.max(o.a2,(g.age||0)+Math.max(0,(Number(g.eduYears)||1)-1)); o.need+=r.need||0; o.pmt+=r.pmt||0; o.n++;
+    if(dep!=null && (g.age||0)>=dep) o.bad++; });
+  const R=GR.find(r=>/^🏖️ เกษียณ/.test(r.name||''));
+  let t='';
+  if(R && !R.noInfo) t+=`<tr><td><b>🏖️ เกษียณ</b></td><td class="n">${R.retAge||pf.retAge}</td><td class="n">${N(R.need)}</td><td class="n">${R.pmt>0?N(R.pmt):'—'}</td><td style="color:${dep==null?GREEN:RED}">${dep==null?'เงินพอตลอดแผน ✓':'เงินหมดอายุ '+dep}</td></tr>`;
+  order.forEach(k=>{ const o=G[k]; t+=`<tr><td><b>${E(o.nm)}</b>${o.n>1?` <span class="s">· ${o.n} ก้อน</span>`:''}</td><td class="n">${o.a1===o.a2?o.a1:o.a1+'–'+o.a2}</td><td class="n">${N(o.need)}</td><td class="n">${o.pmt>0?N(o.pmt):'—'}</td>
+    <td style="color:${o.bad?RED:GREEN}">${o.bad?'เงินไม่พอ '+o.bad+' ก้อน':'แผนมีเงินจ่าย ✓'}</td></tr>`; });
+  if(!t) return '';
+  return `<div class="a4c-blk">${H1('เป้าหมายทั้งหมด')}<table class="a4c-tbl"><thead><tr><th>เป้าหมาย</th><th class="n">อายุ</th><th class="n">ต้องมี (ค่าเงินปีนั้น)</th><th class="n">ออม/เดือน</th><th>สถานะ</th></tr></thead><tbody>${t}</tbody></table>
+    <div class="a4c-note">"แผนมีเงินจ่าย" = ปีที่ถึงกำหนด แผนยังมีเงินจ่ายเป้าหมายนั้น</div></div>`;
+}
+
+/* ── 8 กระแสเงินสดล่วงหน้า ── */
+function secCF(D){
+  const {pf,a0,be0}=D; const rows=pf.rows||[]; if(!rows.length) return '';
+  const last=rows[rows.length-1].age, dep=pf.depleteAge, retA=pf.retAge;
+  const pick=new Set([a0,last,retA]); if(dep) pick.add(dep);
+  rows.forEach(r=>{ if(r.age%5===0) pick.add(r.age); });
+  const ev={}; const add=(a,t)=>{ (ev[a]=ev[a]||[]).push(t); };
+  add(a0,'ปีแรกของแผน'); add(retA,'เกษียณ'); if(dep) add(dep,'เงินหมด'); if(last!==dep) add(last,'สิ้นสุดแผน');
+  (pf.lumps||[]).forEach(l=>{ if(!pick.has(l.age)) return; const nm=String(l.name||'').split(' (ปีที่')[0].replace(/\s*·\s*ครั้งที่\s*\d+/,''); if(!(ev[l.age]||[]).includes(nm)) add(l.age,nm); });
+  let t='';
+  rows.filter(r=>pick.has(r.age)).forEach(r=>{ const net=(r.income||0)-(r.expense||0)-(r.lump||0); const hl=(r.age===retA||r.age===dep)?' class="hl"':'';
+    t+=`<tr${hl}><td>${r.age}</td><td class="s">${be0+(r.age-a0)}</td><td class="n">${r.income>0?N(r.income):'—'}</td><td class="n">${N(r.expense)}</td><td class="n">${r.lump>0?'−'+N(r.lump):'—'}</td>
+      <td class="n" style="color:${net>=0?GREEN:RED}">${net>=0?'+':'−'}${N(net)}</td><td class="n"><b>${(r.balance||0)>0.5?N(r.balance):'หมด'}</b></td><td class="s">${E((ev[r.age]||[]).slice(0,2).join(' · '))}</td></tr>`; });
+  return `<div class="a4c-blk">${H1('กระแสเงินสดล่วงหน้า','ไว้เทียบกับของจริงตอนทบทวนทุกปี')}
+    <table class="a4c-tbl cft a4c-split"><thead><tr><th>อายุ</th><th>พ.ศ.</th><th class="n">รายรับ/ปี</th><th class="n">รายจ่าย/ปี</th><th class="n">เป้าหมาย</th><th class="n">เหลือ/ขาด</th><th class="n">พอร์ตปลายปี</th><th>เหตุการณ์</th></tr></thead><tbody>${t}</tbody></table>
+    <div class="a4c-note">แสดงทุก 5 ปีและปีสำคัญ · ตารางครบทุกปีอยู่ในฉบับเต็ม · ปีที่ขาด = ดึงเงินจากพอร์ต</div>${assumeBox(D)}</div>`;
+}
+function assumeBox(D){
+  const p=[]; const a=(k)=>T(()=>AS(k),null);
+  p.push('เงินเฟ้อ '+T(()=>genInfPct(),3)+'%/ปี');
+  if(a('preRet')!=null) p.push('ผลตอบแทนเงินออมใหม่ '+a('preRet')+'% ก่อนเกษียณ / '+a('postRet')+'% หลังเกษียณ');
+  const rx=T(()=>retHouseholdExpenseM(),0); if(rx>0) p.push('ค่าใช้จ่ายหลังเกษียณ '+N(rx)+' บาท/เดือน (ค่าเงินวันนี้)');
+  const pen=[]; STATE.carriers.forEach(c=>(c.incomes||[]).filter(i=>i.pen&&i.monthly>0).forEach(i=>pen.push(N(i.monthly)+' บาท/เดือน ตั้งแต่อายุ '+(i.startAge||'-'))));
+  p.push(pen.length?'รายได้หลังเกษียณที่นับในแผน '+pen.join(', '):'ยังไม่ได้นับบำนาญ/รายได้หลังเกษียณในแผน');
+  p.push('วางแผนถึงอายุ '+(D.pf.targetAge||'-'));
+  return `<div class="a4c-assume"><b>สมมติฐานของแผน</b> (ที่ปรึกษาตั้ง ไม่ใช่ตัวเลขรับประกัน) · ${p.map(E).join(' · ')}</div>`;
+}
+
+/* ── 9 สิ่งที่ต้องทำต่อ ── */
+function secTodo(D){
+  const L=T(()=>actList(),[]).filter(a=>a&&a.t);
+  const rows=L.slice(0,9).map((a,i)=>`<tr><td class="cb">☐</td><td class="no">${i+1}</td><td><b>${E(a.t)}</b>${a.how?`<div class="s">${E(a.how)}</div>`:''}</td><td class="dl">${E(a.when||'')}</td></tr>`).join('');
+  const adv=T(()=>advisorGet(),null);
+  return `<div class="a4c-blk" data-new="1">${H1('สิ่งที่ต้องทำต่อ')}<div class="a4c-lead">เรียงตามลำดับที่ควรทำ · ติ๊กเมื่อทำแล้ว</div>
+    <table class="a4c-tbl a4c-todo a4c-split"><tbody>${rows}</tbody></table>
+    <div class="a4c-sign"><div><div class="ln"></div>นักวางแผนการเงิน${adv&&adv.name?' · '+E(adv.name):''} · วันที่</div><div><div class="ln"></div>ลูกค้า · วันที่</div></div>
+    <div class="a4c-disc">รายงานนี้เป็นการประมาณการเพื่อการวางแผน คำนวณจากข้อมูลที่ได้รับและสมมติฐานที่ระบุไว้ ไม่ใช่การรับประกันผลตอบแทน ตัวเลขจะเปลี่ยนเมื่อข้อมูลจริงหรือสมมติฐานเปลี่ยน · ฉบับเต็มพร้อมตารางรายละเอียดขอได้จากที่ปรึกษา</div></div>`;
+}
+
+/* ── ประกอบ + ตัดหน้า ── */
+function a4cBuild(){
+  const host=document.getElementById('a4Summary'); if(!host) return;
+  /* ปก: ใช้ปกเดิมของรายงาน (ชื่อลูกค้า · ผู้จัดทำ · วันที่) */
+  let cover='';
+  try{ renderA4Summary(); const cv=host.querySelector('.a4-cover'); if(cv){ const sh=cv.closest('.a4-sheet');
+      if(!cv.querySelector('.cv-foot')) cv.insertAdjacentHTML('beforeend','<div class="cv-foot">Signature 41 · Customized for One</div>'); cover=sh.outerHTML; } }catch(e){ console.warn('a4c cover',e); }
+  cnt.n=0; const D=a4cData();
+  const blocks=[secSummary,secToday,secTimeline,secProtect,secTax,secRetire,secGoals,secCF,secTodo].map(fn=>T(()=>fn(D),'')).join('');
+  host.innerHTML=cover+`<div id="a4cFlow">${blocks}</div>`;
+  host.classList.remove('a4-full'); host.dataset.a4c='1';
+}
+function a4cSheet(){ const c=STATE.carriers[0]||{};
+  const sh=document.createElement('div'); sh.className='a4-sheet a4c-sheet';
+  sh.innerHTML=`<div class="a4c-run"><span>แผนการเงิน · คุณ${E(String(c.name||'ลูกค้า'))}</span><b>SIGNATURE 41</b></div><div class="a4c-body"></div><div class="a4c-foot"><span>${E(T(()=>new Date().toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric',timeZone:'Asia/Bangkok'}),''))}</span><span class="pg"></span></div>`;
+  return sh; }
+function a4cPaginate(){
+  const host=document.getElementById('a4Summary'), flow=document.getElementById('a4cFlow'); if(!host||!flow) return;
+  const MM=96/25.4, AV=(297-13-14)*MM-6;      /* พื้นที่เนื้อหาต่อแผ่น */
+  const blks=[...flow.children]; flow.remove();
+  let sh=a4cSheet(); host.appendChild(sh); let body=sh.querySelector('.a4c-body');
+  const fits=()=>body.scrollHeight<=AV;
+  const newSheet=()=>{ sh=a4cSheet(); host.appendChild(sh); body=sh.querySelector('.a4c-body'); };
+  blks.forEach(b=>{
+    if(b.dataset.new==='1' && body.children.length) newSheet();
+    body.appendChild(b); if(fits()) return;
+    /* ไม่พอดี: ย้ายทั้งบล็อกไปแผ่นใหม่ ถ้ายังล้น → ตัดตารางทีละแถวพร้อมหัวตารางซ้ำ */
+    if(body.children.length>1){ b.remove(); newSheet(); body.appendChild(b); if(fits()) return; }
+    let guard=0;
+    while(!fits() && ++guard<20){
+      const tbl=[...b.querySelectorAll('table')].reverse().find(t=>t.tBodies[0]&&t.tBodies[0].rows.length>2); if(!tbl) break;
+      const rows=[...tbl.tBodies[0].rows]; const moved=[];
+      while(!fits() && rows.length>2){ const r=rows.pop(); moved.unshift(r); r.remove(); }
+      if(!moved.length) break;
+      const tail=[]; let n=tbl.nextElementSibling; while(n){ tail.push(n); n=n.nextElementSibling; } tail.forEach(x=>x.remove());
+      const nb=document.createElement('div'); nb.className='a4c-blk';
+      const h=b.querySelector('.a4c-h1'); if(h){ const hc=h.cloneNode(true); hc.querySelector('.num')&&hc.querySelector('.num').remove(); hc.insertAdjacentHTML('beforeend','<span class="sub">(ต่อ)</span>'); hc.insertAdjacentHTML('afterbegin',`<span class="num">${(h.querySelector('.num')||{}).textContent||''}</span>`); nb.appendChild(hc); }
+      const t2=tbl.cloneNode(false); if(tbl.tHead) t2.appendChild(tbl.tHead.cloneNode(true)); const tb=document.createElement('tbody'); moved.forEach(r=>tb.appendChild(r)); t2.appendChild(tb); nb.appendChild(t2); tail.forEach(x=>nb.appendChild(x));
+      newSheet(); body.appendChild(nb); b=nb;
+    }
+  });
+  const all=[...host.querySelectorAll(':scope > .a4c-sheet')], tot=host.querySelectorAll(':scope > .a4-sheet').length;
+  all.forEach((s,i)=>{ const p=s.querySelector('.pg'); if(p) p.textContent='หน้า '+(i+2)+' / '+tot; });
+}
+/* ── เชื่อมกับปุ่มเดิม ── */
+const _open=openA4, _fit=a4FitSheets;
+window.openA4=openA4=function(){
+  if(A4_FULL){ const h=document.getElementById('a4Summary'); if(h) delete h.dataset.a4c; return _open(); }
+  { const _cant=T(()=>planCantConclude(),''); if(_cant){ alert('ยังออกรายงานไม่ได้ — '+_cant+'\n\nกรอกงบกระแสเงินสดและงบดุลที่หน้าภาพการเงิน ก่อนออกรายงาน'); return; } }
+  try{ a4Materialize(); }catch(e){ console.warn('a4Materialize failed', e); }
+  a4cBuild();
+  document.getElementById('a4Overlay').classList.add('on');
+  try{ a4cPaginate(); }catch(e){ console.warn('a4cPaginate failed', e); }
+};
+window.a4FitSheets=a4FitSheets=function(){ const h=document.getElementById('a4Summary'); if(h&&h.dataset.a4c==='1') return; return _fit.apply(this,arguments); };
+})();
+</script>
+
 </body>
 
