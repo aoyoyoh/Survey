@@ -2986,7 +2986,7 @@ body.adv.has-visit #main .jbar{padding-right:350px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— รากฐาน —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.10.22</b><br>Designed by CFP® Professional<span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.10.25</b><br>Designed by CFP® Professional<span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
 </aside>
 
 <main id="main">
@@ -8623,8 +8623,10 @@ function renderSnapshotList(){
   }).join('');
 }
 
+const SHOW_FULL_NAME=true;
 /* v3.10.20 · PDPA: ชื่อลูกค้าแสดง/เก็บแค่ตัวอักษรแรกของชื่อและนามสกุล ที่เหลือเป็น x ตามจำนวนตัวอักษร (สระบน-ล่าง/วรรณยุกต์ไม่นับ) — สูตรเดียวกับ Tax Scan / Keyman Scan */
 function maskName(s){ s=String(s||'').replace(/[\\/:*?"<>|]/g,'').replace(/\s+/g,' ').trim(); if(!s) return '';
+  if(SHOW_FULL_NAME) return s;   /* v3.10.23 (อ้อย 18 ต.ค.): แสดง/เก็บชื่อเต็ม */
   let pre=''; for(const t of ['นางสาว','น.ส.','นาง','นาย','คุณ','ดร.','Mrs.','Mr.','Ms.','Miss','Dr.']){ if(s.startsWith(t)&&s.length>t.length){ pre=t; s=s.slice(t.length).trim(); break; } }
   const comb=/[ัิ-ฺ็-๎]/;
   const w=s.split(' ').filter(Boolean).map(word=>{ const ch=[...word]; if(/^x*$/.test(ch.slice(1).join(''))) return word; return ch[0]+'x'.repeat(ch.slice(1).filter(c=>!comb.test(c)).length); });
@@ -8649,7 +8651,7 @@ function exportJSON(){
      นำกลับเข้าเครื่องอื่นแล้วระบบจับคู่กับลูกค้าเดิมด้วยชื่ออย่างเดียว (เปลี่ยนชื่อ = กลายเป็นลูกค้าซ้ำ) */
   let s41=null;
   try{ if(typeof libSaveActive==='function') libSaveActive();
-       const lib=libRead(); const rec=lib.clients.find(c=>c.id===lib.activeId); if(rec) s41={clientId:rec.id, name:rec.name}; }catch(e){}
+       const lib=libRead(); const rec=lib.clients.find(c=>c.id===lib.activeId); if(rec) s41=Object.assign({clientId:rec.id, name:rec.name}, libMetaPick(rec)); }catch(e){}
   maskStateNames(STATE); try{ saveState(); }catch(e){}
   const data = {
     stage: 'step3',   /* v3.9.14: ป้ายบอกว่าไฟล์นี้มาจาก Step 3 (ไฟล์หมอการเงินเป็น stage:'step2') */
@@ -17846,7 +17848,7 @@ function libRead(){
     const cl=Array.isArray(o.clients)?o.clients:[];
     cl.forEach(r=>{ if(r && typeof r.name==='string'){ const tg=r.tag||''; const base=(tg && r.name.endsWith(tg))?r.name.slice(0,r.name.length-tg.length):r.name;
       r.name=base.split(' & ').map(pt=>{ const k=pt.indexOf(' · '); return k>0?pt.slice(0,k)+' · '+maskName(pt.slice(k+3)):maskName(pt); }).join(' & ')+(tg && r.name.endsWith(tg)?tg:''); } });   /* v3.10.20 PDPA · v3.10.22 คงชื่อเล่น */
-    return { clients: cl, activeId: o.activeId||null, folderName: o.folderName||'' };
+    return { clients: cl, activeId: o.activeId||null, folderName: o.folderName||'', nextAcct: o.nextAcct||0 };
   }catch(e){ return {clients:[], activeId:null, folderName:''}; }
 }
 function libWrite(lib){ try{ localStorage.setItem(LIB_KEY, JSON.stringify(lib)); return true; }catch(e){ console.warn('lib write failed',e); window.S41_STORE_ERR=String((e&&e.message)||e||'lib write failed'); return false; } }
@@ -17863,7 +17865,7 @@ const safeFileKeepSpace = s => String(s||'client').replace(/[\\/:*?"<>|]/g,'').r
 function clientPayload(id, name){
   return { stage:'step3', version:'v3', exportedAt: nowISO(),
            rules:{ ver:(typeof rulesVer==='function'?rulesVer():''), date:(typeof rulesDate==='function'?rulesDate():''), src:(typeof RULES_SRC!=='undefined'?RULES_SRC:'') },
-           s41:{ clientId:id, name },
+           s41:Object.assign({ clientId:id, name }, libMetaOf(id)),
            state: STATE, snapshots: (typeof getSnapshots==='function'? getSnapshots():{}) };
 }
 function clientStore(id, payload){ try{ localStorage.setItem(CLI_KEY(id), JSON.stringify(payload)); return true; }catch(e){ console.warn('client store failed',e); window.S41_STORE_ERR=String((e&&e.message)||e||'client store failed'); return false; } }
@@ -17943,13 +17945,15 @@ function libSaveActive(){
     const id=newId();
     lib.clients.push({ id, name:planName(STATE), createdAt:nowISO(), updatedAt:nowISO(),
                        nextReview:'', archived:false, carriers:(STATE.carriers||[]).length });
-    lib.activeId=id; libWrite(lib); lib=libRead();
+    lib.activeId=id; libEnsureMeta(lib); libWrite(lib); lib=libRead(); libSyncAcctSoon();
   }
   const rec=lib.clients.find(c=>c.id===lib.activeId); if(!rec) return;
   rec.name = planName(STATE) + (rec.tag||'');   /* v3.9.90: คงป้าย (สำเนา)/(นำเข้าใหม่) ไว้ — เดิมแก้ข้อมูลครั้งแรกแล้วป้ายหาย แยกไม่ออกจากต้นฉบับ */
   rec.updatedAt = nowISO();
   rec.carriers = (STATE.carriers||[]).length;
   rec.sum = libSumOf(STATE);   /* v3.10.21 */
+  rec.fullName = libFullName(STATE);   /* v3.10.23 */
+  libEnsureMeta(lib);
   const _ok1=clientStore(rec.id, clientPayload(rec.id, rec.name));
   const _ok2=libWrite(lib);
   if(_ok1 && _ok2) window.S41_STORE_ERR='';
@@ -18120,6 +18124,50 @@ function libSumOf(st){ try{ if(!st||!Array.isArray(st.carriers)) return '';
   const out=[]; if(ages.length) out.push('อายุ '+ages.join(' & ')); if(kids) out.push('ลูก '+kids); if(par) out.push('พ่อแม่ '+par);
   if(inc>0) out.push('รายได้ '+Math.round(inc).toLocaleString('en-US')+'/ด');
   return out.join(' · '); }catch(e){ return ''; } }
+/* v3.10.23: บัญชีลูกค้า — acct เลข 4 หลักเรียงตามลำดับที่สร้าง ไม่ซ้ำในห้องสมุดนี้ และไม่นำเลขที่ลบแล้วกลับมาใช้ (lib.nextAcct)
+   openedAt = วันที่เปิดบัญชีครั้งแรก (รหัสลูกค้าจาก Step 2 มีวันที่ c_YYYYMMDD_ → ใช้วันนั้น) · advisor = ชื่อที่ปรึกษาจาก Step 2 หรือผู้จัดทำแผนในเครื่องนี้ */
+function libOpenedAt(r){ const m=/^c_(\d{4})(\d{2})(\d{2})_/.exec(String(r&&r.id||'')); return m?(m[1]+'-'+m[2]+'-'+m[3]):String(r&&r.createdAt||nowISO()).slice(0,10); }
+function libFullName(st){ const c=(st&&st.carriers)||[]; return c.map(x=>String(x&&x.name||'').trim()).filter(Boolean).join(' & '); }
+function libEnsureMeta(lib){ let dirty=false;
+  let next=Math.max(Number(lib.nextAcct)||1, ...lib.clients.map(c=>(Number(c.acct)||0)+1));
+  lib.clients.slice().sort((a,b)=>String(libOpenedAt(a)+a.createdAt).localeCompare(String(libOpenedAt(b)+b.createdAt))).forEach(c=>{
+    if(!c.openedAt){ c.openedAt=libOpenedAt(c); dirty=true; }
+    if(!c.advisor || c.fullName==null){ const pl=clientRead(c.id), v=(pl&&pl.state&&pl.state._visit)||(pl&&pl._visit)||{};
+      if(!c.advisor){ const a0=c.advisor; c.advisor=String(v.advisor||(typeof advisorLine==='function'?advisorLine():'')||'').trim(); if(c.advisor!==a0) dirty=true; }
+      if(c.fullName==null){ c.fullName=libFullName(pl&&pl.state); dirty=true; } }
+  });
+  if(lib.nextAcct!==next){ lib.nextAcct=next; dirty=true; }
+  return dirty; }
+/* v3.10.24: เลขที่ · วันที่สร้าง · ที่ปรึกษา ติดไปกับไฟล์ .json — เปิดที่เครื่องไหนก็ได้เลขเดิม (ถ้าเลขนั้นว่างในเครื่องนั้น) */
+function libMetaPick(r){ const o={}; if(r){ if(Number(r.acct)>0 && r.acctSrv) o.acct=Number(r.acct); if(r.openedAt) o.openedAt=r.openedAt; if(r.advisor) o.advisor=r.advisor; } return o; }
+function libMetaOf(id){ try{ return libMetaPick(libRead().clients.find(c=>c.id===id)); }catch(e){ return {}; } }
+let LAST_IMPORT_ACCT_NOTE='';
+function libAcct(c){ const n=Number(c&&c.acct)||0; return n?String(n).padStart(4,'0'):'รอเลข'; }
+/* v3.10.25: เลขที่กลางของทั้งทีม — ขอจาก Supabase (rpc s41_get_acct) ด้วยรหัสลูกค้าแบบสุ่ม + วันที่เปิดแฟ้ม เท่านั้น ไม่ส่งชื่อหรือข้อมูลการเงิน
+   รหัสลูกค้าเดียวกัน = เลขเดียวกันเสมอ ทุกเครื่อง · ไม่มีเน็ต = "รอเลข" แล้วรับเลขให้เองเมื่อต่อเน็ต */
+const S41_ACCT_RPC='https://lpqcglmpkuasgjgzqdyp.supabase.co/rest/v1/rpc/s41_get_acct';
+let _acctBusy=false, _acctTimer=null;
+function libSyncAcctSoon(){ clearTimeout(_acctTimer); _acctTimer=setTimeout(()=>{ libSyncAcct(); },300); }
+async function libSyncAcct(){
+  if(_acctBusy) return; _acctBusy=true; let changed=false;
+  try{
+    const todo=libRead().clients.filter(c=>c && !c.acctSrv && /^[A-Za-z0-9_-]{4,60}$/.test(String(c.id||'')));
+    for(const c of todo){
+      let n=0;
+      try{ const r=await fetch(S41_ACCT_RPC,{method:'POST',headers:{'apikey':S41_PUBLISHABLE_KEY,'Content-Type':'application/json'},
+             body:JSON.stringify({p_client_id:c.id,p_opened:(c.openedAt||libOpenedAt(c)).slice(0,10)})});
+           if(!r.ok) break; n=Number(await r.json())||0; }catch(e){ break; }
+      if(!(n>0)) continue;
+      const lib=libRead(); const rec=lib.clients.find(x=>x.id===c.id); if(!rec) continue;
+      rec.acct=n; rec.acctSrv=true; libWrite(lib); changed=true;
+      try{ const pl=clientRead(rec.id); if(pl){ pl.s41=Object.assign({},pl.s41||{},{clientId:rec.id},libMetaPick(rec)); clientStore(rec.id,pl); } }catch(e){}
+      if(rec.id===lib.activeId){ try{ scheduleFolderWrite(); }catch(e){} }
+    }
+  }finally{ _acctBusy=false; }
+  if(changed){ try{ const m=document.getElementById('mLibrary'); if(m && m.classList.contains('on')) renderLibrary(); }catch(e){} }
+}
+try{ window.addEventListener('online',()=>libSyncAcctSoon()); window.addEventListener('load',()=>setTimeout(libSyncAcctSoon,1500)); }catch(e){}
+function libYearBE(c){ const y=parseInt(String(c&&c.openedAt||'').slice(0,4)); return y?y+543:''; }
 function libCode(id){ return String(id||'').replace(/[^a-z0-9]/gi,'').slice(-4).toUpperCase(); }
 function libSetMemo(id,val){ const lib=libRead(); const r=lib.clients.find(c=>c.id===id); if(!r) return; r.memo=String(val||'').slice(0,60); libWrite(lib); }
 function libSetReview(id,val){
@@ -18166,11 +18214,19 @@ function libImportPayload(data, fallbackName){
     const same = lib.clients.filter(c=>!c.archived && c.name===name);
     if(same.length && confirm('มีลูกค้าชื่อ "'+name+'" อยู่แล้วในห้องสมุด\n\nกด OK = อัปเดตข้อมูลคนเดิมด้วยไฟล์นี้\nกด Cancel = เพิ่มเป็นลูกค้าคนใหม่แยกกัน')){ rec = same[0]; replaced=true; keepOld=clientRead(rec.id)||{}; }
   }
-  if(!rec){ rec={ id: incomingId||newId(), name:name+tag, createdAt:nowISO(), updatedAt:nowISO(), nextReview:'', archived:false, carriers:(data.state.carriers||[]).length };
+  let _newRec=false; LAST_IMPORT_ACCT_NOTE='';
+  if(!rec){ _newRec=true; rec={ id: incomingId||newId(), name:name+tag, createdAt:nowISO(), updatedAt:nowISO(), nextReview:'', archived:false, carriers:(data.state.carriers||[]).length };
     if(tag) rec.tag=tag;
     lib.clients.push(rec); }
   else { rec.name=name+(rec.tag||''); rec.updatedAt=nowISO(); }
-  lib.activeId=rec.id; libWrite(lib);
+  rec.fullName=libFullName(data.state);
+  { const inc=(data.s41&&typeof data.s41==='object')?data.s41:{};
+    if(!rec.openedAt && inc.openedAt) rec.openedAt=String(inc.openedAt).slice(0,10);
+    if(!rec.advisor && inc.advisor) rec.advisor=String(inc.advisor).trim();
+    const ia=Number(inc.acct)||0; if(ia>0 && !(Number(rec.acct)>0)) rec.acct=ia; }
+  if(!rec.advisor){ const v=data.state._visit||data._visit||{}; if(v.advisor) rec.advisor=String(v.advisor).trim(); }
+  libEnsureMeta(lib);
+  lib.activeId=rec.id; libWrite(lib); libSyncAcctSoon();
   /* ภาษีที่ลูกค้าบอกใน Step 2 — เก็บไว้ก่อนที่โหมดภาษีอัตโนมัติจะคำนวณทับช่อง "ภาษี" ในงบ (ไฟล์ Step 2 รุ่นใหม่ส่ง statedTaxYear มาเอง) */
   try{ if(data.stage==='step2'||data.stage==='client'){
     const tx=Number(data.state.snap&&data.state.snap.detail&&data.state.snap.detail.cashflow&&data.state.snap.detail.cashflow.var&&data.state.snap.detail.cashflow.var.tax)||0;
@@ -18182,7 +18238,7 @@ function libImportPayload(data, fallbackName){
     const oldNav=(keepOld.state&&keepOld.state.navLog)||[];
     if(data.stage!=='step3' && oldNav.length && !((data.state.navLog||[]).length)) data.state.navLog=oldNav;
   }
-  LAST_IMPORT_STORED = !!clientStore(rec.id, {...data, snapshots:snaps, s41:{clientId:rec.id,name:rec.name}}) && !!libRead().clients.some(c=>c.id===rec.id);
+  LAST_IMPORT_STORED = !!clientStore(rec.id, {...data, snapshots:snaps, s41:Object.assign({clientId:rec.id,name:rec.name}, libMetaPick(rec))}) && !!libRead().clients.some(c=>c.id===rec.id);
   resetClientUi();
   STATE=migrate(data.state); STATE.uiMode='advance';   /* v3.9.69 */
   if(typeof setSnapshots==='function') setSnapshots(snaps);
@@ -18200,7 +18256,7 @@ function libImportFile(){
         closeModal('mLibrary'); try{ goPage('p1'); }catch(e){}
         /* v3.9.95·M2: บอกว่าเข้าห้องสมุดแล้วเฉพาะเมื่อเก็บได้จริง */
         if(!LAST_IMPORT_STORED){ try{ paintSaveInd(); }catch(e){} alert('เปิดไฟล์ "'+rec.name+'" ขึ้นหน้าจอแล้ว แต่เบราว์เซอร์เก็บลงห้องสมุดไม่ได้ (พื้นที่เต็ม หรือถูกปิดการเก็บข้อมูล)\n\nข้อมูลยังอยู่ในไฟล์ต้นฉบับ · งานที่ทำต่อจากนี้ให้กด “บันทึกเป็นไฟล์” เก็บเอง'); }
-        else alert('เปิดไฟล์ "'+rec.name+'" เรียบร้อย — '+(LAST_IMPORT_REPLACED?'แทนที่ข้อมูลเดิมของลูกค้าคนนี้ในห้องสมุดแล้ว':'เพิ่มเข้าห้องสมุดลูกค้าแล้ว'));
+        else alert((LAST_IMPORT_ACCT_NOTE?LAST_IMPORT_ACCT_NOTE+'\n\n':'')+'เปิดไฟล์ "'+rec.name+'" เรียบร้อย — '+(LAST_IMPORT_REPLACED?'แทนที่ข้อมูลเดิมของลูกค้าคนนี้ในห้องสมุดแล้ว':'เพิ่มเข้าห้องสมุดลูกค้าแล้ว'));
       }catch(err){ if(err&&err.cancelled){ alert(err.message); } else alert('เปิดไฟล์ไม่สำเร็จ: '+err.message); } };
     r.readAsText(f); };
   inp.click();
@@ -18212,11 +18268,11 @@ function openLibrary(){ openModal('mLibrary'); renderLibrary(); }
 function renderLibrary(){
   const host=document.getElementById('libBody'); if(!host) return;
   const lib=libRead();
-  { let dirty=false; lib.clients.forEach(c=>{ if(c && c.sum==null){ const pl=clientRead(c.id); c.sum=libSumOf(pl&&pl.state); dirty=true; } }); if(dirty) libWrite(lib); }
+  { let dirty=false; lib.clients.forEach(c=>{ if(c && c.sum==null){ const pl=clientRead(c.id); c.sum=libSumOf(pl&&pl.state); dirty=true; } }); if(libEnsureMeta(lib)) dirty=true; if(dirty) libWrite(lib); libSyncAcctSoon(); }
   const q=LIB_Q.trim().toLowerCase();
   const list=lib.clients
     .filter(c=>LIB_SHOW_ARCH? c.archived : !c.archived)
-    .filter(c=>!q || ((c.name||'')+' '+(c.memo||'')+' '+libCode(c.id)+' '+(c.sum||'')).toLowerCase().includes(q))
+    .filter(c=>!q || ((c.fullName||c.name||'')+' '+libAcct(c)+' '+(c.advisor||'')+' '+libYearBE(c)).toLowerCase().includes(q))
     .sort((a,b)=>String(b.updatedAt||'').localeCompare(String(a.updatedAt||'')));
   const fmtD=iso=>{ if(!iso) return '—'; const d=new Date(iso); return isNaN(d)?'—':d.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit'}); };
   const today=new Date().toISOString().slice(0,10);
@@ -18231,7 +18287,7 @@ function renderLibrary(){
 
   host.innerHTML = fs +
     '<div class="lib-tools">'+
-      '<input class="lib-search" placeholder="ค้นหา: ชื่อย่อ · ป้ายช่วยจำ · รหัส · อายุ…" value="'+LIB_Q.replace(/"/g,'&quot;')+'" oninput="LIB_Q=this.value;LIB_FOCUS=true;renderLibrary()">'+
+      '<input class="lib-search" placeholder="ค้นหา: ชื่อ · เลขที่ · ที่ปรึกษา · ปี" value="'+LIB_Q.replace(/"/g,'&quot;')+'" oninput="LIB_Q=this.value;LIB_FOCUS=true;renderLibrary()">'+
       '<button class="btn'+(LIB_SHOW_ARCH?' on':'')+'" onclick="LIB_SHOW_ARCH=!LIB_SHOW_ARCH;renderLibrary()">'+(LIB_SHOW_ARCH?'← กลับรายชื่อหลัก':'คลังเก็บ')+'</button>'+
       '<button class="btn btn-pri" onclick="libCreate()">＋ ลูกค้าใหม่</button>'+
     '</div>'+
@@ -18240,12 +18296,9 @@ function renderLibrary(){
       const due = c.nextReview && c.nextReview<=today;
       return '<div class="lib-row'+(active?' active':'')+'">'+
         '<div class="lib-main">'+
-          '<div class="lib-name">'+escA(c.name||'—')+(active?'<span class="lib-tag">กำลังเปิด</span>':'')+'</div>'+
-          (c.sum?'<div class="lib-meta" style="color:var(--ink-2)">'+escA(c.sum)+'</div>':'')+
-          '<input class="lib-memo" value="'+escA(c.memo||'')+'" placeholder="ป้ายช่วยจำ เช่น เจ้าของร้านทอง · ไม่ใส่ชื่อจริง" maxlength="60" onchange="libSetMemo(\''+c.id+'\',this.value)">'+
-          '<div class="lib-meta">รหัส '+libCode(c.id)+' · แก้ไขล่าสุด '+fmtD(c.updatedAt)+(c.file?' · มีไฟล์ในโฟลเดอร์':'')+'</div>'+
+          '<div class="lib-name">'+escA((c.fullName||c.name||'—')+(c.tag&&!(c.fullName||'').endsWith(c.tag)?c.tag:''))+(active?'<span class="lib-tag">กำลังเปิด</span>':'')+'</div>'+
+          '<div class="lib-meta">'+['เลขที่ <b>'+libAcct(c)+'</b>','ปี '+libYearBE(c),'สร้าง '+fmtD(c.openedAt),'ที่ปรึกษา '+escA(c.advisor||'—')].map(x=>'<span style="white-space:nowrap">'+x+'</span>').join(' · ')+'</div>'+
         '</div>'+
-        '<label class="lib-rev'+(due?' due':'')+'">ทบทวนถัดไป<input type="date" value="'+(c.nextReview||'')+'" onchange="libSetReview(\''+c.id+'\',this.value)"></label>'+
         '<div class="lib-acts">'+
           (active?'':'<button class="btn btn-pri" onclick="libOpen(\''+c.id+'\')">เปิด</button>')+
           '<button class="btn" onclick="libDuplicate(\''+c.id+'\')">สำเนา</button>'+
