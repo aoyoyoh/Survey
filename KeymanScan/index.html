@@ -102,6 +102,8 @@ table.plan tr.inc td.used{padding-top:9px}
 .cname label{font-size:14px;font-weight:700;color:var(--navy)}
 .cname input{font-family:inherit;font-size:15px;padding:6px 10px;border:1px solid var(--yellow-bd);background:var(--yellow);border-radius:8px;min-width:0;width:240px;max-width:100%}
 .cname span{font-size:12px;color:var(--muted)}
+.cname .cn-f{display:inline-flex;align-items:center;gap:8px;font-size:inherit;color:inherit;max-width:100%}
+@media(max-width:640px){.cname .cn-f{width:100%}.cname .cn-f input{flex:1;width:auto!important}.cname .cn-f label{min-width:64px}}
 .cname .cbtn{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
 .cname .case{background:var(--paper);border:1px solid var(--line);color:var(--navy);font-weight:600;font-family:var(--thai);border-radius:10px;padding:8px 12px;font-size:12.5px;white-space:nowrap}
 .cname .case:hover{border-color:var(--gold)}
@@ -193,7 +195,7 @@ table.iter td:first-child,table.iter th:first-child{text-align:left}
 
   <!-- ═══ หน้า 1 ═══ -->
   <div id="pg1">
-  <div class="cname"><label for="s-name">ชื่อลูกค้า</label><input id="s-name" type="text" placeholder="เช่น สุชีรา กุลบุศย์" autocomplete="off"><span>แสดงแค่ตัวอักษรแรก (PDPA) · ใช้ตั้งชื่อไฟล์ PDF และไฟล์เคส</span><div class="cbtn"><button class="case" onclick="saveCase()" title="ได้ไฟล์ .json เก็บไว้เปิดต่อในเครื่องไหนก็ได้">บันทึกเคสเป็นไฟล์</button><button class="case" onclick="$('caseFile').click()">เปิดไฟล์เคส</button><input type="file" id="caseFile" accept=".json,application/json" hidden></div></div>
+  <div class="cname"><span class="cn-f"><label for="s-name">ชื่อลูกค้า</label><input id="s-name" type="text" placeholder="เช่น สุชีรา กุลบุศย์" autocomplete="off"></span><span class="cn-f"><label for="s-nick">ชื่อเล่น</label><input id="s-nick" type="text" maxlength="20" placeholder="เช่น พี่บี" autocomplete="off" style="width:130px"></span><span>ชื่อจริงแสดงแค่ตัวอักษรแรก (PDPA) · ชื่อเล่นไว้จำลูกค้า ใช้ในรายงาน "คุณ…" และชื่อไฟล์</span><div class="cbtn"><button class="case" onclick="saveCase()" title="ได้ไฟล์ .json เก็บไว้เปิดต่อในเครื่องไหนก็ได้">บันทึกเคสเป็นไฟล์</button><button class="case" onclick="$('caseFile').click()">เปิดไฟล์เคส</button><input type="file" id="caseFile" accept=".json,application/json" hidden></div></div>
   <div class="sumhero" id="h1"></div>
   <div class="grid">
     <div>
@@ -350,7 +352,7 @@ const DEF={gpf:0,nsf:0,prenatal:0,art:0,se:0,party:0,elder:0,spouse:0,kidsA:0,ki
 let B=Object.assign({},DEF), PL={};   // B = ก่อน · PL = แผน (เฉพาะช่องที่ใส่)
 const INC0=()=>[{t:'40(1) เงินเดือน / โบนัส',b:0,p:null}];
 let INC=INC0();   // แถวเงินได้ ไม่จำกัดจำนวน: t ประเภท · b ก่อน · p แผน (null = เท่าเดิม)
-let C={rev:0,dir:0,cogs:0,sga:0,sme:0}, K={prem:0,gross:1,life:1,auto:1}, Q={debt:0,debtPay:0,famExp:0,famYears:10,edu:0,tpdExp:0,tpdYears:10,ci:3000000,ciYears:2,haveLife:0,haveTpd:0,haveCI:0,liquid:0,months:12,repl:0,guar:0,dirLoan:0,selfPay:0,ciCov:0,fixed:0}, S={div:1,est:0,name:''};
+let C={rev:0,dir:0,cogs:0,sga:0,sme:0}, K={prem:0,gross:1,life:1,auto:1}, Q={debt:0,debtPay:0,famExp:0,famYears:10,edu:0,tpdExp:0,tpdYears:10,ci:3000000,ciYears:2,haveLife:0,haveTpd:0,haveCI:0,liquid:0,months:12,repl:0,guar:0,dirLoan:0,selfPay:0,ciCov:0,fixed:0}, S={div:1,est:0,name:'',nick:''};
 const KEY='s41km6';
 function save(){ try{ localStorage.setItem(KEY,JSON.stringify({B,PL,INC,C,K,Q,S})); }catch(e){} }
 function load(){ try{ const s=JSON.parse(localStorage.getItem(KEY)||'{}'); if(s.B) B=Object.assign({},DEF,s.B); if(s.PL) PL=s.PL; if(Array.isArray(s.INC)&&s.INC.length) INC=s.INC; if(s.C){ C=Object.assign(C,s.C); if(+C.dir>0){ C.sga=(+C.sga||0)+(+C.dir); C.dir=0; } } if(s.K) K=Object.assign(K,s.K); if(s.Q) Q=Object.assign(Q,s.Q); if(s.S) S=Object.assign(S,s.S); }catch(e){} }
@@ -608,9 +610,9 @@ function buildReport(){
   const pk=(t,v,s)=>`<div class="p-kpi"><span>${t}</span><b>${v} บาท</b><span class="s2">${s}</span></div>`;
   const cover_=`<div class="p-box"><h3>ทุนประกันที่ต้องมี (need-based)</h3><div class="p-kpis">${pk('จากไป',f0(cv.death),`ทุนประกันส่วนนิติบุคคล ${f0(cv.comp)} + ครอบครัว ${f0(cv.fam)}${cv.have>0?' − มีอยู่ '+f0(cv.have):''}`)}${pk('ทุพพลภาพถาวร',f0(cv.tpd),`ภาระเท่าจากไป + ดูแลตัวเอง ${f0(Q.tpdExp)} × 12 × ${Q.tpdYears} ปี`)}${pk('โรคร้ายแรง',f0(cv.ci),`ค่ารักษานอก รพ. ${f0(Q.ci)} + (ค่าใช้จ่ายส่วนตัว + ครอบครัว + ผ่อนหนี้) × 12 × ${Q.ciYears} ปี`)}</div>${coverNote(cv).replace('class="note" style="margin-top:8px"','class="p-flag" style="margin-top:6px"')}</div>`;
   const flags=[...document.querySelectorAll('#s-flags .flag')].map(f=>`<div class="p-flag">${f.textContent}</div>`).join('');
-  pa.innerHTML=`<div class="p-head"><div style="display:flex;align-items:center;gap:12px"><img class="logo" src="${document.querySelector('.top .logo').src}" alt=""><div class="p-title">Keyman Scan <span style="color:var(--gold);font-family:var(--thai);font-weight:500;font-size:.8em">2569</span></div></div><div class="p-meta">${S.name?'<b>'+String(S.name).replace(/[<>&]/g,'')+'</b> · ':''}${today}</div></div>
+  pa.innerHTML=`<div class="p-head"><div style="display:flex;align-items:center;gap:12px"><img class="logo" src="${document.querySelector('.top .logo').src}" alt=""><div class="p-title">Keyman Scan <span style="color:var(--gold);font-family:var(--thai);font-weight:500;font-size:.8em">2569</span></div></div><div class="p-meta">${rptName()?'<b>'+String(rptName()).replace(/[<>&]/g,'')+'</b> · ':''}${today}</div></div>
     ${heroPrint()}<div class="p-grid2">${pers}${corp}</div>${save}${cover_}${flags?'<div class="p-box"><h3>ข้อสังเกต</h3>'+flags+'</div>':''}
-    <div class="p-foot">ภาษีบุคคลตามกฎ 2569 · บริษัท 20% / SME 0–15–20% · เบี้ยและภาษีออกให้หักรายจ่ายได้เมื่อมีมติ (กค 0811/408 · กค 0702/10867) · ปันผล 10% / มรดก 5% เป็นสมมติฐาน · ตัวเลขประมาณเพื่อวางแผน ให้นักบัญชียืนยันก่อนดำเนินการ · S41 Keyman Scan v7.6 · Designed by CFP® Professional</div>`;
+    <div class="p-foot">ภาษีบุคคลตามกฎ 2569 · บริษัท 20% / SME 0–15–20% · เบี้ยและภาษีออกให้หักรายจ่ายได้เมื่อมีมติ (กค 0811/408 · กค 0702/10867) · ปันผล 10% / มรดก 5% เป็นสมมติฐาน · ตัวเลขประมาณเพื่อวางแผน ให้นักบัญชียืนยันก่อนดำเนินการ · S41 Keyman Scan v7.7 · Designed by CFP® Professional</div>`;
 }
 /* PDPA: แสดงชื่อ-นามสกุลแค่ตัวอักษรแรกตัวเดียว ที่เหลือเป็น x ตามจำนวนตัวอักษร (สระบน-ล่าง/วรรณยุกต์ไม่นับ) · เก็บเฉพาะชื่อที่ซ่อนแล้ว */
 function maskName(s){ s=String(s||'').replace(/[\\/:*?"<>|]/g,'').replace(/\s+/g,' ').trim(); if(!s) return '';
@@ -620,7 +622,12 @@ function maskName(s){ s=String(s||'').replace(/[\\/:*?"<>|]/g,'').replace(/\s+/g
   return (pre?pre+(pre==='คุณ'?'':' '):'')+w.join(' '); }
 function ddmmyy(){ const d=new Date(), p=n=>String(n).padStart(2,'0'); return p(d.getDate())+p(d.getMonth()+1)+String(d.getFullYear()).slice(-2); }
 /* v7.6: ชื่อไฟล์ = [ชื่อที่ซ่อนแล้ว] Step4_Keyman DDMMYY */
-function pdfName(){ const n=maskName(S.name); return (n?n+' ':'')+'Step4_Keyman '+ddmmyy(); }
+/* v7.7 · ชื่อเล่น: บนจอ = ชื่อเล่น · ชื่อย่อ · รายงาน = คุณ+ชื่อเล่น · ชื่อไฟล์ = ชื่อเล่น ชื่อย่อ (กติกาเดียวกับ Tax Scan / Money MRI) */
+function cleanNick(s){ return String(s||'').replace(/[\\/:*?"<>|]/g,'').replace(/\s+/g,' ').trim().slice(0,20); }
+function nickRpt(n){ n=cleanNick(n); return n?'คุณ'+(n.replace(/^(คุณ|พี่|น้อง|เจ๊|เฮีย|ป้า|ลุง|น้า|อา)\s*/,'')||n):''; }
+function scrName(){ return [cleanNick(S.nick),maskName(S.name)].filter(Boolean).join(' · '); }
+function rptName(){ return nickRpt(S.nick)||maskName(S.name)||''; }
+function pdfName(){ const n=[cleanNick(S.nick),maskName(S.name)].filter(Boolean).join(' '); return (n?n+' ':'')+'Step4_Keyman '+ddmmyy(); }
 let __title=null;
 window.addEventListener('beforeprint',()=>{ S.name=maskName(S.name); if(__title===null) __title=document.title; document.title=pdfName(); });
 window.addEventListener('afterprint',()=>{ if(__title!==null){ document.title=__title; __title=null; } });
@@ -628,7 +635,7 @@ window.addEventListener('afterprint',()=>{ if(__title!==null){ document.title=__
 function toast(msg,err){ let t=$('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; t.setAttribute('role','status'); document.body.appendChild(t); }
   t.className='toast'+(err?' err':''); t.textContent=msg; t.hidden=false; clearTimeout(t._h); t._h=setTimeout(()=>{ t.hidden=true; },err?7000:5000); }
 function saveCase(){
-  const data={app:'S41 Keyman Scan',fmt:1,ver:'7.6',saved:new Date().toISOString(),data:{B,PL,INC,C,K,Q,S}};
+  const data={app:'S41 Keyman Scan',fmt:1,ver:'7.7',saved:new Date().toISOString(),data:{B,PL,INC,C,K,Q,S}};
   const name=pdfName()+'.json';
   try{ const blob=new Blob([JSON.stringify(data,null,1)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name;
     document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },1500);
@@ -640,7 +647,7 @@ function applyCase(d){
   C=Object.assign({rev:0,dir:0,cogs:0,sga:0,sme:0},d.C||{}); if(+C.dir>0){ C.sga=(+C.sga||0)+(+C.dir); C.dir=0; }
   K=Object.assign({prem:0,gross:1,life:1,auto:1},d.K||{});
   Q=Object.assign({debt:0,debtPay:0,famExp:0,famYears:10,edu:0,tpdExp:0,tpdYears:10,ci:3000000,ciYears:2,haveLife:0,haveTpd:0,haveCI:0,liquid:0,months:12,repl:0,guar:0,dirLoan:0,selfPay:0,ciCov:0,fixed:0},d.Q||{});
-  S=Object.assign({div:1,est:0,name:''},d.S||{});
+  S=Object.assign({div:1,est:0,name:'',nick:''},d.S||{}); S.nick=cleanNick(S.nick);
   bindSide(); $('k-prem').value=K.prem?(+K.prem).toLocaleString('en-US'):''; calcAll(); }
 function openCase(file){
   if(!file) return;
@@ -649,10 +656,10 @@ function openCase(file){
   rd.onload=()=>{ let j; try{ j=JSON.parse(rd.result); }catch(e){ toast('ไฟล์นี้ไม่ใช่ไฟล์เคส Keyman Scan (อ่านข้อมูลไม่ออก)',1); return; }
     if(!j||j.app!=='S41 Keyman Scan'||!j.data||!j.data.C){ toast('ไฟล์นี้ไม่ใช่ไฟล์เคส Keyman Scan',1); return; }
     const has=INC.some(r=>+r.b>0)||(+C.rev>0);
-    if(has&&!confirm('เปิดเคส'+(j.data.S&&j.data.S.name?' '+j.data.S.name:'')+' แทนข้อมูลที่กรอกอยู่ตอนนี้?\nข้อมูลเดิมในหน้านี้จะถูกแทนที่ (บันทึกเป็นไฟล์ก่อนได้)')) return;
+    if(has&&!confirm('เปิดเคส'+(j.data.S?' '+[cleanNick(j.data.S.nick),maskName(j.data.S.name)].filter(Boolean).join(' · '):'')+' แทนข้อมูลที่กรอกอยู่ตอนนี้?\nข้อมูลเดิมในหน้านี้จะถูกแทนที่ (บันทึกเป็นไฟล์ก่อนได้)')) return;
     try{ applyCase(j.data); }catch(e){ toast('เปิดไฟล์ไม่สำเร็จ: '+e.message,1); return; }
     const when=j.saved?new Date(j.saved).toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'}):'';
-    toast('เปิดเคส'+(S.name?' '+S.name:'')+(when?' (บันทึกเมื่อ '+when+')':'')+' แล้ว'); go(1); };
+    toast('เปิดเคส'+(scrName()?' '+scrName():'')+(when?' (บันทึกเมื่อ '+when+')':'')+' แล้ว'); go(1); };
   rd.readAsText(file); }
 document.addEventListener('change',e=>{ if(e.target&&e.target.id==='c-sme'){ C.sme=e.target.checked?1:0; calcAll(); return; } if(e.target&&e.target.id==='caseFile'){ openCase(e.target.files[0]); e.target.value=''; } });
 function calcAll(){ save(); 
@@ -667,9 +674,10 @@ function bindSide(){
   const chk=(id,obj,k)=>{ const el=$(id); el.checked=!!obj[k]; el.onchange=()=>{ obj[k]=el.checked?1:0; calcAll(); }; };
   chk('k-gross',K,'gross'); document.querySelectorAll('input[name=kmode]').forEach(r=>{ r.checked=(r.value===kmode()); r.onchange=()=>{ if(!r.checked) return; K.mode=r.value; K.life=r.value==='life'?1:0; calcAll(); }; }); chk('s-div',S,'div'); chk('s-est',S,'est');
   { const el=$('s-name'); S.name=maskName(S.name); el.value=S.name||''; el.oninput=null; el.onchange=()=>{ S.name=maskName(el.value); el.value=S.name; save(); calcAll(); }; }
+  { const el=$('s-nick'); S.nick=cleanNick(S.nick); el.value=S.nick||''; el.onchange=()=>{ S.nick=cleanNick(el.value); el.value=S.nick; save(); calcAll(); }; }
 }
 function go(n){ [1,2,3].forEach(i=>{ $('pg'+i).hidden=(i!==n); }); document.querySelectorAll('.pnav button[data-p]').forEach(b=>b.classList.toggle('on',+b.dataset.p===n)); window.scrollTo({top:0}); }
-function resetAll(){ if(!confirm('ล้างข้อมูลทั้งหมดกลับเป็นค่าเริ่มต้น?')) return; try{ localStorage.removeItem(KEY); }catch(e){} B=Object.assign({},DEF); PL={}; INC=INC0(); C={rev:0,dir:0,cogs:0,sga:0,sme:0}; K={prem:0,gross:1,life:1,auto:1}; Q={debt:0,debtPay:0,famExp:0,famYears:10,edu:0,tpdExp:0,tpdYears:10,ci:3000000,ciYears:2,haveLife:0,haveTpd:0,haveCI:0,liquid:0,months:12,repl:0,guar:0,dirLoan:0,selfPay:0,ciCov:0,fixed:0}; S={div:1,est:0,name:''}; bindSide(); calcAll(); }
+function resetAll(){ if(!confirm('ล้างข้อมูลทั้งหมดกลับเป็นค่าเริ่มต้น?')) return; try{ localStorage.removeItem(KEY); }catch(e){} B=Object.assign({},DEF); PL={}; INC=INC0(); C={rev:0,dir:0,cogs:0,sga:0,sme:0}; K={prem:0,gross:1,life:1,auto:1}; Q={debt:0,debtPay:0,famExp:0,famYears:10,edu:0,tpdExp:0,tpdYears:10,ci:3000000,ciYears:2,haveLife:0,haveTpd:0,haveCI:0,liquid:0,months:12,repl:0,guar:0,dirLoan:0,selfPay:0,ciCov:0,fixed:0}; S={div:1,est:0,name:'',nick:''}; bindSide(); calcAll(); }
 function fromTaxScan(){
   const m=/[#&]ts=([A-Za-z0-9_-]+)/.exec(location.hash); if(!m) return;
   let d; try{ const b=m[1].replace(/-/g,'+').replace(/_/g,'/'); d=JSON.parse(decodeURIComponent(escape(atob(b+'==='.slice((b.length+3)%4))))); }catch(e){ d=null; }
@@ -679,11 +687,12 @@ function fromTaxScan(){
   if(had&&!confirm('แทนที่ข้อมูลกรรมการเดิมด้วยข้อมูลจาก Tax Scan'+(d.name?' ('+d.name+')':'')+'?\nข้อมูลบริษัทหน้า 2 คงเดิม')) return;
   B=Object.assign({},DEF); for(const k in DEF) if(d.B[k]!==undefined) B[k]=Math.max(0,+d.B[k]||0);
   if(d.name&&!S.name) S.name=maskName(String(d.name).replace(/[<>&]/g,'')).slice(0,60);
+  if(d.nick&&!S.nick) S.nick=cleanNick(String(d.nick).replace(/[<>&]/g,''));
   PL={}; for(const k in (d.PL||{})) if(k in DEF) PL[k]=Math.max(0,+d.PL[k]||0);
   INC=d.INC.filter(r=>EXP[r.t]).map(r=>({t:r.t,b:Math.max(0,+r.b||0),p:null})); if(!INC.length) INC=INC0();
   save();
   const w=(d.warn||[]).map(x=>String(x).replace(/[<>&]/g,'')).filter(Boolean);
-  $('hoNote').innerHTML='<div class="note" style="margin-bottom:6px">รับข้อมูลจาก Tax Scan'+(d.name?' · <b>'+String(d.name).replace(/[<>&]/g,'')+'</b>':'')+' แล้ว · เงินได้ '+INC.length+' แถว · ลดหย่อนและแผนตามที่กรอกไว้'+
+  $('hoNote').innerHTML='<div class="note" style="margin-bottom:6px">รับข้อมูลจาก Tax Scan'+((d.name||d.nick)?' · <b>'+[cleanNick(d.nick),maskName(d.name)].filter(Boolean).join(' · ').replace(/[<>&]/g,'')+'</b>':'')+' แล้ว · เงินได้ '+INC.length+' แถว · ลดหย่อนและแผนตามที่กรอกไว้'+
     (w.length?'<br><b style="color:var(--carrier-2)">ตรวจก่อนใช้:</b> '+w.join(' · '):'')+'</div>';
 }
 load(); fromTaxScan(); bindSide(); if(K.auto) K.prem=recommend(); $('k-prem').value=K.prem?K.prem.toLocaleString('en-US'):''; calcAll();

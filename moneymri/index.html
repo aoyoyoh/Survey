@@ -1831,6 +1831,8 @@ nav.pages a:hover{background:#F8F4E8;border-radius:10px}
   .lib-name{font-size:14px;font-weight:600;color:var(--ink)}
   .lib-tag{font-size:10px;font-weight:700;background:var(--gold);color:#fff;border-radius:9px;padding:1px 8px;margin-left:8px;vertical-align:middle}
   .lib-meta{font-size:11.5px;color:var(--muted);margin-top:2px}
+  .lib-memo{display:block;width:100%;max-width:340px;margin-top:5px;font:inherit;font-size:12.5px;padding:5px 9px;border:1px dashed var(--line-2);border-radius:7px;background:transparent;color:var(--ink)}
+  .lib-memo:focus{outline:none;border-style:solid;border-color:var(--gold-2);background:#fff}
   .lib-rev{font-size:10.5px;color:var(--muted);display:flex;flex-direction:column;gap:3px}
   .lib-rev input{padding:5px 8px;border:1px solid var(--line);border-radius:8px;font-size:12px;font-family:var(--thai)}
   .lib-rev.due input{border-color:var(--carrier);color:var(--carrier-2);font-weight:700}
@@ -2984,7 +2986,7 @@ body.adv.has-visit #main .jbar{padding-right:350px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— รากฐาน —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.10.20</b><br>Designed by CFP® Professional<span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.10.22</b><br>Designed by CFP® Professional<span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
 </aside>
 
 <main id="main">
@@ -3827,7 +3829,10 @@ body.adv.has-visit #main .jbar{padding-right:350px}
     <div class="m-sub">ลูกค้า · คู่สมรส · ผู้พึ่งพิง — ตัวเลขกรอกหน้าถัดไป</div>
 
     <div id="q-survey-note" style="display:none;background:#FBF6E6;border:1px solid var(--gold);border-radius:7px;padding:9px 12px;margin-bottom:10px;font-size:12px;color:var(--ink-2);line-height:1.6"></div>
-    <div class="m-fld"><label>ชื่อลูกค้า / ชื่อเล่น</label><input class="y" id="q-name" placeholder="ชื่อลูกค้า"></div>
+    <div class="m-row">
+      <div class="m-fld"><label>ชื่อลูกค้า</label><input class="y" id="q-name" placeholder="ชื่อ นามสกุล"></div>
+      <div class="m-fld"><label>ชื่อเล่น</label><input class="y" id="q-nick" maxlength="20" placeholder="เช่น พี่บี"></div>
+    </div>
     <div class="m-row">
       <div class="m-fld"><label>อายุลูกค้าตอนนี้</label><input class="y y-num" id="q-age" value="" placeholder="เช่น 35"></div>
       <div class="m-fld"><label>ต้องการเกษียณอายุ</label><input class="y y-num" id="q-retire" value="" placeholder="เช่น 60"><small class="q-note" style="display:block;font-size:10.5px;color:var(--muted);line-height:1.45;margin-top:3px">ทำงานถึงอายุนี้เป็นปีสุดท้าย · เริ่มใช้เงินเกษียณปีถัดไป</small></div>
@@ -3902,6 +3907,7 @@ body.adv.has-visit #main .jbar{padding-right:350px}
       </select>
     </div>
     <div class="m-fld"><label>ชื่อ</label><input class="y" id="mm-name" placeholder="ชื่อ"></div>
+    <div class="m-fld" id="mm-nickWrap"><label>ชื่อเล่น <small style="color:var(--faint);font-weight:400">ไว้จำลูกค้า · ใช้ในรายงาน "คุณ…" และชื่อไฟล์</small></label><input class="y" id="mm-nick" maxlength="20" placeholder="เช่น พี่บี"></div>
     <div class="m-row">
       <div class="m-fld"><label>อายุปัจจุบัน</label><input class="y y-num" id="mm-age" value="" placeholder="อายุ"></div>
       <div class="m-fld"><label id="mm-endLbl">อายุขัย</label><input class="y y-num" id="mm-end" value="80"></div>
@@ -7366,7 +7372,7 @@ async function submitQuick(){
   s.snapAge=age; s.axisMin=Math.floor(age/5)*5; s.inflation=3;
   s._retN=1;   /* ระเบียนใหม่ สร้างภายใต้กติกา "เกษียณ N = ปีสุดท้ายที่ทำงาน" อยู่แล้ว — ไม่ต้องย้ายข้อมูล (และไม่ขึ้นกล่อง "ข้อมูลเดิมถูกปรับ") */
   // ผู้วางแผนหลัก — สร้าง timeline (ยังไม่กรอกเงิน · ค่อยกรอกหน้าถัดไป)
-  s.carriers=[{ id:'c-primary', name, age, life, retireAge:retire, retireExpense: retExpM>0?retExpM:0, incomes:[] }];
+  s.carriers=[{ id:'c-primary', name, nick:cleanNick((g('q-nick')||{}).value), age, life, retireAge:retire, retireExpense: retExpM>0?retExpM:0, incomes:[] }];
   const after=[];
   /* รายได้จาก Survey (ถ้ามาจากลิงก์ Survey) — ใส่เป็นบรรทัดเงินเดือน ถึงปีสุดท้ายที่ทำงาน */
   if(Q_PREFILL && Number(Q_PREFILL.income)>0){
@@ -7405,6 +7411,7 @@ function clearAll(){
 /* ─── Add/Edit Member modal ─── */
 let MM_CTX = null; // {mode:'add'|'edit', kind:'carrier'|'dep', parentId?, id?}
 
+function mmNick(show,val){ const w=document.getElementById('mm-nickWrap'), i=document.getElementById('mm-nick'); if(w) w.style.display=show?'':'none'; if(i) i.value=val||''; }
 function addCarrier(){
   /* v3.9.95·M2: หน้าจอว่าง (ยังไม่มีลูกค้า) → ผู้วางแผนคนแรก = ลูกค้าใหม่ ให้เริ่มที่ Quick-Start (ทางเดียวกับ "＋ ลูกค้าใหม่") */
   if(!(STATE.carriers||[]).length){ openQuick(); return; }
@@ -7413,7 +7420,7 @@ function addCarrier(){
   document.getElementById('mm-title').textContent = 'เพิ่มผู้วางแผน (Carrier)';
   document.getElementById('mm-sub').textContent = 'เช่น คู่สมรส · พี่น้องที่ช่วยรับภาระ';
   document.getElementById('mm-typeWrap').style.display = 'none';
-  document.getElementById('mm-name').value = '';
+  document.getElementById('mm-name').value = ''; mmNick(true,'');
   /* v3.9.95·M2: ช่องอายุ/รายได้เว้นว่างให้กรอก (เดิมใส่ 35 ปี · 50,000 บาทไว้ให้ — กดบันทึกโดยไม่ดูจะได้รายได้ที่ไม่มีใครบอก) · อายุขัยตั้งต้น = ของผู้วางแผนคนแรก */
   document.getElementById('mm-age').value = '';
   document.getElementById('mm-end').value = Number((STATE.carriers[0]||{}).life)||85;
@@ -7431,7 +7438,7 @@ function addDependent(parentId){
   const carrier = STATE.carriers.find(c => c.id === parentId);
   document.getElementById('mm-title').textContent = 'เพิ่มผู้พึ่งพิงใต้ ' + (carrier ? carrier.name : '');
   document.getElementById('mm-sub').textContent = 'พ่อ-แม่ · คู่สมรส · ลูก';
-  document.getElementById('mm-typeWrap').style.display = '';
+  document.getElementById('mm-typeWrap').style.display = ''; mmNick(false,'');
   document.getElementById('mm-type').value = 'parent'; document.getElementById('mm-type').disabled = false;
   document.getElementById('mm-name').value = '';
   document.getElementById('mm-age').value = '';
@@ -7448,7 +7455,7 @@ function editCarrierModal(c){
   document.getElementById('mm-title').textContent = c.name;
   document.getElementById('mm-sub').textContent = 'ผู้วางแผน · แก้ไขข้อมูล';
   document.getElementById('mm-typeWrap').style.display = 'none';
-  document.getElementById('mm-name').value = c.name;
+  document.getElementById('mm-name').value = c.name; mmNick(true,c.nick||'');
   document.getElementById('mm-age').value = c.age;
   document.getElementById('mm-end').value = c.life;
   document.getElementById('mm-amt').value = c.income;
@@ -7467,7 +7474,7 @@ function editDepModal(d){
   document.getElementById('mm-typeWrap').style.display = '';
   document.getElementById('mm-type').value = d.kind;
   document.getElementById('mm-type').disabled = true;
-  document.getElementById('mm-name').value = d.name;
+  document.getElementById('mm-name').value = d.name; mmNick(false,'');
   document.getElementById('mm-age').value = d.age;
   document.getElementById('mm-end').value = d.kind === 'child' ? d.endAge : d.life;
   document.getElementById('mm-amt').value = d.monthly;
@@ -7518,14 +7525,14 @@ function saveMember(){
     if(MM_CTX.mode === 'add'){
       /* v3.9.9: สร้าง incomes[] ทันที — เดิมเก็บ income เป็นตัวเลขเดี่ยว แล้วสูตร (totalIncomeAtAge)
          อ่านเฉพาะ incomes[] ทำให้รายได้ของผู้วางแผนที่เพิ่มใหม่ "ไม่ถูกนับ" จนกว่าจะรีโหลดหน้า (migrate ค่อยแปลงให้) */
-      const nc={id:'c'+Date.now(), name, age, life:endAge};
+      const nc={id:'c'+Date.now(), name, nick:cleanNick((document.getElementById('mm-nick')||{}).value), age, life:endAge};
       /* v3.9.95: รายได้ของผู้วางแผนคนใหม่จบที่ "อายุเกษียณของคนแรก" (= ปีสุดท้ายที่ทำงาน) — แก้รายคนได้ในป๊อปอัป */
       let _ra0=60; try{ _ra0=calcRetireAge(STATE.carriers[0])||60; }catch(e){}
       nc.incomes = amt>0 ? [{id:'i'+Date.now(), ico:'💼', name:'รายได้', monthly:amt, startAge:age, endAge:Math.max(age, Math.min(_ra0, endAge-1)), growth:salGBox(), color:'#4E9E80'}] : [];
       STATE.carriers.push(nc);
     } else {
       const c = STATE.carriers.find(x => x.id === MM_CTX.id);
-      if(c){ c.name = name; c.age = age; applyLifeAge(c, endAge); c.income = amt; if(c.retire >= c.life) c.retire = c.life - 1; }   /* v3.10.6 */
+      if(c){ c.name = name; c.nick = cleanNick((document.getElementById('mm-nick')||{}).value); c.age = age; applyLifeAge(c, endAge); c.income = amt; if(c.retire >= c.life) c.retire = c.life - 1; }   /* v3.10.6 */
     }
   } else {
     const kind = document.getElementById('mm-type').value;
@@ -7808,6 +7815,7 @@ function openCarrierPop(c, focus, anchor){
   pop.innerHTML = `
     <h4>${escA(c.name)} <span style="font-size:10px;color:var(--gold-2);font-weight:600;background:#FBF6E6;border:1px solid var(--gold);padding:1px 6px;border-radius:8px;margin-left:6px">ผู้วางแผน</span><span class="close" onclick="closePop()">×</span></h4>
     <div class="fld"><label>ชื่อ</label><div><input class="y y-text" id="cc-name" value="${escA(c.name)}" style="width:140px"></div></div>
+    <div class="fld"><label>ชื่อเล่น<br><small style="color:var(--faint);font-weight:400">ใช้ในรายงาน "คุณ…" และชื่อไฟล์</small></label><div><input class="y y-text" id="cc-nick" maxlength="20" placeholder="เช่น พี่บี" value="${escA(c.nick||'')}" style="width:140px"></div></div>
     <div class="fld"><label>อายุปัจจุบัน</label><div><input class="y y-num sm" id="cc-age" value="${c.age}"> ปี</div></div>
     <div class="ie-head" style="color:var(--gold-2)">🎯 เป้าหมายอันดับ 1 · เกษียณ</div>
     <div class="fld"><label>อยากเกษียณตอนอายุ<br><small style="color:var(--faint);font-weight:400">ทำงานถึงอายุนี้เป็นปีสุดท้าย · เริ่มใช้เงินเกษียณปีถัดไป</small></label><div><input class="y y-num sm" id="cc-retAge" value="${retHasInfo(c)?calcRetireAge(c):''}" placeholder="เช่น 60"> ปี</div></div>
@@ -7972,6 +7980,7 @@ function saveCarrier(id){
   }
   const _raBlank = String($('#cc-retAge')?.value||'').trim()==='';
   c.name = ($('#cc-name').value||'').trim() || c.name;
+  if($('#cc-nick')) c.nick = cleanNick($('#cc-nick').value);
   c.age  = parseInt($('#cc-age').value) || c.age;
   const _oldLife = Number(c.life)||0;
   c.life = parseInt($('#cc-life').value) || c.life;
@@ -8490,7 +8499,7 @@ function updateKPIs(){
     } else {
       /* v3.9.95·M2 (C-19): ระเบียนที่มีป้ายต่อท้าย "(นำเข้าใหม่)" / "(สำเนา)" — หัวจอต้องบอกด้วย ไม่งั้นแยกไม่ออกว่ากำลังแก้ระเบียนไหน */
       let _tag=''; try{ const _l=libRead(); const _r=_l.clients.find(c=>c.id===_l.activeId); if(_r && _r.tag) _tag=String(_r.tag); }catch(e){}
-      clName.textContent = STATE.carriers.map(c => c.name).join(' & ') + _tag;
+      clName.textContent = STATE.carriers.map(cDisp).join(' & ') + _tag;   /* v3.10.22: ชื่อเล่น · ชื่อย่อ */
       if(clMeta) clMeta.textContent = `${STATE.carriers.length} ผู้วางแผน · ${STATE.dependents.length} ผู้พึ่งพิง · ${STATE.goals.length} เป้าหมาย`;
     }
   }
@@ -8620,11 +8629,16 @@ function maskName(s){ s=String(s||'').replace(/[\\/:*?"<>|]/g,'').replace(/\s+/g
   const comb=/[ัิ-ฺ็-๎]/;
   const w=s.split(' ').filter(Boolean).map(word=>{ const ch=[...word]; if(/^x*$/.test(ch.slice(1).join(''))) return word; return ch[0]+'x'.repeat(ch.slice(1).filter(c=>!comb.test(c)).length); });
   return (pre?pre+(pre==='คุณ'?'':' '):'')+w.join(' '); }
+/* v3.10.22 · ชื่อเล่น — บนจอ: ชื่อเล่น · ชื่อย่อ · รายงานที่ให้ลูกค้า: คุณ+ชื่อเล่น · ชื่อไฟล์: ชื่อเล่น ชื่อย่อ (ไม่มีชื่อเล่น = ชื่อย่ออย่างเดียว) — กติกาเดียวกับ Tax Scan / Keyman */
+function cleanNick(s){ return String(s||'').replace(/[\\/:*?"<>|&·]/g,'').replace(/\s+/g,' ').trim().slice(0,20); }
+function nickRpt(n){ n=cleanNick(n); return n?'คุณ'+(n.replace(/^(คุณ|พี่|น้อง|เจ๊|เฮีย|ป้า|ลุง|น้า|อา)\s*/,'')||n):''; }
+function cDisp(c){ return [cleanNick(c&&c.nick),maskName(c&&c.name)].filter(Boolean).join(' · '); }
+function cFile(c){ return [cleanNick(c&&c.nick),maskName(c&&c.name)].filter(Boolean).join(' '); }
 function ddmmyy(){ const d=new Date(), p=n=>String(n).padStart(2,'0'); return p(d.getDate())+p(d.getMonth()+1)+String(d.getFullYear()).slice(-2); }
 function maskStateNames(st){ try{ (st&&st.carriers||[]).forEach(c=>{ if(c && typeof c.name==='string') c.name=maskName(c.name); });
   if(st && st.baseline && st.baseline.state) (st.baseline.state.carriers||[]).forEach(c=>{ if(c && typeof c.name==='string') c.name=maskName(c.name); }); }catch(e){} return st; }
 /* ชื่อไฟล์ PDF/JSON: [ชื่อที่ซ่อนแล้ว] Step3_MoneyMRI DDMMYY */
-function mriFileBase(){ const n=(STATE.carriers||[]).map(c=>maskName(c.name)).filter(Boolean).join(' & '); return (n?n+' ':'')+'Step3_MoneyMRI '+ddmmyy(); }
+function mriFileBase(){ const n=(STATE.carriers||[]).map(cFile).filter(Boolean).join(' & '); return (n?n+' ':'')+'Step3_MoneyMRI '+ddmmyy(); }
 let __mriTitle=null;
 window.addEventListener('beforeprint',()=>{ try{ maskStateNames(STATE); if(__mriTitle===null) __mriTitle=document.title; document.title=mriFileBase(); }catch(e){} });
 window.addEventListener('afterprint',()=>{ if(__mriTitle!==null){ document.title=__mriTitle; __mriTitle=null; } });
@@ -17831,7 +17845,7 @@ function libRead(){
   try{ const o=JSON.parse(localStorage.getItem(LIB_KEY)||'{}');
     const cl=Array.isArray(o.clients)?o.clients:[];
     cl.forEach(r=>{ if(r && typeof r.name==='string'){ const tg=r.tag||''; const base=(tg && r.name.endsWith(tg))?r.name.slice(0,r.name.length-tg.length):r.name;
-      r.name=base.split(' & ').map(maskName).join(' & ')+(tg && r.name.endsWith(tg)?tg:''); } });   /* v3.10.20 PDPA */
+      r.name=base.split(' & ').map(pt=>{ const k=pt.indexOf(' · '); return k>0?pt.slice(0,k)+' · '+maskName(pt.slice(k+3)):maskName(pt); }).join(' & ')+(tg && r.name.endsWith(tg)?tg:''); } });   /* v3.10.20 PDPA · v3.10.22 คงชื่อเล่น */
     return { clients: cl, activeId: o.activeId||null, folderName: o.folderName||'' };
   }catch(e){ return {clients:[], activeId:null, folderName:''}; }
 }
@@ -17840,7 +17854,7 @@ const newId = () => 'c' + Date.now().toString(36) + Math.random().toString(36).s
 const nowISO = () => new Date().toISOString();
 function planName(st){
   const c=(st&&st.carriers)||[];
-  return c.length ? c.map(x=>x.name).filter(Boolean).join(' & ') || 'ลูกค้าไม่ระบุชื่อ' : 'ลูกค้าใหม่';
+  return c.length ? c.map(cDisp).filter(Boolean).join(' & ') || 'ลูกค้าไม่ระบุชื่อ' : 'ลูกค้าใหม่';   /* v3.10.22 */
 }
 const safeFile = s => String(s||'client').replace(/[\\/:*?"<>|]/g,'').replace(/\s+/g,'_').slice(0,40);
 const safeFileKeepSpace = s => String(s||'client').replace(/[\\/:*?"<>|]/g,'').replace(/\s+/g,' ').trim().slice(0,80);
@@ -17935,6 +17949,7 @@ function libSaveActive(){
   rec.name = planName(STATE) + (rec.tag||'');   /* v3.9.90: คงป้าย (สำเนา)/(นำเข้าใหม่) ไว้ — เดิมแก้ข้อมูลครั้งแรกแล้วป้ายหาย แยกไม่ออกจากต้นฉบับ */
   rec.updatedAt = nowISO();
   rec.carriers = (STATE.carriers||[]).length;
+  rec.sum = libSumOf(STATE);   /* v3.10.21 */
   const _ok1=clientStore(rec.id, clientPayload(rec.id, rec.name));
   const _ok2=libWrite(lib);
   if(_ok1 && _ok2) window.S41_STORE_ERR='';
@@ -18096,6 +18111,17 @@ function libArchive(id){
   const lib=libRead(); const rec=lib.clients.find(c=>c.id===id); if(!rec) return;
   rec.archived=!rec.archived; libWrite(lib); renderLibrary();
 }
+/* v3.10.21: ชื่อซ่อนตาม PDPA แล้วลูกค้าหลายคนอาจได้ชื่อย่อเหมือนกัน → แสดงข้อมูลแยกแยะที่ไม่ใช่ชื่อ: อายุ · ครอบครัว · รายได้ · รหัสแฟ้ม + ป้ายช่วยจำ */
+function libSumOf(st){ try{ if(!st||!Array.isArray(st.carriers)) return '';
+  const cs=st.carriers, ds=st.dependents||[];
+  const ages=cs.map(c=>Number(c.age)||0).filter(a=>a>0);
+  const kids=ds.filter(d=>(d.kind||'child')==='child').length, par=ds.filter(d=>d.kind==='parent').length;
+  const inc=cs.reduce((a,c)=>a+(c.incomes||[]).filter(i=>{ const a0=Number(c.age)||0; return a0>=(Number(i.startAge)||0) && (i.lifelong || i.endAge==null || a0<=Number(i.endAge)); }).reduce((x,i)=>x+(Number(i.monthly)||0),0),0);
+  const out=[]; if(ages.length) out.push('อายุ '+ages.join(' & ')); if(kids) out.push('ลูก '+kids); if(par) out.push('พ่อแม่ '+par);
+  if(inc>0) out.push('รายได้ '+Math.round(inc).toLocaleString('en-US')+'/ด');
+  return out.join(' · '); }catch(e){ return ''; } }
+function libCode(id){ return String(id||'').replace(/[^a-z0-9]/gi,'').slice(-4).toUpperCase(); }
+function libSetMemo(id,val){ const lib=libRead(); const r=lib.clients.find(c=>c.id===id); if(!r) return; r.memo=String(val||'').slice(0,60); libWrite(lib); }
 function libSetReview(id,val){
   const lib=libRead(); const rec=lib.clients.find(c=>c.id===id); if(!rec) return;
   rec.nextReview=val; libWrite(lib); renderLibrary();
@@ -18186,10 +18212,11 @@ function openLibrary(){ openModal('mLibrary'); renderLibrary(); }
 function renderLibrary(){
   const host=document.getElementById('libBody'); if(!host) return;
   const lib=libRead();
+  { let dirty=false; lib.clients.forEach(c=>{ if(c && c.sum==null){ const pl=clientRead(c.id); c.sum=libSumOf(pl&&pl.state); dirty=true; } }); if(dirty) libWrite(lib); }
   const q=LIB_Q.trim().toLowerCase();
   const list=lib.clients
     .filter(c=>LIB_SHOW_ARCH? c.archived : !c.archived)
-    .filter(c=>!q || (c.name||'').toLowerCase().includes(q))
+    .filter(c=>!q || ((c.name||'')+' '+(c.memo||'')+' '+libCode(c.id)+' '+(c.sum||'')).toLowerCase().includes(q))
     .sort((a,b)=>String(b.updatedAt||'').localeCompare(String(a.updatedAt||'')));
   const fmtD=iso=>{ if(!iso) return '—'; const d=new Date(iso); return isNaN(d)?'—':d.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit'}); };
   const today=new Date().toISOString().slice(0,10);
@@ -18204,7 +18231,7 @@ function renderLibrary(){
 
   host.innerHTML = fs +
     '<div class="lib-tools">'+
-      '<input class="lib-search" placeholder="ค้นหาชื่อลูกค้า…" value="'+LIB_Q.replace(/"/g,'&quot;')+'" oninput="LIB_Q=this.value;LIB_FOCUS=true;renderLibrary()">'+
+      '<input class="lib-search" placeholder="ค้นหา: ชื่อย่อ · ป้ายช่วยจำ · รหัส · อายุ…" value="'+LIB_Q.replace(/"/g,'&quot;')+'" oninput="LIB_Q=this.value;LIB_FOCUS=true;renderLibrary()">'+
       '<button class="btn'+(LIB_SHOW_ARCH?' on':'')+'" onclick="LIB_SHOW_ARCH=!LIB_SHOW_ARCH;renderLibrary()">'+(LIB_SHOW_ARCH?'← กลับรายชื่อหลัก':'คลังเก็บ')+'</button>'+
       '<button class="btn btn-pri" onclick="libCreate()">＋ ลูกค้าใหม่</button>'+
     '</div>'+
@@ -18214,7 +18241,9 @@ function renderLibrary(){
       return '<div class="lib-row'+(active?' active':'')+'">'+
         '<div class="lib-main">'+
           '<div class="lib-name">'+escA(c.name||'—')+(active?'<span class="lib-tag">กำลังเปิด</span>':'')+'</div>'+
-          '<div class="lib-meta">แก้ไขล่าสุด '+fmtD(c.updatedAt)+(c.file?' · มีไฟล์ในโฟลเดอร์':'')+'</div>'+
+          (c.sum?'<div class="lib-meta" style="color:var(--ink-2)">'+escA(c.sum)+'</div>':'')+
+          '<input class="lib-memo" value="'+escA(c.memo||'')+'" placeholder="ป้ายช่วยจำ เช่น เจ้าของร้านทอง · ไม่ใส่ชื่อจริง" maxlength="60" onchange="libSetMemo(\''+c.id+'\',this.value)">'+
+          '<div class="lib-meta">รหัส '+libCode(c.id)+' · แก้ไขล่าสุด '+fmtD(c.updatedAt)+(c.file?' · มีไฟล์ในโฟลเดอร์':'')+'</div>'+
         '</div>'+
         '<label class="lib-rev'+(due?' due':'')+'">ทบทวนถัดไป<input type="date" value="'+(c.nextReview||'')+'" onchange="libSetReview(\''+c.id+'\',this.value)"></label>'+
         '<div class="lib-acts">'+
@@ -19003,5 +19032,18 @@ window.a4FitSheets=a4FitSheets=function(){ const h=document.getElementById('a4Su
 })();
 </script>
 
+<script>
+/* v3.10.22 · รายงานที่ให้ลูกค้า: แทนชื่อย่อด้วย "คุณ+ชื่อเล่น" (เฉพาะผู้วางแผนที่มีชื่อเล่น) */
+function a4NickSwap(){ try{
+  const host=document.getElementById('a4Overlay'); if(!host) return;
+  const pairs=(STATE.carriers||[]).map(c=>({m:maskName(c.name),r:nickRpt(c.nick)})).filter(p=>p.m&&p.r).sort((a,b)=>b.m.length-a.m.length);
+  if(!pairs.length) return;
+  const w=document.createTreeWalker(host,NodeFilter.SHOW_TEXT); const nodes=[]; while(w.nextNode()) nodes.push(w.currentNode);
+  nodes.forEach(n=>{ let t=n.nodeValue, o=t; pairs.forEach(p=>{ t=t.split('คุณ'+p.m).join(p.r).split('คุณ '+p.m).join(p.r).split(p.m).join(p.r); }); if(t!==o) n.nodeValue=t; });
+}catch(e){ console.warn('a4NickSwap',e); } }
+(function(){ const _o=window.openA4; if(typeof _o!=='function') return;
+  window.openA4=openA4=function(){ const r=_o.apply(this,arguments); a4NickSwap(); requestAnimationFrame(()=>{ a4NickSwap(); setTimeout(a4NickSwap,120); }); return r; }; })();
+window.addEventListener('beforeprint',a4NickSwap);
+</script>
 </body>
 
