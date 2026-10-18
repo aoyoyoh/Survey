@@ -2984,7 +2984,7 @@ body.adv.has-visit #main .jbar{padding-right:350px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— รากฐาน —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.10.19</b><span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.10.20</b><br>Designed by CFP® Professional<span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
 </aside>
 
 <main id="main">
@@ -3985,7 +3985,7 @@ body.adv.has-visit #main .jbar{padding-right:350px}
 
 <!-- v3.9.95·M2 (E-22): สั่งพิมพ์หน้าเว็บโดยตรง (Ctrl+P) โดยไม่ได้เปิดรายงาน → พิมพ์ข้อความนี้แทนกระดาษเปล่า (ไม่มีข้อมูลลูกค้า) -->
 <div id="printNote">
-  <div class="pn-b">SIGNATURE 41 · Money MRI</div>
+  <div class="pn-b">SIGNATURE 41 · Money MRI · Designed by CFP® Professional</div>
   <div class="pn-t">หน้านี้เป็นหน้าทำงานบนจอ ไม่ได้ออกแบบให้พิมพ์โดยตรง</div>
   <div class="pn-s">ถ้าต้องการเอกสารของลูกค้า ให้กดปุ่ม “🖨 รายงานแผนการเงิน (PDF)” ที่แถบซ้าย แล้วกด “พิมพ์ / บันทึก PDF” ในหน้ารายงาน</div>
 </div>
@@ -4286,6 +4286,7 @@ function sanitizeLoadedNames(s){
 function migrate(s){
   if(!s || !s.carriers) return s;
   sanitizeLoadedNames(s);
+  maskStateNames(s);   /* v3.10.20 PDPA: ไฟล์เก่า/ไฟล์จาก Step 2 ที่มีชื่อเต็ม → ซ่อนทันทีที่เปิด */
   if(!s.planMode) s.planMode='combined';
   /* v3.9.90: ปี Snapshot เก็บลงไฟล์ (เดิมช่องนี้ตั้งตายตัว 2026 และไม่ถูกบันทึก — เปลี่ยนแล้วรีเฟรชก็กลับเป็น 2026
      และพอขึ้นปีใหม่ เพดานประกันสังคม/ปีภาษีของทุกแผนจะยังคิดเป็นปี 2026)
@@ -6423,6 +6424,7 @@ document.addEventListener('change', e=>{
 const LS_KEY = 's41_dashboard_state_v4';
 function saveState(){
   try {
+    maskStateNames(STATE);   /* v3.10.20 PDPA: ไม่เก็บชื่อเต็มในเบราว์เซอร์ */
     localStorage.setItem(LS_KEY, JSON.stringify(STATE));
     window.S41_STORE_ERR='';
     setSaveInd('saved');
@@ -8612,6 +8614,21 @@ function renderSnapshotList(){
   }).join('');
 }
 
+/* v3.10.20 · PDPA: ชื่อลูกค้าแสดง/เก็บแค่ตัวอักษรแรกของชื่อและนามสกุล ที่เหลือเป็น x ตามจำนวนตัวอักษร (สระบน-ล่าง/วรรณยุกต์ไม่นับ) — สูตรเดียวกับ Tax Scan / Keyman Scan */
+function maskName(s){ s=String(s||'').replace(/[\\/:*?"<>|]/g,'').replace(/\s+/g,' ').trim(); if(!s) return '';
+  let pre=''; for(const t of ['นางสาว','น.ส.','นาง','นาย','คุณ','ดร.','Mrs.','Mr.','Ms.','Miss','Dr.']){ if(s.startsWith(t)&&s.length>t.length){ pre=t; s=s.slice(t.length).trim(); break; } }
+  const comb=/[ัิ-ฺ็-๎]/;
+  const w=s.split(' ').filter(Boolean).map(word=>{ const ch=[...word]; if(/^x*$/.test(ch.slice(1).join(''))) return word; return ch[0]+'x'.repeat(ch.slice(1).filter(c=>!comb.test(c)).length); });
+  return (pre?pre+(pre==='คุณ'?'':' '):'')+w.join(' '); }
+function ddmmyy(){ const d=new Date(), p=n=>String(n).padStart(2,'0'); return p(d.getDate())+p(d.getMonth()+1)+String(d.getFullYear()).slice(-2); }
+function maskStateNames(st){ try{ (st&&st.carriers||[]).forEach(c=>{ if(c && typeof c.name==='string') c.name=maskName(c.name); });
+  if(st && st.baseline && st.baseline.state) (st.baseline.state.carriers||[]).forEach(c=>{ if(c && typeof c.name==='string') c.name=maskName(c.name); }); }catch(e){} return st; }
+/* ชื่อไฟล์ PDF/JSON: [ชื่อที่ซ่อนแล้ว] Step3_MoneyMRI DDMMYY */
+function mriFileBase(){ const n=(STATE.carriers||[]).map(c=>maskName(c.name)).filter(Boolean).join(' & '); return (n?n+' ':'')+'Step3_MoneyMRI '+ddmmyy(); }
+let __mriTitle=null;
+window.addEventListener('beforeprint',()=>{ try{ maskStateNames(STATE); if(__mriTitle===null) __mriTitle=document.title; document.title=mriFileBase(); }catch(e){} });
+window.addEventListener('afterprint',()=>{ if(__mriTitle!==null){ document.title=__mriTitle; __mriTitle=null; } });
+
 /* ─── Backup: Export / Import JSON ─── */
 function exportJSON(){
   /* v3.9.90: ใส่รหัสลูกค้า (s41.clientId) ลงไฟล์ด้วย — เดิมไฟล์ที่กด "บันทึกเป็นไฟล์" ไม่มีรหัส
@@ -8619,6 +8636,7 @@ function exportJSON(){
   let s41=null;
   try{ if(typeof libSaveActive==='function') libSaveActive();
        const lib=libRead(); const rec=lib.clients.find(c=>c.id===lib.activeId); if(rec) s41={clientId:rec.id, name:rec.name}; }catch(e){}
+  maskStateNames(STATE); try{ saveState(); }catch(e){}
   const data = {
     stage: 'step3',   /* v3.9.14: ป้ายบอกว่าไฟล์นี้มาจาก Step 3 (ไฟล์หมอการเงินเป็น stage:'step2') */
     version: 'v3',
@@ -8636,7 +8654,7 @@ function exportJSON(){
   const _d = new Date(), _p = n => String(n).padStart(2,'0');
   const date = _d.getFullYear()+'-'+_p(_d.getMonth()+1)+'-'+_p(_d.getDate());
   const carriers = String(STATE.carriers.map(c => c.name).join('-') || 'empty').replace(/[\\/:*?"<>|]/g,'').replace(/\s+/g,'_').slice(0,40) || 'empty';
-  a.download = `S41_Step3_${carriers}_${date}.json`;
+  a.download = mriFileBase()+'.json';   /* v3.10.20: [ชื่อที่ซ่อนแล้ว] Step3_MoneyMRI DDMMYY.json */
   document.body.appendChild(a);
   a.click();
   setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
@@ -8829,6 +8847,28 @@ function taxExpense(sources){ let income=0,expense=0,sal=0, salRate=0.5;
     if(r.group==='sal'){ sal+=amt; salRate=r.rate; } else expense += (r.cap?Math.min(amt*r.rate,r.cap):amt*r.rate); });
   expense += Math.min(sal*salRate, RSALCAP());   // 40(1)+(2) หักรวมไม่เกินเพดานกลุ่มเงินเดือน
   return {income, expense}; }
+/* v3.10.20: ค่าใช้จ่ายหลังหักเงินได้ยกเว้น (ผู้สูงอายุ) — ex.sal = ส่วนที่ยกเว้นจากกลุ่มเงินเดือน · ex.row[i] = ส่วนที่ยกเว้นจากแถว i */
+function taxExpenseEx(sources, ex){ ex=ex||{sal:0,row:{}}; let expense=0,sal=0,salRate=0.5;
+  (sources||[]).forEach((s,i)=>{ const amt=Math.max(0,Number(s.amt)||0); if(amt<=0) return; const r=REXP(s.type);
+    if(r.group==='sal'){ sal+=amt; salRate=r.rate; return; }
+    const a=Math.max(0,amt-((ex.row&&ex.row[i])||0)); expense+=(r.cap?Math.min(a*r.rate,r.cap):a*r.rate); });
+  expense+=Math.min(Math.max(0,sal-(ex.sal||0))*salRate, RSALCAP());
+  return expense; }
+/* v3.10.20 (สูตรเดียวกับ Tax Scan): แบ่งเงินได้เป็นช่วงตาม "ค่าใช้จ่ายที่เสียต่อบาท" เมื่อยกเว้น แล้วเติม 190,000 จากช่วงที่เสียน้อยสุดก่อน
+   = ค่าใช้จ่ายที่เหลือมากที่สุด = ภาษีต่ำสุดตามสิทธิ (ประกาศอธิบดีฯ ฉบับที่ 150 ผู้มีเงินได้เลือกใช้กับเงินได้ประเภทใดก็ได้) */
+function taxElderAlloc(sources, ex){
+  const segs=[]; let salG=0, salRate=0.5;
+  (sources||[]).forEach((s,i)=>{ const a=Math.max(0,Number(s.amt)||0); if(!a) return; const r=REXP(s.type);
+    if(r.group==='sal'){ salG+=a; salRate=r.rate; return; }
+    if(r.cap>0 && r.rate>0){ const lim=r.cap/r.rate, free=Math.max(0,a-lim); if(free>0) segs.push({i,rate:0,len:free}); segs.push({i,rate:r.rate,len:a-free}); return; }
+    segs.push({i,rate:r.rate,len:a}); });
+  if(salG>0){ const lim=salRate>0?RSALCAP()/salRate:Infinity, free=Math.max(0,salG-lim); if(free>0) segs.push({i:-1,rate:0,len:free}); segs.push({i:-1,rate:salRate,len:salG-free}); }
+  segs.sort((x,y)=>x.rate-y.rate);
+  const out={sal:0,row:{}}; let left=Math.max(0,Number(ex)||0);
+  for(const g of segs){ if(left<=0) break; const take=Math.min(left,g.len); left-=take;
+    if(g.i===-1) out.sal+=take; else out.row[g.i]=(out.row[g.i]||0)+take; }
+  return {ex:out, use:Math.max(0,Number(ex)||0)-left};
+}
 function srcExpense(s){ const amt=Math.max(0,Number(s.amt)||0); const r=REXP(s.type);
   return r.cap?Math.min(amt*r.rate,r.cap):amt*r.rate; }
 
@@ -9090,6 +9130,13 @@ const RULES_FALLBACK = {
       "_หมายเหตุ ThaiESG": "แยกวงจากเพดานรวมกลุ่มเกษียณ",
 
       "ดอกเบี้ยกู้ซื้อบ้านไม่เกิน": 100000,
+      "เบี้ยประกันชีวิตคู่สมรสไม่มีเงินได้ไม่เกิน": 10000,
+      "ฝากครรภ์และคลอดบุตรไม่เกิน": 60000,
+      "กอช. ไม่เกิน": 30000,
+      "ติดตั้งโซลาร์หลังคาบ้านไม่เกิน": 200000,
+      "ซื้องานศิลปะไม่เกิน": 100000,
+      "ลงทุนวิสาหกิจเพื่อสังคมไม่เกิน": 100000,
+      "บริจาคพรรคการเมืองไม่เกิน": 10000,
       "เงินสมทบประกันสังคมไม่เกิน": "ตามเพดานค่าจ้างของปีนั้น",
 
       "บริจาคร้อยละของเงินได้หลังหักค่าลดหย่อน": 10,
@@ -11245,16 +11292,22 @@ const HENG = (function(){
     const _wage0=(Array.isArray(t.sources)&&t.sources.length)?t.sources.reduce((a,x)=>a+(x.type==='40(1)'?Math.max(0,Number(x.amt)||0):0),0):Math.max(0,Number(t.income)||0);
     const _pvdPct=(t.pvdKind==='gpf')?1e9:0.15;   /* v3.10.12: กบข. ยกเว้นตามจ่ายจริง ไม่มีเพดาน % */
     const _pvdEx=Math.max(0,Math.min(+t.pvd||0,_wage0*_pvdPct,500000)-10000);
-    if(Array.isArray(t.sources) && t.sources.length){
-      let _left=_pvdEx; const _src=t.sources.map(x=>{ if(_left>0&&x.type==='40(1)'){ const a=Math.max(0,Number(x.amt)||0), cut=Math.min(a,_left); _left-=cut; return Object.assign({},x,{amt:a-cut}); } return x; });
-      const e=taxExpense(t.sources), e2=taxExpense(_src); income=Math.max(0,e.income); expense=e2.expense; }
-    else { income=Math.max(0,Number(t.income)||0); expense=Math.min(Math.max(0,income-_pvdEx)*0.5,RSALCAP()); }
+    /* v3.10.20: สูตรเดียวกับ Tax Scan — แถวเงินได้ว่างใช้เงินได้รวมเป็น 40(1) แถวเดียว (ผลเท่าเดิม) */
+    const _S0=(Array.isArray(t.sources) && t.sources.length)?t.sources:[{type:'40(1)',amt:Math.max(0,Number(t.income)||0)}];
+    let _left=_pvdEx; const _src=_S0.map(x=>{ if(_left>0&&x.type==='40(1)'){ const a=Math.max(0,Number(x.amt)||0), cut=Math.min(a,_left); _left-=cut; return Object.assign({},x,{amt:a-cut}); } return x; });
+    income=Math.max(0,taxExpense(_S0).income);
+    /* v3.10.20 (ตรงกับ Tax Scan): ผู้มีอายุ 65+ ยกเว้นเงินได้ 190,000 "ก่อน" หักค่าใช้จ่าย เลือกหักจากเงินได้ที่เสียค่าใช้จ่ายน้อยที่สุด
+       เดิมหักค่าใช้จ่ายจากเงินได้เต็ม แล้วบวก 190,000 เป็นค่าลดหย่อน → ค่าใช้จ่ายนับซ้ำส่วนที่ได้ยกเว้น ภาษีต่ำกว่าจริง */
+    let _eld=0, _ex={sal:0,row:{}};
+    if(Number(t.age)>=RD('ยกเว้นผู้สูงอายุตั้งแต่อายุ',(typeof snapYearCE==='function'?snapYearCE():2026)+543+(Number(t._y)||0))){
+      const al=taxElderAlloc(_src, RD('ยกเว้นผู้สูงอายุไม่เกิน',(typeof snapYearCE==='function'?snapYearCE():2026)+543+(Number(t._y)||0))); _eld=al.use; _ex=al.ex; }
+    expense=taxExpenseEx(_src,_ex);
     /* v3.9.28: ค่าลดหย่อนทุกตัวอ่านจากไฟล์กฎ (rules.json) ตามปีของแถวนั้น */
     const _be=(typeof snapYearCE==='function'?snapYearCE():2026)+543+(Number(t._y)||0);
     const RDy=n=>RD(n,_be);
     let allow=RDy('ส่วนตัว');
     /* ยกเว้นเงินได้ผู้มีอายุตามเกณฑ์ (ประมวลรัษฎากร) */
-    const elderly=(Number(t.age)>=RDy('ยกเว้นผู้สูงอายุตั้งแต่อายุ'))?Math.min(RDy('ยกเว้นผู้สูงอายุไม่เกิน'),Math.max(0,income-expense)):0; allow+=elderly;
+    const elderly=_eld; allow+=elderly;   /* v3.10.20: ส่วนที่ยกเว้นจริง (หักจากเงินได้ก่อนค่าใช้จ่ายแล้ว — แสดงในบรรทัดลดหย่อนเหมือน Tax Scan) */
     if(t.spouse) allow+=RDy('คู่สมรสไม่มีเงินได้');
     /* v3.9.96: บุตรคนที่ 2 ขึ้นไปที่เกิดตั้งแต่ปี 2561 = 60,000 (t.childrenB นับรวมอยู่ใน t.children) · บิดามารดาไม่เกิน 4 คน */
     const _kB=Math.min(+t.childrenB||0,+t.children||0), _kA=Math.max(0,(+t.children||0)-_kB);
@@ -11269,7 +11322,11 @@ const HENG = (function(){
     const lifeHealth=_lhOwn+pensionSpill;
     allow+=lifeHealth;
     const parentHealth=Math.min(+t.parentHealthIns||0,RDy('เบี้ยสุขภาพบิดามารดาไม่เกิน')); allow+=parentHealth;
-    const party=Math.min(+t.donationParty||0,10000); allow+=party;   /* v3.9.97: บริจาคพรรคการเมือง ≤ 10,000 */
+    const party=Math.min(+t.donationParty||0,RDy('บริจาคพรรคการเมืองไม่เกิน')||10000); allow+=party;
+    /* v3.10.20: ค่าลดหย่อนที่ Tax Scan มี — ประกันชีวิตคู่สมรสไม่มีเงินได้ · ฝากครรภ์ · โซลาร์ · งานศิลปะ · วิสาหกิจเพื่อสังคม */
+    const spouseLife=t.spouse?Math.min(+t.spouseLife||0,RDy('เบี้ยประกันชีวิตคู่สมรสไม่มีเงินได้ไม่เกิน')):0; allow+=spouseLife;
+    const prenatal=Math.min(+t.prenatal||0,RDy('ฝากครรภ์และคลอดบุตรไม่เกิน')); allow+=prenatal;
+    const solar=Math.min(+t.solar||0,RDy('ติดตั้งโซลาร์หลังคาบ้านไม่เกิน')), art=Math.min(+t.art||0,RDy('ซื้องานศิลปะไม่เกิน')), se=Math.min(+t.se||0,RDy('ลงทุนวิสาหกิจเพื่อสังคมไม่เกิน')); allow+=solar+art+se;   /* v3.9.97: บริจาคพรรคการเมือง ≤ 10,000 */
     /* v3.9.27: ลดหย่อนเงินสมทบ ปกส. = เท่าที่จ่ายจริง แต่ไม่เกิน 5% ของเพดานค่าจ้างปีนั้น × 12
        (เพดาน 2569–71 = 17,500 → 10,500/ปี · 2572–74 = 20,000 → 12,000 · 2575+ = 23,000 → 13,800) */
     const ssCap=(Number(t.ssoCap)>0)?Number(t.ssoCap):(ssoCeilBE(_be)*ssoRate()*12);
@@ -11280,7 +11337,8 @@ const HENG = (function(){
     /* v3.9.96: PVD 15% ของค่าจ้าง (40(1)) ไม่ใช่ของเงินได้ทั้งหมด — เดิมรายได้ค่าเช่า/ธุรกิจทำให้เพดาน PVD สูงเกินจริง */
     const _wage=(Array.isArray(t.sources)&&t.sources.length)?t.sources.reduce((a,x)=>a+(x.type==='40(1)'?Math.max(0,Number(x.amt)||0):0),0):income;
     const pvd=Math.min(+t.pvd||0,(t.pvdKind==='gpf')?1e15:_wage*RDy('PVD ร้อยละของค่าจ้าง')/100,RDy('PVD ไม่เกิน'));
-    const retireCapped=Math.min(pension+rmf+ssf+pvd,RDy('เพดานรวมกลุ่มเกษียณ')); allow+=retireCapped;
+    const nsf=Math.min(+t.nsf||0,RDy('กอช. ไม่เกิน'));   /* v3.10.20: กอช. อยู่ในเพดานรวมกลุ่มเกษียณ (เหมือน Tax Scan) */
+    const retireCapped=Math.min(pension+rmf+ssf+pvd+nsf,RDy('เพดานรวมกลุ่มเกษียณ')); allow+=retireCapped;
     const esg=Math.min(+t.thaiESG||0,income*RDy('ThaiESG ร้อยละของเงินได้')/100,RDy('ThaiESG ไม่เกิน')); allow+=esg;
     const mort=Math.min(+t.mortgageInt||0,RDy('ดอกเบี้ยกู้ซื้อบ้านไม่เกิน')); allow+=mort;
     const netBD=Math.max(0,income-expense-allow);
@@ -11294,7 +11352,7 @@ const HENG = (function(){
     /* v3.9.97: ภาษีวิธีที่ 2 — เงินได้ 40(2)–(8) ตั้งแต่ 1,000,000 เสีย 0.5% ถ้าเกิน 5,000 และสูงกว่าวิธีขั้นบันได */
     const _inc2=(Array.isArray(t.sources)&&t.sources.length)?t.sources.reduce((a,x)=>a+(x.type!=='40(1)'?Math.max(0,Number(x.amt)||0):0),0):0;
     const tax1=taxBracket(net), tax2=(_inc2>=1000000)?_inc2*0.005:0, method2=(tax2>5000&&tax2>tax1);
-    return {income,expense,allow,net,tax:method2?tax2:tax1,tax1,tax2,method2,party,pension,pensionSpill,rmf,ssf,pvd,esg,retireCapped,
+    return {income,expense,allow,net,tax:method2?tax2:tax1,tax1,tax2,method2,party,pension,pensionSpill,rmf,ssf,pvd,esg,retireCapped,spouseLife,prenatal,solar,art,se,nsf,
             lifeHealth,parentHealth,ss,mort,donEdu,don,elderly,kidsAllow,deductTotal:expense+allow+donEdu+don};
   }
   /* ═══ v3.9.24 · ภาษีของ "ปีไหนก็ได้" — ใช้ตัวเดียวกันทั้ง projection · หน้าภาษี · งบปีนี้ ═══
@@ -11406,6 +11464,10 @@ const HENG = (function(){
       ssoCap: ssoCeilAtYear(y)*ssoRate()*12,
       mortgageInt:tMort, donation:(y===0?(Number(_typ.donation)||0):0), donationEdu:(y===0?(Number(_typ.donationEdu)||0):0),
       addPension:0, addRMF:0, addSSF:0, addESG:0, withheld:0,
+      /* v3.10.20: ค่าลดหย่อนเพิ่มที่กรอกในหน้าภาษี — ประกันชีวิตคู่สมรสไม่มีเงินได้ = ทุกปีที่ยังติ๊กคู่สมรส · ที่เหลือ = ปีนี้ปีเดียว */
+      spouseLife:(!!_typ.spouse?(Number(_typ.spouseLife)||0):0),
+      prenatal:(y===0?(Number(_typ.prenatal)||0):0), nsf:(y===0?(Number(_typ.nsf)||0):0), solar:(y===0?(Number(_typ.solar)||0):0),
+      art:(y===0?(Number(_typ.art)||0):0), se:(y===0?(Number(_typ.se)||0):0), donationParty:(y===0?(Number(_typ.donationParty)||0):0),
       _y:y, _estDed:dEst };
   }
   function taxAtYear(c, y){ const t=taxInputAtYear(c,y); const r=taxCore(t); r._t=t; return r; }
@@ -11428,7 +11490,7 @@ const HENG = (function(){
     const a=taxAuto(c);
     let stored=(STATE.taxByCarrier&&STATE.taxByCarrier[c.id])||(isPrimary?STATE.tax:null)||{};
     if(taxAutoOn()){   /* v3.9.24: โหมดอัตโนมัติ — เก็บเฉพาะช่องที่เครื่องคำนวณให้ไม่ได้ ที่เหลือยึดค่าที่คำนวณ */
-      const KEEP=['addPension','addRMF','addSSF','addESG','withheld','donation','donationEdu','mortgageInt','spouse'];
+      const KEEP=['addPension','addRMF','addSSF','addESG','withheld','donation','donationEdu','mortgageInt','spouse','spouseLife','prenatal','nsf','solar','art','se','donationParty'];
       const k2={}; KEEP.forEach(k=>{ if(stored[k]!=null) k2[k]=stored[k]; }); stored=k2;
     }
     const t=Object.assign({},a,stored); t.pvdKind=wfKind(c); if(t.pvdKind==='gpf') t.socialSec=0;
@@ -11966,7 +12028,7 @@ function tstate(){ const c=taxSel(); if(!STATE.taxByCarrier) STATE.taxByCarrier=
   }
   if(!STATE.tax) STATE.tax=HENG.taxAuto(); return STATE.tax; }
 function setTaxCarrier(cid){ STATE.taxSel=cid; if(typeof saveState==='function')saveState(); renderTax(); }
-const TAX_KEEP=['addPension','addRMF','addSSF','addESG','withheld','donation','donationEdu','mortgageInt','spouse'];   /* ช่องที่ผู้ใช้กรอกเองได้เสมอ (เครื่องคำนวณให้ไม่ได้) */
+const TAX_KEEP=['addPension','addRMF','addSSF','addESG','withheld','donation','donationEdu','mortgageInt','spouse','spouseLife','prenatal','nsf','solar','art','se','donationParty'];   /* ช่องที่ผู้ใช้กรอกเองได้เสมอ (เครื่องคำนวณให้ไม่ได้) */
 function setTax(field, raw){
   if(taxAutoOn() && TAX_KEEP.indexOf(field)<0){ renderTax(); return; }   /* v3.9.90: โหมดอัตโนมัติ — ช่องที่เครื่องคิดให้ ไม่รับค่าพิมพ์ */
   const t=tstate();
@@ -12016,7 +12078,7 @@ function setTaxPlanY(raw){
 function taxUseComputed(){ taxManualSync(); if(typeof saveState==='function') saveState(); render(); try{ renderTax(); }catch(e){} }
 function resetTaxAuto(){ const c=taxSel();
   /* v3.9.90: ดึงค่าชุดเดียวกับที่โหมดอัตโนมัติใช้ (taxAutoNow) และเก็บช่องที่ผู้ใช้กรอกเอง (หัก ณ ที่จ่าย/บริจาค/ดอกเบี้ยบ้าน/แผนลงทุนเพิ่ม) ไว้ */
-  const KEEP=['addPension','addRMF','addSSF','addESG','withheld','donation','donationEdu','mortgageInt','spouse'];
+  const KEEP=['addPension','addRMF','addSSF','addESG','withheld','donation','donationEdu','mortgageInt','spouse','spouseLife','prenatal','nsf','solar','art','se','donationParty'];
   const fresh=cc=>{ const old=(cc&&STATE.taxByCarrier&&STATE.taxByCarrier[cc.id])||STATE.tax||{}; const a=(HENG.taxAutoNow?HENG.taxAutoNow(cc):HENG.taxAuto(cc)); KEEP.forEach(k=>{ if(old[k]!=null) a[k]=old[k]; }); return a; };
   if(c){ if(!STATE.taxByCarrier)STATE.taxByCarrier={}; STATE.taxByCarrier[c.id]=fresh(c); if((STATE.carriers||[])[0]&&c.id===STATE.carriers[0].id) STATE.tax=STATE.taxByCarrier[c.id]; } else STATE.tax=fresh();
   taxManualSync();
@@ -12121,6 +12183,13 @@ function renderTax(){
     <div class="tx-sec">อื่น ๆ · บาท/ปี</div>
     ${row('ภาษีหัก ณ ที่จ่ายทั้งปี',inp('withheld'),'ยอดที่ถูกหักไว้แล้ว — ใช้หายอดต้องชำระเพิ่ม/ขอคืน')}
     ${row('ดอกเบี้ยกู้ซื้อบ้าน',inp('mortgageInt'),'≤ 100,000')}
+    ${t.spouse?row('ประกันชีวิตคู่สมรสไม่มีเงินได้',inp('spouseLife'),'≤ 10,000'):''}
+    ${row('ฝากครรภ์และคลอดบุตร',inp('prenatal'),'≤ 60,000')}
+    ${row('กอช.',inp('nsf'),'≤ 30,000 · อยู่ในเพดานรวม 500,000')}
+    ${row('ติดโซลาร์หลังคาบ้าน',inp('solar'),'≤ 200,000 · ครั้งเดียว · ติดตั้งตั้งแต่ 3 มี.ค. 69')}
+    ${row('ซื้องานศิลปะ (ศิลปินขึ้นทะเบียน)',inp('art'),'≤ 100,000/ปี · ปี 2568–2570')}
+    ${row('ลงทุนหุ้นวิสาหกิจเพื่อสังคม',inp('se'),'≤ 100,000')}
+    ${row('บริจาคพรรคการเมือง',inp('donationParty'),'≤ 10,000')}
     ${row('บริจาคเพื่อการศึกษา/รพ.รัฐ',inp('donationEdu'),'ลดหย่อน 2 เท่า · ≤ 10% เงินได้สุทธิ')}
     ${row('บริจาคทั่วไป',inp('donation'),'≤ 10% เงินได้สุทธิ')}
     ${AUTO?'':'<div style="margin-top:10px"><button class="btn" onclick="resetTaxAuto()" title="ล้างเลขที่แก้เอง แล้วดึงค่าที่เครื่องคำนวณได้จากข้อมูลล่าสุดมาใส่ใหม่">↺ ดึงค่าจากข้อมูลล่าสุดอีกครั้ง</button></div>'}
@@ -12547,7 +12616,7 @@ function effTaxState(c){
   /* v3.9.63: โหมดอัตโนมัติ — ใช้กฎเดียวกับหน้าภาษี (taxPlan): เก็บเฉพาะช่องที่เครื่องคิดเองไม่ได้
      เดิมเอาค่าเก่าที่เคยบันทึกไว้ทับทั้งหมด ตัวเลขเทียบยื่นรวม/แยกจึงไม่ตรงกับหน้าภาษี (เช่น PVD/ปกส. ของคู่สมรสเป็น 0) */
   if(HENG.taxAutoOn ? HENG.taxAutoOn() : (typeof taxAutoOn==='function' && taxAutoOn())){
-    const KEEP=['addPension','addRMF','addSSF','addESG','withheld','donation','donationEdu','mortgageInt','spouse'];
+    const KEEP=['addPension','addRMF','addSSF','addESG','withheld','donation','donationEdu','mortgageInt','spouse','spouseLife','prenatal','nsf','solar','art','se','donationParty'];
     const k2={}; KEEP.forEach(k=>{ if(stored[k]!=null) k2[k]=stored[k]; }); stored=k2; }
   return Object.assign({}, HENG.taxAuto(c), stored, wfKind(c)==='gpf'?{pvdKind:'gpf',socialSec:0}:{pvdKind:'pvd'});
 }
@@ -14093,7 +14162,7 @@ function a4Furnish(){
     sh.querySelectorAll(':scope > .a4-run').forEach(e=>e.remove());
     if(i===0) return;                                  /* หน้าปกไม่ต้องมี */
     const hd=document.createElement('div'); hd.className='a4-run a4-run-h';
-    hd.innerHTML=`<span>แผนการเงิน · คุณ${nm}</span><span>SIGNATURE 41</span>`;
+    hd.innerHTML=`<span>แผนการเงิน · คุณ${nm}</span><span>SIGNATURE 41 · Designed by CFP® Professional</span>`;
     const ft=document.createElement('div'); ft.className='a4-run a4-run-f';
     const _adv=(typeof advisorLine==='function')?advisorLine():'';
     ft.innerHTML=`<span>${_adv?('จัดทำโดย '+_adv.replace(/[&<>]/g,'')):'<b style="color:#A63C34">⚠ ยังไม่ได้ตั้งชื่อผู้จัดทำแผน</b>'} · ${today}</span><span>หน้า ${i+1} / ${total}</span>`;
@@ -17760,7 +17829,10 @@ const FOLDER_HINT = 'Step 3 Money MRI';
 /* ── library index ── */
 function libRead(){
   try{ const o=JSON.parse(localStorage.getItem(LIB_KEY)||'{}');
-    return { clients: Array.isArray(o.clients)?o.clients:[], activeId: o.activeId||null, folderName: o.folderName||'' };
+    const cl=Array.isArray(o.clients)?o.clients:[];
+    cl.forEach(r=>{ if(r && typeof r.name==='string'){ const tg=r.tag||''; const base=(tg && r.name.endsWith(tg))?r.name.slice(0,r.name.length-tg.length):r.name;
+      r.name=base.split(' & ').map(maskName).join(' & ')+(tg && r.name.endsWith(tg)?tg:''); } });   /* v3.10.20 PDPA */
+    return { clients: cl, activeId: o.activeId||null, folderName: o.folderName||'' };
   }catch(e){ return {clients:[], activeId:null, folderName:''}; }
 }
 function libWrite(lib){ try{ localStorage.setItem(LIB_KEY, JSON.stringify(lib)); return true; }catch(e){ console.warn('lib write failed',e); window.S41_STORE_ERR=String((e&&e.message)||e||'lib write failed'); return false; } }
@@ -17771,6 +17843,7 @@ function planName(st){
   return c.length ? c.map(x=>x.name).filter(Boolean).join(' & ') || 'ลูกค้าไม่ระบุชื่อ' : 'ลูกค้าใหม่';
 }
 const safeFile = s => String(s||'client').replace(/[\\/:*?"<>|]/g,'').replace(/\s+/g,'_').slice(0,40);
+const safeFileKeepSpace = s => String(s||'client').replace(/[\\/:*?"<>|]/g,'').replace(/\s+/g,' ').trim().slice(0,80);
 
 /* ── payload เดียวกับ Export เดิม (ไฟล์เก่า/ใหม่เปิดข้ามกันได้) ── */
 function clientPayload(id, name){
@@ -17918,15 +17991,19 @@ async function folderWriteNow(){
   if(!DIR_HANDLE) return false;
   const lib0=libRead(); const rec0=lib0.clients.find(c=>c.id===lib0.activeId); if(!rec0) return false;
   const recId=rec0.id, oldFile=rec0.file||'';
-  const want='S41_Step3_'+safeFile(rec0.name)+'_'+recId+'.json';   /* v3.9.14: ใส่ Step3 ในชื่อ — ไฟล์เดิมชื่อ S41_<ชื่อ>_<id> จะถูกเปลี่ยนชื่อให้ตอนบันทึกครั้งถัดไป */
+  const _base=safeFileKeepSpace(mriFileBase());   /* v3.10.20: ชื่อเดียวกับปุ่มบันทึก · ต่อท้าย (2) (3) เฉพาะเมื่อชื่อนี้เป็นของลูกค้าคนอื่นอยู่แล้ว กันเขียนทับกัน */
+  const _taken=new Set(lib0.clients.filter(c=>c&&c.id!==recId&&c.file).map(c=>c.file));
+  let want=_base+'.json';   /* v3.9.14: ใส่ Step3 ในชื่อ — ไฟล์เดิมชื่อ S41_<ชื่อ>_<id> จะถูกเปลี่ยนชื่อให้ตอนบันทึกครั้งถัดไป */
   const body=JSON.stringify(clientPayload(recId, rec0.name), null, 2);
   try{
     if(await folderPerm(DIR_HANDLE,false)!=='granted'){ FOLDER_ERR='need-permission'; paintSaveInd(); return false; }
+    { let n=1; const ownsDisk=async nm=>{ if(nm===oldFile) return false; try{ await DIR_HANDLE.getFileHandle(nm); return true; }catch(e){ return false; } };
+      while(_taken.has(want) || await ownsDisk(want)){ n++; want=_base+' ('+n+').json'; if(n>99) break; } }
     const fh=await DIR_HANDLE.getFileHandle(want,{create:true});
     const w=await fh.createWritable();
     await w.write(body);
     await w.close();
-    if(oldFile && oldFile!==want){ try{ await DIR_HANDLE.removeEntry(oldFile); }catch(e){} }  /* เปลี่ยนชื่อ → ลบไฟล์เก่า */
+    if(oldFile && oldFile!==want && !libRead().clients.some(c=>c&&c.id!==recId&&c.file===oldFile)){ try{ await DIR_HANDLE.removeEntry(oldFile); }catch(e){} }   /* v3.10.20: ไม่ลบไฟล์ที่เป็นของลูกค้าคนอื่น */  /* เปลี่ยนชื่อ → ลบไฟล์เก่า */
     const lib=libRead(); const rec=lib.clients.find(c=>c.id===recId);
     if(rec){ rec.file=want; rec.savedAt=nowISO(); libWrite(lib); }
     LAST_FOLDER_AT=new Date(); FOLDER_ERR='';
@@ -18366,7 +18443,7 @@ function a4Compact(){
     while(n && !n.classList.contains('a4-sec') && !n.classList.contains('a4-ptitle')){ n.classList.add('a4-dup'); n=n.nextElementSibling; }
   });
   /* ปก: บรรทัดท้าย */
-  host.querySelectorAll('.a4-cover').forEach(c=>{ if(!c.querySelector('.cv-foot')){ const f=document.createElement('div'); f.className='cv-foot'; f.textContent='Signature 41 · Customized for One'; c.appendChild(f); } });
+  host.querySelectorAll('.a4-cover').forEach(c=>{ if(!c.querySelector('.cv-foot')){ const f=document.createElement('div'); f.className='cv-foot'; f.textContent='Signature 41 · Customized for One · Designed by CFP® Professional'; c.appendChild(f); } });
   /* 2b) แผ่น "เส้นทางความมั่งคั่ง" ใช้หัวแบรนด์ใหญ่ (.a4-h) แทนหัวข้อ → เปลี่ยนเป็นหัวข้อ XII ทบทวนรายปี ให้ไหลต่อกับหน้าอื่นได้ */
   host.querySelectorAll(':scope > .a4-sheet').forEach(sh=>{
     if(sh.querySelector('.a4-cover')) return;
@@ -18874,7 +18951,7 @@ function a4cBuild(){
   /* ปก: ใช้ปกเดิมของรายงาน (ชื่อลูกค้า · ผู้จัดทำ · วันที่) */
   let cover='';
   try{ renderA4Summary(); const cv=host.querySelector('.a4-cover'); if(cv){ const sh=cv.closest('.a4-sheet');
-      if(!cv.querySelector('.cv-foot')) cv.insertAdjacentHTML('beforeend','<div class="cv-foot">Signature 41 · Customized for One</div>'); cover=sh.outerHTML; } }catch(e){ console.warn('a4c cover',e); }
+      if(!cv.querySelector('.cv-foot')) cv.insertAdjacentHTML('beforeend','<div class="cv-foot">Signature 41 · Customized for One · Designed by CFP® Professional</div>'); cover=sh.outerHTML; } }catch(e){ console.warn('a4c cover',e); }
   cnt.n=0; const D=a4cData();
   const blocks=[secSummary,secToday,secTimeline,secProtect,secTax,secRetire,secGoals,secCF,secTodo].map(fn=>T(()=>fn(D),'')).join('');
   host.innerHTML=cover+`<div id="a4cFlow">${blocks}</div>`;
@@ -18882,7 +18959,7 @@ function a4cBuild(){
 }
 function a4cSheet(){ const c=STATE.carriers[0]||{};
   const sh=document.createElement('div'); sh.className='a4-sheet a4c-sheet';
-  sh.innerHTML=`<div class="a4c-run"><span>แผนการเงิน · คุณ${E(String(c.name||'ลูกค้า'))}</span><b>SIGNATURE 41</b></div><div class="a4c-body"></div><div class="a4c-foot"><span>${E(T(()=>new Date().toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric',timeZone:'Asia/Bangkok'}),''))}</span><span class="pg"></span></div>`;
+  sh.innerHTML=`<div class="a4c-run"><span>แผนการเงิน · คุณ${E(String(c.name||'ลูกค้า'))}</span><b>SIGNATURE 41 · Designed by CFP® Professional</b></div><div class="a4c-body"></div><div class="a4c-foot"><span>${E(T(()=>new Date().toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric',timeZone:'Asia/Bangkok'}),''))}</span><span class="pg"></span></div>`;
   return sh; }
 function a4cPaginate(){
   const host=document.getElementById('a4Summary'), flow=document.getElementById('a4cFlow'); if(!host||!flow) return;
