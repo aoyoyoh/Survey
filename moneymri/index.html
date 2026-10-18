@@ -2986,7 +2986,7 @@ body.adv.has-visit #main .jbar{padding-right:350px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— รากฐาน —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.10.25</b><br>Designed by CFP® Professional<span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.10.26</b><br>Designed by CFP® Professional<span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
 </aside>
 
 <main id="main">
@@ -8634,6 +8634,8 @@ function maskName(s){ s=String(s||'').replace(/[\\/:*?"<>|]/g,'').replace(/\s+/g
 /* v3.10.22 · ชื่อเล่น — บนจอ: ชื่อเล่น · ชื่อย่อ · รายงานที่ให้ลูกค้า: คุณ+ชื่อเล่น · ชื่อไฟล์: ชื่อเล่น ชื่อย่อ (ไม่มีชื่อเล่น = ชื่อย่ออย่างเดียว) — กติกาเดียวกับ Tax Scan / Keyman */
 function cleanNick(s){ return String(s||'').replace(/[\\/:*?"<>|&·]/g,'').replace(/\s+/g,' ').trim().slice(0,20); }
 function nickRpt(n){ n=cleanNick(n); return n?'คุณ'+(n.replace(/^(คุณ|พี่|น้อง|เจ๊|เฮีย|ป้า|ลุง|น้า|อา)\s*/,'')||n):''; }
+function firstRpt(s){ s=String(s||'').replace(/[\\/:*?"<>|]/g,'').replace(/\s+/g,' ').trim(); for(const t of ['นางสาว','น.ส.','นาง','นาย','คุณ','ดร.','Mrs.','Mr.','Ms.','Miss','Dr.']){ if(s.startsWith(t)&&s.length>t.length){ s=s.slice(t.length).trim(); break; } } const f=s.split(' ')[0]||''; return f?'คุณ'+f:''; }
+function cRpt(c){ return nickRpt(c&&c.nick)||firstRpt(c&&c.name); }
 function cDisp(c){ return [cleanNick(c&&c.nick),maskName(c&&c.name)].filter(Boolean).join(' · '); }
 function cFile(c){ return [cleanNick(c&&c.nick),maskName(c&&c.name)].filter(Boolean).join(' '); }
 function ddmmyy(){ const d=new Date(), p=n=>String(n).padStart(2,'0'); return p(d.getDate())+p(d.getMonth()+1)+String(d.getFullYear()).slice(-2); }
@@ -8642,7 +8644,7 @@ function maskStateNames(st){ try{ (st&&st.carriers||[]).forEach(c=>{ if(c && typ
 /* ชื่อไฟล์ PDF/JSON: [ชื่อที่ซ่อนแล้ว] Step3_MoneyMRI DDMMYY */
 function mriFileBase(){ const n=(STATE.carriers||[]).map(cFile).filter(Boolean).join(' & '); return (n?n+' ':'')+'Step3_MoneyMRI '+ddmmyy(); }
 let __mriTitle=null;
-window.addEventListener('beforeprint',()=>{ try{ maskStateNames(STATE); if(__mriTitle===null) __mriTitle=document.title; document.title=mriFileBase(); }catch(e){} });
+window.addEventListener('beforeprint',()=>{ try{ maskStateNames(STATE); if(__mriTitle===null) __mriTitle=document.title; document.title=(()=>{ const n=(STATE.carriers||[]).map(cRpt).filter(Boolean).join(' & '); return (n?n+' ':'')+'Step3_MoneyMRI '+ddmmyy(); })(); }catch(e){} });   /* v3.10.26: PDF ให้ลูกค้า = คุณ+ชื่อเล่น หรือ คุณ+ชื่อต้น */
 window.addEventListener('afterprint',()=>{ if(__mriTitle!==null){ document.title=__mriTitle; __mriTitle=null; } });
 
 /* ─── Backup: Export / Import JSON ─── */
@@ -19089,7 +19091,7 @@ window.a4FitSheets=a4FitSheets=function(){ const h=document.getElementById('a4Su
 /* v3.10.22 · รายงานที่ให้ลูกค้า: แทนชื่อย่อด้วย "คุณ+ชื่อเล่น" (เฉพาะผู้วางแผนที่มีชื่อเล่น) */
 function a4NickSwap(){ try{
   const host=document.getElementById('a4Overlay'); if(!host) return;
-  const pairs=(STATE.carriers||[]).map(c=>({m:maskName(c.name),r:nickRpt(c.nick)})).filter(p=>p.m&&p.r).sort((a,b)=>b.m.length-a.m.length);
+  const pairs=(STATE.carriers||[]).map(c=>({m:maskName(c.name),r:cRpt(c)}))   /* v3.10.26: ไม่มีชื่อเล่น → คุณ+ชื่อต้น */.filter(p=>p.m&&p.r).sort((a,b)=>b.m.length-a.m.length);
   if(!pairs.length) return;
   const w=document.createTreeWalker(host,NodeFilter.SHOW_TEXT); const nodes=[]; while(w.nextNode()) nodes.push(w.currentNode);
   nodes.forEach(n=>{ let t=n.nodeValue, o=t; pairs.forEach(p=>{ t=t.split('คุณ'+p.m).join(p.r).split('คุณ '+p.m).join(p.r).split(p.m).join(p.r); }); if(t!==o) n.nodeValue=t; });
