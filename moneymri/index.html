@@ -2986,7 +2986,7 @@ body.adv.has-visit #main .jbar{padding-right:350px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— รากฐาน —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.10.26</b><br>Designed by CFP® Professional<span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.10.27</b><br>Designed by CFP® Professional<span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
 </aside>
 
 <main id="main">
@@ -9116,6 +9116,10 @@ const RULES_FALLBACK = {
       "บุตรคนละ": 30000,
       "บุตรคนที่ 2 ขึ้นไปเกิดตั้งแต่ปี 2561 คนละ": 60000,
       "บิดามารดาในอุปการะสูงสุด (คน)": 4,
+      "บิดามารดาฝั่งละสูงสุด (คน)": 2,
+      "บุตรบุญธรรมรวมบุตรสูงสุด (คน)": 3,
+      "ThaiESGX จาก LTF ไม่เกิน": [ {"ตั้งแต่ปี":0,"ถึงปี":2568,"ค่า":0}, {"ตั้งแต่ปี":2569,"ถึงปี":2572,"ค่า":50000}, {"ตั้งแต่ปี":2573,"ถึงปี":9999,"ค่า":0} ],
+      "กองทุนครูเอกชนไม่เกิน": 500000,
       "บุตรอายุไม่เกิน": 25,
       "บุตรไม่ต้องกำลังศึกษาถ้าอายุไม่เกิน": 20,
       "_หมายเหตุบุตร": "โปรแกรมคิด 30,000 เท่ากันทุกคน ยังไม่ได้แยกกรณีบุตรคนที่ 2 ขึ้นไปที่เกิดตั้งแต่ 2561 (สิทธิ 60,000) — ถ้าเจอเคสนั้นต้องบวกมือ",
@@ -11317,7 +11321,7 @@ const HENG = (function(){
     /* v3.10.20 (ตรงกับ Tax Scan): ผู้มีอายุ 65+ ยกเว้นเงินได้ 190,000 "ก่อน" หักค่าใช้จ่าย เลือกหักจากเงินได้ที่เสียค่าใช้จ่ายน้อยที่สุด
        เดิมหักค่าใช้จ่ายจากเงินได้เต็ม แล้วบวก 190,000 เป็นค่าลดหย่อน → ค่าใช้จ่ายนับซ้ำส่วนที่ได้ยกเว้น ภาษีต่ำกว่าจริง */
     let _eld=0, _ex={sal:0,row:{}};
-    if(Number(t.age)>=RD('ยกเว้นผู้สูงอายุตั้งแต่อายุ',(typeof snapYearCE==='function'?snapYearCE():2026)+543+(Number(t._y)||0))){
+    if(+t.selfDis===1||Number(t.age)>=RD('ยกเว้นผู้สูงอายุตั้งแต่อายุ',(typeof snapYearCE==='function'?snapYearCE():2026)+543+(Number(t._y)||0))){
       const al=taxElderAlloc(_src, RD('ยกเว้นผู้สูงอายุไม่เกิน',(typeof snapYearCE==='function'?snapYearCE():2026)+543+(Number(t._y)||0))); _eld=al.use; _ex=al.ex; }
     expense=taxExpenseEx(_src,_ex);
     /* v3.9.28: ค่าลดหย่อนทุกตัวอ่านจากไฟล์กฎ (rules.json) ตามปีของแถวนั้น */
@@ -11332,7 +11336,12 @@ const HENG = (function(){
     const _kBrate=RDy('บุตรคนที่ 2 ขึ้นไปเกิดตั้งแต่ปี 2561 คนละ')||RDy('บุตรคนละ');
     const _pMax=RDy('บิดามารดาในอุปการะสูงสุด (คน)')||4;
     const kidsAllow=_kA*RDy('บุตรคนละ')+_kB*_kBrate;   /* v3.10.19 */
-    allow+=kidsAllow+Math.min(+t.parents||0,_pMax)*RDy('บิดามารดาในอุปการะคนละ')+(+t.disabled||0)*RDy('ผู้พิการในอุปการะคนละ');
+    /* v3.10.27 (ชุดกฎเดียวกับ Tax Scan v3.15 / Keyman v7.9): บุตรบุญธรรมนับต่อจากบุตรชอบด้วยกฎหมาย รวม ≤ 3 · บิดามารดาฝั่งละ ≤ 2
+       บิดามารดาคู่สมรสใช้ได้เมื่อคู่สมรสไม่มีเงินได้ — ผู้พึ่งพิงบิดามารดาเกิน 2 คนของคนนี้ (เคยรวมพ่อแม่คู่สมรสไว้) ย้ายไปฝั่งคู่สมรส */
+    const _side=RDy('บิดามารดาฝั่งละสูงสุด (คน)')||2, _pr=+t.parents||0;
+    const parOwn=Math.min(_pr,_side), parSp=t.spouse?Math.min(_side,Math.max(+t.spParents||0,_pr-_side)):0;
+    const adoptUsed=Math.min(+t.kidsAdopt||0,Math.max(0,(RDy('บุตรบุญธรรมรวมบุตรสูงสุด (คน)')||3)-(+t.children||0)));
+    allow+=kidsAllow+adoptUsed*RDy('บุตรคนละ')+(parOwn+parSp)*RDy('บิดามารดาในอุปการะคนละ')+(+t.disabled||0)*RDy('ผู้พิการในอุปการะคนละ');
     const _lhCap=RDy('เบี้ยประกันชีวิตรวมสุขภาพไม่เกิน');
     const _lhOwn=Math.min((+t.lifeIns||0)+Math.min(+t.healthIns||0,RDy('เบี้ยสุขภาพตนเองไม่เกิน')),_lhCap);
     /* v3.9.96: เบี้ยบำนาญใช้ช่องประกันชีวิตที่ยังเหลือก่อน (ประมวลรัษฎากร) แล้วส่วนที่เหลือจึงเข้าช่องบำนาญ 15%/200,000 */
@@ -11356,8 +11365,10 @@ const HENG = (function(){
     const _wage=(Array.isArray(t.sources)&&t.sources.length)?t.sources.reduce((a,x)=>a+(x.type==='40(1)'?Math.max(0,Number(x.amt)||0):0),0):income;
     const pvd=Math.min(+t.pvd||0,(t.pvdKind==='gpf')?1e15:_wage*RDy('PVD ร้อยละของค่าจ้าง')/100,RDy('PVD ไม่เกิน'));
     const nsf=Math.min(+t.nsf||0,RDy('กอช. ไม่เกิน'));   /* v3.10.20: กอช. อยู่ในเพดานรวมกลุ่มเกษียณ (เหมือน Tax Scan) */
-    const retireCapped=Math.min(pension+rmf+ssf+pvd+nsf,RDy('เพดานรวมกลุ่มเกษียณ')); allow+=retireCapped;
+    const tfund=Math.min(+t.tfund||0,RDy('กองทุนครูเอกชนไม่เกิน')||500000);   /* v3.10.27: กองทุนสงเคราะห์ครูเอกชน อยู่ในเพดานรวมกลุ่มเกษียณ */
+    const retireCapped=Math.min(pension+rmf+ssf+pvd+nsf+tfund,RDy('เพดานรวมกลุ่มเกษียณ')); allow+=retireCapped;
     const esg=Math.min(+t.thaiESG||0,income*RDy('ThaiESG ร้อยละของเงินได้')/100,RDy('ThaiESG ไม่เกิน')); allow+=esg;
+    const esgx=Math.min(+t.esgx||0,RDy('ThaiESGX จาก LTF ไม่เกิน')); allow+=esgx;   /* v3.10.27: ThaiESGX ส่วนสับเปลี่ยนจาก LTF ปี 2569–2572 แยกเพดาน */
     const mort=Math.min(+t.mortgageInt||0,RDy('ดอกเบี้ยกู้ซื้อบ้านไม่เกิน')); allow+=mort;
     const netBD=Math.max(0,income-expense-allow);
     const donCap=netBD*RDy('บริจาคร้อยละของเงินได้หลังหักค่าลดหย่อน')/100;
@@ -11370,7 +11381,7 @@ const HENG = (function(){
     /* v3.9.97: ภาษีวิธีที่ 2 — เงินได้ 40(2)–(8) ตั้งแต่ 1,000,000 เสีย 0.5% ถ้าเกิน 5,000 และสูงกว่าวิธีขั้นบันได */
     const _inc2=(Array.isArray(t.sources)&&t.sources.length)?t.sources.reduce((a,x)=>a+(x.type!=='40(1)'?Math.max(0,Number(x.amt)||0):0),0):0;
     const tax1=taxBracket(net), tax2=(_inc2>=1000000)?_inc2*0.005:0, method2=(tax2>5000&&tax2>tax1);
-    return {income,expense,allow,net,tax:method2?tax2:tax1,tax1,tax2,method2,party,pension,pensionSpill,rmf,ssf,pvd,esg,retireCapped,spouseLife,prenatal,solar,art,se,nsf,
+    return {income,expense,allow,net,tax:method2?tax2:tax1,tax1,tax2,method2,party,pension,pensionSpill,rmf,ssf,pvd,esg,esgx,tfund,adoptUsed,parOwn,parSp,retireCapped,spouseLife,prenatal,solar,art,se,nsf,
             lifeHealth,parentHealth,ss,mort,donEdu,don,elderly,kidsAllow,deductTotal:expense+allow+donEdu+don};
   }
   /* ═══ v3.9.24 · ภาษีของ "ปีไหนก็ได้" — ใช้ตัวเดียวกันทั้ง projection · หน้าภาษี · งบปีนี้ ═══
@@ -11486,6 +11497,9 @@ const HENG = (function(){
       spouseLife:(!!_typ.spouse?(Number(_typ.spouseLife)||0):0),
       prenatal:(y===0?(Number(_typ.prenatal)||0):0), nsf:(y===0?(Number(_typ.nsf)||0):0), solar:(y===0?(Number(_typ.solar)||0):0),
       art:(y===0?(Number(_typ.art)||0):0), se:(y===0?(Number(_typ.se)||0):0), donationParty:(y===0?(Number(_typ.donationParty)||0):0),
+      /* v3.10.27: ผู้มีเงินได้พิการ = ทุกปี · บิดามารดาคู่สมรส = ทุกปีที่ยังติ๊กคู่สมรส · ThaiESGX = ทุกปี (กฎให้ถึง 2572) · บุตรบุญธรรม / กองทุนครู = ปีนี้ */
+      selfDis:(+_typ.selfDis===1?1:0), spParents:(!!_typ.spouse?(Number(_typ.spParents)||0):0), esgx:(Number(_typ.esgx)||0),
+      kidsAdopt:(y===0?(Number(_typ.kidsAdopt)||0):0), tfund:(y===0?(Number(_typ.tfund)||0):0),
       _y:y, _estDed:dEst };
   }
   function taxAtYear(c, y){ const t=taxInputAtYear(c,y); const r=taxCore(t); r._t=t; return r; }
@@ -11508,7 +11522,7 @@ const HENG = (function(){
     const a=taxAuto(c);
     let stored=(STATE.taxByCarrier&&STATE.taxByCarrier[c.id])||(isPrimary?STATE.tax:null)||{};
     if(taxAutoOn()){   /* v3.9.24: โหมดอัตโนมัติ — เก็บเฉพาะช่องที่เครื่องคำนวณให้ไม่ได้ ที่เหลือยึดค่าที่คำนวณ */
-      const KEEP=['addPension','addRMF','addSSF','addESG','withheld','donation','donationEdu','mortgageInt','spouse','spouseLife','prenatal','nsf','solar','art','se','donationParty'];
+      const KEEP=['addPension','addRMF','addSSF','addESG','withheld','donation','donationEdu','mortgageInt','spouse','spouseLife','prenatal','nsf','solar','art','se','donationParty','selfDis','spParents','esgx','kidsAdopt','tfund'];
       const k2={}; KEEP.forEach(k=>{ if(stored[k]!=null) k2[k]=stored[k]; }); stored=k2;
     }
     const t=Object.assign({},a,stored); t.pvdKind=wfKind(c); if(t.pvdKind==='gpf') t.socialSec=0;
@@ -12046,14 +12060,14 @@ function tstate(){ const c=taxSel(); if(!STATE.taxByCarrier) STATE.taxByCarrier=
   }
   if(!STATE.tax) STATE.tax=HENG.taxAuto(); return STATE.tax; }
 function setTaxCarrier(cid){ STATE.taxSel=cid; if(typeof saveState==='function')saveState(); renderTax(); }
-const TAX_KEEP=['addPension','addRMF','addSSF','addESG','withheld','donation','donationEdu','mortgageInt','spouse','spouseLife','prenatal','nsf','solar','art','se','donationParty'];   /* ช่องที่ผู้ใช้กรอกเองได้เสมอ (เครื่องคำนวณให้ไม่ได้) */
+const TAX_KEEP=['addPension','addRMF','addSSF','addESG','withheld','donation','donationEdu','mortgageInt','spouse','spouseLife','prenatal','nsf','solar','art','se','donationParty','selfDis','spParents','esgx','kidsAdopt','tfund'];   /* ช่องที่ผู้ใช้กรอกเองได้เสมอ (เครื่องคำนวณให้ไม่ได้) */
 function setTax(field, raw){
   if(taxAutoOn() && TAX_KEEP.indexOf(field)<0){ renderTax(); return; }   /* v3.9.90: โหมดอัตโนมัติ — ช่องที่เครื่องคิดให้ ไม่รับค่าพิมพ์ */
   const t=tstate();
-  if(field==='spouse'){ t.spouse = (raw===true||raw==='true'||raw==='1'||raw===1); }
+  if(field==='spouse'||field==='selfDis'){ const on=(raw===true||raw==='true'||raw==='1'||raw===1); if(field==='spouse') t.spouse=on; else t.selfDis=on?1:0; }
   else { const v=Math.max(0, Number(String(raw==null?'':raw).replace(/[^\d.]/g,''))||0);
     /* v3.9.95·M2: ช่องจำนวนคน (บุตร · บิดามารดา · ผู้พิการ) 0–20 คน */
-    if(['children','parents','disabled','childrenNew','childrenOld'].indexOf(field)>=0 && (v>20 || Math.round(v)!==v)){ numReject('จำนวนคน',0,20,'คน'); renderTax(); return; }
+    if(['children','parents','disabled','childrenNew','childrenOld','kidsAdopt','spParents'].indexOf(field)>=0 && (v>20 || Math.round(v)!==v)){ numReject('จำนวนคน',0,20,'คน'); renderTax(); return; }
     t[field] = v; }
   taxManualSync();
   if(typeof saveState==='function') saveState();
@@ -12096,7 +12110,7 @@ function setTaxPlanY(raw){
 function taxUseComputed(){ taxManualSync(); if(typeof saveState==='function') saveState(); render(); try{ renderTax(); }catch(e){} }
 function resetTaxAuto(){ const c=taxSel();
   /* v3.9.90: ดึงค่าชุดเดียวกับที่โหมดอัตโนมัติใช้ (taxAutoNow) และเก็บช่องที่ผู้ใช้กรอกเอง (หัก ณ ที่จ่าย/บริจาค/ดอกเบี้ยบ้าน/แผนลงทุนเพิ่ม) ไว้ */
-  const KEEP=['addPension','addRMF','addSSF','addESG','withheld','donation','donationEdu','mortgageInt','spouse','spouseLife','prenatal','nsf','solar','art','se','donationParty'];
+  const KEEP=['addPension','addRMF','addSSF','addESG','withheld','donation','donationEdu','mortgageInt','spouse','spouseLife','prenatal','nsf','solar','art','se','donationParty','selfDis','spParents','esgx','kidsAdopt','tfund'];
   const fresh=cc=>{ const old=(cc&&STATE.taxByCarrier&&STATE.taxByCarrier[cc.id])||STATE.tax||{}; const a=(HENG.taxAutoNow?HENG.taxAutoNow(cc):HENG.taxAuto(cc)); KEEP.forEach(k=>{ if(old[k]!=null) a[k]=old[k]; }); return a; };
   if(c){ if(!STATE.taxByCarrier)STATE.taxByCarrier={}; STATE.taxByCarrier[c.id]=fresh(c); if((STATE.carriers||[])[0]&&c.id===STATE.carriers[0].id) STATE.tax=STATE.taxByCarrier[c.id]; } else STATE.tax=fresh();
   taxManualSync();
@@ -12185,7 +12199,10 @@ function renderTax(){
     <div class="tx-sec">ครอบครัว (ค่าลดหย่อน)</div>
     ${row('คู่สมรสไม่มีรายได้',`<label style="font-size:12px;display:flex;align-items:center;gap:5px;justify-content:flex-end"><input type="checkbox" ${t.spouse?'checked':''} onchange="setTax('spouse',this.checked)"> มี (60,000)</label>`)}
     ${row('บุตร','<div style="display:flex;align-items:center;gap:6px;justify-content:flex-end">'+cnt('children')+'<span style="font-size:11px;color:var(--faint)">คน × 30,000'+((+t.childrenB||0)>0?' · ในนี้ '+(+t.childrenB)+' คนได้ 60,000 (คนที่ 2+ เกิดปี 2561+)':'')+'</span></div>')}
-    ${row('บิดามารดาในอุปการะ','<div style="display:flex;align-items:center;gap:6px;justify-content:flex-end">'+cnt('parents')+'<span style="font-size:11px;color:var(--faint)">คน × 30,000</span></div>','อายุ 60+ รายได้ไม่เกิน 30,000/ปี')}
+    ${row('บิดามารดาตนเอง','<div style="display:flex;align-items:center;gap:6px;justify-content:flex-end">'+cnt('parents')+'<span style="font-size:11px;color:var(--faint)">คน × 30,000</span></div>','อายุ 60+ รายได้ไม่เกิน 30,000/ปี')}
+    ${t.spouse?row('บิดามารดาคู่สมรส','<div style="display:flex;align-items:center;gap:6px;justify-content:flex-end">'+cnt('spParents')+'<span style="font-size:11px;color:var(--faint)">คน × 30,000</span></div>','60+ · ≤ 2 คน'):''}
+    ${row('บุตรบุญธรรม','<div style="display:flex;align-items:center;gap:6px;justify-content:flex-end">'+cnt('kidsAdopt')+'<span style="font-size:11px;color:var(--faint)">คน × 30,000</span></div>','รวมบุตรทั้งหมด ≤ 3 คน')}
+    ${row('ผู้มีเงินได้พิการ (อายุ < 65)',`<label style="font-size:12px;display:flex;align-items:center;gap:5px;justify-content:flex-end"><input type="checkbox" ${+t.selfDis===1?'checked':''} onchange="setTax('selfDis',this.checked)"> ใช่</label>`,'ยกเว้น 190,000')}
     ${row('ผู้พิการในอุปการะ','<div style="display:flex;align-items:center;gap:6px;justify-content:flex-end">'+cnt('disabled')+'<span style="font-size:11px;color:var(--faint)">คน × 60,000</span></div>')}
     <div class="tx-sec">ประกัน (ตามจ่ายจริง · มีเพดาน) · บาท/ปี</div>
     ${row('เบี้ยประกันชีวิต',inp('lifeIns'),'+สุขภาพ รวม ≤ 100,000')}
@@ -12196,6 +12213,7 @@ function renderTax(){
     ${row('RMF',inp('rmf'),'≤ 30% · ≤ 500,000')}
     ${RD('SSF ไม่เกิน')>0?row('SSF',inp('ssf'),'≤ 30% · ≤ 200,000'):''}
     ${row('Thai ESG',inp('thaiESG'),'≤ 30% · ≤ 300,000 (แยกเพดาน)')}
+    ${RD('ThaiESGX จาก LTF ไม่เกิน')>0?row('ThaiESGX (จาก LTF)',inp('esgx'),'≤ 50,000 · ปี 2569–2572'):''}
     ${wfKind(cur)==='gpf'?row('กบข.',inp('pvd'),'ตามจ่ายจริง · อยู่ในเพดานรวม 500,000'):row('PVD',inp('pvd'),'≤ 15% · อยู่ในเพดานรวม 500,000')}
     ${row('ประกันสังคม',inp('socialSec'),'≤ '+f0(_ssCap)+' (5% ของเพดานค่าจ้างปี '+(snapYearCE()+543)+')')}
     <div class="tx-sec">อื่น ๆ · บาท/ปี</div>
@@ -12204,6 +12222,7 @@ function renderTax(){
     ${t.spouse?row('ประกันชีวิตคู่สมรสไม่มีเงินได้',inp('spouseLife'),'≤ 10,000'):''}
     ${row('ฝากครรภ์และคลอดบุตร',inp('prenatal'),'≤ 60,000')}
     ${row('กอช.',inp('nsf'),'≤ 30,000 · อยู่ในเพดานรวม 500,000')}
+    ${row('กองทุนครูเอกชน',inp('tfund'),'ตามจริง · อยู่ในเพดานรวม 500,000')}
     ${row('ติดโซลาร์หลังคาบ้าน',inp('solar'),'≤ 200,000 · ครั้งเดียว · ติดตั้งตั้งแต่ 3 มี.ค. 69')}
     ${row('ซื้องานศิลปะ (ศิลปินขึ้นทะเบียน)',inp('art'),'≤ 100,000/ปี · ปี 2568–2570')}
     ${row('ลงทุนหุ้นวิสาหกิจเพื่อสังคม',inp('se'),'≤ 100,000')}
@@ -12634,7 +12653,7 @@ function effTaxState(c){
   /* v3.9.63: โหมดอัตโนมัติ — ใช้กฎเดียวกับหน้าภาษี (taxPlan): เก็บเฉพาะช่องที่เครื่องคิดเองไม่ได้
      เดิมเอาค่าเก่าที่เคยบันทึกไว้ทับทั้งหมด ตัวเลขเทียบยื่นรวม/แยกจึงไม่ตรงกับหน้าภาษี (เช่น PVD/ปกส. ของคู่สมรสเป็น 0) */
   if(HENG.taxAutoOn ? HENG.taxAutoOn() : (typeof taxAutoOn==='function' && taxAutoOn())){
-    const KEEP=['addPension','addRMF','addSSF','addESG','withheld','donation','donationEdu','mortgageInt','spouse','spouseLife','prenatal','nsf','solar','art','se','donationParty'];
+    const KEEP=['addPension','addRMF','addSSF','addESG','withheld','donation','donationEdu','mortgageInt','spouse','spouseLife','prenatal','nsf','solar','art','se','donationParty','selfDis','spParents','esgx','kidsAdopt','tfund'];
     const k2={}; KEEP.forEach(k=>{ if(stored[k]!=null) k2[k]=stored[k]; }); stored=k2; }
   return Object.assign({}, HENG.taxAuto(c), stored, wfKind(c)==='gpf'?{pvdKind:'gpf',socialSec:0}:{pvdKind:'pvd'});
 }
