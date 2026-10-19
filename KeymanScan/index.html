@@ -301,7 +301,7 @@ table.iter td:first-child,table.iter th:first-child{text-align:left}
 <script>
 /* ══════════ กฎ 2569 ══════════ */
 const BR=[[150000,0],[300000,.05],[500000,.10],[750000,.15],[1000000,.20],[2000000,.25],[5000000,.30],[Infinity,.35]];
-const R={elderAge:65,elderEx:190000,personal:60000,spouse:60000,kidA:30000,kidB:60000,parent:30000,parentMax:4,disabled:60000,lifeHealth:100000,health:25000,spouseLife:10000,parentHealth:15000,sso:10500,pensionPct:.15,pensionMax:200000,rmfPct:.30,rmfMax:500000,pvdPct:.15,pvdMax:500000,retireMax:500000,gpfPct:.30,gpfMax:500000,nsfMax:30000,prenatal:60000,art:100000,se:100000,party:10000,esgPct:.30,esgMax:300000,mort:100000,donPct:.10,solar:200000};
+const R={elderAge:65,elderEx:190000,personal:60000,spouse:60000,kidA:30000,kidB:60000,parent:30000,parentMax:4,parentSide:2,adoptMax:3,esgx:50000,tfundMax:500000,disabled:60000,lifeHealth:100000,health:25000,spouseLife:10000,parentHealth:15000,sso:10500,pensionPct:.15,pensionMax:200000,rmfPct:.30,rmfMax:500000,pvdPct:.15,pvdMax:500000,retireMax:500000,gpfPct:.30,gpfMax:500000,nsfMax:30000,prenatal:60000,art:100000,se:100000,party:10000,esgPct:.30,esgMax:300000,mort:100000,donPct:.10,solar:200000};
 const CIT={rate:.20,smeEx:300000,smeMid:3000000,smeRate:.15,smeRev:30000000};
 const EXP={'40(1) เงินเดือน / โบนัส':{k:'sal'},'40(2) ค่านายหน้า / ค่าจ้าง':{k:'sal'},'40(3) ค่าลิขสิทธิ์':{flat:.5,cap:100000},'40(4) ดอกเบี้ย / ปันผล':{flat:0},'40(5) ค่าเช่าบ้าน อาคาร':{flat:.30},'40(5) ค่าเช่าที่ดิน':{flat:.15},'40(5) ค่าเช่าที่ดินเกษตร / เช่าซื้อ':{flat:.20},'40(5) ค่าเช่าทรัพย์สินอื่น':{flat:.10},'40(6) วิชาชีพ แพทย์':{flat:.60},'40(6) วิชาชีพอื่น':{flat:.30},'40(6) ประณีตศิลปกรรม':{flat:.60},'40(7) รับเหมา':{flat:.60},'40(8) อื่น ๆ (เหมา 60%)':{flat:.60},'40(8) นักแสดง นักร้อง นักกีฬา':{tier:1}};
 const f0=n=>Math.round(+n||0).toLocaleString('en-US');
@@ -318,12 +318,15 @@ const ROWS=[
  {inc:1},
  {k:'kmIn',n:'สวัสดิการ Keyman ที่บริษัทจ่าย (เบี้ย + ภาษีออกให้)',h:'มาจากหน้า 2 อัตโนมัติ · เป็นเงินได้ 40(1) ของกรรมการ',auto:1},
  {g:'ส่วนตัว / ครอบครัว'},
- {k:'elder',n:'อายุ 65 ปีขึ้นไป',h:'ยกเว้นเงินได้ 190,000 ก่อนหักค่าใช้จ่าย',chk:1},
+ {k:'elder',n:'อายุ 65 ปีขึ้นไป',h:'ยกเว้น 190,000',chk:1},
+ {k:'selfDis',n:'ผู้มีเงินได้พิการ (อายุ < 65)',h:'ยกเว้น 190,000 · สิทธิ์เดียวกับ 65+',chk:1},
  {k:'spouse',n:'คู่สมรสไม่มีเงินได้',h:'60,000',chk:1},
- {k:'kidsA',n:'บุตร (คน)',h:'30,000/คน · คนที่ 2 ขึ้นไปที่เกิดตั้งแต่ปี 2561 ใส่ช่องถัดไป',cnt:1},
- {k:'kidsB',n:'บุตรคนที่ 2 ขึ้นไป เกิดตั้งแต่ 2561 (คน)',h:'60,000/คน',cnt:1},
- {k:'parents',n:'บิดามารดา อายุ 60+ (คน)',h:'30,000/คน ไม่เกิน 4 คน',cnt:1},
- {k:'disabled',n:'อุปการะผู้พิการ (คน)',h:'60,000/คน',cnt:1},
+ {k:'kidsA',n:'บุตรคนแรก / เกิดก่อนปี 61',h:'30,000 · อายุ ≤ 20 (เรียน ≤ 25)',cnt:1},
+ {k:'kidsB',n:'บุตรคนที่ 2+ เกิดปี 61 ขึ้นไป',h:'60,000',cnt:1},
+ {k:'kidsAdopt',n:'บุตรบุญธรรม',h:'30,000 · รวมบุตรทั้งหมด ≤ 3 คน',cnt:1},
+ {k:'parents',n:'บิดามารดาตนเอง (60+)',h:'30,000/คน · ≤ 2 คน',cnt:1},
+ {k:'spParents',n:'บิดามารดาคู่สมรส (60+)',h:'30,000/คน · ≤ 2 คน · คู่สมรสไม่มีเงินได้',cnt:1},
+ {k:'disabled',n:'อุปการะคนพิการ',h:'60,000/คน',cnt:1},
  {g:'ประกันและกองทุน'},
  {k:'life',n:'ประกันชีวิต ตนเอง',h:'คุ้มครอง 10 ปีขึ้นไป · รวมสุขภาพไม่เกิน 100,000'},
  {k:'health',n:'ประกันสุขภาพ / โรคร้ายแรง ตนเอง',h:'ไม่เกิน 25,000 ในช่อง 100,000'},
@@ -333,29 +336,32 @@ const ROWS=[
  {k:'pvd',n:'กองทุนสำรองเลี้ยงชีพ (ส่วนลูกจ้าง)',h:'15% ของค่าจ้าง'},
  {k:'gpf',n:'กบข.',h:'30% ของเงินได้'},
  {k:'rmf',n:'RMF',h:'30% ของเงินได้ · รวมกองทุนเกษียณไม่เกิน 500,000'},
- {k:'esg',n:'Thai ESG / ESGX',h:'30% ของเงินได้ ไม่เกิน 300,000 (ปีสุดท้าย 2569)'},
+ {k:'esg',n:'Thai ESG',h:'30% · ≤ 300,000'},
+ {k:'esgx',n:'ThaiESGX (จาก LTF)',h:'≤ 50,000'},
  {k:'sso',n:'ประกันสังคม',h:'ถ้าเป็นผู้ประกันตน 10,500',ph:'10,500'},
  {g:'อื่น ๆ'},
  {k:'mort',n:'ดอกเบี้ยเงินกู้ที่อยู่อาศัย',h:'ไม่เกิน 100,000'},
  {k:'solar',n:'ติดโซลาร์หลังคาบ้าน',h:'ไม่เกิน 200,000 · ครั้งเดียว'},
  {k:'donEdu',n:'บริจาคการศึกษา / กีฬา / รพ.รัฐ',h:'หักได้ 2 เท่า ไม่เกิน 10%'},
  {k:'don',n:'บริจาคทั่วไป',h:'ไม่เกิน 10%'},
- {g:'รายการที่พบน้อย',rare:1,h:'ฝากครรภ์ · กอช. · งานศิลปะ · วิสาหกิจเพื่อสังคม · พรรคการเมือง'},
+ {g:'รายการที่พบน้อย',rare:1,h:'กอช. · ครูเอกชน · ศิลปะ · อื่น ๆ'},
  {k:'prenatal',n:'ฝากครรภ์และคลอดบุตร',h:'ไม่เกิน 60,000',rare:1},
  {k:'nsf',n:'กอช.',h:'ไม่เกิน 30,000 · รวมกองทุนเกษียณไม่เกิน 500,000',rare:1},
+ {k:'tfund',n:'กองทุนครูเอกชน',h:'ตามจริง · รวมกองทุนเกษียณไม่เกิน 500,000',rare:1},
  {k:'art',n:'ซื้องานศิลปะจากศิลปินที่ขึ้นทะเบียน',h:'ไม่เกิน 100,000 · ปี 2568–2570',rare:1},
  {k:'se',n:'ลงทุนหุ้นวิสาหกิจเพื่อสังคม',h:'ไม่เกิน 100,000',rare:1},
  {k:'party',n:'บริจาคพรรคการเมือง',h:'ไม่เกิน 10,000',rare:1},
 ];
 let RARE=0;   /* v7.0: หมวดพบน้อยปิดไว้ — แถวที่มีตัวเลขโชว์เสมอ */
-const DEF={gpf:0,nsf:0,prenatal:0,art:0,se:0,party:0,elder:0,spouse:0,kidsA:0,kidsB:0,parents:0,disabled:0,life:0,health:0,slife:0,phealth:0,pension:0,pvd:0,rmf:0,esg:0,sso:0,mort:0,solar:0,donEdu:0,don:0};
+const DEF={gpf:0,nsf:0,tfund:0,esgx:0,selfDis:0,kidsAdopt:0,spParents:0,prenatal:0,art:0,se:0,party:0,elder:0,spouse:0,kidsA:0,kidsB:0,parents:0,disabled:0,life:0,health:0,slife:0,phealth:0,pension:0,pvd:0,rmf:0,esg:0,sso:0,mort:0,solar:0,donEdu:0,don:0};
 let B=Object.assign({},DEF), PL={};   // B = ก่อน · PL = แผน (เฉพาะช่องที่ใส่)
 const INC0=()=>[{t:'40(1) เงินเดือน / โบนัส',b:0,p:null}];
 let INC=INC0();   // แถวเงินได้ ไม่จำกัดจำนวน: t ประเภท · b ก่อน · p แผน (null = เท่าเดิม)
 let C={rev:0,dir:0,cogs:0,sga:0,sme:0}, K={prem:0,gross:1,life:1,auto:1}, Q={debt:0,debtPay:0,famExp:0,famYears:10,edu:0,tpdExp:0,tpdYears:10,ci:3000000,ciYears:2,haveLife:0,haveTpd:0,haveCI:0,liquid:0,months:12,repl:0,guar:0,dirLoan:0,selfPay:0,ciCov:0,fixed:0}, S={div:1,est:0,name:'',nick:''};
 const KEY='s41km6';
 function save(){ try{ localStorage.setItem(KEY,JSON.stringify({B,PL,INC,C,K,Q,S})); }catch(e){} }
-function load(){ try{ const s=JSON.parse(localStorage.getItem(KEY)||'{}'); if(s.B) B=Object.assign({},DEF,s.B); if(s.PL) PL=s.PL; if(Array.isArray(s.INC)&&s.INC.length) INC=s.INC; if(s.C){ C=Object.assign(C,s.C); if(+C.dir>0){ C.sga=(+C.sga||0)+(+C.dir); C.dir=0; } } if(s.K) K=Object.assign(K,s.K); if(s.Q) Q=Object.assign(Q,s.Q); if(s.S) S=Object.assign(S,s.S); }catch(e){} }
+function migP(o){ if((+o.parents||0)>2){ if(o.spouse&&!(+o.spParents>0)) o.spParents=Math.min(2,(+o.parents)-2); o.parents=2; } }
+function load(){ try{ const s=JSON.parse(localStorage.getItem(KEY)||'{}'); if(s.B){ B=Object.assign({},DEF,s.B); migP(B); } if(s.PL) PL=s.PL; if(Array.isArray(s.INC)&&s.INC.length) INC=s.INC; if(s.C){ C=Object.assign(C,s.C); if(+C.dir>0){ C.sga=(+C.sga||0)+(+C.dir); C.dir=0; } } if(s.K) K=Object.assign(K,s.K); if(s.Q) Q=Object.assign(Q,s.Q); if(s.S) S=Object.assign(S,s.S); }catch(e){} }
 
 /* ══════════ เครื่องคิดภาษีบุคคล ══════════ */
 /* v6.1: 40(3) หัก 50% ≤ 100,000 แยกจาก 40(1)+(2) · ส่วน PVD/กบข. ที่เกิน 10,000 เป็นเงินได้ยกเว้น หักออกจาก 40(1) ก่อนคิดค่าใช้จ่าย (ภาษีอากรฯ 2567 หัวข้อ 4.2 · ชุดกฎเดียวกับ Money MRI)
@@ -390,22 +396,25 @@ function elderAlloc(rows,kmIn,pvdEx,ex){
 function calcPerson(p,kmIn,rows){
   kmIn=kmIn||0; rows=rows||p.rows||INC.map(r=>({t:r.t,a:r.b}));
   const _w=incomeOf(rows,kmIn).sal, _pvdEx=Math.max(0,Math.min(+p.pvd||0,_w*R.pvdPct,R.pvdMax)-10000);
-  const _el=p.elder?elderAlloc(rows,kmIn,_pvdEx,R.elderEx):{alloc:{},use:0};
+  const _el=(p.elder||p.selfDis)?elderAlloc(rows,kmIn,_pvdEx,R.elderEx):{alloc:{},use:0};
   const inc=incomeOf(rows,kmIn,_pvdEx,_el.alloc), income=inc.income, sal=inc.sal, expense=inc.expense;
   const u={};  // ใช้ได้จริง
-  u.elder=_el.use; u.personal=R.personal; u.spouse=p.spouse?R.spouse:0; u.kidsA=(+p.kidsA||0)*R.kidA; u.kidsB=(+p.kidsB||0)*R.kidB; u.parents=Math.min(+p.parents||0,R.parentMax)*R.parent; u.disabled=(+p.disabled||0)*R.disabled;
+  u.elder=_el.use; u.personal=R.personal; u.spouse=p.spouse?R.spouse:0; /* v7.9: ชุดกฎเดียวกับ Tax Scan v3.15 — บุตรคนแรก 30,000 เสมอ · บุตรบุญธรรมนับรวมไม่เกิน 3 · บิดามารดาฝั่งละ ≤ 2 · บิดามารดาคู่สมรสเมื่อคู่สมรสไม่มีเงินได้ */
+  const kA=(+p.kidsA||0)>0?(+p.kidsA||0):((+p.kidsB||0)>0?1:0), kB=(+p.kidsA||0)>0?(+p.kidsB||0):Math.max(0,(+p.kidsB||0)-1);
+  u.kidsA=kA*R.kidA; u.kidsB=kB*R.kidB; u.kidsAdopt=Math.min(+p.kidsAdopt||0,Math.max(0,R.adoptMax-kA-kB))*R.kidA;
+  u.parents=Math.min(+p.parents||0,R.parentSide)*R.parent; u.spParents=p.spouse?Math.min(+p.spParents||0,R.parentSide)*R.parent:0; u.disabled=(+p.disabled||0)*R.disabled;
   const healthC=Math.min(+p.health||0,R.health); const lifeOwn=Math.min((+p.life||0)+healthC,R.lifeHealth);
   u.life=Math.min(+p.life||0,R.lifeHealth); u.health=Math.max(0,lifeOwn-u.life);
   const spill=Math.min(+p.pension||0,Math.max(0,R.lifeHealth-lifeOwn));
   u.slife=p.spouse?Math.min(+p.slife||0,R.spouseLife):0; u.phealth=Math.min(+p.phealth||0,R.parentHealth); u.sso=Math.min(+p.sso||0,R.sso);
   const pen=Math.min(Math.max(0,(+p.pension||0)-spill),income*R.pensionPct,R.pensionMax);
-  const pvd=Math.min(+p.pvd||0,sal*R.pvdPct,R.pvdMax), rmf=Math.min(+p.rmf||0,income*R.rmfPct,R.rmfMax), gpf=Math.min(+p.gpf||0,income*R.gpfPct,R.gpfMax), nsf=Math.min(+p.nsf||0,R.nsfMax);
-  let over=Math.max(0,pen+pvd+rmf+gpf+nsf-R.retireMax);  // เพดานรวม 500,000 ตัดจาก RMF → กบข. → กอช. → PVD → บำนาญ
-  const cutR=Math.min(over,rmf); over-=cutR; const cutG=Math.min(over,gpf); over-=cutG; const cutS=Math.min(over,nsf); over-=cutS; const cutP=Math.min(over,pvd); over-=cutP; const cutN=Math.min(over,pen);
-  u.rmf=rmf-cutR; u.gpf=gpf-cutG; u.nsf=nsf-cutS; u.pvd=pvd-cutP; u.pension=pen-cutN+spill;
+  const pvd=Math.min(+p.pvd||0,sal*R.pvdPct,R.pvdMax), rmf=Math.min(+p.rmf||0,income*R.rmfPct,R.rmfMax), gpf=Math.min(+p.gpf||0,income*R.gpfPct,R.gpfMax), nsf=Math.min(+p.nsf||0,R.nsfMax), tf=Math.min(+p.tfund||0,R.tfundMax);
+  let over=Math.max(0,pen+pvd+rmf+gpf+nsf+tf-R.retireMax);  // เพดานรวม 500,000 ตัดจาก RMF → กบข. → กอช. → PVD → บำนาญ
+  const cutR=Math.min(over,rmf); over-=cutR; const cutG=Math.min(over,gpf); over-=cutG; const cutS=Math.min(over,nsf); over-=cutS; const cutT=Math.min(over,tf); over-=cutT; const cutP=Math.min(over,pvd); over-=cutP; const cutN=Math.min(over,pen);
+  u.rmf=rmf-cutR; u.gpf=gpf-cutG; u.nsf=nsf-cutS; u.tfund=tf-cutT; u.pvd=pvd-cutP; u.pension=pen-cutN+spill;
   u.prenatal=Math.min(+p.prenatal||0,R.prenatal); u.art=Math.min(+p.art||0,R.art); u.se=Math.min(+p.se||0,R.se); u.party=Math.min(+p.party||0,R.party);
-  u.esg=Math.min(+p.esg||0,income*R.esgPct,R.esgMax); u.mort=Math.min(+p.mort||0,R.mort); u.solar=Math.min(+p.solar||0,R.solar);
-  const allow=u.elder+u.personal+u.spouse+u.kidsA+u.kidsB+u.parents+u.disabled+u.life+u.health+u.slife+u.phealth+u.sso+u.pension+u.pvd+u.rmf+u.esg+u.mort+u.solar+u.gpf+u.nsf+u.prenatal+u.art+u.se+u.party;
+  u.esg=Math.min(+p.esg||0,income*R.esgPct,R.esgMax); u.esgx=Math.min(+p.esgx||0,R.esgx); u.mort=Math.min(+p.mort||0,R.mort); u.solar=Math.min(+p.solar||0,R.solar);
+  const allow=u.elder+u.personal+u.spouse+u.kidsA+u.kidsB+u.kidsAdopt+u.spParents+u.tfund+u.esgx+u.parents+u.disabled+u.life+u.health+u.slife+u.phealth+u.sso+u.pension+u.pvd+u.rmf+u.esg+u.mort+u.solar+u.gpf+u.nsf+u.prenatal+u.art+u.se+u.party;
   const netBD=Math.max(0,income-expense-allow);
   u.donEdu=Math.min((+p.donEdu||0)*2,netBD*R.donPct); const _eduLeft=Math.max(0,(+p.donEdu||0)-u.donEdu/2);
   u.don=Math.min((+p.don||0)+_eduLeft,Math.max(0,(netBD-u.donEdu)*R.donPct));
@@ -612,7 +621,7 @@ function buildReport(){
   const flags=[...document.querySelectorAll('#s-flags .flag')].map(f=>`<div class="p-flag">${f.textContent}</div>`).join('');
   pa.innerHTML=`<div class="p-head"><div style="display:flex;align-items:center;gap:12px"><img class="logo" src="${document.querySelector('.top .logo').src}" alt=""><div class="p-title">Keyman Scan <span style="color:var(--gold);font-family:var(--thai);font-weight:500;font-size:.8em">2569</span></div></div><div class="p-meta">${rptName()?'<b>'+String(rptName()).replace(/[<>&]/g,'')+'</b> · ':''}${today}</div></div>
     ${heroPrint()}<div class="p-grid2">${pers}${corp}</div>${save}${cover_}${flags?'<div class="p-box"><h3>ข้อสังเกต</h3>'+flags+'</div>':''}
-    <div class="p-foot">ภาษีบุคคลตามกฎ 2569 · บริษัท 20% / SME 0–15–20% · เบี้ยและภาษีออกให้หักรายจ่ายได้เมื่อมีมติ (กค 0811/408 · กค 0702/10867) · ปันผล 10% / มรดก 5% เป็นสมมติฐาน · ตัวเลขประมาณเพื่อวางแผน ให้นักบัญชียืนยันก่อนดำเนินการ · S41 Keyman Scan v7.8 · Designed by CFP® Professional</div>`;
+    <div class="p-foot">ภาษีบุคคลตามกฎ 2569 · บริษัท 20% / SME 0–15–20% · เบี้ยและภาษีออกให้หักรายจ่ายได้เมื่อมีมติ (กค 0811/408 · กค 0702/10867) · ปันผล 10% / มรดก 5% เป็นสมมติฐาน · ตัวเลขประมาณเพื่อวางแผน ให้นักบัญชียืนยันก่อนดำเนินการ · S41 Keyman Scan v7.9 · Designed by CFP® Professional</div>`;
 }
 /* PDPA: แสดงชื่อ-นามสกุลแค่ตัวอักษรแรกตัวเดียว ที่เหลือเป็น x ตามจำนวนตัวอักษร (สระบน-ล่าง/วรรณยุกต์ไม่นับ) · เก็บเฉพาะชื่อที่ซ่อนแล้ว */
 const SHOW_FULL_NAME=true;
@@ -639,14 +648,14 @@ window.addEventListener('afterprint',()=>{ if(__title!==null){ document.title=__
 function toast(msg,err){ let t=$('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; t.setAttribute('role','status'); document.body.appendChild(t); }
   t.className='toast'+(err?' err':''); t.textContent=msg; t.hidden=false; clearTimeout(t._h); t._h=setTimeout(()=>{ t.hidden=true; },err?7000:5000); }
 function saveCase(){
-  const data={app:'S41 Keyman Scan',fmt:1,ver:'7.7',saved:new Date().toISOString(),data:{B,PL,INC,C,K,Q,S}};
+  const data={app:'S41 Keyman Scan',fmt:1,ver:'7.9',saved:new Date().toISOString(),data:{B,PL,INC,C,K,Q,S}};
   const name=pdfName()+'.json';
   try{ const blob=new Blob([JSON.stringify(data,null,1)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name;
     document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },1500);
     toast('สร้างไฟล์ "'+name+'" แล้ว ตรวจในโฟลเดอร์ดาวน์โหลดของเครื่องนี้'); }
   catch(e){ toast('สร้างไฟล์ไม่สำเร็จ: '+e.message,1); } }
 function applyCase(d){
-  B=Object.assign({},DEF,d.B||{}); PL=d.PL&&typeof d.PL==='object'?d.PL:{};
+  B=Object.assign({},DEF,d.B||{}); migP(B); PL=d.PL&&typeof d.PL==='object'?d.PL:{};
   INC=Array.isArray(d.INC)&&d.INC.length?d.INC.filter(r=>r&&EXP[r.t]).map(r=>({t:r.t,b:Math.max(0,+r.b||0),p:(r.p===null||r.p===undefined||r.p==='')?null:Math.max(0,+r.p||0)})):INC0(); if(!INC.length) INC=INC0();
   C=Object.assign({rev:0,dir:0,cogs:0,sga:0,sme:0},d.C||{}); if(+C.dir>0){ C.sga=(+C.sga||0)+(+C.dir); C.dir=0; }
   K=Object.assign({prem:0,gross:1,life:1,auto:1},d.K||{});
