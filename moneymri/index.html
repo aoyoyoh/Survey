@@ -2986,7 +2986,7 @@ body.adv.has-visit #main .jbar{padding-right:350px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— รากฐาน —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.10.27</b><br>Designed by CFP® Professional<span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.10.29</b><br>Designed by CFP® Professional<span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
 </aside>
 
 <main id="main">
@@ -11292,7 +11292,7 @@ const HENG = (function(){
     }
     return { income:annualIncome+_bonus0, sources, spouse:false,   /* v3.9.19: income = เงินเดือน+โบนัส ให้ตรงกับ sources */
       /* v3.9.60: นับเฉพาะผู้พึ่งพิงของผู้วางแผนคนนี้ */
-      children: taxKidsOf(deps,c,isPrimary).length, childrenB: taxKidsB(deps,taxKidsOf(deps,c,isPrimary)),   /* v3.10.19 */ parents: depsOf(deps,c.id,isPrimary,'parent').length, disabled:0,
+      children: taxKidsOf(deps,c,isPrimary).length, childrenAll: taxKidsOf(deps,c,isPrimary).length, childrenB: taxKidsB(deps,taxKidsOf(deps,c,isPrimary)),   /* v3.10.19 */ parents: depsOf(deps,c.id,isPrimary,'parent').length, disabled:0,
       lifeIns: Math.round((+fx.lifeIns||0)*12*cfShareOf(c,'fixed','lifeIns')), healthIns:0, parentHealthIns:0, pensionIns:0,
       /* v3.8: ดึงเงินออม RMF/SSF และ Thai ESG ที่ลูกค้าซื้ออยู่แล้วจากงบกระแสมาลดหย่อนให้ด้วย
          เดิมตั้งเป็น 0 เสมอ → หน้าภาษีคำนวณภาษีสูงเกินจริง แล้วยังไปแนะนำให้ซื้อ RMF เพิ่มทั้งที่ซื้อเต็มอยู่แล้ว */
@@ -11340,7 +11340,8 @@ const HENG = (function(){
        บิดามารดาคู่สมรสใช้ได้เมื่อคู่สมรสไม่มีเงินได้ — ผู้พึ่งพิงบิดามารดาเกิน 2 คนของคนนี้ (เคยรวมพ่อแม่คู่สมรสไว้) ย้ายไปฝั่งคู่สมรส */
     const _side=RDy('บิดามารดาฝั่งละสูงสุด (คน)')||2, _pr=+t.parents||0;
     const parOwn=Math.min(_pr,_side), parSp=t.spouse?Math.min(_side,Math.max(+t.spParents||0,_pr-_side)):0;
-    const adoptUsed=Math.min(+t.kidsAdopt||0,Math.max(0,(RDy('บุตรบุญธรรมรวมบุตรสูงสุด (คน)')||3)-(+t.children||0)));
+    /* v3.10.28 (ตามกรมสรรพากร): เพดานบุตรบุญธรรมนับบุตรชอบด้วยกฎหมายที่มีชีวิตอยู่ทั้งหมด รวมคนที่ไม่เข้าเกณฑ์ลดหย่อน (t.childrenAll) */
+    const adoptUsed=Math.min(+t.kidsAdopt||0,Math.max(0,(RDy('บุตรบุญธรรมรวมบุตรสูงสุด (คน)')||3)-Math.max(+t.children||0,+t.childrenAll||0)));
     allow+=kidsAllow+adoptUsed*RDy('บุตรคนละ')+(parOwn+parSp)*RDy('บิดามารดาในอุปการะคนละ')+(+t.disabled||0)*RDy('ผู้พิการในอุปการะคนละ');
     const _lhCap=RDy('เบี้ยประกันชีวิตรวมสุขภาพไม่เกิน');
     const _lhOwn=Math.min((+t.lifeIns||0)+Math.min(+t.healthIns||0,RDy('เบี้ยสุขภาพตนเองไม่เกิน')),_lhCap);
@@ -11484,7 +11485,7 @@ const HENG = (function(){
     /* รอบ 2 (ผู้ตรวจ: คงที่ทุกปีไม่ conservative เพราะดอกเบี้ยจริงลดลง): ดอกเบี้ยบ้านที่กรอก = ของปีนี้ แล้วลดลงเป็นเส้นตรงจนเป็น 0 ในปีถัดจากปีจบหนี้ */
     let tMort=0; { const m0=Number(_typ.mortgageInt)||0, a0p=pAge-y;
       if(m0>0){ if(y===0) tMort=m0; else if(_mortEnd && pAge<=_mortEnd){ const n=_mortEnd-a0p+1; tMort=m0*Math.max(0,(n-y))/n; } } }
-    return { age:cAge, sources:merged, spouse:!!_typ.spouse, children:kids, childrenB:kidsB, parents:par, disabled:0,
+    return { age:cAge, sources:merged, spouse:!!_typ.spouse, children:kids, childrenAll:taxKidsOf(deps,c,isPrimary).length, childrenB:kidsB, parents:par, disabled:0,
       /* v3.9.63: ค่าลดหย่อนเป็นของคนที่จ่ายจริง — แบ่งตามช่องของแต่ละคนในงบ (เดิมยกให้คนแรกทั้งหมด ทำให้เทียบยื่นรวม/แยกเพี้ยน) */
       lifeIns: dLife + fixAt('lifeIns')*cfShareOf(c,'fixed','lifeIns'), healthIns: dHealth, parentHealthIns: dPar, pensionIns: dPen,
       rmf: svAt('rmf','rmf')*cfShareOf(c,'savings','rmf'), ssf: isPrimary?svAt('ssf','ssf'):0, thaiESG: svAt('tesg','tesg')*cfShareOf(c,'savings','tesg'),
@@ -12419,7 +12420,7 @@ function setTaxAutoMode(on){ if(!STATE.assume) STATE.assume={};
    (ภาษีอากรฯ 2567 หน้า 67 ข้อ 5 · หน้า 78 หมายเหตุ ③ · เอกสาร AVP CFP 4.2 หน้า 49)
    เดิม (v3.9.60) บุตรแต่ละคนผูกกับผู้วางแผนที่บันทึกไว้คนเดียว อีกฝ่ายได้ 0 → ภาษีคู่สมรสสูงกว่าจริง
    ตอนนี้: แผนคู่ → ผู้วางแผนทั้งสองคนนับบุตรทุกคนในบ้าน (ไม่ซ้ำ) · แผนคนเดียว → เหมือนเดิม
-   ยื่นรวม: บุตรหักได้ครั้งเดียว → taxCompareData บวกส่วนที่ซ้ำกลับ (kidOverlap)
+   ยื่นรวม (v3.10.29): บุตรนับทั้งสองฝ่าย ตามที่อ้อยเคาะ 21 ต.ค. 69 · kidOverlap = 0
    ค่าเลี้ยงดู/ทุนประกัน/ภาระใครภาระมัน ยังแบ่งตามระเบียนเดิม ไม่เปลี่ยน */
 function taxKidsOf(deps, c, isPrimary){
   const cs=STATE.carriers||[];
@@ -12670,17 +12671,27 @@ function taxCompareData(){
   const sepA=core(sA,srcOf(sA)), sepB=core(sB,srcOf(sB));
   const separate={a:sepA,b:sepB,total:sepA.tax+sepB.tax};
   // ── 2) ยื่นรวม — รวมทุกรายได้เป็นใบเดียว ──
+  /* v3.10.29 (สูตรเดียวกับ Tax Scan v3.17 household · อ้อยเคาะ 21 ต.ค. 69):
+     รวมรายได้ทั้งสองคน · ค่าใช้จ่ายแยกรายคน · ลดหย่อนของทั้งสองคนรวมกัน (ส่วนตัวคนละ 60,000 · บุตรนับทั้งสองฝ่าย · ลดหย่อนที่เกินรายได้ของอีกฝ่ายนำมาใช้ได้)
+     ดอกเบี้ยบ้านรวมไม่เกิน 100,000 (สัญญากู้บ้าน 1 หลัง) · บริจาคคิดเพดาน 10% จากเงินได้รวม · วิธีที่ 2 (0.5%) จากเงินได้ 40(2)–(8) รวม
+     เดิม: รวมเงินได้สุทธิรายคน (ลดหย่อนที่เกินรายได้หาย) และหักบุตรครั้งเดียว · ฝ่ายหนึ่งไม่มีรายได้ = ลดหย่อนคู่สมรส 60,000 (เหมือนเดิม) */
   const mortA=sepA.mort||0, mortB=sepB.mort||0;
-  const mortOverlap=(mortA+mortB)-Math.min(mortA+mortB,100000);   // ดอกเบี้ยบ้านยื่นรวมหักได้ใบเดียว (100k) → ส่วนเกินบวกกลับ
+  const mortOverlap=Math.max(0,mortA+mortB-100000);
   const bothEarn=sepA.income>0 && sepB.income>0;
-  const spouseAllow=bothEarn?0:60000;                            // ลดหย่อนคู่สมรสได้เมื่ออีกฝ่ายไม่มีรายได้
   const jIncome=sepA.income+sepB.income, jExpense=sepA.expense+sepB.expense;
-  // v3.10.19: ยื่นรวมหักบุตรได้ครั้งเดียว — บวกกลับเฉพาะส่วนที่ทั้งสองฝ่ายหักซ้ำได้จริง (ฝ่ายที่รายได้ไม่พอหัก ไม่นับ)
-  const _usedA=Math.max(0,sepA.income-sepA.expense-sepA.net), _usedB=Math.max(0,sepB.income-sepB.expense-sepB.net);
-  const kidOverlap=Math.min(sepA.kidsAllow||0, sepB.kidsAllow||0, _usedA, _usedB);
-  const jNet=Math.max(0, sepA.net+sepB.net+mortOverlap+kidOverlap-spouseAllow);
-  const jAllow=Math.max(0,jIncome-jExpense-jNet);
-  const joint={income:jIncome,expense:jExpense,allow:jAllow,net:jNet,tax:HENG.taxBracket(jNet),spouseAllow,mortOverlap,kidOverlap};
+  let joint;
+  if(bothEarn){
+    const jNetBD=Math.max(0,jIncome-jExpense-(sepA.allow||0)-(sepB.allow||0)+mortOverlap);
+    const eduAmt=(+sA.donationEdu||0)+(+sB.donationEdu||0), donAmt=(+sA.donation||0)+(+sB.donation||0);
+    const dEdu=Math.min(eduAmt*2,jNetBD*0.1), eduLeft=Math.max(0,eduAmt-dEdu/2), dGen=Math.min(donAmt+eduLeft,Math.max(0,(jNetBD-dEdu)*0.1));
+    const jNet=Math.max(0,jNetBD-dEdu-dGen);
+    const inc2=[...oth(sA),...oth(sB)].reduce((q,x)=>q+Math.max(0,+x.amt||0),0);
+    const t1=HENG.taxBracket(jNet), t2=inc2>=1000000?inc2*0.005:0, m2=t2>5000&&t2>t1;
+    joint={income:jIncome,expense:jExpense,allow:Math.max(0,jIncome-jExpense-jNet),net:jNet,tax:m2?t2:t1,method2:m2,spouseAllow:0,mortOverlap,kidOverlap:0};
+  } else {
+    const earner=sepA.income>0?sA:sB, r=HENG.taxCore(Object.assign({},earner,{sources:[...srcOf(sA),...srcOf(sB)],spouse:true}));
+    joint={income:jIncome,expense:r.expense,allow:r.allow+(r.donEdu||0)+(r.don||0),net:r.net,tax:r.tax,method2:r.method2,spouseAllow:60000,mortOverlap:0,kidOverlap:0};
+  }
   // ── 3) ผสม — แยกเฉพาะเงินเดือน 40(1) · รวมรายได้อื่นไว้ฝ่ายที่ภาษีต่ำกว่า ──
   const pool=[...oth(sA),...oth(sB)];
   const candA={a:core(sA,[...sal(sA),...pool]), b:core(sB,sal(sB)), to:'a'}; candA.total=candA.a.tax+candA.b.tax;
