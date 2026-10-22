@@ -17,6 +17,9 @@
    ใช้ 404.html ของ GitHub Pages เป็น catch-all — รองรับทุกโค้ด รวมตัวแทนใหม่ในอนาคต */
 (function(){
   var seg=location.pathname.replace(/^\/+|\/+$/g,'');
+  /* Self Tax Scan v1.25 · ลิงก์สั้นตัวแทน: /selftaxscan/{code} → /selftaxscan/?a={code} */
+  var m=seg.match(/^selftaxscan\/([A-Za-z0-9_-]{2,20})$/i);
+  if(m){ location.replace('/selftaxscan/?a='+encodeURIComponent(m[1])); return; }
   if(seg&&/^[A-Za-z0-9_-]{2,20}$/.test(seg)){
     location.replace('/?ref='+encodeURIComponent(seg));
   }else{
