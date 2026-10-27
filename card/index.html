@@ -258,7 +258,7 @@ input[type=file]{font-size:13px;width:100%;min-width:0}
         <div class="field"><label for="f-page">ชื่อเพจ (ถ้ามี)</label><input id="f-page" type="text"></div>
       </div>
       <div class="grid2">
-        <div class="field"><label for="f-code">รหัสตัวแทน (ใช้ทำ QR เช็คสุขภาพการเงินของคุณ)</label><input id="f-code" type="text" inputmode="numeric" placeholder="เช่น 661461"></div>
+        <div class="field"><label for="f-code">รหัสตัวแทน (QR พาไปหน้าคลินิกของคุณ s41financialclinic.com/รหัส)</label><input id="f-code" type="text" inputmode="numeric" placeholder="เช่น 661461"></div>
         <div class="field" style="align-content:end"><label class="check"><input id="f-qr" type="checkbox" checked>แสดง QR บนหน้าการ์ด</label></div>
       </div>
       <span class="small" id="qrurl"></span>
@@ -308,7 +308,7 @@ input[type=file]{font-size:13px;width:100%;min-width:0}
           </div>
           <div class="rule" aria-hidden="true"><svg viewBox="0 0 100 10" preserveAspectRatio="none"><path d="M0 7H14L16 7L17.5 3.5L19.5 9.5L21.5 1.5L23.5 8.5L25 7H100"/></svg></div>
           <div class="contact" id="c-contact"></div>
-          <div class="fqr" id="c-qr"><span class="q" id="c-qrsvg"></span><small>เช็คสุขภาพการเงิน</small></div>
+          <div class="fqr" id="c-qr"><span class="q" id="c-qrsvg"></span><small>Financial Clinic</small></div>
         </div>
         <div class="face back" id="faceBack">
           <div class="cols" id="c-cols">
@@ -584,7 +584,7 @@ function update(){
   $('c-contact').innerHTML=rows.join('');
   $('c-qr').hidden=!S.showQR;
   if(S.showQR){$('c-qrsvg').innerHTML=qrSvg(qrUrl());}
-  $('qrurl').textContent=S.showQR?('QR จะพาไปที่ '+qrUrl()+(S.code.trim()?'':'  (ยังไม่ใส่รหัสตัวแทน lead จะไม่เข้าชื่อคุณ)')):'';
+  $('qrurl').textContent=S.showQR?('QR จะพาไปที่ '+qrUrl()+(S.code.trim()?'':'  (ยังไม่ใส่รหัสตัวแทน ลูกค้าจะเห็นหน้ากลาง ไม่ใช่หน้าของคุณ)')):'';
   const ph=$('photo');
   if(S.photo){if(ph.getAttribute('src')!==S.photo){photoPx=0;loadImg(S.photo).then(i=>{photoPx=i.naturalHeight;fitAndCheck();});}ph.src=S.photo;ph.hidden=false;$('photoPh').style.display='none';$('thumb').style.backgroundImage=`url(${S.photo})`;$('thumb').textContent='';$('sliders').hidden=false;}
   else{ph.hidden=true;ph.removeAttribute('src');$('photoPh').style.display='';$('thumb').style.backgroundImage='';$('thumb').textContent='ยังไม่มีรูป';$('sliders').hidden=true;}

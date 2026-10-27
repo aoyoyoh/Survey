@@ -8638,13 +8638,15 @@ function firstRpt(s){ s=String(s||'').replace(/[\\/:*?"<>|]/g,'').replace(/\s+/g
 function cRpt(c){ return nickRpt(c&&c.nick)||firstRpt(c&&c.name); }
 function cDisp(c){ return [cleanNick(c&&c.nick),maskName(c&&c.name)].filter(Boolean).join(' · '); }
 function cFile(c){ return [cleanNick(c&&c.nick),maskName(c&&c.name)].filter(Boolean).join(' '); }
-function ddmmyy(){ const d=new Date(), p=n=>String(n).padStart(2,'0'); return p(d.getDate())+p(d.getMonth()+1)+String(d.getFullYear()).slice(-2); }
+/* 26 ต.ค. 69 · ชื่อไฟล์มาตรฐานเดียวทุกเครื่องมือ: ชื่อลูกค้า_สิ่งที่เป็น_ddmmyy(พ.ศ.) */
+function ddmmyy(){ const d=new Date(), p=n=>String(n).padStart(2,'0'); return p(d.getDate())+p(d.getMonth()+1)+String(d.getFullYear()+543).slice(-2); }   /* พ.ศ. (เดิม ค.ศ.) */
+function fnJoin(n){ return String(n||'').trim().replace(/[\\/:*?"<>|#%{}$!'@+`=]/g,'').replace(/\s+/g,'_'); }
 function maskStateNames(st){ try{ (st&&st.carriers||[]).forEach(c=>{ if(c && typeof c.name==='string') c.name=maskName(c.name); });
   if(st && st.baseline && st.baseline.state) (st.baseline.state.carriers||[]).forEach(c=>{ if(c && typeof c.name==='string') c.name=maskName(c.name); }); }catch(e){} return st; }
 /* ชื่อไฟล์ PDF/JSON: [ชื่อที่ซ่อนแล้ว] Step3_MoneyMRI DDMMYY */
-function mriFileBase(){ const n=(STATE.carriers||[]).map(cFile).filter(Boolean).join(' & '); return (n?n+' ':'')+'Step3_MoneyMRI '+ddmmyy(); }
+function mriFileBase(){ const n=fnJoin((STATE.carriers||[]).map(cFile).filter(Boolean).join('&')); return (n||'ลูกค้า')+'_แผนMoneyMRI_'+ddmmyy(); }
 let __mriTitle=null;
-window.addEventListener('beforeprint',()=>{ try{ maskStateNames(STATE); if(__mriTitle===null) __mriTitle=document.title; document.title=(()=>{ const n=(STATE.carriers||[]).map(cRpt).filter(Boolean).join(' & '); return (n?n+' ':'')+'Step3_MoneyMRI '+ddmmyy(); })(); }catch(e){} });   /* v3.10.26: PDF ให้ลูกค้า = คุณ+ชื่อเล่น หรือ คุณ+ชื่อต้น */
+window.addEventListener('beforeprint',()=>{ try{ maskStateNames(STATE); if(__mriTitle===null) __mriTitle=document.title; document.title=(()=>{ const n=fnJoin((STATE.carriers||[]).map(cRpt).filter(Boolean).join('&')); return (n||'ลูกค้า')+'_แผนMoneyMRI_'+ddmmyy(); })(); }catch(e){} });   /* v3.10.26: PDF ให้ลูกค้า = คุณ+ชื่อเล่น หรือ คุณ+ชื่อต้น */
 window.addEventListener('afterprint',()=>{ if(__mriTitle!==null){ document.title=__mriTitle; __mriTitle=null; } });
 
 /* ─── Backup: Export / Import JSON ─── */

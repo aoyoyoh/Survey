@@ -635,15 +635,17 @@ function maskName(s){ s=String(s||'').replace(/[\\/:*?"<>|]/g,'').replace(/\s+/g
   const comb=/[ัิ-ฺ็-๎]/;
   const w=s.split(' ').filter(Boolean).map(word=>{ const ch=[...word]; return ch[0]+'x'.repeat(ch.slice(1).filter(c=>!comb.test(c)).length); });
   return (pre?pre+(pre==='คุณ'?'':' '):'')+w.join(' '); }
-function ddmmyy(){ const d=new Date(), p=n=>String(n).padStart(2,'0'); return p(d.getDate())+p(d.getMonth()+1)+String(d.getFullYear()).slice(-2); }
+/* 26 ต.ค. 69 · ชื่อไฟล์มาตรฐานเดียวทุกเครื่องมือ: ชื่อลูกค้า_สิ่งที่เป็น_ddmmyy(พ.ศ.) */
+function fnJoin(n){ return String(n||'').trim().replace(/[\\/:*?"<>|#%&{}$!'@+`=]/g,'').replace(/\s+/g,'_'); }
+function ddmmyy(){ const d=new Date(), p=n=>String(n).padStart(2,'0'); return p(d.getDate())+p(d.getMonth()+1)+String(d.getFullYear()+543).slice(-2); }   /* พ.ศ. */
 /* v7.6: ชื่อไฟล์ = [ชื่อที่ซ่อนแล้ว] Step4_Keyman DDMMYY */
 /* v7.7 · ชื่อเล่น: บนจอ = ชื่อเล่น · ชื่อย่อ · รายงาน = คุณ+ชื่อเล่น · ชื่อไฟล์ = ชื่อเล่น ชื่อย่อ (กติกาเดียวกับ Tax Scan / Money MRI) */
 function cleanNick(s){ return String(s||'').replace(/[\\/:*?"<>|]/g,'').replace(/\s+/g,' ').trim().slice(0,20); }
 function nickRpt(n){ n=cleanNick(n); return n?'คุณ'+(n.replace(/^(คุณ|พี่|น้อง|เจ๊|เฮีย|ป้า|ลุง|น้า|อา)\s*/,'')||n):''; }
 function scrName(){ return [cleanNick(S.nick),maskName(S.name)].filter(Boolean).join(' · '); }
 function rptName(){ return nickRpt(S.nick)||firstRpt(S.name)||''; }
-function printName(){ const n=rptName(); return (n?n+' ':'')+'Step4_Keyman '+ddmmyy(); }
-function pdfName(){ const n=[cleanNick(S.nick),maskName(S.name)].filter(Boolean).join(' '); return (n?n+' ':'')+'Step4_Keyman '+ddmmyy(); }
+function printName(){ const n=fnJoin(rptName()); return (n||'ลูกค้า')+'_Keyman_'+ddmmyy(); }
+function pdfName(){ const n=fnJoin([cleanNick(S.nick),maskName(S.name)].filter(Boolean).join(' ')); return (n||'ลูกค้า')+'_Keyman_'+ddmmyy(); }
 let __title=null;
 window.addEventListener('beforeprint',()=>{ S.name=maskName(S.name); if(__title===null) __title=document.title; document.title=printName(); });
 window.addEventListener('afterprint',()=>{ if(__title!==null){ document.title=__title; __title=null; } });

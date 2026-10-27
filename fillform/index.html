@@ -188,7 +188,7 @@ const VERSION='1.9';
 const LOGO_SRC=document.querySelector('.brand img').getAttribute('src');
 const LS_KEY='s41_client_v1';
 const params=new URLSearchParams(location.search);
-let REF=(params.get('ref')||'').slice(0,40);
+let REF=(params.get('ref')||params.get('a')||'').replace(/[^A-Za-z0-9_-]/g,'').slice(0,40);   /* 26 ต.ค. 69: รับ ?a= จากหน้าคลินิก /c/ ด้วย (รหัสตัวแทนฝังใน advisorRef ของไฟล์) */
 
 /* ---------- ค่าที่กรอก ---------- */
 let V={};            /* ค่าทุกช่อง key → string/number */
@@ -1155,11 +1155,14 @@ function buildClientFile(){
   };
 }
 function clientId(){ if(!V._cid){ V._cid='c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); saveSoon(); } return V._cid; }
-function fileName(){
-  const safe=String(txt('cname')||'ลูกค้าใหม่').replace(/[\\/:*?"<>|]/g,'').replace(/\s+/g,'_').slice(0,40)||'ลูกค้าใหม่';
-  const d=new Date(), p=n=>String(n).padStart(2,'0');
-  return `S41_Client_${safe}_${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}.json`;
-}
+/* 26 ต.ค. 69 · ชื่อไฟล์มาตรฐานเดียวทุกเครื่องมือ: ชื่อลูกค้า_สิ่งที่เป็น_ddmmyy(พ.ศ.) */
+function fnSafe(n){ return String(n||'').trim().replace(/[\\/:*?"<>|#%&{}$!'@+`=]/g,'').replace(/\s+/g,'_').slice(0,40)||'ลูกค้า'; }
+function ddmmyyTH(){ const d=new Date(), p=n=>String(n).padStart(2,'0'); return p(d.getDate())+p(d.getMonth()+1)+String(d.getFullYear()+543).slice(-2); }
+function fileBase(){ return fnSafe(txt('cname'))+'_ข้อมูลลูกค้า_'+ddmmyyTH(); }
+function fileName(){ return fileBase()+'.json'; }
+let __ffTitle=null;
+window.addEventListener('beforeprint',()=>{ if(__ffTitle===null) __ffTitle=document.title; document.title=fileBase(); });
+window.addEventListener('afterprint',()=>{ if(__ffTitle!==null){ document.title=__ffTitle; __ffTitle=null; } });
 function makeBlob(){ return new Blob([JSON.stringify(buildClientFile(),null,1)],{type:'application/json'}); }
 function setStatus(cls,msg){ const s=$('sendStatus'); if(s) s.innerHTML=`<div class="${cls}">${msg}</div>`; }
 

@@ -2791,11 +2791,14 @@ function buildClientFile(){
   };
 }
 /* v2.6.3: S41_Step2_<ชื่อลูกค้า>_<ปี-เดือน-วัน>.json — ตัดอักขระที่ใช้ตั้งชื่อไฟล์ไม่ได้ · วันที่ตามเวลาเครื่อง */
-function step2FileName(name){
-  const safe=String(name||'ลูกค้าใหม่').replace(/[\\/:*?"<>|]/g,'').replace(/\s+/g,'_').slice(0,40)||'ลูกค้าใหม่';
-  const d=new Date(), p=n=>String(n).padStart(2,'0');
-  return 'S41_Step2_'+safe+'_'+d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'.json';
-}
+/* 26 ต.ค. 69 · ชื่อไฟล์มาตรฐานเดียวทุกเครื่องมือ: ชื่อลูกค้า_สิ่งที่เป็น_ddmmyy(พ.ศ.) */
+function fnSafe(n){ return String(n||'').trim().replace(/[\\/:*?"<>|#%&{}$!'@+`=]/g,'').replace(/\s+/g,'_').slice(0,40)||'ลูกค้า'; }
+function ddmmyyTH(){ const d=new Date(), p=n=>String(n).padStart(2,'0'); return p(d.getDate())+p(d.getMonth()+1)+String(d.getFullYear()+543).slice(-2); }
+function step2FileBase(name){ return fnSafe(name)+'_ข้อมูลลูกค้า_'+ddmmyyTH(); }
+function step2FileName(name){ return step2FileBase(name)+'.json'; }
+let __dcTitle=null;
+window.addEventListener('beforeprint',()=>{ if(document.body.classList.contains('print-blank')) return; if(__dcTitle===null) __dcTitle=document.title; try{ document.title=step2FileBase(txt('cname')); }catch(e){} });
+window.addEventListener('afterprint',()=>{ if(__dcTitle!==null){ document.title=__dcTitle; __dcTitle=null; } });
 function saveClientFile(){
   let data;
   try{ data=buildClientFile(); }

@@ -1697,7 +1697,7 @@ const FULLCACHE={key:'',blob:null,busy:null};
 const fullKey=()=>{ try{ return JSON.stringify([PD[0],PD[1],D.marital,D.spInc,D.cmp,PLAN]); }catch(e){ return String(Date.now()); } };
 function prepFullImage(){ try{ const key=fullKey(); if(FULLCACHE.key===key||FULLCACHE.busy) return; FULLCACHE.busy=fullImage().then(b=>{ FULLCACHE.key=key; FULLCACHE.blob=b; }).catch(()=>{}).finally(()=>{ FULLCACHE.busy=null; }); }catch(e){} }
 async function getFullBlob(ms){ const key=fullKey(); if(FULLCACHE.key===key&&FULLCACHE.blob) return FULLCACHE.blob; const gen=fullImage().catch(()=>null); const b=await Promise.race([gen,new Promise(r=>setTimeout(()=>r(null),ms))]); if(b){ FULLCACHE.key=key; FULLCACHE.blob=b; } return b; }
-const fullName=()=>pdfName()+'-summary.png';
+const fullName=()=>pdfName()+'.png';
 async function getPlanBlob(text,ms){ if(!planData().P.length) return null; if(SHARECACHE.key===text&&SHARECACHE.blob) return SHARECACHE.blob;
   const gen=planImage().catch(()=>null); const b=await Promise.race([gen,new Promise(r=>setTimeout(()=>r(null),ms))]); if(b){ SHARECACHE.key=text; SHARECACHE.blob=b; } return b; }
 const dlName=()=>pdfName()+'-plan.png';
@@ -1806,7 +1806,10 @@ function advisorCard(){ const a=advisor(); if(!a.name) return '';
     <em>${[a.tel&&'โทร '+esc(a.tel), a.line&&'LINE '+esc(a.line)].filter(Boolean).join(' · ')}</em></span></div>`; }
 
 /* ══════════ PDF (A4) ══════════ */
-function pdfName(){ const n=(PD[0].nick||'').trim(); const d=new Date(), p=x=>String(x).padStart(2,'0'); return (n?'คุณ'+n.replace(/^คุณ\s*/,'')+' ':'')+'SelfTaxScan '+p(d.getDate())+p(d.getMonth()+1)+String(d.getFullYear()+543).slice(-2); }
+/* 26 ต.ค. 69 · ชื่อไฟล์มาตรฐานเดียวทุกเครื่องมือ: ชื่อลูกค้า_สิ่งที่เป็น_ddmmyy(พ.ศ.) */
+function fnSafe(n){ return String(n||'').trim().replace(/[\\/:*?"<>|#%&{}$!'@+`=]/g,'').replace(/\s+/g,'_').slice(0,40)||'ลูกค้า'; }
+function ddmmyyTH(){ const d=new Date(), p=n=>String(n).padStart(2,'0'); return p(d.getDate())+p(d.getMonth()+1)+String(d.getFullYear()+543).slice(-2); }
+function pdfName(){ return fnSafe((PD[0].nick||'').replace(/^คุณ\s*/,''))+'_ตรวจภาษีเอง_'+ddmmyyTH(); }
 function personInputs(i){ const w=WHO; WHO=i; try{
   const t=toTaxInput(), rows=[];
   rows.push(['ปีเกิด / อายุในปี 2569', D.byear?`${D.byear} / ${TAXYEAR-D.byear} ปี`:'–']);

@@ -324,9 +324,11 @@ function nickRpt(n){ n=cleanNick(n); return n?'คุณ'+(n.replace(/^(คุ�
 function lbl(i,d){ const p=P[i]||{}; return cleanNick(p.nick)||maskName(p.name)||d; }
 function tabName(i){ const p=P[i]||{}; const n=cleanNick(p.nick), m=maskName(p.name); return n&&m?n+' · '+m:(n||m||(i===0?'ลูกค้า':'คู่สมรส')); }
 function rptName(i){ const p=P[i]||{}; return nickRpt(p.nick)||firstRpt(p.name)||''; }
-function printName(){ const n=rptName(ACT); return (n?n+' ':'')+'Step4_Taxscan '+ddmmyy(); }
+/* 26 ต.ค. 69 · ชื่อไฟล์มาตรฐานเดียวทุกเครื่องมือ: ชื่อลูกค้า_สิ่งที่เป็น_ddmmyy(พ.ศ.) */
+function fnJoin(n){ return String(n||'').trim().replace(/[\\/:*?"<>|#%&{}$!'@+`=]/g,'').replace(/\s+/g,'_'); }
+function printName(){ const n=fnJoin(rptName(ACT)); return (n||'ลูกค้า')+'_แผนภาษี_'+ddmmyy(); }
 function fileStem(i){ const p=P[i]||{}; return [cleanNick(p.nick),maskName(p.name)].filter(Boolean).join(' '); }
-function ddmmyy(){ const d=new Date(), p=n=>String(n).padStart(2,'0'); return p(d.getDate())+p(d.getMonth()+1)+String(d.getFullYear()).slice(-2); }
+function ddmmyy(){ const d=new Date(), p=n=>String(n).padStart(2,'0'); return p(d.getDate())+p(d.getMonth()+1)+String(d.getFullYear()+543).slice(-2); }   /* พ.ศ. */
 
 /* ══════════ กฎภาษี 2569 (ชุด 2569.11) ══════════ */
 const R={
@@ -571,7 +573,7 @@ function toKeyman(){ const i=ACT, p=P[i], L=PLANS[i], B={}, PL={}, warn=[];
   const b64=btoa(unescape(encodeURIComponent(json))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
   window.open('../KeymanScan/#ts='+b64,'_blank','noopener'); }
 /* v3.8: ชื่อไฟล์ PDF = [ชื่อที่ซ่อนแล้ว] Step4_Taxscan DDMMYY */
-function pdfName(){ const n=fileStem(ACT); return (n?n+' ':'')+'Step4_Taxscan '+ddmmyy(); }
+function pdfName(){ const n=fnJoin(fileStem(ACT)); return (n||'ลูกค้า')+'_แผนภาษี_'+ddmmyy(); }
 let __title=null;
 window.addEventListener('beforeprint',()=>{ P.forEach(x=>{ x.name=maskName(x.name); }); try{ calc(); }catch(e){} if(__title===null) __title=document.title; document.title=printName(); });
 window.addEventListener('afterprint',()=>{ if(__title!==null){ document.title=__title; __title=null; } });

@@ -13,15 +13,16 @@
 <meta property="og:image:height" content="630">
 <meta property="og:locale"      content="th_TH">
 <script>
-/* v6.17 · short ref links: s41financialclinic.com/{code} → /?ref={code}
+/* v6.17 · short ref links: s41financialclinic.com/{code} → /c/?a={code} (เดิม /?ref=)
    ใช้ 404.html ของ GitHub Pages เป็น catch-all — รองรับทุกโค้ด รวมตัวแทนใหม่ในอนาคต */
 (function(){
   var seg=location.pathname.replace(/^\/+|\/+$/g,'');
   /* Self Tax Scan v1.25 · ลิงก์สั้นตัวแทน: /selftaxscan/{code} → /selftaxscan/?a={code} */
   var m=seg.match(/^selftaxscan\/([A-Za-z0-9_-]{2,20})$/i);
   if(m){ location.replace('/selftaxscan/?a='+encodeURIComponent(m[1])); return; }
+  /* หน้าคลินิก 26 ต.ค. 69 · ลิงก์สั้นตัวแทน /{รหัส} → /c/?a={รหัส} (หน้าคลินิก 3 ขั้นของที่ปรึกษา) — เดิมเด้งเข้า Quiz ตรง */
   if(seg&&/^[A-Za-z0-9_-]{2,20}$/.test(seg)){
-    location.replace('/?ref='+encodeURIComponent(seg));
+    location.replace('/c/?a='+encodeURIComponent(seg));
   }else{
     location.replace('/');
   }
