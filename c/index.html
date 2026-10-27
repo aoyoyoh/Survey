@@ -117,7 +117,7 @@ a{color:inherit}
       <div class="no">1</div>
       <div class="bd"><div class="ic"><svg viewBox="0 0 100 88" fill="none" stroke="#002366" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M50 74 L22 46 Q12 34 22 24 Q32 16 42 26 L50 34 L58 26 Q68 16 78 24 Q88 34 78 46 Z"/><path d="M30 48h10l4 -8l6 16l5 -10l3 4h12"/><path d="M84 14l0 8M80 18l8 0" stroke="#C8A94A"/><circle cx="16" cy="66" r="1.6" fill="#C8A94A" stroke="none"/></svg></div><div class="k">ตรวจเอง · ไม่กี่นาที</div><h2>ดูภาพรวมเบื้องต้น</h2><p>เลือกเรื่องที่อยากรู้ก่อน เห็นผลทันที ข้อมูลอยู่ในเครื่องของคุณ</p>
         <div class="opts">
-          <a class="opt" id="lnkQuiz" href="/"><b>สุขภาพการเงิน</b><span>2 นาที · 5 มิติตามหลัก CFP®</span></a>
+          <a class="opt" id="lnkQuiz" href="/quiz/"><b>สุขภาพการเงิน</b><span>2 นาที · 5 มิติตามหลัก CFP®</span></a>
           <a class="opt" id="lnkTax" href="/selftaxscan/"><span class="new">NEW</span><b>ภาษีปี 2569</b><span>5 นาที · ได้คืนหรือต้องจ่ายเพิ่ม · ปันผล · คู่สมรส</span></a>
         </div>
       </div>
@@ -150,7 +150,7 @@ a{color:inherit}
   var SB='https://lpqcglmpkuasgjgzqdyp.supabase.co', PK='sb_publishable_CL-lFLHRCuQNLqFYxaWsxA_odaH_WTa';
   var $=function(id){return document.getElementById(id);};
   function setLinks(c){ var q=c?('?ref='+encodeURIComponent(c)):'' , a=c?('?a='+encodeURIComponent(c)):'';
-    $('lnkQuiz').href='/'+q; $('lnkTax').href='/selftaxscan/'+a; $('lnkForm').href='/fillform/'+a; }
+    $('lnkQuiz').href='/quiz/'+q; $('lnkTax').href='/selftaxscan/'+a; $('lnkForm').href='/fillform/'+a; }
   setLinks(code);
   var nick0=function(n){return String(n||'').replace(/^(คุณ|พี่|น้อง)\s*/,'').trim();};
   function paint(a){
