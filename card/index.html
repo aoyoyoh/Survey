@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>ทำนามบัตร S41</title>
+<!-- card v1.8 (28 ต.ค. 69): v1.7 + แก้ตัวอักษรในแถวย่อย (MDRT/Elite) ใหญ่ล้นช่องบนคอม เล็กเกินบนมือถือ — คลาส .sub ของการ์ดไปชนกับแถวย่อยในฟอร์ม · ช่องกรอกยืดตามขนาดตัวอักษร · ข้อความตัวอย่างสั้นลง -->
 <!-- card v1.7 (27 ต.ค. 69): v1.6 + ข้อผิดพลาดเรื่องเลข/คุณวุฒิเป็นคำเตือน ไม่ล็อกปุ่มดาวน์โหลด · แตะคำเตือนเพื่อไปที่ช่องที่ต้องแก้ · ช่องตัวเลขรับได้สูงสุด 10 หลัก -->
 <!-- card v1.6 (27 ต.ค. 69): v1.5 + กันกรอกผิด (ตัวเลขไทย/ช่องว่างล่องหน/เลขสั้น/อ้างคุณวุฒิที่ไม่ได้ติ๊ก/เลขพิมพ์หน้าการ์ด) + ข้อมูลร่างเสียไม่ทำให้หน้าพัง + Safari รูปโลโก้หาย + เบราว์เซอร์เก่า -->
 <!-- card v1.5 (27 ต.ค. 69): v1.4 + โลโก้ AFPT ด้านหลัง (ติ๊ก AFPT = ขึ้นเสมอ) + เลขคุณวุฒิด้านหน้าดึงจากหัวข้อ 2 ที่เดียว -->
@@ -85,10 +86,14 @@ header.top .ver{font-family:var(--body);font-size:12px;color:var(--ink-3);font-w
 .row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:start;background:#fff;border:1px solid var(--line);border-radius:11px;padding:10px}
 .row.off{background:transparent}
 .row.off .rbody{opacity:.55}
-.row.sub{margin-left:22px}
+.row.rsub{margin-left:22px}
 .row .rbody{display:grid;gap:6px;min-width:0}
 .row .rtitle{font-size:14.5px;font-weight:500;color:var(--navy);padding-top:2px}
-.row .rfields{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px}
+.row .rfields{display:flex;flex-wrap:wrap;gap:6px}
+.row .rfields>*{flex:1 1 9.5em;min-width:0}
+.row .rfields input::placeholder{text-overflow:ellipsis}
+/* v1.8: จอแคบ ปุ่มลูกศรย้ายลงบรรทัดล่าง ช่องกรอกได้ความกว้างเต็มแถว */
+@media (max-width:520px){.row{grid-template-columns:auto minmax(0,1fr)}.row .rtools{grid-column:2;justify-self:end}}
 .row .rtools{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;max-width:110px}
 .row input[type=checkbox]{width:20px;height:20px;margin-top:3px;accent-color:var(--navy)}
 .row .rnote{font-size:12px;color:var(--warn)}
@@ -157,7 +162,7 @@ input[type=file]{font-size:13px;width:100%;min-width:0}
 .name span{font-weight:300;color:var(--ink-2)}
 .title{font-family:var(--display);font-size:3.1cqw;color:var(--ink);margin-top:1.2cqw;font-weight:500}
 .title sup,.lic sup{font-size:.6em;vertical-align:top;line-height:1}
-.sub{font-size:2.6cqw;color:var(--ink-2);margin-top:.3cqw;line-height:1.4}
+.face .sub{font-size:2.6cqw;color:var(--ink-2);margin-top:.3cqw;line-height:1.4}
 .ln{display:block;width:max-content;white-space:nowrap;letter-spacing:0!important;margin-right:0!important}
 .rule{position:absolute;left:6cqw;width:29cqw;top:37cqw;height:3.5cqw;pointer-events:none}
 .rule svg{width:100%;height:100%;display:block;overflow:visible}
@@ -221,7 +226,7 @@ input[type=file]{font-size:13px;width:100%;min-width:0}
 <div class="app">
   <header class="top">
     <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M50 8 12 70 50 86 88 70Z"/><path d="M50 8V86"/><path d="M12 70 50 57 88 70"/></svg>
-    <h1>ทำนามบัตร Signature 41 <span class="ver">v1.7</span></h1>
+    <h1>ทำนามบัตร Signature 41 <span class="ver">v1.8</span></h1>
     <p>กรอกข้อมูลทีละขั้น การ์ดตัวอย่างจะเปลี่ยนตามทันที เสร็จแล้วกดดาวน์โหลดรูปหรือไฟล์ส่งโรงพิมพ์ได้เลย ข้อมูลอยู่ในเครื่องของคุณเท่านั้น ไม่ได้ส่งไปที่ไหน</p>
   </header>
 
@@ -252,7 +257,7 @@ input[type=file]{font-size:13px;width:100%;min-width:0}
       <h2><span class="n">2</span>คุณวุฒิและใบอนุญาต</h2>
       <p class="hint">ติ๊กเฉพาะที่มีจริง แล้วใส่เลข เรียงลำดับด้วยปุ่มลูกศร ลำดับนี้คือลำดับบนหลังการ์ด</p>
       <div class="rows" id="quals"></div>
-      <div class="addline"><input id="f-addq" type="text" placeholder="เพิ่มคุณวุฒิอื่น เช่น FChFP ที่ปรึกษาการเงิน"><button class="btn" type="button" id="b-addq">เพิ่ม</button></div>
+      <div class="addline"><input id="f-addq" type="text" placeholder="เพิ่มคุณวุฒิอื่น เช่น FChFP"><button class="btn" type="button" id="b-addq">เพิ่ม</button></div>
     </section>
 
     <section class="step">
@@ -288,7 +293,7 @@ input[type=file]{font-size:13px;width:100%;min-width:0}
       <h2><span class="n">5</span>บริการวางแผน</h2>
       <p class="hint">เปิดหมวดที่ให้บริการ แล้วเลือกรายการย่อย เพิ่มรายการเองได้ หมวดละไม่เกิน 1 บรรทัดบนการ์ด</p>
       <div class="rows" id="svcs"></div>
-      <div class="addline"><input id="f-addc" type="text" placeholder="เพิ่มหมวดใหม่ เช่น วางแผนธุรกิจครอบครัว"><button class="btn" type="button" id="b-addc">เพิ่มหมวด</button></div>
+      <div class="addline"><input id="f-addc" type="text" placeholder="เพิ่มหมวดใหม่"><button class="btn" type="button" id="b-addc">เพิ่มหมวด</button></div>
     </section>
 
     <section class="step">
@@ -451,9 +456,9 @@ const IC={
 function renderQualForm(){
   const box=$('quals');box.innerHTML='';
   S.quals.forEach((x,i)=>{
-    const r=document.createElement('div');r.className='row'+(x.on?'':' off')+(x.sub?' sub':'');
+    const r=document.createElement('div');r.className='row'+(x.on?'':' off')+(x.sub?' rsub':'');
     const lvl=x.levels?`<select data-k="level" aria-label="ระดับ">${x.levels.map(l=>`<option${l===x.level?' selected':''}>${esc(l)}</option>`).join('')}</select>`:
-              x.levelText?`<input type="text" data-k="level" value="${esc(x.level)}" placeholder="ระดับ เช่น Platinum" aria-label="ระดับ">`:'';
+              x.levelText?`<input type="text" data-k="level" value="${esc(x.level)}" placeholder="ระดับ เช่น Gold" aria-label="ระดับ">`:'';
     const lab=x.custom?`<input type="text" data-k="label" value="${esc(x.label)}" placeholder="ชื่อคุณวุฒิ" aria-label="ชื่อคุณวุฒิ">`:`<div class="rtitle">${esc(qualLabel(x))}</div>`;
     const note='<div class="rnote"></div>';
     r.innerHTML=`<input type="checkbox" data-k="on" ${x.on?'checked':''} aria-label="แสดง ${esc(qualLabel(x))}">
