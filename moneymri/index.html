@@ -2986,7 +2986,7 @@ body.adv.has-visit #main .jbar{padding-right:350px}
     <div class="b-tag">Customized for One</div>
     <div class="b-line">— รากฐาน —</div>
   </div>
-  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.10.29</b><br>Designed by CFP® Professional<span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
+  <div class="ver-stamp" title="เลขเวอร์ชันของไฟล์ที่เปิดอยู่ — ใช้เช็กว่ากำลังใช้ไฟล์ล่าสุดหรือไม่">Step 3 · Money MRI · <b>v3.10.30</b><br>Designed by CFP® Professional<span class="ver-tail"> · ไทม์ไลน์ครอบครัว · งบลงรายการทีละบรรทัด · 8 อัตราส่วนพร้อมคำแปล · ตารางกรมธรรม์เต็ม</span></div>
 </aside>
 
 <main id="main">
@@ -8863,6 +8863,7 @@ const TAX_TYPES=[
 /* v3.9.28: อัตรา/เพดานค่าใช้จ่ายตามประเภทเงินได้ ย้ายไป rules.json (REXP/RSALCAP) */
 function taxExpense(sources){ let income=0,expense=0,sal=0, salRate=0.5;
   (sources||[]).forEach(s=>{ const amt=Math.max(0,Number(s.amt)||0); if(amt<=0)return; income+=amt;
+    if(s.expFixed!=null){ expense+=Math.min(amt,Math.max(0,+s.expFixed||0)); return; }   /* v3.10.30: แถวค่าใช้จ่ายเฉลี่ยตามส่วน (รวมบางส่วน) ไม่เข้ากลุ่มเงินเดือน */
     const r=REXP(s.type);
     if(r.group==='sal'){ sal+=amt; salRate=r.rate; } else expense += (r.cap?Math.min(amt*r.rate,r.cap):amt*r.rate); });
   expense += Math.min(sal*salRate, RSALCAP());   // 40(1)+(2) หักรวมไม่เกินเพดานกลุ่มเงินเดือน
@@ -8870,6 +8871,7 @@ function taxExpense(sources){ let income=0,expense=0,sal=0, salRate=0.5;
 /* v3.10.20: ค่าใช้จ่ายหลังหักเงินได้ยกเว้น (ผู้สูงอายุ) — ex.sal = ส่วนที่ยกเว้นจากกลุ่มเงินเดือน · ex.row[i] = ส่วนที่ยกเว้นจากแถว i */
 function taxExpenseEx(sources, ex){ ex=ex||{sal:0,row:{}}; let expense=0,sal=0,salRate=0.5;
   (sources||[]).forEach((s,i)=>{ const amt=Math.max(0,Number(s.amt)||0); if(amt<=0) return; const r=REXP(s.type);
+    if(s.expFixed!=null){ const a=Math.max(0,amt-((ex.row&&ex.row[i])||0)); expense+=Math.min(a,Math.max(0,+s.expFixed||0)); return; }
     if(r.group==='sal'){ sal+=amt; salRate=r.rate; return; }
     const a=Math.max(0,amt-((ex.row&&ex.row[i])||0)); expense+=(r.cap?Math.min(a*r.rate,r.cap):a*r.rate); });
   expense+=Math.min(Math.max(0,sal-(ex.sal||0))*salRate, RSALCAP());
@@ -8879,6 +8881,7 @@ function taxExpenseEx(sources, ex){ ex=ex||{sal:0,row:{}}; let expense=0,sal=0,s
 function taxElderAlloc(sources, ex){
   const segs=[]; let salG=0, salRate=0.5;
   (sources||[]).forEach((s,i)=>{ const a=Math.max(0,Number(s.amt)||0); if(!a) return; const r=REXP(s.type);
+    if(s.expFixed!=null){ const E=Math.min(a,Math.max(0,+s.expFixed||0)); if(a-E>0) segs.push({i,rate:0,len:a-E}); if(E>0) segs.push({i,rate:1,len:E}); return; }
     if(r.group==='sal'){ salG+=a; salRate=r.rate; return; }
     if(r.cap>0 && r.rate>0){ const lim=r.cap/r.rate, free=Math.max(0,a-lim); if(free>0) segs.push({i,rate:0,len:free}); segs.push({i,rate:r.rate,len:a-free}); return; }
     segs.push({i,rate:r.rate,len:a}); });
@@ -12695,9 +12698,20 @@ function taxCompareData(){
     joint={income:jIncome,expense:r.expense,allow:r.allow+(r.donEdu||0)+(r.don||0),net:r.net,tax:r.tax,method2:r.method2,spouseAllow:60000,mortOverlap:0,kidOverlap:0};
   }
   // ── 3) ผสม — แยกเฉพาะเงินเดือน 40(1) · รวมรายได้อื่นไว้ฝ่ายที่ภาษีต่ำกว่า ──
+  /* v3.10.30 (31 ต.ค. 69 · กรมสรรพากร rd.go.th/6057 ข้อ 2 + ตัวอย่าง ex90 ข้อ 1): ฝ่ายที่แยกยื่นเฉพาะ 40(1) — ค่าใช้จ่ายกลุ่มเงินเดือน 40(1)+(2) เป็นเพดานของคนนั้นก้อนเดียว
+     (50% ไม่เกิน 100,000 หลังตัด PVD ส่วนเกิน 10,000) "เฉลี่ยหักตามส่วน": E1 อยู่กับเงินเดือนในใบแยก · E2 ติดไปกับ 40(2) ในใบของอีกฝ่าย ไม่เข้ากลุ่มเพดานของอีกฝ่าย
+     เดิม: 40(2) ที่ย้ายไปถูกนับในกลุ่มเงินเดือนของอีกฝ่าย และเงินเดือนของฝ่ายที่แยกได้เพดานเต็ม */
+  const mixSplit=s=>{ const S=srcOf(s), A=x=>Math.max(0,Number(x.amt)||0);
+    const s1=S.filter(x=>x.type==='40(1)'), s2=S.filter(x=>x.type!=='40(1)'&&REXP(x.type).group==='sal'), rest=S.filter(x=>x.type!=='40(1)'&&REXP(x.type).group!=='sal');
+    const a1=s1.reduce((q,x)=>q+A(x),0), a2=s2.reduce((q,x)=>q+A(x),0);
+    if(!(a1>0&&a2>0)) return {salOnly:s1, moved:[...s2,...rest]};
+    const pct=(s.pvdKind==='gpf')?1e9:0.15, pvdEx=Math.max(0,Math.min(+s.pvd||0,a1*pct,500000)-10000);
+    const E=Math.min(Math.max(0,a1+a2-pvdEx)*REXP('40(1)').rate,RSALCAP()), E1=E*a1/(a1+a2), E2=E-E1;
+    return {salOnly:[{type:'40(1)',amt:a1,expFixed:E1}], moved:[...rest,{type:'40(2)',amt:a2,expFixed:E2}]}; };
+  const spA=mixSplit(sA), spB=mixSplit(sB);
   const pool=[...oth(sA),...oth(sB)];
-  const candA={a:core(sA,[...sal(sA),...pool]), b:core(sB,sal(sB)), to:'a'}; candA.total=candA.a.tax+candA.b.tax;
-  const candB={a:core(sA,sal(sA)), b:core(sB,[...sal(sB),...pool]), to:'b'}; candB.total=candB.a.tax+candB.b.tax;
+  const candA={a:core(sA,[...srcOf(sA),...spB.moved]), b:core(sB,spB.salOnly), to:'a'}; candA.total=candA.a.tax+candA.b.tax;
+  const candB={a:core(sA,spA.salOnly), b:core(sB,[...srcOf(sB),...spA.moved]), to:'b'}; candB.total=candB.a.tax+candB.b.tax;
   const mixed = candA.total<=candB.total?candA:candB;
   mixed.receiver = mixed.to==='a'?nm(A):nm(B);
   mixed.hasOther = pool.length>0 && (oth(sA).length>0 && oth(sB).length>0 || true);
