@@ -189,7 +189,7 @@ aside.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);display
   <div>
     <div class="brand">Signature 41 · Suit Test</div>
     <h1>แบบแสดงข้อมูลผู้ถือหน่วยลงทุน และประเมินความเหมาะสมในการลงทุน</h1>
-    <p class="sub">แบบประเมินความเสี่ยงที่ยอมรับได้ (Suitability Test) สำหรับการลงทุนในกองทุนรวม และประกันควบการลงทุน (Unit Linked)</p>
+    <p class="sub">Suitability Test สำหรับกองทุนรวมและประกันควบการลงทุน · คิดคะแนนอัตโนมัติ</p>
   </div>
   <div class="row">
     <button class="btn ghost small" id="demoBtn" type="button">ใส่ตัวอย่าง</button>
@@ -203,12 +203,11 @@ aside.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);display
     <details class="why">
       <summary>ทำไมต้องทำแบบประเมินนี้</summary>
       <ul>
-        <li>ผลคะแนนใช้จัดระดับผู้ลงทุน 1–5 และกำหนดว่าลงทุนในกองทุนระดับความเสี่ยงใดได้ และสัดส่วนการลงทุนที่เหมาะสม</li>
-        <li>การให้ข้อมูลมีผลต่อการให้บริการหรือการให้คำแนะนำ จึงต้องตอบตามความจริง ถูกต้อง เป็นปัจจุบัน และครบถ้วน</li>
-        <li>ควรทบทวนแบบประเมินอย่างน้อยทุก 2 ปี หรือเมื่อสถานการณ์ชีวิตเปลี่ยน เพราะคะแนนและสัดส่วนที่เหมาะสมจะเปลี่ยนตาม</li>
-        <li>เป็นขั้นตอนที่กฎเกณฑ์กำหนดก่อนซื้อกองทุนรวมหรือประกันควบการลงทุน ตามหลักรู้จักลูกค้าและแนะนำสินค้าให้เหมาะสม (KYC / Suitability) และการตรวจสอบที่มาของเงิน</li>
+        <li>กฎเกณฑ์กำหนดให้ทำก่อนซื้อกองทุนรวมหรือประกันควบการลงทุน (KYC / Suitability)</li>
+        <li>ผลคะแนนบอกระดับผู้ลงทุน 1–5 กองทุนที่ลงทุนได้ และสัดส่วนที่เหมาะสม</li>
+        <li>ตอบตามจริง เพราะมีผลต่อคำแนะนำ · ทบทวนทุก 2 ปีหรือเมื่อชีวิตเปลี่ยน</li>
       </ul>
-      <p class="src">ชุดคำถามข้อ 1–12 เกณฑ์คะแนน และตารางสัดส่วนการลงทุน เป็นแบบมาตรฐานที่ใช้ทั่วไปในอุตสาหกรรม (Suitability Test / Basic Asset Allocation) ผลที่ได้ใช้เป็นแนวทาง ไม่ใช่คำแนะนำเฉพาะเจาะจง</p>
+      <p class="src">คำถาม เกณฑ์คะแนน และตารางสัดส่วน เป็นแบบมาตรฐานที่ใช้ทั่วไปในอุตสาหกรรม ผลเป็นแนวทาง ไม่ใช่คำแนะนำเฉพาะราย</p>
     </details>
   </section>
 
@@ -220,19 +219,19 @@ aside.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);display
 
   <section class="block">
     <h2>แบบประเมินความเหมาะสมในการลงทุน</h2>
-    <p class="hint">คำถามข้อ 1–10 ใช้เพื่อประเมินความเหมาะสมในการลงทุนของท่าน · ตอบ 1 = 1 คะแนน, 2 = 2, 3 = 3, 4 = 4 · ข้อ 4 หากตอบหลายข้อให้เลือกข้อที่คะแนนสูงสุด</p>
+    <p class="hint">ตอบ 1–4 = 1–4 คะแนน · ข้อ 4 เลือกได้หลายข้อ นับข้อคะแนนสูงสุด</p>
     <div class="iqs" id="qList"></div>
   </section>
 
   <section class="block">
-    <h2>คำถามข้อ 11–12 และคำถามเพิ่มเติม</h2>
-    <p class="hint">ใช้เป็นข้อมูลเพิ่มเติมเพื่อประกอบการให้คำแนะนำ ไม่นำมาคิดคะแนน</p>
+    <h2>ข้อ 11–12 และคำถามเพิ่มเติม</h2>
+    <p class="hint">ไม่คิดคะแนน ใช้ประกอบคำแนะนำ</p>
     <div class="iqs" id="xList"></div>
   </section>
 
   <section class="block" id="resBlock">
     <h2>ผลการประเมินความเหมาะสมในการลงทุน</h2>
-    <div id="resOut"><p class="hint" style="margin:6px 0 0">ตอบคำถามข้อ 1–10 ให้ครบ แล้วผลคะแนนและการลงทุนที่แนะนำจะแสดงที่นี่</p></div>
+    <div id="resOut"><p class="hint" style="margin:6px 0 0">จะแสดงเมื่อตอบข้อ 1–10 ครบ</p></div>
   </section>
 </main>
 
@@ -247,7 +246,7 @@ aside.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);display
   <button class="btn" id="pdfBtn" type="button">ดาวน์โหลดผลเป็น PDF</button>
   <button class="btn ghost" id="imgBtn" type="button">บันทึกเป็นรูปแต่ละหน้า</button>
   <div class="warnmsg" id="msg" role="status"></div>
-  <p class="note">คำตอบจำไว้ในเบราว์เซอร์เครื่องนี้เท่านั้น (ถ้าเบราว์เซอร์อนุญาต) ไม่ได้ส่งไปที่ใด</p>
+  <p class="note">คำตอบเก็บในเครื่องนี้เท่านั้น ไม่ส่งไปที่ใด</p>
 </aside>
 </div>
 
@@ -313,11 +312,11 @@ const LEVELS = [
   {max:99, lv:5, range:"37 ขึ้นไป", name:"เสี่ยงสูงมาก", fundMax:8, fund:"1-8", a:[["เงินฝากและตราสารหนี้ระยะสั้น","<5%",5],["ตราสารหนี้ภาครัฐที่มีอายุมากกว่า 1 ปี + ตราสารหนี้ภาคเอกชน","<30%",30],["ตราสารทุน",">60%",60],["การลงทุนทางเลือก*","<30%",30]]}
 ];
 const GUIDE = {
-  1:{core:"กองทุนรวมตลาดเงินที่ลงทุนเฉพาะในประเทศ", text:"เน้นรักษาเงินต้นและสภาพคล่อง ลงทุนได้เฉพาะกองทุนความเสี่ยงระดับ 1 สินทรัพย์เสี่ยงเป็นส่วนน้อยมาก"},
-  2:{core:"กองทุนรวมตลาดเงิน · พันธบัตรรัฐบาล · ตราสารหนี้", text:"ใช้ตราสารหนี้เป็นแกนหลักของพอร์ต เพื่อรายได้สม่ำเสมอ ตราสารทุนเป็นส่วนเสริมไม่เกินสัดส่วนในตาราง"},
-  3:{core:"กองทุนรวมตราสารหนี้ · กองทุนรวมผสม", text:"ผสมตราสารหนี้กับตราสารทุน โดยตราสารหนี้ยังเป็นส่วนใหญ่ รับความผันผวนได้ปานกลาง"},
-  4:{core:"กองทุนรวมผสม · ตราสารทุน · หมวดอุตสาหกรรม", text:"เพิ่มสัดส่วนตราสารทุนเพื่อการเติบโตระยะยาว ยังคงมีตราสารหนี้ช่วยลดความผันผวน"},
-  5:{core:"กองทุนรวมตราสารทุน · หมวดอุตสาหกรรม · ทรัพย์สินทางเลือก", text:"ตราสารทุนเป็นแกนหลักของพอร์ต เน้นผลตอบแทนระยะยาว และรับการขาดทุนระยะสั้นได้มาก"}
+  1:{core:"ตลาดเงินในประเทศ", text:"รักษาเงินต้นเป็นหลัก ลงทุนได้เฉพาะกองทุนความเสี่ยงระดับ 1"},
+  2:{core:"ตลาดเงิน · พันธบัตร · ตราสารหนี้", text:"ตราสารหนี้เป็นแกน ตราสารทุนเสริมเล็กน้อย"},
+  3:{core:"ตราสารหนี้ · กองทุนผสม", text:"ผสมตราสารหนี้กับตราสารทุน รับความผันผวนปานกลาง"},
+  4:{core:"กองทุนผสม · ตราสารทุน · หมวดอุตสาหกรรม", text:"เน้นตราสารทุนเพื่อเติบโตระยะยาว มีตราสารหนี้ช่วยลดความผันผวน"},
+  5:{core:"ตราสารทุน · หมวดอุตสาหกรรม · ทรัพย์สินทางเลือก", text:"ตราสารทุนเป็นแกน รับขาดทุนระยะสั้นได้มาก"}
 };
 const FUNDTYPES = ["กองทุนรวมตลาดเงินที่ลงทุนเฉพาะในประเทศ","กองทุนรวมตลาดเงิน","กองทุนรวมพันธบัตรรัฐบาล","กองทุนรวมตราสารหนี้","กองทุนรวมผสม","กองทุนรวมตราสารทุน","กองทุนรวมหมวดอุตสาหกรรม","กองทุนรวมที่ลงทุนในทรัพย์สินทางเลือก"];
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -388,31 +387,31 @@ function resultHTML(s, screen){
   const L = levelOf(s), G = GUIDE[L.lv];
   const notes = [];
   const x11=radioVal("x11"), x12=radioVal("x12"), x22=radioVal("x22"), xfx=radioVal("xfx");
-  if (x11==="ไม่ได้") notes.push("ไม่ควรลงทุนในสัญญาซื้อขายล่วงหน้า (อนุพันธ์) และหุ้นกู้ที่มีอนุพันธ์แฝง");
-  if (x11==="ได้") notes.push("ลงทุนในอนุพันธ์ / หุ้นกู้ที่มีอนุพันธ์แฝงได้ ภายใต้ระดับความเสี่ยงที่รับได้");
-  if (x12==="ไม่ได้") notes.push("รับความเสี่ยงอัตราแลกเปลี่ยนไม่ได้ ควรเลี่ยงกองทุนต่างประเทศ หรือเลือกแบบป้องกันความเสี่ยงค่าเงิน");
-  if (x12==="ได้") notes.push("รับความเสี่ยงอัตราแลกเปลี่ยนได้ ลงทุนต่างประเทศได้");
-  if (s>=22 && x22==="ใช่") notes.push("ต้องการเน้นลงทุนต่างประเทศไม่น้อยกว่า 80% ของพอร์ต");
-  if (s>=22 && x22==="ไม่ใช่") notes.push("ไม่ต้องการเน้นต่างประเทศ ควรกระจายทั้งในและต่างประเทศ");
-  if (xfx.startsWith("ป้องกัน")) notes.push("กองทุนต่างประเทศ: เลือกแบบป้องกันความเสี่ยงอัตราแลกเปลี่ยน");
-  if (xfx.startsWith("ไม่ป้องกัน")) notes.push("กองทุนต่างประเทศ: เลือกแบบไม่ป้องกันความเสี่ยงอัตราแลกเปลี่ยนได้");
-  const fundsBlock = `<div class="fund pick"><div class="ft">ประเภทกองทุนหลักที่เหมาะสม</div><div class="fn">${esc(G.core)}<small>${esc(G.text)}</small></div></div>
-    ${notes.length?`<div class="fund"><div class="ft">ข้อควรพิจารณาจากคำตอบข้อ 11–12 และคำถามเพิ่มเติม</div><div class="fn" style="font-weight:400"><ul style="margin:0;padding-left:18px">${notes.map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div></div>`:""}
-    <p class="cap">แนวทางทั่วไปที่สรุปจากระดับความเสี่ยงและคำตอบของท่าน ใช้ได้ทั้งการเลือกกองทุนรวมทั่วไปและกองทุนในประกันควบการลงทุน ไม่ได้เจาะจงกองทุนของบริษัทใด</p>`;
+  if (x11==="ไม่ได้") notes.push("เลี่ยงอนุพันธ์และหุ้นกู้อนุพันธ์แฝง");
+  if (x11==="ได้") notes.push("ลงทุนอนุพันธ์ / หุ้นกู้อนุพันธ์แฝงได้");
+  if (x12==="ไม่ได้") notes.push("รับความเสี่ยงค่าเงินไม่ได้ เลี่ยงกองทุนต่างประเทศ หรือเลือกแบบป้องกันค่าเงิน");
+  if (x12==="ได้") notes.push("ลงทุนต่างประเทศได้ รับความเสี่ยงค่าเงินได้");
+  if (s>=22 && x22==="ใช่") notes.push("เน้นต่างประเทศ ≥ 80% ของพอร์ต");
+  if (s>=22 && x22==="ไม่ใช่") notes.push("กระจายทั้งในและต่างประเทศ");
+  if (xfx.startsWith("ป้องกัน")) notes.push("กองทุนต่างประเทศ: แบบป้องกันค่าเงิน");
+  if (xfx.startsWith("ไม่ป้องกัน")) notes.push("กองทุนต่างประเทศ: แบบไม่ป้องกันค่าเงินได้");
+  const fundsBlock = `<div class="fund pick"><div class="ft">กองทุนหลักที่เหมาะสม</div><div class="fn">${esc(G.core)}<small>${esc(G.text)}</small></div></div>
+    ${notes.length?`<div class="fund"><div class="ft">จากคำตอบข้อ 11–12 และคำถามเพิ่มเติม</div><div class="fn" style="font-weight:400"><ul style="margin:0;padding-left:18px">${notes.map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div></div>`:""}
+    <p class="cap">แนวทางทั่วไป ใช้ได้ทั้งกองทุนรวมและกองทุนในประกันควบการลงทุน ไม่เจาะจงกองทุนของบริษัทใด</p>`;
   return `<div class="res${screen?" res-screen":""}">
     <div class="hero">
       <div class="scorebox"><b>${s}</b><small>รวมคะแนน ข้อ 1–10</small></div>
       <div><div class="lvtitle">ระดับ <em>${L.lv}</em> · ${L.name}</div>
-        <div class="note">ช่วงคะแนน ${L.range} · ประเภทนักลงทุน: ${L.name}</div>
+        <div class="note">ช่วงคะแนน ${L.range}</div>
         <div class="gauge">${gaugeSVG(s)}</div></div>
     </div>
     <div><h3>ระดับความเสี่ยงของกองทุนรวมที่ลงทุนได้: ${L.fund}</h3>
       <div class="ladder">${FUNDTYPES.map((t,i)=>`<div class="${i<L.fundMax?"on":""}"><b>${i+1}</b>${esc(t.replace("กองทุนรวม",""))}</div>`).join("")}</div>
-      <p class="cap">สัดส่วนการลงทุนที่เหมาะสมตามความเสี่ยงที่สามารถยอมรับได้: กองทุนรวมระดับความเสี่ยง ${L.fund} (ใช้ได้กับกองทุนในประกันควบการลงทุนด้วย)</p></div>
+      <p class="cap">ใช้ได้กับกองทุนในประกันควบการลงทุนด้วย</p></div>
     <div><h3>การลงทุนที่แนะนำโดยทั่วไป</h3><div class="funds">${fundsBlock}</div></div>
     <div><h3>สัดส่วนการลงทุนที่เหมาะสมตามความเสี่ยงที่ยอมรับได้</h3>
       <div class="alloc">${L.a.map((r,i)=>`<div class="al"><div>${esc(r[0])}</div><div class="track"><div class="fill" style="width:${r[2]}%;background:var(--b${[1,2,4,5][i]})"></div></div><div class="v">${r[1]}</div></div>`).join("")}</div>
-      <p class="cap">* รวมถึง สินค้าโภคภัณฑ์ สัญญาซื้อขายล่วงหน้า · ตัวเลขตามตาราง Basic Asset Allocation มาตรฐาน · แถบแสดงเพดาน/ขั้นต่ำของแต่ละสินทรัพย์</p></div>
+      <p class="cap">* รวมสินค้าโภคภัณฑ์และสัญญาซื้อขายล่วงหน้า · แถบคือเพดาน/ขั้นต่ำ ไม่ใช่สัดส่วนจริง</p></div>
   </div>`;
 }
 
@@ -430,7 +429,7 @@ function update(){
   });
   a.forEach((x,i)=>{ if (x) document.getElementById("q"+i).classList.remove("missing"); });
   document.getElementById("resOut").innerHTML = done===10 ? resultHTML(s,true)
-    : `<p class="hint" style="margin:6px 0 0">ตอบคำถามข้อ 1–10 ให้ครบ (ตอนนี้ ${done}/10) แล้วผลคะแนนและการลงทุนที่แนะนำจะแสดงที่นี่</p>`;
+    : `<p class="hint" style="margin:6px 0 0">จะแสดงเมื่อตอบข้อ 1–10 ครบ (ตอนนี้ ${done}/10)</p>`;
   saveDraft();
 }
 
@@ -471,7 +470,7 @@ function buildPages(host){
   const today=new Date().toLocaleDateString("th-TH",{day:"numeric",month:"long",year:"numeric"});
   const who=`${esc(val("name")||"(ไม่ระบุชื่อ)")}<br>วันที่ประเมิน ${today}`;
   const ph=(t)=>`<div class="ph"><div><div class="brand">SIGNATURE 41 · SUIT TEST</div><h2>${t}</h2></div><div class="who">${who}</div></div>`;
-  const pf=`<div class="pf"><span>S41 Financial Clinic · แบบประเมินความเหมาะสมในการลงทุน (Suitability Test) เพื่อใช้ประกอบการออกแบบการลงทุน ไม่ใช่เอกสารทางการของ บลจ. หรือบริษัทประกัน · ● = ข้อที่เลือก</span><span class="pn" style="white-space:nowrap"></span></div>`;
+  const pf=`<div class="pf"><span>S41 Financial Clinic · Suitability Test เพื่อประกอบการออกแบบการลงทุน ไม่ใช่เอกสารทางการของ บลจ./บริษัทประกัน · ● = ข้อที่เลือก</span><span class="pn" style="white-space:nowrap"></span></div>`;
   const mark=(on)=>`<span class="fr-mk${on?" on":""}">${on?"●":"○"}</span>`;
   const opts=(name,o,chosen,pts)=>`<div class="fr-fo">${o.map((t,i)=>`<span class="fr-oi${chosen.includes(i)?" on":""}">${mark(chosen.includes(i))}${pts?`<b>${i+1}.</b> `:""}${esc(t)}</span>`).join("")}</div>`;
   const line=(label,v)=>`<div class="fr-fl"><span class="fr-fk">${esc(label)}</span><span class="fr-fv">${esc(v||"")||"<i>–</i>"}</span></div>`;
@@ -504,7 +503,7 @@ function buildPages(host){
   // ---- paginate: page 1 = result, then flow blocks ----
   host.innerHTML=`<div class="page">${ph("ผลการประเมินความเหมาะสมในการลงทุน")}<div class="grow">${resultHTML(s,false)}</div>${pf}</div>`;
   let page=null, grow=null;
-  const newPage=()=>{ host.insertAdjacentHTML("beforeend",`<div class="page form">${ph("แบบฟอร์มตามที่กรอก (สำหรับคัดลอกลงแบบฟอร์มของ บลจ. / บริษัทประกัน)")}<div class="grow"></div>${pf}</div>`); page=host.lastElementChild; grow=page.querySelector(".grow"); };
+  const newPage=()=>{ host.insertAdjacentHTML("beforeend",`<div class="page form">${ph("แบบฟอร์มตามที่กรอก")}<div class="grow"></div>${pf}</div>`); page=host.lastElementChild; grow=page.querySelector(".grow"); };
   newPage();
   B.forEach(html=>{
     grow.insertAdjacentHTML("beforeend",html);
@@ -532,7 +531,7 @@ function checkReady(){
   if (miss.length){ miss.forEach(i=>document.getElementById("q"+i).classList.add("missing"));
     msg.textContent=`ยังไม่ได้ตอบข้อ ${miss.map(i=>i+1).join(", ")}`;
     document.getElementById("q"+miss[0]).scrollIntoView({behavior:"smooth",block:"center"}); return false; }
-  if (typeof html2canvas!=="function"){ msg.textContent="โหลดตัวสร้างไฟล์ไม่สำเร็จ ลองรีโหลดหน้า"; return false; }
+  if (typeof html2canvas!=="function"){ msg.textContent="โหลดตัวสร้างไฟล์ไม่ได้ ลองรีโหลดหน้า"; return false; }
   return true;
 }
 const fname = ext => `ผลประเมินความเหมาะสมในการลงทุน-${(val("name")||"ลูกค้า").replace(/[\\/:*?"<>|]/g,"").slice(0,60)}.${ext}`;
@@ -542,13 +541,13 @@ async function offer(blob, ext, suffix=""){
   const name=fname(ext).replace("."+ext, suffix+"."+ext);
   if (!inArtifact){
     try{ const u=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=u; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u),10000);
-      m.textContent="ส่งไฟล์ให้เบราว์เซอร์ดาวน์โหลดแล้ว ตรวจในโฟลเดอร์ดาวน์โหลด (บนมือถือบางรุ่นจะเปิดไฟล์ขึ้นมาให้กดบันทึกเอง)"; }
+      m.textContent="ส่งให้เบราว์เซอร์ดาวน์โหลดแล้ว · มือถือบางรุ่นจะเปิดไฟล์ขึ้นมา ให้กดแชร์ → บันทึก"; }
     catch(e){ m.textContent="ดาวน์โหลดไม่สำเร็จ ให้กดค้าง/คลิกขวาที่รูปเพื่อบันทึกแทน"; }
     return;
   }
-  if (!downloads){ m.textContent = ext==="pdf" ? "หน้านี้ดาวน์โหลดไฟล์ไม่ได้ในแอปนี้ ให้กดค้าง/คลิกขวาที่รูปตัวอย่างเพื่อบันทึก หรือแคปหน้าจอแทน" : "ดาวน์โหลดไม่ได้ในแอปนี้ ให้กดค้าง/คลิกขวาที่รูปเพื่อบันทึก"; return; }
-  try{ await downloads.save({filename:name, data:blob}); m.textContent="ส่งไฟล์ให้เบราว์เซอร์ดาวน์โหลดแล้ว ตรวจในโฟลเดอร์ดาวน์โหลดอีกครั้ง"; }
-  catch(e){ m.textContent = e&&e.code==="declined" ? "ยกเลิกการบันทึกแล้ว" : "ดาวน์โหลดไม่สำเร็จ ให้กดค้าง/คลิกขวาที่รูปเพื่อบันทึกแทน"; }
+  if (!downloads){ m.textContent = "แอปนี้ดาวน์โหลดไม่ได้ กดค้าง/คลิกขวาที่รูปเพื่อบันทึก"; return; }
+  try{ await downloads.save({filename:name, data:blob}); m.textContent="ส่งให้ดาวน์โหลดแล้ว ตรวจในโฟลเดอร์ดาวน์โหลด"; }
+  catch(e){ m.textContent = e&&e.code==="declined" ? "ยกเลิกแล้ว" : "ดาวน์โหลดไม่สำเร็จ กดค้าง/คลิกขวาที่รูปแทน"; }
 }
 async function run(kind){
   if (!checkReady()) return;
@@ -575,9 +574,7 @@ async function run(kind){
       blobs.forEach((bl,i)=>add(`รูปหน้า ${i+1}`,bl,"png",`-หน้า${i+1}`,kind!=="pdf"&&i===0));
     }
     const over = pages.some(p=>p.over);
-    document.getElementById("mMsg").textContent = (over?"เนื้อหาบางหน้ายาวเกินกระดาษ A4 ตรวจท้ายหน้าก่อนส่ง · ":"") +
-      ((downloads || !inArtifact) ? "ดาวน์โหลดเป็น PDF ทั้งชุด หรือเป็นรูปทีละหน้า · กดค้าง/คลิกขวาที่รูปด้านล่างเพื่อบันทึกได้เช่นกัน"
-                 : "แอปนี้ดาวน์โหลดไฟล์ไม่ได้ ให้กดค้าง/คลิกขวาที่รูปแต่ละหน้าด้านล่างเพื่อบันทึก หรือแคปหน้าจอ");
+    document.getElementById("mMsg").textContent = (over?"บางหน้าล้น A4 ตรวจท้ายหน้าก่อนส่ง · ":"") + ((downloads || !inArtifact) ? "ดาวน์โหลด PDF ทั้งชุด หรือรูปทีละหน้า · กดค้างที่รูปเพื่อบันทึกก็ได้" : "แอปนี้ดาวน์โหลดไม่ได้ กดค้าง/คลิกขวาที่รูปแต่ละหน้าเพื่อบันทึก");
     document.getElementById("modal").hidden=false;
   }catch(e){ msg.textContent="สร้างไฟล์ไม่สำเร็จ ลองอีกครั้ง"; }
   finally{ btns.forEach(x=>x.disabled=false); b.textContent=old; }
