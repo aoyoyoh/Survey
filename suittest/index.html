@@ -549,7 +549,12 @@ function restoreFromHash(){ const m=location.hash.match(/^#d=([A-Za-z0-9_-]+)$/)
   try{ const b=m[1].replace(/-/g,"+").replace(/_/g,"/"); const d=JSON.parse(decodeURIComponent(escape(atob(b))));
     Object.entries(d).forEach(([id,v])=>{ const el=document.getElementById(id); if(!el) return; if(el.type==="radio"||el.type==="checkbox") el.checked=true; else el.value=v; });
     history.replaceState(null,"",location.pathname+location.search); return true; }catch(e){ return false; } }
-if (inApp){ const bn=document.getElementById("inAppBar"); bn.hidden=false; bn.querySelector("a").addEventListener("click",e=>{ e.currentTarget.href=externalUrl(); }); }
+if (inApp){
+  // LINE opens a URL that carries openExternalBrowser=1 in the phone's own browser; try that once, then fall back to the banner
+  let tried=false; try{ tried=sessionStorage.getItem("s41-ext")==="1"; }catch(e){}
+  if (!/openExternalBrowser=1/.test(location.search) && !tried){ try{ sessionStorage.setItem("s41-ext","1"); }catch(e){} location.replace(location.origin+location.pathname+"?openExternalBrowser=1"+location.hash); }
+  const bn=document.getElementById("inAppBar"); bn.hidden=false; bn.querySelector("a").addEventListener("click",e=>{ e.currentTarget.href=externalUrl(); });
+}
 async function offer(blob, ext, suffix=""){
   const m=document.getElementById("mMsg");
   const name=fname(ext).replace("."+ext, suffix+"."+ext);
