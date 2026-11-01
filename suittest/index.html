@@ -133,6 +133,8 @@ aside.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);display
 .nudge{font-size:13px;color:var(--warn)}
 .aiatext{font-size:12.5px;color:var(--muted);border-left:3px solid var(--gold);padding-left:10px;margin:8px 0 0}
 
+.inapp{max-width:1100px;margin:0 auto 16px;background:var(--gold-soft);border:1px solid var(--gold);border-radius:8px;padding:8px 12px;font-size:13.5px}
+.inapp a{color:var(--navy);font-weight:600}
 /* modal */
 .modal{position:fixed;inset:0;background:rgba(10,14,24,.6);display:flex;align-items:flex-start;justify-content:center;z-index:50;overflow:auto;
   padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
@@ -197,6 +199,7 @@ aside.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);display
   </div>
 </header>
 
+<div class="inapp" id="inAppBar" hidden>เปิดอยู่ใน LINE: บันทึก PDF ไม่ได้ ใช้ได้แค่กดค้างที่รูป หรือ <a href="#" rel="noopener">เปิดใน Chrome/Safari พร้อมคำตอบที่กรอกไว้</a></div>
 <div class="wrap">
 <main>
   <section class="block">
@@ -536,12 +539,23 @@ function checkReady(){
 }
 const fname = ext => `ผลประเมินความเหมาะสมในการลงทุน-${(val("name")||"ลูกค้า").replace(/[\\/:*?"<>|]/g,"").slice(0,60)}.${ext}`;
 const inArtifact = !!(window.claude && typeof window.claude.use==="function");
+const inApp = !inArtifact && /\bLine\/|FBAN|FBAV|Instagram|MicroMessenger/i.test(navigator.userAgent);
+const canShareFiles = (f)=>{ try{ return !!(navigator.share && navigator.canShare && navigator.canShare({files:[f]})); }catch(e){ return false; } };
+function collectAnswers(){ const d={}; document.querySelectorAll("main input, main textarea").forEach(el=>{
+  if (el.type==="radio"||el.type==="checkbox"){ if(el.checked) d[el.id]=1; } else if (el.value) d[el.id]=el.value; }); return d; }
+function externalUrl(){ const enc=btoa(unescape(encodeURIComponent(JSON.stringify(collectAnswers())))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+  return location.origin+location.pathname+"?openExternalBrowser=1#d="+enc; }
+function restoreFromHash(){ const m=location.hash.match(/^#d=([A-Za-z0-9_-]+)$/); if(!m) return false;
+  try{ const b=m[1].replace(/-/g,"+").replace(/_/g,"/"); const d=JSON.parse(decodeURIComponent(escape(atob(b))));
+    Object.entries(d).forEach(([id,v])=>{ const el=document.getElementById(id); if(!el) return; if(el.type==="radio"||el.type==="checkbox") el.checked=true; else el.value=v; });
+    history.replaceState(null,"",location.pathname+location.search); return true; }catch(e){ return false; } }
+if (inApp){ const bn=document.getElementById("inAppBar"); bn.hidden=false; bn.querySelector("a").addEventListener("click",e=>{ e.currentTarget.href=externalUrl(); }); }
 async function offer(blob, ext, suffix=""){
   const m=document.getElementById("mMsg");
   const name=fname(ext).replace("."+ext, suffix+"."+ext);
   if (!inArtifact){
     try{ const u=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=u; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u),10000);
-      m.textContent="ส่งให้เบราว์เซอร์ดาวน์โหลดแล้ว · มือถือบางรุ่นจะเปิดไฟล์ขึ้นมา ให้กดแชร์ → บันทึก"; }
+      m.textContent="ส่งคำสั่งดาวน์โหลดแล้ว ถ้าไม่มีไฟล์ขึ้นมาภายในครู่ ให้กดค้างที่รูปเพื่อบันทึกแทน · iPhone อาจเปิดไฟล์ขึ้นมาให้กดแชร์ → บันทึก"; }
     catch(e){ m.textContent="ดาวน์โหลดไม่สำเร็จ ให้กดค้าง/คลิกขวาที่รูปเพื่อบันทึกแทน"; }
     return;
   }
@@ -564,17 +578,25 @@ async function run(kind){
       pdfBlob = pdf.output("blob");
     }
     const prev=document.getElementById("mPrev"); prev.innerHTML="";
-    pages.forEach((p,i)=>{ const im=new Image(); im.alt=`หน้า ${i+1}`; im.src=URL.createObjectURL(blobs[i]); prev.appendChild(im); });
+    pages.forEach((p,i)=>{ const im=new Image(); im.alt=`หน้า ${i+1}`; im.src=p.canvas.toDataURL("image/png"); prev.appendChild(im); });
     document.getElementById("mTitle").textContent = `ผลการประเมิน (${pages.length} หน้า A4)`;
     const mb=document.getElementById("mBtns"); mb.innerHTML="";
     const add=(label,blob,ext,suffix,primary)=>{ const x=document.createElement("button"); x.type="button"; x.className="btn small"+(primary?"":" ghost"); x.textContent=label;
       x.addEventListener("click",()=>offer(blob,ext,suffix)); mb.appendChild(x); };
-    if (downloads || !inArtifact){
-      if (pdfBlob) add("ดาวน์โหลด PDF",pdfBlob,"pdf","",kind==="pdf");
-      blobs.forEach((bl,i)=>add(`รูปหน้า ${i+1}`,bl,"png",`-หน้า${i+1}`,kind!=="pdf"&&i===0));
+    const pdfFile = pdfBlob ? new File([pdfBlob], fname("pdf"), {type:"application/pdf"}) : null;
+    const share = pdfFile && !inArtifact && canShareFiles(pdfFile);
+    if (share){ const x=document.createElement("button"); x.type="button"; x.className="btn small"; x.textContent="แชร์ PDF (ส่งเข้า LINE / บันทึกลงไฟล์)";
+      x.addEventListener("click",async()=>{ const m=document.getElementById("mMsg"); try{ await navigator.share({files:[pdfFile],title:fname("pdf")}); m.textContent="แชร์แล้ว"; }
+        catch(e){ m.textContent = e&&e.name==="AbortError" ? "ยกเลิกแล้ว" : "แชร์ไม่สำเร็จ กดค้างที่รูปเพื่อบันทึกแทน"; } }); mb.appendChild(x); }
+    const canDl = downloads || (!inArtifact && !inApp);
+    if (canDl){
+      if (pdfBlob) add("ดาวน์โหลด PDF",pdfBlob,"pdf","",kind==="pdf"&&!share);
+      blobs.forEach((bl,i)=>add(`รูปหน้า ${i+1}`,bl,"png",`-หน้า${i+1}`,kind!=="pdf"&&i===0&&!share));
     }
     const over = pages.some(p=>p.over);
-    document.getElementById("mMsg").textContent = (over?"บางหน้าล้น A4 ตรวจท้ายหน้าก่อนส่ง · ":"") + ((downloads || !inArtifact) ? "ดาวน์โหลด PDF ทั้งชุด หรือรูปทีละหน้า · กดค้างที่รูปเพื่อบันทึกก็ได้" : "แอปนี้ดาวน์โหลดไม่ได้ กดค้าง/คลิกขวาที่รูปแต่ละหน้าเพื่อบันทึก");
+    document.getElementById("mMsg").textContent = (over?"บางหน้าล้น A4 ตรวจท้ายหน้าก่อนส่ง · ":"") +
+      (inApp ? (share ? "ใน LINE ดาวน์โหลดไม่ได้ ใช้ปุ่มแชร์ หรือกดค้างที่รูปแต่ละหน้าเพื่อบันทึก" : "ใน LINE ดาวน์โหลดไม่ได้ กดค้างที่รูปแต่ละหน้าเพื่อบันทึก หรือเปิดใน Chrome/Safari จากแถบด้านบน")
+             : canDl ? "ดาวน์โหลด PDF ทั้งชุด หรือรูปทีละหน้า · กดค้างที่รูปเพื่อบันทึกก็ได้" : "แอปนี้ดาวน์โหลดไม่ได้ กดค้าง/คลิกขวาที่รูปแต่ละหน้าเพื่อบันทึก");
     document.getElementById("modal").hidden=false;
   }catch(e){ msg.textContent="สร้างไฟล์ไม่สำเร็จ ลองอีกครั้ง"; }
   finally{ btns.forEach(x=>x.disabled=false); b.textContent=old; }
@@ -583,7 +605,7 @@ document.getElementById("pdfBtn").addEventListener("click",()=>run("pdf"));
 document.getElementById("imgBtn").addEventListener("click",()=>run("png"));
 document.getElementById("closeM").addEventListener("click",()=>{ document.getElementById("modal").hidden=true; });
 
-loadDraft(); update();
+if (!restoreFromHash()) loadDraft(); update();
 </script>
 </body>
 </html>
