@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="แบบประเมินความเหมาะสมในการลงทุน (Suitability Test) คิดคะแนนอัตโนมัติ พร้อมสัดส่วนการลงทุนที่เหมาะสม และบันทึกผลเป็น PDF — S41 Financial Clinic">
+<title>Suit Test · แบบประเมินความเหมาะสมในการลงทุน — S41 Financial Clinic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Noto+Serif+Thai:wght@600;700&display=swap">
+<style>
+/* Layout: form column + sticky score rail; result block uses the same markup on screen and in the A4 export (export pins light tokens) */
+:root{
+  --bg:#f6f4ee; --surface:#ffffff; --fg:#1b2438; --muted:#5d6577; --line:#dcd8cc;
+  --navy:#1d2c4c; --gold:#b08a3e; --gold-soft:#efe4c8; --sel:#eef1f8; --warn:#9a3b2e;
+  --b1:#5e8c6a; --b2:#8fa96a; --b3:#c9a24a; --b4:#c97b45; --b5:#a64b3c;
+  --f-display:"Noto Serif Thai", Georgia, serif;
+  --f-body:"IBM Plex Sans Thai", "Sarabun", "Leelawadee UI", Tahoma, sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121725; --surface:#1a2133; --fg:#e8e6df; --muted:#a3a9b8; --line:#2e374d;
+  --navy:#c9d4ee; --gold:#d6b46a; --gold-soft:#3a3222; --sel:#24304a; --warn:#e38c7d;
+  --b1:#7fb08b; --b2:#a9c283; --b3:#dbb862; --b4:#de9563; --b5:#d17262; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121725; --surface:#1a2133; --fg:#e8e6df; --muted:#a3a9b8; --line:#2e374d;
+  --navy:#c9d4ee; --gold:#d6b46a; --gold-soft:#3a3222; --sel:#24304a; --warn:#e38c7d;
+  --b1:#7fb08b; --b2:#a9c283; --b3:#dbb862; --b4:#de9563; --b5:#d17262; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 80px}
+.wrap{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:28px;align-items:start}
+@media (max-width:880px){.wrap{grid-template-columns:minmax(0,1fr)}}
+header.top{max-width:1100px;margin:0 auto 20px;display:flex;gap:14px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap}
+.brand{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600}
+h1{font-family:var(--f-display);font-size:clamp(23px,4vw,31px);line-height:1.25;margin:4px 0 0;color:var(--navy);text-wrap:balance}
+.sub{color:var(--muted);margin:4px 0 0;font-size:14px}
+section.block{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px clamp(16px,3vw,26px);margin-bottom:18px;min-width:0}
+h2{font-family:var(--f-display);font-size:19px;margin:0 0 4px;color:var(--navy)}
+.hint{color:var(--muted);font-size:13px;margin:0 0 16px}
+details.why summary{cursor:pointer;font-weight:600;color:var(--navy)}
+details.why ul{margin:10px 0 0;padding-left:20px} details.why li{margin-bottom:4px}
+.src{font-size:12px;color:var(--muted)}
+input[type=text],input[type=date],textarea{font:inherit;font-size:16px;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 14px;width:100%}
+input:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+/* questions */
+.iqs{display:flex;flex-direction:column;gap:22px}
+.iq{border:0;margin:0;padding:0;min-width:0;display:flex;flex-direction:column;gap:8px}
+.iq-h{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.iq legend.iq-t{float:left;padding:0}
+.iq-n{flex:none;width:26px;height:26px;border-radius:50%;background:var(--gold-soft);color:var(--navy);font-weight:700;font-size:13px;display:inline-flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
+.iq-n.blank{background:transparent}
+.iq-t{font-size:15.5px;font-weight:600}
+.iq-tag{font-size:12px;color:var(--gold);border:1px solid var(--gold);border-radius:999px;padding:0 8px}
+.iq-body{margin-left:36px;min-width:0;display:flex;flex-direction:column;gap:8px}
+@media (max-width:560px){.iq-body{margin-left:0}}
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media (max-width:560px){.pair{grid-template-columns:minmax(0,1fr)}}
+.money{display:flex;align-items:center;gap:10px;max-width:360px}
+.money input{text-align:right;font-variant-numeric:tabular-nums;flex:1;min-width:0}
+.money span{color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}
+.tiles.stack{grid-template-columns:minmax(0,1fr)}
+.tile{position:relative;display:flex;align-items:center;gap:10px;min-height:46px;border:1.5px solid var(--line);border-radius:10px;padding:9px 14px;cursor:pointer;background:var(--bg);font-size:15px;line-height:1.4}
+.tile input{position:absolute;opacity:0;pointer-events:none}
+.tile::before{content:"";flex:none;width:18px;height:18px;border-radius:50%;border:1.5px solid var(--muted);background:var(--surface)}
+.tile:has(input[type=checkbox])::before{border-radius:5px}
+.tile:hover{border-color:var(--gold)}
+.tile:has(input:checked){background:var(--sel);border-color:var(--navy);color:var(--navy);font-weight:600}
+.tile:has(input:checked)::before{background:var(--navy);border-color:var(--navy);box-shadow:inset 0 0 0 3px var(--surface)}
+.tile:has(input:focus-visible){outline:2px solid var(--gold);outline-offset:2px}
+.tile .pt{margin-left:auto;font-size:12px;color:var(--muted);white-space:nowrap;padding-left:10px;font-weight:400}
+.tile:has(input:checked) .pt{color:var(--navy);font-weight:600}
+.iq-note{margin:0;font-size:12.5px;color:var(--muted)}
+textarea{resize:vertical;min-height:64px}
+.iq.missing .iq-t{color:var(--warn)}
+.iq.missing .iq-n{background:var(--warn);color:var(--surface)}
+.sub-h{font-size:13px;color:var(--muted);margin:0}
+.chart7{overflow-x:auto} .chart7 svg{display:block;width:100%;max-width:440px;height:auto}
+
+/* rail */
+aside.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);display:flex;flex-direction:column;gap:12px}
+@media (max-width:880px){aside.rail{position:static;order:-1}}
+.score{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.score .big{font-family:var(--f-display);font-size:42px;line-height:1;color:var(--navy);font-variant-numeric:tabular-nums}
+.score .of{color:var(--muted);font-size:14px}
+.lvl{margin-top:10px;display:flex;gap:4px}
+.lvl span{flex:1;height:8px;border-radius:3px;background:var(--line)}
+.lvl span.on{background:var(--gold)}
+.lvlname{margin-top:8px;font-weight:600;color:var(--navy)}
+.prog{font-size:13px;color:var(--muted);margin-top:4px}
+.btn{font:inherit;font-weight:600;border-radius:8px;padding:10px 14px;cursor:pointer;border:1px solid var(--navy);background:var(--navy);color:var(--surface);width:100%}
+.btn.ghost{background:transparent;color:var(--navy)}
+.btn.small{width:auto;padding:6px 12px;font-size:13px}
+.btn:disabled{opacity:.55;cursor:wait}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.note{font-size:12px;color:var(--muted)}
+.warnmsg{font-size:13px;color:var(--warn)}
+
+/* ---------- result (screen + export share this markup) ---------- */
+.res{display:flex;flex-direction:column;gap:22px;color:var(--fg)}
+.res h3{font-family:var(--f-display);font-size:17px;color:var(--navy);margin:0 0 8px}
+.res .cap{font-size:12px;color:var(--muted);margin:6px 0 0}
+.hero{display:grid;grid-template-columns:150px minmax(0,1fr);gap:20px;align-items:center}
+@media (max-width:560px){.res-screen .hero{grid-template-columns:minmax(0,1fr)}}
+.scorebox{background:var(--navy);color:var(--surface);border-radius:12px;padding:14px;text-align:center}
+.scorebox b{display:block;font-family:var(--f-display);font-size:48px;line-height:1.05;font-variant-numeric:tabular-nums}
+.scorebox small{font-size:12px;opacity:.85}
+.lvtitle{font-family:var(--f-display);font-size:21px;font-weight:700;color:var(--navy);line-height:1.3}
+.lvtitle em{font-style:normal;color:var(--gold)}
+.gauge svg{display:block;width:100%;height:auto;margin-top:8px}
+.ladder{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px}
+.ladder div{border:1.5px solid var(--line);border-radius:8px;padding:6px 4px 8px;text-align:center;font-size:11px;line-height:1.3;color:var(--muted);min-width:0}
+.ladder div b{display:block;font-size:16px;color:var(--muted)}
+.ladder div.on{background:var(--gold-soft);border-color:var(--gold);color:var(--fg)}
+.ladder div.on b{color:var(--navy)}
+@media (max-width:560px){.res-screen .ladder{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.funds{display:flex;flex-direction:column;gap:8px}
+.fund{display:grid;grid-template-columns:180px minmax(0,1fr);gap:12px;border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;align-items:center}
+@media (max-width:560px){.res-screen .fund{grid-template-columns:minmax(0,1fr);gap:2px}}
+.fund .ft{font-size:13px;color:var(--muted)}
+.fund .fn{font-weight:600}
+.fund .fn small{display:block;font-weight:400;color:var(--muted);font-size:12.5px}
+.fund.pick{border-color:var(--navy);background:var(--sel)}
+.fund .badge{display:inline-block;margin-top:4px;font-size:11.5px;font-weight:600;color:var(--surface);background:var(--navy);border-radius:999px;padding:1px 9px}
+.alloc{display:flex;flex-direction:column;gap:9px}
+.al{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,2fr) 52px;gap:12px;align-items:center;font-size:13.5px}
+@media (max-width:560px){.res-screen .al{grid-template-columns:minmax(0,1fr) 52px}.res-screen .al .track{grid-column:1/-1;grid-row:2}}
+.al .track{height:14px;border-radius:7px;background:var(--line);position:relative;overflow:hidden}
+.al .fill{position:absolute;inset:0 auto 0 0;border-radius:7px}
+.al .v{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+.nudge{font-size:13px;color:var(--warn)}
+.aiatext{font-size:12.5px;color:var(--muted);border-left:3px solid var(--gold);padding-left:10px;margin:8px 0 0}
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(10,14,24,.6);display:flex;align-items:flex-start;justify-content:center;z-index:50;overflow:auto;
+  padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.mbox{background:var(--surface);border-radius:12px;max-width:720px;width:100%;padding:18px;display:flex;flex-direction:column;gap:12px}
+.mbox img{width:100%;height:auto;border:1px solid var(--line);border-radius:6px;background:#fff}
+
+/* ---------- A4 export pages: pinned light tokens ---------- */
+#sheetHost{position:absolute;left:-10000px;top:0}
+.page{width:794px;height:1123px;padding:44px 50px 36px;background:#fbfaf6;display:flex;flex-direction:column;
+  --bg:#fbfaf6; --surface:#ffffff; --fg:#1b2438; --muted:#5d6577; --line:#e1ddd1; --navy:#1d2c4c; --gold:#b08a3e; --gold-soft:#f1e7cd; --sel:#edf0f7; --warn:#9a3b2e;
+  --b1:#5e8c6a; --b2:#8fa96a; --b3:#c9a24a; --b4:#c97b45; --b5:#a64b3c;
+  color:var(--fg);font-family:var(--f-body);font-size:13.5px;line-height:1.5}
+.page .ph{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid var(--navy);padding-bottom:10px;margin-bottom:18px}
+.page .ph .brand{font-size:11px}
+.page .ph h2{font-size:21px;margin:2px 0 0}
+.page .ph .who{font-size:12.5px;color:var(--muted);text-align:right}
+.page .res{gap:16px}
+.page .res h3{font-size:15px;margin-bottom:6px}
+.page .fund{padding:7px 12px}
+.page .grow{flex:1;min-height:0}
+.page .pf{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:8px;margin-top:10px;gap:20px}
+.page table{border-collapse:collapse;width:100%;font-size:12.5px}
+.page td,.page th{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left;vertical-align:top}
+.page th{color:var(--muted);font-weight:500;font-size:11.5px}
+.page td.n{text-align:center;width:34px;color:var(--gold);font-weight:700}
+.page td.p{text-align:center;width:54px;font-weight:700}
+.page .two{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;font-size:12.5px}
+.page .two div{border-bottom:1px solid var(--line);padding:4px 0}
+.page .two div.w{grid-column:1/-1}
+.page table.info{font-size:13.5px}.page table.info td{padding:9px 6px}
+.page .two span{color:var(--muted)}
+.page h4{font-family:var(--f-display);font-size:15px;color:var(--navy);margin:13px 0 5px}
+/* form replica pages */
+.page.form{font-size:12.5px;line-height:1.45}
+.page.form h4{margin:10px 0 6px;padding-bottom:3px;border-bottom:1px solid var(--line)}
+.fr-fb{display:flex;gap:8px;align-items:flex-start;padding:5px 0;border-bottom:1px dotted var(--line)}
+.fr-fb.fr-tot{border-bottom:2px solid var(--navy)}
+.fr-fn{flex:none;width:22px;text-align:right;color:var(--gold);font-weight:700;font-variant-numeric:tabular-nums}
+.fr-fc{flex:1;min-width:0}
+.fr-fs{flex:none;width:44px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums;background:var(--gold-soft);border-radius:6px;padding:1px 0}
+.fr-fq{font-weight:600;margin-bottom:2px} .fr-fq small{font-weight:400;color:var(--muted)}
+.fr-fpre{font-size:11px;color:var(--muted)}
+.fr-fo{display:flex;flex-wrap:wrap;gap:2px 14px}
+.fr-oi{color:var(--muted);white-space:normal} .fr-oi.on{color:var(--fg);font-weight:600}
+.fr-oi b{color:var(--gold)}
+.fr-mk{display:inline-block;width:14px;color:var(--muted)} .fr-mk.on{color:var(--navy)}
+.fr-fl{display:flex;gap:6px;min-width:0} .fr-fk{color:var(--muted);flex:none} .fr-fv{font-weight:600;border-bottom:1px solid var(--line);flex:1;min-width:0;word-break:break-word} .fr-fv i{color:var(--muted);font-weight:400}
+.fr-fl2{display:grid;grid-template-columns:1fr 1fr;gap:4px 18px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div>
+    <div class="brand">Signature 41 · Suit Test</div>
+    <h1>แบบแสดงข้อมูลผู้ถือหน่วยลงทุน และประเมินความเหมาะสมในการลงทุน</h1>
+    <p class="sub">แบบประเมินความเสี่ยงที่ยอมรับได้ (Suitability Test) สำหรับการลงทุนในกองทุนรวม และประกันควบการลงทุน (Unit Linked)</p>
+  </div>
+  <div class="row">
+    <button class="btn ghost small" id="demoBtn" type="button">ใส่ตัวอย่าง</button>
+    <button class="btn ghost small" id="clearBtn" type="button">ล้างคำตอบ</button>
+  </div>
+</header>
+
+<div class="wrap">
+<main>
+  <section class="block">
+    <details class="why">
+      <summary>ทำไมต้องทำแบบประเมินนี้</summary>
+      <ul>
+        <li>ผลคะแนนใช้จัดระดับผู้ลงทุน 1–5 และกำหนดว่าลงทุนในกองทุนระดับความเสี่ยงใดได้ และสัดส่วนการลงทุนที่เหมาะสม</li>
+        <li>การให้ข้อมูลมีผลต่อการให้บริการหรือการให้คำแนะนำ จึงต้องตอบตามความจริง ถูกต้อง เป็นปัจจุบัน และครบถ้วน</li>
+        <li>ควรทบทวนแบบประเมินอย่างน้อยทุก 2 ปี หรือเมื่อสถานการณ์ชีวิตเปลี่ยน เพราะคะแนนและสัดส่วนที่เหมาะสมจะเปลี่ยนตาม</li>
+        <li>เป็นขั้นตอนที่กฎเกณฑ์กำหนดก่อนซื้อกองทุนรวมหรือประกันควบการลงทุน ตามหลักรู้จักลูกค้าและแนะนำสินค้าให้เหมาะสม (KYC / Suitability) และการตรวจสอบที่มาของเงิน</li>
+      </ul>
+      <p class="src">ชุดคำถามข้อ 1–12 เกณฑ์คะแนน และตารางสัดส่วนการลงทุน เป็นแบบมาตรฐานที่ใช้ทั่วไปในอุตสาหกรรม (Suitability Test / Basic Asset Allocation) ผลที่ได้ใช้เป็นแนวทาง ไม่ใช่คำแนะนำเฉพาะเจาะจง</p>
+    </details>
+  </section>
+
+  <section class="block">
+    <h2>แบบแสดงข้อมูลผู้ถือหน่วยลงทุน</h2>
+    <p class="hint">ไม่มีผลต่อคะแนน</p>
+    <div class="iqs" id="infoList"></div>
+  </section>
+
+  <section class="block">
+    <h2>แบบประเมินความเหมาะสมในการลงทุน</h2>
+    <p class="hint">คำถามข้อ 1–10 ใช้เพื่อประเมินความเหมาะสมในการลงทุนของท่าน · ตอบ 1 = 1 คะแนน, 2 = 2, 3 = 3, 4 = 4 · ข้อ 4 หากตอบหลายข้อให้เลือกข้อที่คะแนนสูงสุด</p>
+    <div class="iqs" id="qList"></div>
+  </section>
+
+  <section class="block">
+    <h2>คำถามข้อ 11–12 และคำถามเพิ่มเติม</h2>
+    <p class="hint">ใช้เป็นข้อมูลเพิ่มเติมเพื่อประกอบการให้คำแนะนำ ไม่นำมาคิดคะแนน</p>
+    <div class="iqs" id="xList"></div>
+  </section>
+
+  <section class="block" id="resBlock">
+    <h2>ผลการประเมินความเหมาะสมในการลงทุน</h2>
+    <div id="resOut"><p class="hint" style="margin:6px 0 0">ตอบคำถามข้อ 1–10 ให้ครบ แล้วผลคะแนนและการลงทุนที่แนะนำจะแสดงที่นี่</p></div>
+  </section>
+</main>
+
+<aside class="rail">
+  <div class="score" aria-live="polite">
+    <div class="note">รวมคะแนน (ข้อ 1–10)</div>
+    <div><span class="big" id="sc">0</span> <span class="of">/ 40</span></div>
+    <div class="lvl" id="lvlBar"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="lvlname" id="lvlName">ยังตอบไม่ครบ</div>
+    <div class="prog" id="prog">ตอบแล้ว 0 / 10 ข้อ</div>
+  </div>
+  <button class="btn" id="pdfBtn" type="button">ดาวน์โหลดผลเป็น PDF</button>
+  <button class="btn ghost" id="imgBtn" type="button">บันทึกเป็นรูปแต่ละหน้า</button>
+  <div class="warnmsg" id="msg" role="status"></div>
+  <p class="note">คำตอบจำไว้ในเบราว์เซอร์เครื่องนี้เท่านั้น (ถ้าเบราว์เซอร์อนุญาต) ไม่ได้ส่งไปที่ใด</p>
+</aside>
+</div>
+
+<div id="sheetHost" aria-hidden="true"></div>
+
+<div class="modal" id="modal" hidden>
+  <div class="mbox">
+    <div class="row" style="justify-content:space-between;align-items:center">
+      <strong id="mTitle">ผลการประเมิน</strong>
+      <button class="btn ghost small" id="closeM" type="button">ปิด</button>
+    </div>
+    <div class="row" id="mBtns"></div>
+    <div class="note" id="mMsg"></div>
+    <div id="mPrev" style="display:flex;flex-direction:column;gap:10px"></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+/* ===== content — standard suitability questionnaire wording ===== */
+const INFO = [
+  {id:"name", n:"", t:"ชื่อและนามสกุล", s:"ชื่อ-นามสกุล", type:"text", note:"(ในกรณีที่ผู้ลงทุนยังไม่บรรลุนิติภาวะ ให้บิดา / มารดา หรือผู้แทนโดยชอบธรรมเป็นผู้ตอบคำถาม)"},
+  {id:"dob", n:1, t:"วันเดือนปีเกิด / สัญชาติ", s:"วันเดือนปีเกิด / สัญชาติ", type:"dobnat"},
+  {id:"marital", n:2, t:"สถานภาพการสมรส", s:"สถานภาพการสมรส", type:"radio", o:["โสด","สมรสจดทะเบียน","สมรสไม่จดทะเบียน","หย่า","หม้าย"]},
+  {id:"addr1", n:3, t:"ที่อยู่ตามทะเบียนบ้าน", s:"ที่อยู่ตามทะเบียนบ้าน", type:"area", wide:true},
+  {id:"addr2", n:4, t:"ที่อยู่ที่ใช้ในการติดต่อและรับส่งเอกสาร", s:"ที่อยู่ติดต่อ / โทรศัพท์", type:"addr", wide:true},
+  {id:"edu", n:5, t:"วุฒิการศึกษา", s:"วุฒิการศึกษา", type:"radio", o:["ต่ำกว่าปริญญาตรี","ปริญญาตรีหรือเทียบเท่า","ปริญญาโทหรือเทียบเท่า","ปริญญาเอกหรือเทียบเท่า"]},
+  {id:"occ", n:6, t:"อาชีพ", s:"อาชีพ", type:"radio", o:["ข้าราชการ","พนักงานรัฐวิสาหกิจ","พนักงานบริษัทเอกชน","นักเรียน /นักศึกษา","พระภิกษุ","แม่บ้าน / ไม่ได้ทำงาน","เกษียณอายุ","ไม่ได้ประกอบอาชีพ","อาชีพอิสระ (ระบุ)","ธุรกิจส่วนตัว (ระบุ)"], other:"occ_x", otherFor:["อาชีพอิสระ (ระบุ)","ธุรกิจส่วนตัว (ระบุ)"], otherLabel:"ระบุ"},
+  {id:"work", n:7, t:"สถานที่ทำงาน / ตำแหน่ง", s:"สถานที่ทำงาน / ตำแหน่ง", type:"pair", ids:["work","pos"], phs:["สถานที่ทำงาน","ตำแหน่ง"]},
+  {id:"inc", n:8, t:"รายได้ต่อเดือน", s:"รายได้ต่อเดือน", type:"radio", o:["ไม่เกิน 30,000 บาท","30,001 – 50,000 บาท","50,001 – 70,000 บาท","70,001 – 100,000 บาท","100,001 – 250,000 บาท","250,001 – 500,000 บาท","ตั้งแต่ 500,001 บาทขึ้นไป"]},
+  {id:"incy", n:9, t:"รายได้ต่อปี (บาท)", s:"รายได้ต่อปี", type:"money"},
+  {id:"incsrc", n:10, t:"แหล่งที่มาของรายได้มาจาก", s:"แหล่งที่มาของรายได้", type:"radio", o:["ประเทศไทย","ประเทศอื่นๆ (ระบุ)"], other:"incsrc_x", otherFor:["ประเทศอื่นๆ (ระบุ)"], otherLabel:"ระบุประเทศ"},
+  {id:"fund", n:11, t:"แหล่งที่มาของเงิน", s:"แหล่งที่มาของเงิน", type:"check", o:["เงินเดือน / เงินบำเหน็จ","เงินออม","มรดก","เงินปันผล / ดอกเบี้ย","ธุรกิจส่วนตัว","การขายอสังหาริมทรัพย์ / สังหาริมทรัพย์","อื่น ๆ (โปรดระบุ)"], other:"fund_x", otherFor:["อื่น ๆ (โปรดระบุ)"], otherLabel:"โปรดระบุ"},
+  {id:"obj", n:12, t:"วัตถุประสงค์การลงทุน", s:"วัตถุประสงค์การลงทุน", type:"radio", o:["เพื่อเก็บออม","เพื่อสร้างผลกำไร","อื่นๆ โปรดระบุ"], other:"obj_x", otherFor:["อื่นๆ โปรดระบุ"], otherLabel:"โปรดระบุ"},
+  {id:"asset", n:13, t:"ทรัพย์สินที่ถือครองในปัจจุบันได้มาจาก", s:"ทรัพย์สินที่ถือครองได้มาจาก", type:"check", o:["เงินเดือน / เงินออม","มรดก","การขายอสังหาริมทรัพย์ / สังหาริมทรัพย์","การประกอบธุรกิจส่วนตัว","อื่น ๆ (โปรดระบุ)"], other:"asset_x", otherFor:["อื่น ๆ (โปรดระบุ)"], otherLabel:"โปรดระบุ"},
+  {id:"nw", n:14, t:"มูลค่าทรัพย์สินสุทธิโดยประมาณ (บาท)", s:"มูลค่าทรัพย์สินสุทธิโดยประมาณ", type:"money"}
+];
+const Q = [
+  {t:"ปัจจุบันท่านอายุ", o:["ตั้งแต่ 60 ปีขึ้นไป","45 - 59 ปี","35 – 44 ปี","น้อยกว่า 35 ปี"]},
+  {t:"ปัจจุบันท่านมีภาระทางการเงินและค่าใช้จ่ายประจำ เช่น ค่าผ่อนบ้าน รถ ค่าใช้จ่ายส่วนตัว และค่าเลี้ยงดูครอบครัวเป็นสัดส่วนเท่าใด", o:["มากกว่าร้อยละ 75 ของรายได้ทั้งหมด","ระหว่างร้อยละ 50 ถึงร้อยละ 75 ของรายได้ทั้งหมด","ตั้งแต่ร้อยละ 25 แต่น้อยกว่าร้อยละ 50 ของรายได้ทั้งหมด","น้อยกว่าร้อยละ 25 ของรายได้ทั้งหมด"]},
+  {t:"ท่านมีสถานภาพทางการเงินในปัจจุบันอย่างไร", o:["มีทรัพย์สินน้อยกว่าหนี้สิน","มีทรัพย์สินเท่ากับหนี้สิน","มีทรัพย์สินมากกว่าหนี้สิน","มีความมั่นใจว่ามีเงินออมหรือเงินลงทุนเพียงพอสำหรับการใช้ชีวิตหลังเกษียณอายุแล้ว"]},
+  {t:"ท่านเคยมีประสบการณ์ หรือมีความรู้ในการลงทุนในทรัพย์สินกลุ่มใดต่อไปนี้บ้าง (เลือกได้มากกว่า 1 ข้อ)", multi:true, o:["เงินฝากธนาคาร","พันธบัตรรัฐบาล หรือกองทุนรวมพันธบัตรรัฐบาล","หุ้นกู้ หรือกองทุนรวมตราสารหนี้","หุ้นสามัญ หรือกองทุนรวมหุ้น หรือสินทรัพย์อื่นที่มีความเสี่ยงสูง"]},
+  {t:"ระยะเวลาที่ท่านคาดว่าจะไม่มีความจำเป็นต้องใช้เงินลงทุนนี้", o:["ไม่เกิน 1 ปี","ตั้งแต่ 1 ปีแต่น้อยกว่า 3 ปี","ตั้งแต่ 3 ปี ถึง 5 ปี","มากกว่า 5 ปี"]},
+  {t:"ความสามารถในการรับความเสี่ยงของท่าน คือ", o:["เน้นเงินต้นต้องปลอดภัยและได้รับผลตอบแทนสม่ำเสมอ แต่ต่ำได้","เน้นโอกาสได้รับผลตอบแทนที่สม่ำเสมอ แต่อาจเสี่ยงที่จะสูญเสียเงินต้นได้บ้าง","เน้นโอกาสได้รับผลตอบแทนที่สูงขึ้น แต่อาจเสี่ยงที่จะสูญเสียเงินต้นได้มากขึ้น","เน้นผลตอบแทนสูงสุดในระยะยาว แต่อาจเสี่ยงที่จะสูญเงินต้นส่วนใหญ่ได้"]},
+  {t:"เมื่อพิจารณารูปแสดงตัวอย่างผลตอบแทนของกลุ่มการลงทุนที่อาจเกิดขึ้นด้านล่าง ท่านเต็มใจที่จะลงทุนในกลุ่มการลงทุนใดมากที่สุด", chart:true, o:["กลุ่มการลงทุนที่ 1 มีโอกาสได้รับผลตอบแทน 2.5% โดยไม่ขาดทุนเลย","กลุ่มการลงทุนที่ 2 มีโอกาสได้รับผลตอบแทนสูงสุด 7% แต่อาจมีผลขาดทุนได้ถึง 1%","กลุ่มการลงทุนที่ 3 มีโอกาสได้รับผลตอบแทนสูงสุด 15% แต่อาจมีผลขาดทุนได้ถึง 5%","กลุ่มการลงทุนที่ 4 มีโอกาสได้รับผลตอบแทนสูงสุด 25% แต่อาจมีผลขาดทุนได้ถึง 15%"]},
+  {t:"ถ้าท่านเลือกลงทุนในทรัพย์สินที่มีโอกาสได้รับผลตอบแทนมาก แต่มีโอกาสขาดทุนสูงด้วยเช่นกัน ท่านจะรู้สึกอย่างไร", o:["กังวลและตื่นตระหนกกลัวขาดทุน","ไม่สบายใจแต่พอเข้าใจได้บ้าง","เข้าใจและรับความผันผวนได้ในระดับหนึ่ง","ไม่กังวลกับโอกาสขาดทุนสูง และหวังกับผลตอบแทนที่อาจจะได้รับสูงขึ้น"]},
+  {t:"ท่านจะรู้สึกกังวล/รับไม่ได้ เมื่อมูลค่าเงินลงทุนของท่านมีการปรับตัวลดลงในสัดส่วนเท่าใด", o:["5% หรือน้อยกว่า","มากกว่า 5%-10%","มากกว่า 10%-20%","มากกว่า 20% ขึ้นไป"]},
+  {t:"หากปีที่แล้วท่านลงทุนไป 100,000 บาท ปีนี้ท่านพบว่ามูลค่าเงินลงทุนลดลงเหลือ 85,000 บาท ท่านจะทำอย่างไร", o:["ตกใจ และต้องการขายการลงทุนที่เหลือทิ้ง","กังวลใจ และจะปรับเปลี่ยนการลงทุนบางส่วนไปในทรัพย์สินที่เสี่ยงน้อยลง","อดทนถือต่อไปได้ และรอผลตอบแทนปรับตัวกลับมา","ยังมั่นใจ เพราะเข้าใจว่าต้องลงทุนระยะยาว และจะเพิ่มเงินลงทุนในแบบเดิมเพื่อเฉลี่ยต้นทุน"]}
+];
+const X = [
+  {id:"x11", n:"11", pre:"ใช้เฉพาะที่จะมีการลงทุนในสัญญาซื้อขายล่วงหน้า (อนุพันธ์) และหุ้นกู้ที่มีอนุพันธ์แฝงเท่านั้น", t:"หากการลงทุนในสัญญาซื้อขายล่วงหน้า (อนุพันธ์) และหุ้นกู้ที่มีอนุพันธ์แฝงประสบความสำเร็จ ท่านจะได้รับผลตอบแทนในอัตราที่สูงมาก แต่หากการลงทุนล้มเหลว ท่านอาจจะสูญเงินลงทุนทั้งหมด และอาจต้องลงเงินชดเชยเพิ่มบางส่วน ท่านยอมรับได้เพียงใด", s:"ข้อ 11 อนุพันธ์ / หุ้นกู้อนุพันธ์แฝง", o:["ไม่ได้","ได้"]},
+  {id:"x12", n:"12", pre:"ใช้เฉพาะที่จะมีการลงทุนในต่างประเทศ", t:"นอกเหนือจากความเสี่ยงในการลงทุนแล้ว ท่านสามารถรับความเสี่ยงด้านอัตราแลกเปลี่ยนได้เพียงใด", s:"ข้อ 12 ความเสี่ยงอัตราแลกเปลี่ยน", o:["ไม่ได้","ได้"]},
+  {id:"x22", n:"", pre:"คำถามเพิ่มเติมกรณีได้คะแนนมากกว่า หรือเท่ากับ 22 คะแนนขึ้นไป", t:"ท่านต้องการเน้นลงทุนในสินทรัพย์ต่างประเทศ ผ่านกองทุนรวมผสม หรือกองทุนรวมตราสารทุน ที่เน้นลงทุนในต่างประเทศ ไม่น้อยกว่า 80% ของมูลค่าทรัพย์สินสุทธิโดยเฉลี่ยในรอบปีบัญชี ใช่หรือไม่", s:"เน้นลงทุนต่างประเทศ ≥ 80%", o:["ไม่ใช่","ใช่"], needs22:true},
+  {id:"xfx", n:"", pre:"คำถามเพิ่มเติมเพื่อประกอบการให้คำแนะนำการลงทุนสำหรับกองทุนรวมที่ลงทุนในต่างประเทศ", t:"ท่านต้องการลงทุนในกองทุนรวมที่ลงทุนในต่างประเทศที่มีนโยบายป้องกันความเสี่ยงจากอัตราแลกเปลี่ยนแบบใด", s:"นโยบายป้องกันความเสี่ยงอัตราแลกเปลี่ยน", o:["ป้องกันความเสี่ยงจากอัตราแลกเปลี่ยนตามดุลพินิจของผู้จัดการกองทุน","ไม่ป้องกันความเสี่ยงจากอัตราแลกเปลี่ยน"]}
+];
+/* page 2 + page 4 */
+const LEVELS = [
+  {max:14, lv:1, range:"น้อยกว่า 15", name:"เสี่ยงต่ำ", fundMax:1, fund:"1", a:[["เงินฝากและตราสารหนี้ระยะสั้น + ตราสารหนี้ภาครัฐที่มีอายุมากกว่า 1 ปี",">60%",60],["ตราสารหนี้ภาคเอกชน","<20%",20],["ตราสารทุน","<10%",10],["การลงทุนทางเลือก*","<5%",5]]},
+  {max:21, lv:2, range:"15 – 21", name:"เสี่ยงปานกลางค่อนข้างต่ำ", fundMax:4, fund:"1-4", a:[["เงินฝากและตราสารหนี้ระยะสั้น","<20%",20],["ตราสารหนี้ภาครัฐที่มีอายุมากกว่า 1 ปี + ตราสารหนี้ภาคเอกชน","<70%",70],["ตราสารทุน","<20%",20],["การลงทุนทางเลือก*","<10%",10]]},
+  {max:29, lv:3, range:"22 – 29", name:"เสี่ยงปานกลางค่อนข้างสูง", fundMax:5, fund:"1-5", a:[["เงินฝากและตราสารหนี้ระยะสั้น","<10%",10],["ตราสารหนี้ภาครัฐที่มีอายุมากกว่า 1 ปี + ตราสารหนี้ภาคเอกชน","<60%",60],["ตราสารทุน","<30%",30],["การลงทุนทางเลือก*","<10%",10]]},
+  {max:36, lv:4, range:"30 – 36", name:"เสี่ยงสูง", fundMax:7, fund:"1-7", a:[["เงินฝากและตราสารหนี้ระยะสั้น","<10%",10],["ตราสารหนี้ภาครัฐที่มีอายุมากกว่า 1 ปี + ตราสารหนี้ภาคเอกชน","<40%",40],["ตราสารทุน","<40%",40],["การลงทุนทางเลือก*","<20%",20]]},
+  {max:99, lv:5, range:"37 ขึ้นไป", name:"เสี่ยงสูงมาก", fundMax:8, fund:"1-8", a:[["เงินฝากและตราสารหนี้ระยะสั้น","<5%",5],["ตราสารหนี้ภาครัฐที่มีอายุมากกว่า 1 ปี + ตราสารหนี้ภาคเอกชน","<30%",30],["ตราสารทุน",">60%",60],["การลงทุนทางเลือก*","<30%",30]]}
+];
+const GUIDE = {
+  1:{core:"กองทุนรวมตลาดเงินที่ลงทุนเฉพาะในประเทศ", text:"เน้นรักษาเงินต้นและสภาพคล่อง ลงทุนได้เฉพาะกองทุนความเสี่ยงระดับ 1 สินทรัพย์เสี่ยงเป็นส่วนน้อยมาก"},
+  2:{core:"กองทุนรวมตลาดเงิน · พันธบัตรรัฐบาล · ตราสารหนี้", text:"ใช้ตราสารหนี้เป็นแกนหลักของพอร์ต เพื่อรายได้สม่ำเสมอ ตราสารทุนเป็นส่วนเสริมไม่เกินสัดส่วนในตาราง"},
+  3:{core:"กองทุนรวมตราสารหนี้ · กองทุนรวมผสม", text:"ผสมตราสารหนี้กับตราสารทุน โดยตราสารหนี้ยังเป็นส่วนใหญ่ รับความผันผวนได้ปานกลาง"},
+  4:{core:"กองทุนรวมผสม · ตราสารทุน · หมวดอุตสาหกรรม", text:"เพิ่มสัดส่วนตราสารทุนเพื่อการเติบโตระยะยาว ยังคงมีตราสารหนี้ช่วยลดความผันผวน"},
+  5:{core:"กองทุนรวมตราสารทุน · หมวดอุตสาหกรรม · ทรัพย์สินทางเลือก", text:"ตราสารทุนเป็นแกนหลักของพอร์ต เน้นผลตอบแทนระยะยาว และรับการขาดทุนระยะสั้นได้มาก"}
+};
+const FUNDTYPES = ["กองทุนรวมตลาดเงินที่ลงทุนเฉพาะในประเทศ","กองทุนรวมตลาดเงิน","กองทุนรวมพันธบัตรรัฐบาล","กองทุนรวมตราสารหนี้","กองทุนรวมผสม","กองทุนรวมตราสารทุน","กองทุนรวมหมวดอุตสาหกรรม","กองทุนรวมที่ลงทุนในทรัพย์สินทางเลือก"];
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ===== build form ===== */
+function head(n, t, tag, forId, multi){
+  return `<div class="iq-h"><span class="iq-n${n?"":" blank"}">${n}</span><${tag} class="iq-t"${forId?` for="${forId}"`:""}>${esc(t)}</${tag}>${multi?'<span class="iq-tag">ตอบได้มากกว่า 1 ข้อ</span>':""}</div>`;
+}
+function tiles(name, opts, multi, stack, pts){
+  return `<div class="tiles${stack?" stack":""}">${opts.map((o,i)=>`<label class="tile"><input type="${multi?"checkbox":"radio"}" name="${name}" id="${name}_${i}" value="${pts?i+1:esc(o)}"><span>${esc(o)}</span>${pts?`<span class="pt">${i+1} คะแนน</span>`:""}</label>`).join("")}</div>`;
+}
+document.getElementById("infoList").innerHTML = INFO.map(f=>{
+  const n = f.n;
+  const note = f.note ? `<p class="iq-note">${esc(f.note)}</p>` : "";
+  if (f.type==="radio"||f.type==="check"){
+    return `<fieldset class="iq">${head(n,f.t,"legend","",f.type==="check")}<div class="iq-body">${note}${tiles(f.id,f.o,f.type==="check",false)}${f.other?`<div id="${f.other}_wrap" hidden><input type="text" id="${f.other}" placeholder="${esc(f.otherLabel)}" aria-label="${esc(f.otherLabel)}"></div>`:""}</div></fieldset>`;
+  }
+  let body, forId=f.id;
+  if (f.type==="dobnat"){ body=`<div class="pair"><input type="date" id="dob" aria-label="วันเดือนปีเกิด"><input type="text" id="nat" placeholder="สัญชาติ" aria-label="สัญชาติ"></div>`; }
+  else if (f.type==="pair"){ forId=f.ids[0]; body=`<div class="pair">${f.ids.map((id,i)=>`<input type="text" id="${id}" placeholder="${esc(f.phs[i])}" aria-label="${esc(f.phs[i])}">`).join("")}</div>`; }
+  else if (f.type==="area"){ body=`<textarea id="${f.id}" rows="2"></textarea>`; }
+  else if (f.type==="addr"){ body=`<textarea id="addr2" rows="2"></textarea><div class="pair"><input type="text" inputmode="tel" id="telh" placeholder="โทรศัพท์บ้าน" aria-label="โทรศัพท์บ้าน"><input type="text" inputmode="tel" id="telm" placeholder="โทรศัพท์มือถือ" aria-label="โทรศัพท์มือถือ"></div>${note}`; }
+  else if (f.type==="money"){ body=`<div class="money"><input type="text" inputmode="numeric" data-money id="${f.id}" placeholder="0"><span>บาท</span></div>`; }
+  else { body=`<input type="text" id="${f.id}">`; }
+  return `<div class="iq">${head(n,f.t,"label",forId)}<div class="iq-body">${body}${f.type!=="addr"?note:""}</div></div>`;
+}).join("");
+
+const chart7 = `<div class="chart7"><svg viewBox="0 0 440 170" role="img" aria-label="ตัวอย่างผลตอบแทน: กลุ่ม 1 กำไร 2.5%, กลุ่ม 2 กำไร 7% ขาดทุน -1%, กลุ่ม 3 กำไร 15% ขาดทุน -5%, กลุ่ม 4 กำไร 25% ขาดทุน -15%">
+  ${[30,20,10,0,-10,-20].map(v=>{const y=88-v*2.4;return `<text x="34" y="${y+4}" text-anchor="end" font-size="11" fill="var(--muted)">${v}%</text><line x1="40" x2="330" y1="${y}" y2="${y}" stroke="var(--line)" stroke-width="${v===0?1.5:.6}"/>`}).join("")}
+  ${[[2.5,0],[7,-1],[15,-5],[25,-15]].map(([g,l],i)=>{const x=62+i*68;return `
+    <rect x="${x}" y="${88-g*2.4}" width="36" height="${g*2.4}" fill="var(--gold-soft)" stroke="var(--gold)"/>
+    <text x="${x+18}" y="${88-g*2.4-5}" text-anchor="middle" font-size="11" fill="var(--fg)">${g}%</text>
+    ${l?`<rect x="${x}" y="88" width="36" height="${-l*2.4}" fill="var(--warn)" opacity=".85"/><text x="${x+18}" y="${88-l*2.4+13}" text-anchor="middle" font-size="11" fill="var(--warn)">${l}%</text>`:""}
+    <text x="${x+18}" y="13" text-anchor="middle" font-size="12" font-weight="700" fill="var(--gold)">${i+1}</text>`}).join("")}
+  <rect x="345" y="50" width="12" height="12" fill="var(--gold-soft)" stroke="var(--gold)"/><text x="363" y="60" font-size="12" fill="var(--fg)">กำไร Profit</text>
+  <rect x="345" y="100" width="12" height="12" fill="var(--warn)" opacity=".85"/><text x="363" y="110" font-size="12" fill="var(--fg)">ขาดทุน Loss</text>
+</svg></div>`;
+
+document.getElementById("qList").innerHTML = Q.map((q,qi)=>
+  `<fieldset class="iq" id="q${qi}">${head(qi+1,q.t,"legend","",false)}<div class="iq-body">${q.chart?chart7:""}${tiles("q"+qi,q.o,q.multi,true,true)}</div></fieldset>`).join("");
+
+document.getElementById("xList").innerHTML = X.map(x=>
+  `<fieldset class="iq" id="${x.id}_box"${x.needs22?" hidden":""}><p class="sub-h">${esc(x.pre)}</p>${head(x.n,x.t,"legend","",false)}<div class="iq-body">${tiles(x.id,x.o,false,x.stack||x.o[0].length>20)}</div></fieldset>`).join("");
+
+/* ===== state ===== */
+const val = id => (document.getElementById(id)?.value || "").trim();
+const radioVal = n => document.querySelector(`input[name="${n}"]:checked`)?.value || "";
+const checkVals = n => [...document.querySelectorAll(`input[name="${n}"]:checked`)].map(i=>i.value);
+function answers(){ return Q.map((q,qi)=>{
+  const sel = [...document.querySelectorAll(`input[name="q${qi}"]:checked`)].map(i=>+i.value);
+  if (!sel.length) return null;
+  const pts = Math.max(...sel);
+  return {pts, text: q.multi ? sel.sort().map(s=>q.o[s-1]).join(" · ") : q.o[pts-1]};
+});}
+const levelOf = s => LEVELS.find(l => s <= l.max);
+
+/* ===== result markup (screen + PDF) ===== */
+function gaugeSVG(s){
+  const X0=24, W=592, sx=v=>X0+(v-10)/30*W;
+  const bands=[[10,14.5,"var(--b1)","1","<15"],[14.5,21.5,"var(--b2)","2","15–21"],[21.5,29.5,"var(--b3)","3","22–29"],[29.5,36.5,"var(--b4)","4","30–36"],[36.5,40,"var(--b5)","5","37+"]];
+  const mx=sx(Math.min(40,Math.max(10,s)));
+  return `<svg viewBox="0 0 640 88" role="img" aria-label="คะแนน ${s} จาก 40">
+    ${bands.map(([a,b,c,l,r])=>`<rect x="${sx(a)}" y="22" width="${sx(b)-sx(a)-2}" height="16" rx="3" fill="${c}"/><text x="${(sx(a)+sx(b))/2}" y="56" text-anchor="middle" font-size="12" fill="var(--muted)">ระดับ ${l}</text><text x="${(sx(a)+sx(b))/2}" y="76" text-anchor="middle" font-size="11" fill="var(--muted)">${r}</text>`).join("")}
+    <path d="M${mx-7} 4 L${mx+7} 4 L${mx} 17 Z" fill="var(--navy)"/>
+  </svg>`;
+}
+function resultHTML(s, screen){
+  const L = levelOf(s), G = GUIDE[L.lv];
+  const notes = [];
+  const x11=radioVal("x11"), x12=radioVal("x12"), x22=radioVal("x22"), xfx=radioVal("xfx");
+  if (x11==="ไม่ได้") notes.push("ไม่ควรลงทุนในสัญญาซื้อขายล่วงหน้า (อนุพันธ์) และหุ้นกู้ที่มีอนุพันธ์แฝง");
+  if (x11==="ได้") notes.push("ลงทุนในอนุพันธ์ / หุ้นกู้ที่มีอนุพันธ์แฝงได้ ภายใต้ระดับความเสี่ยงที่รับได้");
+  if (x12==="ไม่ได้") notes.push("รับความเสี่ยงอัตราแลกเปลี่ยนไม่ได้ ควรเลี่ยงกองทุนต่างประเทศ หรือเลือกแบบป้องกันความเสี่ยงค่าเงิน");
+  if (x12==="ได้") notes.push("รับความเสี่ยงอัตราแลกเปลี่ยนได้ ลงทุนต่างประเทศได้");
+  if (s>=22 && x22==="ใช่") notes.push("ต้องการเน้นลงทุนต่างประเทศไม่น้อยกว่า 80% ของพอร์ต");
+  if (s>=22 && x22==="ไม่ใช่") notes.push("ไม่ต้องการเน้นต่างประเทศ ควรกระจายทั้งในและต่างประเทศ");
+  if (xfx.startsWith("ป้องกัน")) notes.push("กองทุนต่างประเทศ: เลือกแบบป้องกันความเสี่ยงอัตราแลกเปลี่ยน");
+  if (xfx.startsWith("ไม่ป้องกัน")) notes.push("กองทุนต่างประเทศ: เลือกแบบไม่ป้องกันความเสี่ยงอัตราแลกเปลี่ยนได้");
+  const fundsBlock = `<div class="fund pick"><div class="ft">ประเภทกองทุนหลักที่เหมาะสม</div><div class="fn">${esc(G.core)}<small>${esc(G.text)}</small></div></div>
+    ${notes.length?`<div class="fund"><div class="ft">ข้อควรพิจารณาจากคำตอบข้อ 11–12 และคำถามเพิ่มเติม</div><div class="fn" style="font-weight:400"><ul style="margin:0;padding-left:18px">${notes.map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div></div>`:""}
+    <p class="cap">แนวทางทั่วไปที่สรุปจากระดับความเสี่ยงและคำตอบของท่าน ใช้ได้ทั้งการเลือกกองทุนรวมทั่วไปและกองทุนในประกันควบการลงทุน ไม่ได้เจาะจงกองทุนของบริษัทใด</p>`;
+  return `<div class="res${screen?" res-screen":""}">
+    <div class="hero">
+      <div class="scorebox"><b>${s}</b><small>รวมคะแนน ข้อ 1–10</small></div>
+      <div><div class="lvtitle">ระดับ <em>${L.lv}</em> · ${L.name}</div>
+        <div class="note">ช่วงคะแนน ${L.range} · ประเภทนักลงทุน: ${L.name}</div>
+        <div class="gauge">${gaugeSVG(s)}</div></div>
+    </div>
+    <div><h3>ระดับความเสี่ยงของกองทุนรวมที่ลงทุนได้: ${L.fund}</h3>
+      <div class="ladder">${FUNDTYPES.map((t,i)=>`<div class="${i<L.fundMax?"on":""}"><b>${i+1}</b>${esc(t.replace("กองทุนรวม",""))}</div>`).join("")}</div>
+      <p class="cap">สัดส่วนการลงทุนที่เหมาะสมตามความเสี่ยงที่สามารถยอมรับได้: กองทุนรวมระดับความเสี่ยง ${L.fund} (ใช้ได้กับกองทุนในประกันควบการลงทุนด้วย)</p></div>
+    <div><h3>การลงทุนที่แนะนำโดยทั่วไป</h3><div class="funds">${fundsBlock}</div></div>
+    <div><h3>สัดส่วนการลงทุนที่เหมาะสมตามความเสี่ยงที่ยอมรับได้</h3>
+      <div class="alloc">${L.a.map((r,i)=>`<div class="al"><div>${esc(r[0])}</div><div class="track"><div class="fill" style="width:${r[2]}%;background:var(--b${[1,2,4,5][i]})"></div></div><div class="v">${r[1]}</div></div>`).join("")}</div>
+      <p class="cap">* รวมถึง สินค้าโภคภัณฑ์ สัญญาซื้อขายล่วงหน้า · ตัวเลขตามตาราง Basic Asset Allocation มาตรฐาน · แถบแสดงเพดาน/ขั้นต่ำของแต่ละสินทรัพย์</p></div>
+  </div>`;
+}
+
+function update(){
+  const a = answers(), done = a.filter(Boolean).length;
+  const s = a.reduce((t,x)=>t+(x?x.pts:0),0), L = levelOf(s);
+  document.getElementById("sc").textContent = s;
+  document.getElementById("prog").textContent = `ตอบแล้ว ${done} / 10 ข้อ`;
+  [...document.querySelectorAll("#lvlBar span")].forEach((e,i)=>e.classList.toggle("on", done===10 && i < L.lv));
+  document.getElementById("lvlName").textContent = done===10 ? `ระดับ ${L.lv} · ${L.name}` : "ยังตอบไม่ครบ";
+  document.getElementById("x22_box").hidden = !(done===10 && s>=22);
+  INFO.filter(f=>f.other).forEach(f=>{
+    const picked = f.type==="check" ? checkVals(f.id) : [radioVal(f.id)];
+    document.getElementById(f.other+"_wrap").hidden = !picked.some(p=>f.otherFor.includes(p));
+  });
+  a.forEach((x,i)=>{ if (x) document.getElementById("q"+i).classList.remove("missing"); });
+  document.getElementById("resOut").innerHTML = done===10 ? resultHTML(s,true)
+    : `<p class="hint" style="margin:6px 0 0">ตอบคำถามข้อ 1–10 ให้ครบ (ตอนนี้ ${done}/10) แล้วผลคะแนนและการลงทุนที่แนะนำจะแสดงที่นี่</p>`;
+  saveDraft();
+}
+
+/* ===== draft (per-browser convenience) ===== */
+const KEY = "s41-suit-test-v5";
+function saveDraft(){ const d={}; document.querySelectorAll("main input, main textarea").forEach(el=>{
+  if (el.type==="radio"||el.type==="checkbox"){ if(el.checked) d[el.id]=1; } else if (el.value) d[el.id]=el.value; });
+  try{ localStorage.setItem(KEY, JSON.stringify(d)); }catch(e){} }
+function loadDraft(){ let d=null; try{ d=JSON.parse(localStorage.getItem(KEY)||"null"); }catch(e){}
+  if (d) Object.entries(d).forEach(([id,v])=>{ const el=document.getElementById(id); if(!el) return;
+    if (el.type==="radio"||el.type==="checkbox") el.checked=true; else el.value=v; }); }
+function clearAll(){ document.querySelectorAll("main input, main textarea").forEach(el=>{ if(el.type==="radio"||el.type==="checkbox") el.checked=false; else el.value=""; });
+  document.querySelectorAll(".iq.missing").forEach(e=>e.classList.remove("missing")); try{ localStorage.removeItem(KEY); }catch(e){} update(); }
+
+const main = document.querySelector("main");
+main.addEventListener("input", e=>{
+  if (e.target.matches("[data-money]")){ const d=e.target.value.replace(/[^\d]/g,""); e.target.value = d?Number(d).toLocaleString("en-US"):""; }
+  update();
+});
+main.addEventListener("change", update);
+
+const clearBtn = document.getElementById("clearBtn"); let arm=false;
+clearBtn.addEventListener("click", ()=>{
+  if(!arm){ arm=true; clearBtn.textContent="กดอีกครั้งเพื่อยืนยันล้าง"; setTimeout(()=>{arm=false;clearBtn.textContent="ล้างคำตอบ";},3000); return; }
+  arm=false; clearBtn.textContent="ล้างคำตอบ"; clearAll();
+});
+document.getElementById("demoBtn").addEventListener("click", ()=>{
+  clearAll();
+  document.getElementById("name").value="ตัวอย่าง ทดสอบระบบ"; document.getElementById("nat").value="ไทย"; document.getElementById("addr1").value="99/9 ถนนตัวอย่าง แขวงตัวอย่าง เขตตัวอย่าง กรุงเทพฯ 10000"; document.getElementById("addr2").value="ที่อยู่เดียวกับทะเบียนบ้าน";
+  ["marital_1","edu_1","occ_2","inc_4","incsrc_0","fund_1","obj_1","asset_0","x12_1","xfx_0"].forEach(id=>document.getElementById(id).checked=true);
+  [2,3,3,[0,2,3],4,3,3,3,2,3].forEach((v,i)=>[].concat(v).forEach(k=>document.getElementById(`q${i}_${typeof v==="number"?v-1:k}`).checked=true));
+  update(); document.getElementById("x22_1").checked=true; update();
+});
+
+/* ===== export ===== */
+function buildPages(host){
+  const a=answers(), s=a.reduce((t,x)=>t+x.pts,0);
+  const today=new Date().toLocaleDateString("th-TH",{day:"numeric",month:"long",year:"numeric"});
+  const who=`${esc(val("name")||"(ไม่ระบุชื่อ)")}<br>วันที่ประเมิน ${today}`;
+  const ph=(t)=>`<div class="ph"><div><div class="brand">SIGNATURE 41 · SUIT TEST</div><h2>${t}</h2></div><div class="who">${who}</div></div>`;
+  const pf=`<div class="pf"><span>S41 Financial Clinic · แบบประเมินความเหมาะสมในการลงทุน (Suitability Test) เพื่อใช้ประกอบการออกแบบการลงทุน ไม่ใช่เอกสารทางการของ บลจ. หรือบริษัทประกัน · ● = ข้อที่เลือก</span><span class="pn" style="white-space:nowrap"></span></div>`;
+  const mark=(on)=>`<span class="fr-mk${on?" on":""}">${on?"●":"○"}</span>`;
+  const opts=(name,o,chosen,pts)=>`<div class="fr-fo">${o.map((t,i)=>`<span class="fr-oi${chosen.includes(i)?" on":""}">${mark(chosen.includes(i))}${pts?`<b>${i+1}.</b> `:""}${esc(t)}</span>`).join("")}</div>`;
+  const line=(label,v)=>`<div class="fr-fl"><span class="fr-fk">${esc(label)}</span><span class="fr-fv">${esc(v||"")||"<i>–</i>"}</span></div>`;
+  // ---- blocks: ข้อมูลผู้ถือหน่วย (ติ๊กตามฟอร์ม) ----
+  const B=[];
+  B.push(`<h4 style="margin-top:0">แบบแสดงข้อมูลผู้ถือหน่วยลงทุน</h4>`);
+  INFO.forEach(f=>{
+    let body="";
+    if (f.type==="text") body=line(f.t, val(f.id));
+    else if (f.type==="dobnat"){ const d=val("dob"); let ds=""; if(d){const dt=new Date(d); ds=isNaN(dt)?d:dt.toLocaleDateString("th-TH",{day:"numeric",month:"long",year:"numeric"});}
+      body=`<div class="fr-fl2">${line("วันเดือนปีเกิด",ds)}${line("สัญชาติ",val("nat"))}</div>`; }
+    else if (f.type==="area") body=line(f.t, val(f.id));
+    else if (f.type==="addr") body=line(f.t, val("addr2"))+`<div class="fr-fl2">${line("โทรศัพท์บ้าน",val("telh"))}${line("โทรศัพท์มือถือ",val("telm"))}</div>`;
+    else if (f.type==="pair") body=`<div class="fr-fl2">${line("สถานที่ทำงาน",val("work"))}${line("ตำแหน่ง",val("pos"))}</div>`;
+    else if (f.type==="money") body=line(f.t, val(f.id)?val(f.id)+" บาท":"");
+    else { const ch = f.type==="radio" ? [f.o.indexOf(radioVal(f.id))].filter(i=>i>=0) : checkVals(f.id).map(v=>f.o.indexOf(v));
+      body=`<div class="fr-fq">${esc(f.t)}${f.type==="check"?' <small>(ตอบได้มากกว่า 1 ข้อ)</small>':""}</div>`+opts(f.id,f.o,ch,false)+(f.other&&val(f.other)?line(f.otherLabel,val(f.other)):""); }
+    B.push(`<div class="fr-fb"><span class="fr-fn">${f.n||""}</span><div class="fr-fc">${body}</div></div>`);
+  });
+  // ---- blocks: คำถาม 1–10 ----
+  B.push(`<h4>แบบประเมินความเหมาะสมในการลงทุน · คำถามข้อ 1–10</h4>`);
+  Q.forEach((q,qi)=>{
+    const sel=[...document.querySelectorAll(`input[name="q${qi}"]:checked`)].map(i=>+i.value-1);
+    B.push(`<div class="fr-fb"><span class="fr-fn">${qi+1}</span><div class="fr-fc"><div class="fr-fq">${esc(q.t)}</div>${opts("q"+qi,q.o,sel,true)}</div><span class="fr-fs">${a[qi].pts}</span></div>`);
+  });
+  B.push(`<div class="fr-fb fr-tot"><span class="fr-fn"></span><div class="fr-fc" style="text-align:right;font-weight:700">รวมคะแนน (ข้อ 1–10)</div><span class="fr-fs">${s}</span></div>`);
+  B.push(`<h4>คำถามข้อ 11–12 และคำถามเพิ่มเติม (ไม่นำมาคิดคะแนน)</h4>`);
+  X.forEach(x=>{ if (x.needs22 && s<22) return; const ch=[x.o.indexOf(radioVal(x.id))].filter(i=>i>=0);
+    B.push(`<div class="fr-fb"><span class="fr-fn">${x.n||""}</span><div class="fr-fc"><div class="fr-fpre">${esc(x.pre)}</div><div class="fr-fq">${esc(x.t)}</div>${opts(x.id,x.o,ch,false)}</div></div>`); });
+  // ---- paginate: page 1 = result, then flow blocks ----
+  host.innerHTML=`<div class="page">${ph("ผลการประเมินความเหมาะสมในการลงทุน")}<div class="grow">${resultHTML(s,false)}</div>${pf}</div>`;
+  let page=null, grow=null;
+  const newPage=()=>{ host.insertAdjacentHTML("beforeend",`<div class="page form">${ph("แบบฟอร์มตามที่กรอก (สำหรับคัดลอกลงแบบฟอร์มของ บลจ. / บริษัทประกัน)")}<div class="grow"></div>${pf}</div>`); page=host.lastElementChild; grow=page.querySelector(".grow"); };
+  newPage();
+  B.forEach(html=>{
+    grow.insertAdjacentHTML("beforeend",html);
+    if (grow.scrollHeight > grow.clientHeight+1){ const el=grow.lastElementChild; el.remove(); if (grow.children.length===0){ grow.appendChild(el); } else { newPage(); grow.appendChild(el); } }
+  });
+  const pages=[...host.querySelectorAll(".page")];
+  pages.forEach((p,i)=>p.querySelector(".pn").textContent=`หน้า ${i+1}/${pages.length}`);
+}
+async function renderPages(){
+  const host=document.getElementById("sheetHost"); buildPages(host);
+  if (document.fonts && document.fonts.ready) await document.fonts.ready;
+  const out=[];
+  for (const p of host.querySelectorAll(".page")){
+    const over = p.querySelector(".grow").scrollHeight > p.querySelector(".grow").clientHeight + 2;
+    out.push({canvas: await html2canvas(p,{scale:2,backgroundColor:"#fbfaf6",logging:false}), over});
+  }
+  return out;
+}
+let downloads=null;
+(async()=>{ try{ downloads = window.claude?.use ? await window.claude.use("downloads") : null; }catch(e){ downloads=null; } })();
+const msg=document.getElementById("msg");
+function checkReady(){
+  msg.textContent="";
+  const miss = answers().map((x,i)=>x?null:i).filter(i=>i!==null);
+  if (miss.length){ miss.forEach(i=>document.getElementById("q"+i).classList.add("missing"));
+    msg.textContent=`ยังไม่ได้ตอบข้อ ${miss.map(i=>i+1).join(", ")}`;
+    document.getElementById("q"+miss[0]).scrollIntoView({behavior:"smooth",block:"center"}); return false; }
+  if (typeof html2canvas!=="function"){ msg.textContent="โหลดตัวสร้างไฟล์ไม่สำเร็จ ลองรีโหลดหน้า"; return false; }
+  return true;
+}
+const fname = ext => `ผลประเมินความเหมาะสมในการลงทุน-${(val("name")||"ลูกค้า").replace(/[\\/:*?"<>|]/g,"").slice(0,60)}.${ext}`;
+const inArtifact = !!(window.claude && typeof window.claude.use==="function");
+async function offer(blob, ext, suffix=""){
+  const m=document.getElementById("mMsg");
+  const name=fname(ext).replace("."+ext, suffix+"."+ext);
+  if (!inArtifact){
+    try{ const u=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=u; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u),10000);
+      m.textContent="ส่งไฟล์ให้เบราว์เซอร์ดาวน์โหลดแล้ว ตรวจในโฟลเดอร์ดาวน์โหลด (บนมือถือบางรุ่นจะเปิดไฟล์ขึ้นมาให้กดบันทึกเอง)"; }
+    catch(e){ m.textContent="ดาวน์โหลดไม่สำเร็จ ให้กดค้าง/คลิกขวาที่รูปเพื่อบันทึกแทน"; }
+    return;
+  }
+  if (!downloads){ m.textContent = ext==="pdf" ? "หน้านี้ดาวน์โหลดไฟล์ไม่ได้ในแอปนี้ ให้กดค้าง/คลิกขวาที่รูปตัวอย่างเพื่อบันทึก หรือแคปหน้าจอแทน" : "ดาวน์โหลดไม่ได้ในแอปนี้ ให้กดค้าง/คลิกขวาที่รูปเพื่อบันทึก"; return; }
+  try{ await downloads.save({filename:name, data:blob}); m.textContent="ส่งไฟล์ให้เบราว์เซอร์ดาวน์โหลดแล้ว ตรวจในโฟลเดอร์ดาวน์โหลดอีกครั้ง"; }
+  catch(e){ m.textContent = e&&e.code==="declined" ? "ยกเลิกการบันทึกแล้ว" : "ดาวน์โหลดไม่สำเร็จ ให้กดค้าง/คลิกขวาที่รูปเพื่อบันทึกแทน"; }
+}
+async function run(kind){
+  if (!checkReady()) return;
+  const btns=[document.getElementById("pdfBtn"),document.getElementById("imgBtn")]; btns.forEach(b=>b.disabled=true);
+  const b=document.getElementById(kind==="pdf"?"pdfBtn":"imgBtn"), old=b.textContent; b.textContent="กำลังสร้างไฟล์…";
+  try{
+    const pages = await renderPages();
+    const blobs = await Promise.all(pages.map(p=>new Promise(r=>p.canvas.toBlob(r,"image/png"))));
+    if (blobs.some(x=>!x)) throw new Error("empty");
+    let pdfBlob=null;
+    if (window.jspdf){
+      const pdf=new window.jspdf.jsPDF({unit:"mm",format:"a4",orientation:"portrait"});
+      pages.forEach((p,i)=>{ if(i) pdf.addPage(); pdf.addImage(p.canvas.toDataURL("image/jpeg",0.92),"JPEG",0,0,210,297); });
+      pdfBlob = pdf.output("blob");
+    }
+    const prev=document.getElementById("mPrev"); prev.innerHTML="";
+    pages.forEach((p,i)=>{ const im=new Image(); im.alt=`หน้า ${i+1}`; im.src=URL.createObjectURL(blobs[i]); prev.appendChild(im); });
+    document.getElementById("mTitle").textContent = `ผลการประเมิน (${pages.length} หน้า A4)`;
+    const mb=document.getElementById("mBtns"); mb.innerHTML="";
+    const add=(label,blob,ext,suffix,primary)=>{ const x=document.createElement("button"); x.type="button"; x.className="btn small"+(primary?"":" ghost"); x.textContent=label;
+      x.addEventListener("click",()=>offer(blob,ext,suffix)); mb.appendChild(x); };
+    if (downloads || !inArtifact){
+      if (pdfBlob) add("ดาวน์โหลด PDF",pdfBlob,"pdf","",kind==="pdf");
+      blobs.forEach((bl,i)=>add(`รูปหน้า ${i+1}`,bl,"png",`-หน้า${i+1}`,kind!=="pdf"&&i===0));
+    }
+    const over = pages.some(p=>p.over);
+    document.getElementById("mMsg").textContent = (over?"เนื้อหาบางหน้ายาวเกินกระดาษ A4 ตรวจท้ายหน้าก่อนส่ง · ":"") +
+      ((downloads || !inArtifact) ? "ดาวน์โหลดเป็น PDF ทั้งชุด หรือเป็นรูปทีละหน้า · กดค้าง/คลิกขวาที่รูปด้านล่างเพื่อบันทึกได้เช่นกัน"
+                 : "แอปนี้ดาวน์โหลดไฟล์ไม่ได้ ให้กดค้าง/คลิกขวาที่รูปแต่ละหน้าด้านล่างเพื่อบันทึก หรือแคปหน้าจอ");
+    document.getElementById("modal").hidden=false;
+  }catch(e){ msg.textContent="สร้างไฟล์ไม่สำเร็จ ลองอีกครั้ง"; }
+  finally{ btns.forEach(x=>x.disabled=false); b.textContent=old; }
+}
+document.getElementById("pdfBtn").addEventListener("click",()=>run("pdf"));
+document.getElementById("imgBtn").addEventListener("click",()=>run("png"));
+document.getElementById("closeM").addEventListener("click",()=>{ document.getElementById("modal").hidden=true; });
+
+loadDraft(); update();
+</script>
+</body>
+</html>
