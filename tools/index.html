@@ -37,6 +37,8 @@ button.ghost{background:var(--white);color:var(--navy)}
 .hide{display:none}
 .foot{margin-top:34px;font-size:11.5px;color:var(--muted);text-align:center;line-height:1.6}
 @media (max-width:480px){.grid{grid-template-columns:1fr}}
+.msgtabs{flex-wrap:wrap}.qr .q{flex:none}.qr>div:last-child{min-width:0}.qr .row{flex-wrap:wrap;row-gap:6px}
+@media (max-width:359px){.qr{flex-direction:column;align-items:flex-start}}
 </style>
 </head>
 <body>
@@ -57,8 +59,9 @@ button.ghost{background:var(--white);color:var(--navy)}
         <div class="lk"><div><b>ตรวจภาษีด้วยตนเอง (ส่งตรงเรื่องภาษี)</b><code id="lTax"></code></div><button class="ghost" data-copy="lTax">คัดลอก</button></div>
         <div class="lk"><div><b>ตรวจสุขภาพการเงิน (Quiz)</b><code id="lQuiz"></code></div><button class="ghost" data-copy="lQuiz">คัดลอก</button></div>
         <div class="lk"><div><b>ฟอร์มกรอกข้อมูล (ขั้น 2)</b><code id="lForm"></code></div><button class="ghost" data-copy="lForm">คัดลอก</button></div>
+        <div class="lk"><div><b>ประเมินความเสี่ยงที่รับได้ (Suit Test · ลิงก์กลาง ไม่ผูกชื่อ)</b><code id="lSuit"></code></div><button class="ghost" data-copy="lSuit">คัดลอก</button></div>
       </div>
-      <div class="msgtabs"><button class="on" data-m="clinic">ข้อความแนะนำคลินิก</button><button data-m="tax">ข้อความแนะนำตรวจภาษี</button></div>
+      <div class="msgtabs"><button class="on" data-m="clinic">ข้อความแนะนำคลินิก</button><button data-m="tax">ข้อความแนะนำตรวจภาษี</button><button data-m="suit">ข้อความแนะนำประเมินความเสี่ยง</button></div>
       <div class="msg"><textarea id="msg" readonly></textarea><div class="row" style="margin-top:8px"><button id="copyMsg">คัดลอกข้อความ</button></div><div class="ok" id="ok"></div></div>
       <div class="qr"><div class="q" id="qr"></div><div><p>QR นี้พาไปหน้าคลินิกของคุณ · ใช้ในนามบัตร โปสเตอร์ หรือสไลด์</p><div class="row" style="margin-top:8px"><button class="ghost" id="dlQr">ดาวน์โหลด QR (PNG)</button><a class="ghost" href="/card/" style="font-size:14px;font-weight:600;color:var(--navy);align-self:center;margin-left:4px;white-space:nowrap">ทำนามบัตร →</a></div></div></div>
     </div>
@@ -76,6 +79,11 @@ button.ghost{background:var(--white);color:var(--navy)}
     <a class="tile" href="/moneymri/"><b>Money MRI (นัดที่ 2)</b><span>Step 3 · นำเข้าไฟล์ข้อมูลลูกค้า → แผนทั้งชีวิต</span></a>
   </div>
 
+  <div class="k">ลงทุน · ประเมินความเสี่ยง</div>
+  <div class="grid">
+    <a class="tile" href="/suittest/"><b>Suit Test</b><span>ประเมินความเสี่ยงที่รับได้ 10 ข้อ ประมาณ 5 นาที · คิดคะแนนและสัดส่วนการลงทุนให้ · ใช้ได้ทั้งกองทุนรวมและประกันควบการลงทุน</span></a>
+  </div>
+
   <div class="k">ข้อมูลที่ลูกค้าส่งมา</div>
   <div class="grid">
     <div class="tile"><b>Lead จาก Quiz</b><span>ลูกค้าที่ทิ้งชื่อไว้ จะมี LINE แจ้งเตือนถึงคุณทันที (ถ้าผูก LINE กับระบบแล้ว) · ย้อนดูรายการเก่าแจ้งคุณอ้อย</span></div>
@@ -88,12 +96,12 @@ button.ghost{background:var(--white);color:var(--navy)}
 (function(){
   var SB='https://lpqcglmpkuasgjgzqdyp.supabase.co', PK='sb_publishable_CL-lFLHRCuQNLqFYxaWsxA_odaH_WTa', BASE='https://s41financialclinic.com';
   var $=function(id){return document.getElementById(id);}; var AG=null, CODE='', MODE='clinic';
-  var TAX_T="ตรวจภาษี 2569 ด้วยตัวเอง — ใช้เวลาประมาณ 5 นาที ช่วยให้เห็น 5 เรื่องก่อนสิ้นปี\nกรอกตามที่จ่ายจริงได้เลย ส่วนที่เกินสิทธิ์ระบบตัดให้ตามเพดาน และกรณีที่มีหลายทางเลือก ระบบเปรียบเทียบและเลือกทางที่เสียภาษีน้อยที่สุดให้อัตโนมัติ\n\n1. ปีนี้ต้องชำระเพิ่มหรือได้รับคืนประมาณเท่าใด เพื่อเตรียมสภาพคล่องได้ก่อนกำหนดยื่น\n2. ยังมีสิทธิ์ลดหย่อนเหลืออยู่เท่าใด และใช้ส่วนใดจึงคุ้มค่าที่สุด ทดลองดูได้ก่อนตัดสินใจลงทุนหรือชำระเบี้ยภายในสิ้นปี\n3. เงินปันผลและดอกเบี้ย ควรนำมารวมยื่นเพื่อขอเครดิตภาษีคืน หรือให้หัก ณ ที่จ่ายแล้วจบ ระบบช่วยเปรียบเทียบทุกทางเลือกตามหลักเกณฑ์ของกรมสรรพากร\n4. กรณีมีคู่สมรส ช่วยเปรียบเทียบว่ายื่นแยก ยื่นรวม หรือรวมบางส่วน แบบใดครอบครัวเสียภาษีรวมน้อยที่สุด\n5. สำหรับแพทย์ มีตัวช่วยเลือกประเภทรายได้จากสถานการณ์จริง (เงินเดือน รพ. / การันตี / DF) โดยไม่ต้องทราบข้อกฎหมายเอง\n\n{TAX}\nกรอกตัวเลขโดยประมาณได้ ไม่จำเป็นต้องมีเอกสาร · ข้อมูลประมวลผลในอุปกรณ์ของท่านเท่านั้น ไม่มีการส่งขึ้นระบบใด · ผลลัพธ์เก็บไว้ใช้เอง หรือหากต้องการคำแนะนำเพิ่มเติม ยินดีให้ส่งมาปรึกษาได้ค่ะ\n*ตัวเลขเป็นการประมาณการเพื่อวางแผน ไม่ใช่การยื่นแบบจริง\n{SIGN}\nSignature 41 · วางแผนการเงินเฉพาะบุคคล", CLINIC_T="สวัสดีค่ะ ขอส่งลิงก์คลินิกการเงินของดิฉันไว้ให้นะคะ\n{CLINIC}\n\nในหน้านี้ทำเองได้เลย 2 เรื่อง: ตรวจสุขภาพการเงิน 2 นาที และตรวจภาษีปี 2569 ด้วยตัวเอง 5 นาที\nถ้าอยากวางแผนต่อ กด \"เริ่มกรอกข้อมูล\" กรอกเท่าที่สะดวก แล้วเรานัดคุยกันค่ะ\nข้อมูลอยู่ในเครื่องของคุณ ไม่มีค่าใช้จ่าย\n{SIGN}";
+  var TAX_T="ตรวจภาษี 2569 ด้วยตัวเอง — ใช้เวลาประมาณ 5 นาที ช่วยให้เห็น 5 เรื่องก่อนสิ้นปี\nกรอกตามที่จ่ายจริงได้เลย ส่วนที่เกินสิทธิ์ระบบตัดให้ตามเพดาน และกรณีที่มีหลายทางเลือก ระบบเปรียบเทียบและเลือกทางที่เสียภาษีน้อยที่สุดให้อัตโนมัติ\n\n1. ปีนี้ต้องชำระเพิ่มหรือได้รับคืนประมาณเท่าใด เพื่อเตรียมสภาพคล่องได้ก่อนกำหนดยื่น\n2. ยังมีสิทธิ์ลดหย่อนเหลืออยู่เท่าใด และใช้ส่วนใดจึงคุ้มค่าที่สุด ทดลองดูได้ก่อนตัดสินใจลงทุนหรือชำระเบี้ยภายในสิ้นปี\n3. เงินปันผลและดอกเบี้ย ควรนำมารวมยื่นเพื่อขอเครดิตภาษีคืน หรือให้หัก ณ ที่จ่ายแล้วจบ ระบบช่วยเปรียบเทียบทุกทางเลือกตามหลักเกณฑ์ของกรมสรรพากร\n4. กรณีมีคู่สมรส ช่วยเปรียบเทียบว่ายื่นแยก ยื่นรวม หรือรวมบางส่วน แบบใดครอบครัวเสียภาษีรวมน้อยที่สุด\n5. สำหรับแพทย์ มีตัวช่วยเลือกประเภทรายได้จากสถานการณ์จริง (เงินเดือน รพ. / การันตี / DF) โดยไม่ต้องทราบข้อกฎหมายเอง\n\n{TAX}\nกรอกตัวเลขโดยประมาณได้ ไม่จำเป็นต้องมีเอกสาร · ข้อมูลประมวลผลในอุปกรณ์ของท่านเท่านั้น ไม่มีการส่งขึ้นระบบใด · ผลลัพธ์เก็บไว้ใช้เอง หรือหากต้องการคำแนะนำเพิ่มเติม ยินดีให้ส่งมาปรึกษาได้ค่ะ\n*ตัวเลขเป็นการประมาณการเพื่อวางแผน ไม่ใช่การยื่นแบบจริง\n{SIGN}\nSignature 41 · วางแผนการเงินเฉพาะบุคคล", SUIT_T="แบบประเมินความเสี่ยงที่รับได้สั้นๆ ใช้เวลาประมาณ 5 นาทีค่ะ\n\n👉 s41financialclinic.com/suittest\n{SIGN}", CLINIC_T="สวัสดีค่ะ ขอส่งลิงก์คลินิกการเงินของดิฉันไว้ให้นะคะ\n{CLINIC}\n\nในหน้านี้ทำเองได้เลย 2 เรื่อง: ตรวจสุขภาพการเงิน 2 นาที และตรวจภาษีปี 2569 ด้วยตัวเอง 5 นาที\nถ้าอยากวางแผนต่อ กด \"เริ่มกรอกข้อมูล\" กรอกเท่าที่สะดวก แล้วเรานัดคุยกันค่ะ\nข้อมูลอยู่ในเครื่องของคุณ ไม่มีค่าใช้จ่าย\n{SIGN}";
   function sign(){ if(!AG) return 'ที่ปรึกษาการเงิน Signature 41'; var f=String(AG.full_name||'').trim(), c=String(AG.cred||'').trim(); if(f) return f+(c?' '+c:''); return String(AG.name||'ที่ปรึกษาการเงิน Signature 41'); }
-  function links(c){ return {clinic:BASE+'/'+c, tax:BASE+'/selftaxscan/'+c, quiz:BASE+'/quiz/?ref='+c, form:BASE+'/fillform/?a='+c}; }
-  function msg(){ var L=links(CODE); return MODE==='tax'? TAX_T.replace('{TAX}',L.tax).replace('{SIGN}',sign()) : CLINIC_T.replace('{CLINIC}',L.clinic).replace('{SIGN}',sign()); }
+  function links(c){ return {clinic:BASE+'/'+c, tax:BASE+'/selftaxscan/'+c, quiz:BASE+'/quiz/?ref='+c, form:BASE+'/fillform/?a='+c, suit:BASE+'/suittest/'}; }
+  function msg(){ var L=links(CODE); if(MODE==='suit') return SUIT_T.replace('{SIGN}',sign()); return MODE==='tax'? TAX_T.replace('{TAX}',L.tax).replace('{SIGN}',sign()) : CLINIC_T.replace('{CLINIC}',L.clinic).replace('{SIGN}',sign()); }
   function qrSvg(text){ if(typeof qrcode==='undefined') return '<div style="font-size:12px;color:#7A7A8C;padding:8px">โหลดตัวสร้าง QR ไม่ได้ — ใช้หน้าทำนามบัตรแทน</div>'; var qr=qrcode(0,'M'); qr.addData(text); qr.make(); var n=qr.getModuleCount(), r=''; for(var y=0;y<n;y++)for(var x=0;x<n;x++)if(qr.isDark(y,x))r+='M'+x+' '+y+'h1v1h-1z'; return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+n+' '+n+'" shape-rendering="crispEdges"><path fill="currentColor" d="'+r+'"/></svg>'; }
-  function render(){ var L=links(CODE); $('lClinic').textContent=L.clinic; $('lTax').textContent=L.tax; $('lQuiz').textContent=L.quiz; $('lForm').textContent=L.form; $('msg').value=msg(); $('qr').innerHTML=qrSvg(L.clinic); $('out').classList.remove('hide'); }
+  function render(){ var L=links(CODE); $('lClinic').textContent=L.clinic; $('lTax').textContent=L.tax; $('lQuiz').textContent=L.quiz; $('lForm').textContent=L.form; $('lSuit').textContent=L.suit; $('msg').value=msg(); $('qr').innerHTML=qrSvg(L.clinic); $('out').classList.remove('hide'); }
   function show(){ CODE=($('code').value||'').trim().replace(/[^A-Za-z0-9_-]/g,'').slice(0,20); if(!CODE){ $('who').textContent='กรุณาใส่รหัสตัวแทน'; return; }
     AG=null; $('who').innerHTML='กำลังตรวจรหัส…'; render();
     try{ localStorage.setItem('s41_tools_code',CODE); }catch(e){}
