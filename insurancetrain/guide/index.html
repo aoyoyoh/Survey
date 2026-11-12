@@ -1,0 +1,776 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<style>:root{color-scheme:light}body{margin:0;padding:0}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<title>ขบวนรถไฟ AIA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: line-art train (same 7 wagons + PA, same colours as s41financialclinic.com/insurancetrain) → "what is it" catalog → compare → starter combos → data notes. Premiums live in the builder; this page explains. */
+:root{
+  --washi:#F5F2EC; --sheet:#FFFFFF; --sunk:#EDE9E0; --ink:#1C1C2E; --muted:#7A7A8C; --faint:#A9A7B3; --line:#E5E1D8; --line2:#D9D3C7;
+  --ai:#002366; --kin:#C8A94A; --kinT:#A68B33; --kinS:#F3EAD0; --on-ai:#F5F2EC;
+  --w1:#6F8F6B; --w2:#9DB6AE; --w3:#8E4F5A; --w4:#D4A3AD; --w5:#B9A06A; --w6:#C67A54; --w7:#6B7A99; --pa:#D9A07E;
+  --warn:#A5542F; --warn-bg:#FBEFE6; --note-bg:#EEF1F7;
+  --f:"Sarabun","Noto Sans Thai",Tahoma,"Leelawadee UI",sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --washi:#15171F; --sheet:#1D2029; --sunk:#171922; --ink:#ECE8DE; --muted:#A5A6B5; --faint:#6F7183; --line:#2C3040; --line2:#3A3F52;
+  --ai:#9DB4E3; --kin:#D6B866; --kinT:#E2C77C; --kinS:#3A3320; --on-ai:#15171F;
+  --w1:#8FB08A; --w2:#A9C4BC; --w3:#C47A86; --w4:#E0B3BC; --w5:#CDB57E; --w6:#D9906C; --w7:#92A2C2; --pa:#E5B294;
+  --warn:#E8A47E; --warn-bg:#352419; --note-bg:#1F2537; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --washi:#15171F; --sheet:#1D2029; --sunk:#171922; --ink:#ECE8DE; --muted:#A5A6B5; --faint:#6F7183; --line:#2C3040; --line2:#3A3F52;
+  --ai:#9DB4E3; --kin:#D6B866; --kinT:#E2C77C; --kinS:#3A3320; --on-ai:#15171F;
+  --w1:#8FB08A; --w2:#A9C4BC; --w3:#C47A86; --w4:#E0B3BC; --w5:#CDB57E; --w6:#D9906C; --w7:#92A2C2; --pa:#E5B294;
+  --warn:#E8A47E; --warn-bg:#352419; --note-bg:#1F2537; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--washi);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.65}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 120px}
+h1,h2,h3{line-height:1.25;text-wrap:balance;margin:0;color:var(--ai)}
+h1{font-size:clamp(28px,5vw,42px);font-weight:700}
+h2{font-size:clamp(21px,3.2vw,27px);font-weight:700}
+h3{font-size:18px;font-weight:600}
+p{margin:0}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--kinT);font-weight:600}
+.lead{color:var(--muted);max-width:68ch}
+section{display:grid;gap:16px;margin-top:48px}
+.num{font-variant-numeric:tabular-nums}
+a{color:var(--kinT)}
+.btn{font:inherit;font-size:13.5px;font-weight:600;padding:7px 14px;border-radius:8px;border:1px solid var(--ai);background:transparent;color:var(--ai);cursor:pointer;white-space:nowrap;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn[aria-pressed="true"],.btn.primary{background:var(--ai);color:var(--on-ai)}
+.btn.gold{background:var(--kin);border-color:var(--kin);color:#1C1C2E}
+.btn:focus-visible,.chip:focus-visible,summary:focus-visible,input:focus-visible{outline:2px solid var(--kin);outline-offset:2px}
+
+/* hero */
+.hero{display:grid;gap:12px;margin-top:8px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:600;color:var(--muted);font-size:13px;letter-spacing:.04em}
+.brand b{color:var(--kinT)}
+.hero-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+
+/* train (line art, mirrors the builder) */
+.train-scroll{overflow-x:auto;padding-bottom:6px}
+.train-scroll svg{display:block;min-width:960px;width:100%;height:auto}
+.train-legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.rule{background:var(--sheet);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:grid;gap:4px}
+.rule h3{font-size:16px}
+.rule p{color:var(--muted);font-size:14px}
+.rule svg{width:100%;max-width:240px;height:auto;margin-bottom:4px}
+.key{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted)}
+.key span{display:inline-flex;align-items:center;gap:6px}
+.key i{width:12px;height:12px;border-radius:3px;background:var(--c);border:1px solid var(--line2);display:inline-block}
+
+/* ask */
+.ask{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.ask-card{background:var(--sheet);border:1px solid var(--line);border-top:4px solid var(--c);border-radius:var(--r);padding:14px 16px;display:grid;gap:8px;align-content:start}
+.ask-card q{font-weight:600;font-size:16.5px;quotes:"“" "”";color:var(--ink)}
+.ask-card .go{font-size:14px;color:var(--muted)}
+.ask-card .go b{color:var(--c)}
+
+/* builder band */
+.band{background:var(--ai);color:var(--on-ai);border-radius:14px;padding:22px 24px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}
+.band h2{color:var(--on-ai);font-size:22px}
+.band p{color:var(--on-ai);opacity:.85;font-size:14px;max-width:60ch}
+.band .btn.gold{font-size:15px;padding:10px 18px}
+@media (max-width:640px){.band{grid-template-columns:1fr}}
+
+/* decoder */
+.decoder{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.dec{background:var(--sunk);border-radius:var(--r);padding:12px 14px;display:grid;gap:2px}
+.dec code{font-family:var(--f);font-weight:700;font-size:16px;color:var(--ai)}
+.dec span{font-size:13.5px;color:var(--muted)}
+
+/* filters */
+.toolbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--washi);padding-block:10px;display:grid;gap:8px;border-bottom:1px solid var(--line)}
+.chip-rows{display:grid;gap:6px}
+.chip-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chip-row>b{font-size:13px;color:var(--muted);min-width:76px}
+.chip{font:inherit;font-size:13.5px;padding:5px 12px;border-radius:99px;border:1px solid var(--line2);background:var(--sheet);color:var(--ink);cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.chip i{width:10px;height:10px;border-radius:50%;background:var(--c,var(--muted));display:inline-block}
+.chip[aria-pressed="true"]{background:var(--ai);color:var(--on-ai);border-color:var(--ai)}
+.search{font:inherit;font-size:14px;padding:7px 12px;border-radius:8px;border:1px solid var(--line2);background:var(--sheet);color:var(--ink);width:100%;max-width:360px}
+.count{font-size:13px;color:var(--muted)}
+.viewbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+/* cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;align-items:start}
+@media (max-width:420px){.grid{grid-template-columns:1fr}}
+.grid.compact{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.card{background:var(--sheet);border:1px solid var(--line);border-radius:var(--r);display:grid;min-width:0;overflow:hidden}
+.card-head{padding:14px 16px 12px;display:grid;gap:6px;border-left:5px solid var(--c);font:inherit;color:inherit;text-align:left;background:none;border-top:0;border-right:0;border-bottom:0;width:100%;cursor:pointer}
+.card-head:hover h3{color:var(--c)}
+.card-head:focus-visible{outline:2px solid var(--kin);outline-offset:-2px}
+.toggle-ic{font-size:12.5px;font-weight:600;color:var(--kinT)}
+.kind{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px}
+.pill{padding:1px 8px;border-radius:99px;font-weight:600;letter-spacing:.02em}
+.pill.k{background:color-mix(in srgb,var(--c) 22%,var(--sheet));color:var(--ink);border:1px solid color-mix(in srgb,var(--c) 55%,var(--sheet))}
+.pill.o{border:1px solid var(--line2);color:var(--muted)}
+.pill.w{background:var(--warn-bg);color:var(--warn)}
+.card h3{font-size:17.5px;color:var(--ink)}
+.card .th{font-size:13px;color:var(--muted);margin-top:-4px}
+.fit{font-size:14px}
+.body{padding:12px 16px 14px;display:grid;gap:10px}
+.prem{width:100%;border-collapse:collapse;font-size:13.5px}
+.prem th,.prem td{text-align:left;padding:5px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+.prem th{font-size:11.5px;color:var(--muted);font-weight:500}
+.prem td.r,.prem th.r{text-align:right}
+.prem-note{font-size:11.5px;color:var(--muted)}
+details{border-top:1px dashed var(--line);padding-top:8px}
+summary{cursor:pointer;font-size:13.5px;font-weight:600;color:var(--kinT)}
+details .more{display:grid;gap:6px;margin-top:8px;font-size:13.5px}
+.card-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 16px;background:var(--sunk);font-size:12px;color:var(--muted);flex-wrap:wrap}
+.card-foot .btn{font-size:12.5px;padding:4px 10px}
+.group-title{grid-column:1/-1;display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.group-title h3{font-size:20px;display:inline-flex;align-items:center;gap:10px}
+.group-title h3 i{width:14px;height:14px;border-radius:4px;background:var(--c);border:1px solid var(--line2);display:inline-block}
+.group-title span{font-size:13.5px;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:1px;background:var(--line);border-block:1px solid var(--line)}
+.stat{background:var(--sheet);padding:8px 10px;display:grid;align-content:start}
+.stat b{font-size:17px;line-height:1.2;color:var(--ink);font-variant-numeric:tabular-nums}
+.stat span{font-size:11.5px;color:var(--muted);line-height:1.35}
+.vis{padding:10px 14px 2px;display:grid;gap:4px}
+.vis svg{width:100%;height:auto;display:block;overflow:visible}
+.vis .cap{font-size:11px;color:var(--muted)}
+.pbar{display:flex;height:22px;border-radius:5px;overflow:hidden;background:var(--sunk);border:1px solid var(--line)}
+.pbar i{display:block;height:100%;border-right:2px solid var(--sheet)}
+.pleg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--muted)}
+.pleg span{display:inline-flex;align-items:center;gap:5px}
+.pleg span::before{content:"";width:9px;height:9px;border-radius:2px;background:var(--sw)}
+.pscale{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.short{font-size:14px;display:flex;gap:6px;align-items:flex-start}
+.short .ic{flex:none;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;margin-top:2px}
+.short .ok{background:var(--c);color:#fff}
+.short .no{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn)}
+.empty{grid-column:1/-1;color:var(--muted);padding:24px;text-align:center;background:var(--sheet);border:1px dashed var(--line2);border-radius:var(--r)}
+@media (prefers-reduced-motion:no-preference){.card{transition:box-shadow .15s}.card:hover{box-shadow:0 4px 18px rgba(0,35,102,.08)}}
+
+/* compare */
+.tray[hidden]{display:none}
+.tray{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--ai);color:var(--on-ai);padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:14px}
+.tray .btn{border-color:var(--kin);color:var(--on-ai)}
+.tray .btn.gold{color:#1C1C2E}
+.cmp-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--sheet)}
+.cmp{border-collapse:collapse;width:100%;min-width:640px;font-size:14px}
+.cmp th,.cmp td{padding:9px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.cmp thead th{font-size:15px;border-top:4px solid var(--c,var(--line))}
+.cmp tbody th{font-size:12.5px;color:var(--muted);font-weight:500;width:130px;background:var(--sunk)}
+
+/* combos */
+.combos{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.combo{background:var(--sheet);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:grid;gap:10px;align-content:start}
+.combo .mini-train{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.combo .mini-train span{font-size:12.5px;padding:3px 9px;border-radius:6px;color:var(--ink);background:color-mix(in srgb,var(--c) 24%,var(--sheet));border:1px solid color-mix(in srgb,var(--c) 60%,var(--sheet));font-weight:600}
+.combo .mini-train span.loco{background:var(--ai);color:var(--on-ai);border-color:var(--ai)}
+.combo .mini-train em{font-style:normal;color:var(--muted)}
+.combo p{font-size:14px;color:var(--muted)}
+.banner{background:var(--note-bg);border-radius:var(--r);padding:12px 16px;font-size:14px}
+.banner b{color:var(--ink)}
+
+/* notes */
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.notes ul{margin:0;padding-left:18px;display:grid;gap:6px;font-size:14px}
+.box{background:var(--sheet);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:grid;gap:8px;align-content:start}
+.box.warn{border-color:var(--warn);background:var(--warn-bg)}
+.src{font-size:12px;color:var(--muted)}
+.src::before{content:"ที่มา: ";font-weight:600}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div class="brand"><b>S41</b> Signature 41 · คู่มือทีม</div>
+  <h1>ขบวนรถไฟ AIA</h1>
+  <p class="lead">สัญญาหลัก = หัวรถจักร · สัญญาเพิ่มเติม = ตู้ที่พ่วงท้าย · ตู้และสีเดียวกับเว็บจัดขบวนประกัน จะได้สอนจากหน้านี้แล้วไปกดเบี้ยจริงต่อได้ทันที</p>
+  <div class="hero-row">
+    <a class="btn primary" href="https://s41financialclinic.com/insurancetrain/" target="_blank" rel="noopener">เปิดจัดขบวนประกัน ↗</a>
+    <a class="btn" href="#catalog">ดูแคตตาล็อก</a>
+  </div>
+</header>
+
+<section aria-labelledby="t-train">
+  <div class="eyebrow">ภาพรวม 1 ภาพ</div>
+  <h2 id="t-train">หัวรถจักร 1 หัว ลากตู้ได้ 7 ตู้ · PA วิ่งเดี่ยว</h2>
+  <div class="train-scroll" id="trainWrap" role="img" aria-label="แผนภาพขบวนรถไฟ: หัวรถจักรคือสัญญาหลัก 4 แบบ (คุ้มครองชีวิต โรคร้ายแรง สะสมทรัพย์ บำนาญ) พ่วงตู้ 1 สุขภาพ 2 ชดเชย รพ. 3 โรคร้าย 4 มะเร็ง 5 ยกเว้นเบี้ย 6 อุบัติเหตุ 7 ทุพพลภาพ ส่วน PA เป็นกรมธรรม์แยก"></div>
+  <div class="key" id="trainKey"></div>
+  <div class="train-legend">
+    <div class="rule">
+      <svg viewBox="0 0 240 64" aria-hidden="true"><rect x="4" y="16" width="80" height="34" rx="6" style="fill:var(--ai)"/><text x="44" y="38" text-anchor="middle" style="fill:var(--kin);font:600 12px var(--f)">หัว</text>
+        <line x1="88" y1="33" x2="112" y2="33" style="stroke:var(--muted);stroke-width:3;stroke-dasharray:4 4"/><text x="100" y="22" text-anchor="middle" style="fill:var(--w3);font:700 16px var(--f)">✕</text>
+        <rect x="116" y="20" width="60" height="30" rx="5" style="fill:var(--w1);opacity:.45"/><rect x="180" y="20" width="56" height="30" rx="5" style="fill:var(--w3);opacity:.45"/></svg>
+      <h3>หัวหยุด ตู้หลุดตาม</h3><p>สัญญาหลักสิ้นผล = สัญญาเพิ่มเติมสิ้นผล</p></div>
+    <div class="rule">
+      <svg viewBox="0 0 240 64" aria-hidden="true"><line x1="10" y1="56" x2="230" y2="56" style="stroke:var(--line);stroke-width:1"/>
+        <polyline points="10,40 230,40" style="fill:none;stroke:var(--ai);stroke-width:3"/><text x="232" y="36" text-anchor="end" style="fill:var(--ink);font:600 11px var(--f)">หัว เบี้ยคงที่</text>
+        <polyline points="10,52 60,49 110,44 160,34 200,22 230,8" style="fill:none;stroke:var(--w3);stroke-width:3"/><text x="150" y="16" text-anchor="end" style="fill:var(--w3);font:600 11px var(--f)">ตู้ เบี้ยขึ้นตามอายุ</text></svg>
+      <h3>หัวเบี้ยคงที่ ตู้เบี้ยขยับ</h3><p>ตู้ต่ออายุปีต่อปี ปรับเบี้ยตามอายุ/เคลม · ดูเส้นเบี้ยถึง 99 ในจัดขบวน</p></div>
+    <div class="rule">
+      <svg viewBox="0 0 240 64" aria-hidden="true"><rect x="4" y="16" width="70" height="34" rx="6" style="fill:var(--ai)"/><text x="39" y="38" text-anchor="middle" style="fill:var(--kin);font:600 12px var(--f)">บำนาญ</text>
+        <rect x="82" y="20" width="70" height="30" rx="5" style="fill:var(--w6)"/><text x="117" y="40" text-anchor="middle" style="fill:#fff;font:600 11px var(--f)">อุบัติเหตุ ✓</text>
+        <rect x="160" y="20" width="76" height="30" rx="5" style="fill:var(--w1);opacity:.35"/><text x="198" y="40" text-anchor="middle" style="fill:var(--ink);font:600 11px var(--f)">สุขภาพ ✕</text></svg>
+      <h3>บำนาญ ลากได้แค่ตู้ 6 อุบัติเหตุ</h3><p>อยากได้ตู้สุขภาพ ต้องมีหัวอีกหัว</p></div>
+  </div>
+</section>
+
+<section aria-labelledby="t-ask">
+  <div class="eyebrow">เริ่มจากคำพูดลูกค้า</div>
+  <h2 id="t-ask">ลูกค้าพูดแบบนี้ → เริ่มตรงไหน</h2>
+  <div class="ask">
+    <div class="ask-card" style="--c:var(--ai)"><q>ถ้าฉันไม่อยู่ ครอบครัวต้องมีเงินก้อน</q><div class="go">หัว <b>คุ้มครองชีวิต</b> → Pay Life เบี้ยถูกสุด · มรดกหลักสิบล้าน → Legacy Prestige</div></div>
+    <div class="ask-card" style="--c:var(--ai)"><q>กลัวโรคร้าย อยากล็อกเบี้ยไว้เลย</q><div class="go">หัว <b>โรคร้ายแรง</b> → CI SuperCare / ProCare</div></div>
+    <div class="ask-card" style="--c:var(--ai)"><q>อยากเก็บเงิน ได้คืนแน่นอน</q><div class="go">หัว <b>สะสมทรัพย์</b> → Saving Sure · Excellent · Endowment</div></div>
+    <div class="ask-card" style="--c:var(--ai)"><q>เกษียณแล้วอยากมีเงินใช้ + ลดภาษี</q><div class="go">หัว <b>บำนาญ</b> → Annuity Sure · Annuity Fix</div></div>
+    <div class="ask-card" style="--c:var(--w1)"><q>ป่วยแล้วไม่อยากควักเงินค่ารักษา</q><div class="go">→ <b>ตู้ 1 สุขภาพ</b> + ตู้ 2 ชดเชย รพ.</div></div>
+    <div class="ask-card" style="--c:var(--w3)"><q>ถ้าเป็นโรคร้าย ขอเงินก้อนไว้ตั้งหลัก</q><div class="go">→ <b>ตู้ 3 โรคร้าย</b> · เฉพาะมะเร็ง → ตู้ 4</div></div>
+    <div class="ask-card" style="--c:var(--w5)"><q>ป่วยหนักแล้วกลัวส่งเบี้ยต่อไม่ไหว</q><div class="go">→ <b>ตู้ 5 ยกเว้นเบี้ย</b> · ทำให้ลูก → PBCI</div></div>
+    <div class="ask-card" style="--c:var(--w7)"><q>ฉันหาเลี้ยงคนทั้งบ้าน ถ้าทำงานไม่ได้ล่ะ</q><div class="go">→ <b>ตู้ 7 ทุพพลภาพ</b> + ตู้ 6 อุบัติเหตุ</div></div>
+  </div>
+</section>
+
+<section aria-labelledby="t-builder">
+  <div class="band">
+    <div>
+      <div class="eyebrow" style="color:var(--kin)">หน้านี้ตอบว่า “คืออะไร” · จัดขบวนตอบว่า “เท่าไหร่”</div>
+      <h2 id="t-builder" style="margin-top:6px">เบี้ยจริง กดในจัดขบวนประกัน</h2>
+      <p style="margin-top:6px">กรอกเพศ อายุ ความคุ้มครองที่ต้องการ ระบบคิดเบี้ยทุกตู้ถึงอายุ 99 เทียบแผนในตู้เดียวกันได้ แล้วค่อยออกใบเสนอราคาจริงจาก AIA ONE</p>
+    </div>
+    <a class="btn gold" href="https://s41financialclinic.com/insurancetrain/" target="_blank" rel="noopener">เปิดจัดขบวนประกัน ↗</a>
+  </div>
+</section>
+
+<section aria-labelledby="t-dec">
+  <div class="eyebrow">อ่านชื่อแบบให้เป็น</div>
+  <h2 id="t-dec">ชื่อแบบบอกคำตอบครึ่งหนึ่ง</h2>
+  <div class="decoder">
+    <div class="dec"><code>10PAY · 20PAY</code><span>จ่ายกี่ปี</span></div>
+    <div class="dec"><code>10/99 · 9/99</code><span>จ่าย 10 ปี คุ้มครองถึง 99</span></div>
+    <div class="dec"><code>15/25 · 5PAY10</code><span>จ่าย 15 คุ้ม 25 · จ่าย 5 คุ้ม 10</span></div>
+    <div class="dec"><code>NON PAR / PAR</code><span>ไม่มี / มีเงินปันผล</span></div>
+    <div class="dec"><code>CI</code><span>มีโรคร้ายในตัว</span></div>
+    <div class="dec"><code>PLUS</code><span>แถมยกเว้นเบี้ยโรคร้าย + TI</span></div>
+    <div class="dec"><code>PRESTIGE</code><span>ทุนสูง</span></div>
+    <div class="dec"><code>WP · PB</code><span>ยกเว้นเบี้ย · ผู้ชำระเบี้ย (ทำให้ลูก)</span></div>
+    <div class="dec"><code>RCC</code><span>ขยายคุ้มครองฆาตกรรม จลาจล</span></div>
+  </div>
+</section>
+
+<section aria-labelledby="t-cat" id="catalog">
+  <div class="eyebrow">แคตตาล็อก</div>
+  <h2 id="t-cat">หัวรถจักรและตู้ทั้งหมด</h2>
+  <div class="banner">เบี้ยในการ์ดเป็น <b>ตัวอย่างจากโบรชัวร์/AIA ONE</b> ไว้ให้เห็นระดับราคา · เบี้ยตามอายุลูกค้าจริงให้กดใน <a href="https://s41financialclinic.com/insurancetrain/" target="_blank" rel="noopener">จัดขบวนประกัน</a> · ยึดใบเสนอราคาอย่างเป็นทางการจากบริษัทเท่านั้น</div>
+  <div class="toolbar">
+    <div class="chip-rows" id="chips"></div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <input class="search" id="q" type="search" placeholder="ค้นชื่อแบบ เช่น legacy, HB, ต่างประเทศ" aria-label="ค้นหาแบบประกัน">
+      <span class="count" id="count"></span><span class="viewbar"><button type="button" class="btn" id="expandAll">ขยายทั้งหมด</button><button type="button" class="btn" id="collapseAll">ย่อทั้งหมด</button></span>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<section aria-labelledby="t-cmp" id="compare" hidden>
+  <div class="eyebrow">เทียบข้างกัน</div>
+  <h2 id="t-cmp">ตารางเทียบ</h2>
+  <div class="cmp-wrap"><table class="cmp" id="cmp"></table></div>
+</section>
+
+<section aria-labelledby="t-combo">
+  <div class="eyebrow">ตัวอย่างจัดขบวน</div>
+  <h2 id="t-combo">ขบวนตั้งต้น 4 แบบ</h2>
+  <div class="banner">ข้อเสนอให้ทีมปรับ ไม่ใช่ข้อมูลจากโบรชัวร์ · เอาขบวนไปกรอกในจัดขบวนประกันเพื่อดูเบี้ย</div>
+  <div class="combos">
+    <div class="combo"><h3>วัยเริ่มทำงาน งบจำกัด</h3>
+      <div class="mini-train"><span class="loco">20 Pay Life</span><em>+</em><span style="--c:var(--w1)">1 Health Saver / Starter</span><em>+</em><span style="--c:var(--w3)">3 CI Plus + Top Up</span><em>+</em><span style="--c:var(--pa)">PA</span></div></div>
+    <div class="combo"><h3>มนุษย์เงินเดือน มีประกันกลุ่ม AIA</h3>
+      <div class="mini-train"><span class="loco">Pay Life Plus</span><em>+</em><span style="--c:var(--w1)">1 Health Plus</span><em>+</em><span style="--c:var(--w2)">2 HB Extra</span><em>+</em><span style="--c:var(--w4)">4 Care for Cancer</span><em>+</em><span style="--c:var(--w7)">7 TPD</span></div></div>
+    <div class="combo"><h3>เจ้าของธุรกิจ วางแผนมรดก</h3>
+      <div class="mini-train"><span class="loco">Legacy Prestige Plus</span><em>+</em><span style="--c:var(--w1)">1 Health Happy 25 ล้าน / Infinite Care</span><em>+</em><span style="--c:var(--w3)">3 Multi-Pay CI Plus</span></div></div>
+    <div class="combo"><h3>รายได้หลังเกษียณ + ภาษี</h3>
+      <div class="mini-train"><span class="loco">Annuity Sure</span><em>+</em><span style="--c:var(--w6)">6 AI + RCC</span><em>·</em><span class="loco">Saving Sure</span><em>+</em><span style="--c:var(--w1)">1 ตู้สุขภาพ</span></div>
+      <p>บำนาญลากได้แค่ตู้ 6 ตู้สุขภาพจึงพ่วงกับ Saving Sure</p></div>
+  </div>
+</section>
+
+<section aria-labelledby="t-notes">
+  <div class="eyebrow">ที่มาและข้อจำกัด</div>
+  <h2 id="t-notes">ข้อมูลมาจากไหน</h2>
+  <div class="notes">
+    <div class="box"><h3>แหล่งข้อมูล</h3><ul>
+      <li>โบรชัวร์ในโฟลเดอร์ Brochure และ Uneedlife (รหัสเอกสารท้ายการ์ด)</li>
+      <li>หน้าจอ AIA ONE v.6.7.15 วันที่ 2 ต.ค. 2569 (หญิง 18 ทุน 1 ล้าน)</li>
+      <li>รายชื่อแบบ/ตู้/สี ตรงกับจัดขบวนประกัน v4.4.1 (11 พ.ย. 69)</li>
+    </ul></div>
+    <div class="box warn"><h3>รอแก้ฝั่งเว็บจัดขบวน</h3><ul>
+      <li>อัตราเบี้ย WPCI ยังไม่มี — เบี้ยคงที่ตลอดสัญญา ใช้ตารางจาก AIA ONE</li>
+      <li>ชื่อแผน PA ให้เปลี่ยนเป็น AIANPA ตามโบรชัวร์ · WSMNPA3300 ผลประโยชน์ไม่ตรง AIANPA3300 รอตรวจสอบ · เบี้ย PA ขึ้นหลัง 60 และต่อได้ถึง 75 เท่านั้น</li>
+      <li>เบี้ยของ HB · Lady Care · Health Cancer · PBCI · AI/ADD/ADB ไม่มีในโบรชัวร์ (หน้าตัดจากเล่มรวม) ดูจากจัดขบวน</li>
+    </ul></div>
+    <div class="box"><h3>เอกสารครบแล้ว</h3><ul>
+      <li>โบรชัวร์ PDF ครบทุกการ์ด 36 เล่ม (อัปเดต 12 พ.ย. 69)</li>
+      <li>10Pay/15Pay Life ใช้เล่ม 20Pay · Legacy Protection 5Pay ใช้เล่ม Legacy Prestige — AIA ไม่มีเล่มแยก</li>
+      <li>CI SuperCare Prestige โบรชัวร์มีตัวอย่างเบี้ยเฉพาะ 20/99 · 10/99 ดูจากจัดขบวน</li>
+    </ul></div>
+    <div class="box"><h3>เช็กก่อนใช้</h3><ul>
+      <li>ตู้ส่วนใหญ่ไม่มีตารางเบี้ยในโบรชัวร์ ดูจากจัดขบวน / AIA ONE</li>
+      <li>ไม่รวมยูนิตลิงค์ · "(?)" = โบรชัวร์ไม่ชัด</li>
+      <li>เบี้ยทุกตัวเป็นอัตราสุขภาพมาตรฐาน ยึดใบเสนอราคาอย่างเป็นทางการเท่านั้น</li>
+    </ul></div>
+  </div>
+</section>
+</div>
+
+<div class="tray" id="tray" hidden>
+  <span id="trayText"></span>
+  <button class="btn gold" id="goCmp" type="button">ดูตารางเทียบ</button>
+  <button class="btn" id="clearCmp" type="button">ล้าง</button>
+</div>
+
+<script>
+const BUILDER="https://s41financialclinic.com/insurancetrain/";
+/* Same wagon order, numbers and colours as the builder */
+const G={
+  life:{name:"คุ้มครองชีวิต",c:"var(--ai)",role:"หัวรถจักร"},
+  cih:{name:"โรคร้ายแรง",c:"var(--ai)",role:"หัวรถจักร"},
+  save:{name:"สะสมทรัพย์",c:"var(--ai)",role:"หัวรถจักร"},
+  ann:{name:"บำนาญ",c:"var(--ai)",role:"หัวรถจักร"},
+  health:{name:"ตู้ 1 · สุขภาพ",c:"var(--w1)",role:"ตู้"},
+  hb:{name:"ตู้ 2 · ชดเชย รพ.",c:"var(--w2)",role:"ตู้"},
+  ci:{name:"ตู้ 3 · โรคร้าย",c:"var(--w3)",role:"ตู้"},
+  cancer:{name:"ตู้ 4 · มะเร็ง",c:"var(--w4)",role:"ตู้"},
+  wp:{name:"ตู้ 5 · ยกเว้นเบี้ย",c:"var(--w5)",role:"ตู้"},
+  acc:{name:"ตู้ 6 · อุบัติเหตุ",c:"var(--w6)",role:"ตู้"},
+  tpd:{name:"ตู้ 7 · ทุพพลภาพ",c:"var(--w7)",role:"ตู้"},
+  pa:{name:"PA · ซื้อแยก",c:"var(--pa)",role:"แยก"}
+};
+const WAGONS=[["health",1,"สุขภาพ","ค่าห้อง ค่ารักษา"],["hb",2,"ชดเชย รพ.","เงินรายวันตอนนอน รพ."],["ci",3,"โรคร้าย","เงินก้อนเมื่อตรวจพบ"],["cancer",4,"มะเร็ง","เงินก้อนเฉพาะมะเร็ง"],["wp",5,"ยกเว้นเบี้ย","บริษัทจ่ายเบี้ยแทน"],["acc",6,"อุบัติเหตุ","ตาย/สูญเสียอวัยวะ"],["tpd",7,"ทุพพลภาพ","เงินก้อน ทุพพลภาพถาวร"]];
+const LINES={pay:"สายคุ้มครองล้วน",legacy:"สายมรดก ทุนสูง",senior:"สายผู้สูงอายุ",income:"สายมีรายได้หลังเกษียณ"};
+/* tl = timeline {u:"อายุ"|"ปีที่", from,to, pay:[a,b,label], get:[[a,b,label]], dots:[x...], dotLabel, end:"label", cover:"label"} */
+const P=[
+/* ---- หัว คุ้มครองชีวิต ---- */
+{id:"20pay",g:"life",line:"pay",pdf:"brochures/20-pay-life.pdf",name:"AIA 10 / 15 / 20 Pay Life",th:"ตลอดชีพ Non Par",
+ fit:"ทุนชีวิตเบี้ยถูก เป็นหัวลากตู้สุขภาพ",
+ tl:{u:"อายุ",from:35,to:99,pay:[35,55,"จ่าย 20 ปี (หรือ 10 / 15)"],cover:"เสียชีวิต รับ 100%",end:"อายุ 99 รับ 100%"},
+ stats:[["15 วัน–70","อายุรับ (20Pay)"],["100,000","ทุนขั้นต่ำ"],["100%","ทุนคงที่"]],
+ good:["เบี้ยต่อทุนต่ำสุดในกลุ่ม"],watch:"ไม่แถมยกเว้นเบี้ยโรคร้าย ไม่มีเงินคืน",
+ prem:[["10Pay","24,230","AIA ONE"],["15Pay","17,550","AIA ONE"],["20Pay","12,410","AIA ONE"],["ชาย 35 · 20Pay","22,300","โบรชัวร์"]],
+ more:["รายละเอียดอ้างจากโบรชัวร์ 20Pay · 10/15Pay ใช้เล่มเดียวกัน ไม่มีเล่มแยก · อายุรับ/ทุนขั้นต่ำของ 10/15Pay ดูจาก AIA ONE","ยกเว้นเบี้ยกรณีทุพพลภาพ ต้องแนบ WP เพิ่ม","ลดหย่อนภาษีในโควตาประกันชีวิต 100,000"],doc:"SU0215429 · 01/2023"},
+{id:"plp",g:"life",line:"pay",pdf:"brochures/pay-life-plus.pdf",name:"AIA Pay Life Plus",th:"ตลอดชีพ พลัส · 10/15/20Pay",
+ fit:"ทุนไม่ถึง 10 ล้าน แต่อยากได้ฟีเจอร์แบบ Legacy Plus",
+ tl:{u:"อายุ",from:35,to:99,pay:[35,55,"จ่าย 20 ปี (หรือ 10 / 15)"],cover:"ชีวิต + ยกเว้นเบี้ยโรคร้าย (ถึง 80) + TI",end:"อายุ 99 รับ ≥100%"},
+ stats:[["1 ด.–75","อายุรับ"],["150,000","ทุนขั้นต่ำ 20Pay"],["90%","TI จ่ายล่วงหน้า"]],
+ good:["แถมฟรี ยกเว้นเบี้ยเมื่อเป็นโรคร้าย 44 โรค","เสียชีวิตรับไม่น้อยกว่าเบี้ยที่จ่าย"],watch:"ทุนสูงสุด 9,999,999",
+ prem:[["10Pay","26,250","AIA ONE"],["15Pay","18,910","AIA ONE"],["20Pay","15,220","AIA ONE"]],
+ more:["เสียชีวิต/ครบสัญญา = ค่าสูงสุดของ 100% ทุน / มูลค่าเวนคืน / เบี้ยที่จ่ายมา","ทุนขั้นต่ำ 10/15Pay = 300,000","ส่วนลด 1.00–1.50 บาท ต่อทุน 1,000 (ทุน 500,000 ขึ้นไป)","อัตราเบี้ยต่อทุน 1,000 อายุ 35 (ช/ญ): 10Pay 49.45/43.10 · 15Pay 35.52/29.79 · 20Pay 28.19/23.66"],doc:"SU0215433 · 07/2021"},
+{id:"p65",g:"life",line:"income",pdf:"brochures/protection-65.pdf",name:"AIA Protection 65",th:"Non Par · ชีวิต + รายได้หลัง 65",
+ fit:"อยากได้ทั้งทุนชีวิตและเงินทุกปีหลังเกษียณ",
+ tl:{u:"อายุ",from:35,to:99,pay:[35,65,"จ่ายถึงอายุ 65"],get:[[65,98,"รับทุกปี 12% → 26%"]],end:"+ ครบ 100%"},
+ stats:[["760%","รับรวมสูงสุด"],["15 วัน–60","อายุรับ"],["100,000","ทุนขั้นต่ำ"]],
+ good:["เงินคืนเพิ่มขึ้นทุก 5 ปี"],watch:"จ่ายเบี้ยนานถึงอายุ 65",
+ prem:[["หญิง 18","53,000","AIA ONE"],["ชาย 35 ทุน 400,000","42,000","โบรชัวร์"]],
+ more:["เสียชีวิต = ค่าสูงสุดของ 100% ทุน / มูลค่าเวนคืน / 105% ของเบี้ยหักเงินคืน","AIA ONE จัดไว้กลุ่มคุ้มครองชีวิต แต่ลักษณะใกล้แผนเกษียณ","โบรชัวร์ระบุคุ้มครองถึง 99 แต่ตารางจ่ายครบสัญญาที่แถวอายุ 98 (?)"],doc:"SU0215454 · 04/2024"},
+{id:"senior",g:"life",line:"senior",pdf:"brochures/senior-happy.pdf",name:"AIA Senior Happy",th:"ตลอดชีพ 90/90 Non Par · ไม่ตรวจสุขภาพ",
+ fit:"อายุ 50–70 ที่สุขภาพไม่ผ่านแบบอื่น อยากมีเงินก้อนไม่เป็นภาระลูกหลาน",
+ tl:{u:"อายุ",from:50,to:90,pay:[50,90,"จ่ายเบี้ยถึงอายุ 90"],cover:"2 ปีแรก เจ็บป่วยคืน 102% เบี้ย · ปีที่ 3 รับ 100% ทุน",end:"อายุ 90 รับ 100%"},
+ stats:[["50–70","อายุรับ"],["50k–200k","ทุน (รวมไม่เกิน 200,000/ชีวิต)"],["0 ข้อ","ไม่ตอบคำถามสุขภาพ"]],
+ good:["ไม่ตรวจสุขภาพ ไม่ตอบคำถามสุขภาพ","เสียชีวิตจากอุบัติเหตุใน 2 ปีแรก รับทุนเต็ม + 102% เบี้ย"],watch:"เจ็บป่วยตายใน 2 ปีแรกได้แค่ 102% ของเบี้ย · ทุนสูงสุด 200,000 · จ่ายเบี้ยยาวถึง 90",
+ prem:[["อายุ 50 · ทุน 200,000","11,960","โบรชัวร์"],["หญิง 50 · ทุน 50,000","เริ่ม 7 บาท/วัน","โบรชัวร์"]],
+ more:["ปีที่ 3 ขึ้นไป เสียชีวิต = ค่าสูงสุดของ 100% ทุน / มูลค่าเวนคืน / เบี้ยที่จ่ายมา","ตัวอย่างโบรชัวร์ อายุ 50 ทุน 200,000 เบี้ย 11,960/ปี: ตายจากอุบัติเหตุปีที่ 2 รับ 224,398 · เจ็บป่วยปีที่ 2 รับ 24,398 · ปีที่ 5 รับ 200,000","ลดหย่อนภาษีในโควตาประกันชีวิต 100,000","กรณียกเว้นอุบัติเหตุ: ฆ่าตัวตายปีแรก · ถูกผู้รับประโยชน์ฆ่า · ติดเชื้อโรคที่ไม่ได้เกิดจากบาดแผลอุบัติเหตุ"],doc:"SU0215389 · 01/2023"},
+{id:"lp",g:"life",line:"legacy",pdf:"brochures/legacy-prestige.pdf",name:"AIA Legacy Prestige (NEW)",th:"ตลอดชีพ Non Par · 10 / 15Pay · Legacy Protection 5Pay",
+ fit:"ทุนก้อนใหญ่ ส่งต่อมรดก · สุขภาพดีได้ส่วนลด",
+ tl:{u:"อายุ",from:35,to:99,pay:[35,45,"จ่าย 10 ปี (หรือ 15 · 5)"],cover:"เสียชีวิต รับ ≥100%",end:"อายุ 99 รับ 100%"},
+ stats:[["10 ล้าน","ทุนขั้นต่ำ"],["1,000 ล้าน","ทุนสูงสุด"],["15 วัน–65","อายุรับ"]],
+ good:["Preferred Rate: สุขภาพดีกว่ามาตรฐาน ลดเบี้ยราว 10% (อายุ 18–65)"],watch:"แอป/จัดขบวนคิดเบี้ยทุน 1 ล้านได้ แต่ขายจริงขั้นต่ำ 10 ล้าน",
+ prem:[["ชาย 45 · ทุน 20 ล้าน · 10Pay มาตรฐาน","1,057,400","โบรชัวร์"],["ชาย 45 · ทุน 20 ล้าน · 10Pay Preferred","946,200","โบรชัวร์"],["หญิง 18 · ทุน 1 ล้าน · 10Pay","22,800","AIA ONE"],["หญิง 18 · ทุน 1 ล้าน · 15Pay","16,000","AIA ONE"],["หญิง 18 · ทุน 1 ล้าน · 5Pay (Legacy Protection)","42,520","AIA ONE"]],
+ more:["เสียชีวิต = ค่าสูงสุดของ 100% ทุน / มูลค่าเวนคืน / เบี้ยหลักที่จ่ายมาทั้งหมด","ตัวอย่างโบรชัวร์ ชาย 45 ทุน 20 ล้าน: เบี้ยมาตรฐาน 1,057,400 หักส่วนลด 111,200 = 946,200/ปี × 10 ปี = 9,462,000","เกณฑ์ Preferred: ไม่สูบบุหรี่ 2 ปี · BMI 18–29 (51 ปีขึ้นไป 18–31) · ความดันไม่เกิน 140/90 · คอเลสเตอรอลไม่เกิน 260 · ไม่มีประวัติเบาหวาน/หัวใจ/มะเร็ง · พ่อแม่ไม่เสียชีวิตก่อน 60 จากหัวใจ/มะเร็งบางชนิด","Legacy Protection 5Pay ใช้โบรชัวร์เล่มเดียวกัน ไม่มีเล่มแยก · เงื่อนไขระยะ 5 ปีดูจาก AIA ONE","ลดหย่อนภาษีในโควตาประกันชีวิต 100,000"],doc:"โบรชัวร์ 01/07/2022 (ไม่มีรหัส SU)"},
+{id:"lpp",g:"life",line:"legacy",pdf:"brochures/legacy-prestige-plus.pdf",name:"AIA Legacy Prestige Plus (NEW)",th:"10 / 15 / 20Pay",
+ fit:"ทุนสูง อายุมาก หรือสุขภาพไม่สมบูรณ์",
+ tl:{u:"อายุ",from:35,to:99,pay:[35,45,"จ่าย 10 ปี (หรือ 15 / 20)"],cover:"ชีวิต + ยกเว้นเบี้ยโรคร้าย (ถึง 80) + TI",end:"อายุ 99 รับ ≥100%"},
+ stats:[["10 ล้าน","ทุนขั้นต่ำ"],["1 ด.–75","อายุรับ"],["50 ล้านแรก","ไม่เพิ่มเบี้ยสุขภาพ"]],
+ good:["แถมยกเว้นเบี้ยโรคร้าย + TI 90%","Privilege: สุขภาพต่ำกว่ามาตรฐานไม่เพิ่มเบี้ย"],watch:"โบรชัวร์ไม่มีรหัส SU (07/2021)",
+ prem:[["10Pay","25,080","AIA ONE"],["15Pay","17,600","AIA ONE"],["20Pay","14,410","AIA ONE"]],
+ more:["Privilege สำหรับทุน 50 ล้านแรก อายุ 1 เดือน–70 ปี","Preferred อายุ 18–70","ตัวอย่างโบรชัวร์ ชาย 40 ทุน 20 ล้าน 10Pay หลังส่วนลด = 900,000/ปี"],doc:"17/07/2021"},
+/* ---- หัว โรคร้ายแรง ---- */
+{id:"scare",g:"cih",pdf:"brochures/ci-supercare.pdf",name:"AIA CI SuperCare",th:"10/99 · 20/99 · Non Par",
+ fit:"เงินก้อนโรคร้ายตลอดชีพ เบี้ยคงที่",
+ tl:{u:"อายุ",from:35,to:99,pay:[35,55,"จ่าย 20 ปี (หรือ 10)"],cover:"โรคร้าย 62 โรค รวมไม่เกิน 100%",end:"อายุ 99 รับส่วนที่เหลือ"},
+ bar:[["ระยะต้น 20% (1 ครั้ง)",20,"var(--w4)"],["รุนแรง 80–100% แล้วจบ",80,"var(--w3)"]],barCap:"จ่ายรวมสูงสุด 100%",
+ stats:[["62 โรค","ต้น 18 · รุนแรง 44"],["15 วัน–65","อายุรับ"],["200,000","ทุนขั้นต่ำ"]],
+ good:["เบี้ยคงที่ จ่ายจบใน 10/20 ปี"],watch:"เคลมรุนแรงแล้วกรมธรรม์จบ",
+ prem:[["10/99","45,350","AIA ONE"],["20/99","25,440","AIA ONE"],["อายุ 40 · 20/99","44,180","โบรชัวร์"]],
+ more:["เสียชีวิต/ครบสัญญา 100% หักส่วนที่จ่ายระยะต้นไปแล้ว","ส่วนลดตามทุน สูงสุด 3.50 บาท ต่อทุน 1,000","ทุน 5–15 ล้าน ไม่เพิ่มเบี้ยเนื่องจากสุขภาพ","ระยะรอคอย 60 วัน"],doc:"SU0215396 · 01/2023"},
+{id:"sprestige",g:"cih",pdf:"brochures/ci-supercare-prestige.pdf",name:"AIA CI SuperCare Prestige",th:"10/99 · 20/99 · Non Par · ทุน 5–15 ล้าน",
+ fit:"เงินก้อนโรคร้ายทุนสูง เบี้ยคงที่ · เป็น SuperCare ชื่อทางการตลาดสำหรับทุน 5 ล้านขึ้นไป",
+ tl:{u:"อายุ",from:35,to:99,pay:[35,55,"จ่าย 20 ปี (หรือ 10)"],cover:"โรคร้าย 62 โรค รวมไม่เกิน 100%",end:"อายุ 99 รับส่วนที่เหลือ"},
+ bar:[["ระยะต้น 20% (1 ครั้ง)",20,"var(--w4)"],["รุนแรง 80–100% แล้วจบ",80,"var(--w3)"]],barCap:"จ่ายรวมสูงสุด 100% เหมือน SuperCare",
+ stats:[["5–15 ล้าน","ทุน (ไม่มีรายได้ สูงสุด 5 ล้าน)"],["15 วัน–65","อายุรับ"],["62 โรค","ต้น 18 · รุนแรง 44"]],
+ good:["Privilege Program + AIA Prestige Club แม้เบี้ยต่ำกว่า 250,000","ตรวจสุขภาพตามตารางส่งใบสมัครแบบไม่ตรวจสุขภาพ"],watch:"เคลมรุนแรงแล้วกรมธรรม์จบ · ผู้ไม่มีรายได้ (เด็ก นักเรียน แม่บ้าน เกษียณ) ทุนไม่เกิน 5 ล้าน",
+ prem:[["ชาย 45 · ทุน 5 ล้าน · 20/99","243,600","โบรชัวร์"]],
+ more:["ระยะต้นถึงปานกลาง จ่าย 20% ครั้งเดียว กรมธรรม์ยังอยู่ · รุนแรง/เสียชีวิต/ครบสัญญา จ่าย 100% หักที่จ่ายไปแล้ว","ตัวอย่างโบรชัวร์ ชาย 45 ทุน 5 ล้าน: อายุ 60 โรคระยะต้น รับ 1 ล้าน · อายุ 80 เสียชีวิต รับ 4 ล้าน","Privilege Program สำหรับทุน 5–15 ล้าน ตลอดอายุสัญญา (เปลี่ยนทุนอาจหมดสิทธิ์)","มีบริการตรวจสุขภาพเคลื่อนที่เพื่อพิจารณารับประกัน","ลดหย่อนภาษีเฉพาะส่วนประกันชีวิต (ฉบับที่ 172)"],doc:"โบรชัวร์ 01/2023 (ไม่มีรหัส SU)"},
+{id:"procare",g:"cih",pdf:"brochures/ci-procare.pdf",name:"AIA CI ProCare",th:"Non Par · จ่าย 20 ปี",
+ fit:"กลัวป่วยซ้ำ / หลายโรค อยากล็อกเบี้ย",
+ tl:{u:"อายุ",from:35,to:99,pay:[35,55,"จ่าย 20 ปี"],cover:"โรคร้ายเคลมได้หลายครั้ง สูงสุด 1,000%",end:"อายุ 99 รับ ≥100%"},
+ bar:[["ระยะต้น 40% × 5",200,"var(--w4)"],["รุนแรง 100% × 6",600,"var(--w3)"],["ICU (MIB)",100,"var(--w2)"],["ดูแลต่อเนื่อง (CCB)",100,"var(--w7)"]],barCap:"สูงสุด 1,000% + ทุนชีวิต 100% แยกต่างหาก",
+ stats:[["1,000%","เคลมสูงสุด"],["15 วัน–60","อายุรับ"],["200,000","ทุนขั้นต่ำ"]],
+ good:["ยกเว้นเบี้ยหลังเคลมรุนแรง","เป็นซ้ำ มะเร็ง/หัวใจ/สมอง จ่ายอีก 100%"],watch:"เคลมรุนแรงแล้ว ห้ามเคลมซ้ำ 1 ปี",
+ prem:[["20 ปี","45,430","AIA ONE"],["หญิง 35","75,200","โบรชัวร์"],["ชาย 35","95,440","โบรชัวร์"]],
+ more:["เสียชีวิต/ครบสัญญา = ค่าสูงสุดของ 100% ทุน / มูลค่าเวนคืน / เบี้ยหักเงินที่เคลม","โบนัสสุขภาพดีตาม AIA Vitality","ระยะรอคอย 60 วัน"],doc:"SU0215453 · 07/2024"},
+/* ---- หัว สะสมทรัพย์ ---- */
+{id:"5p10",g:"save",pdf:"brochures/5pay10.pdf",name:"5Pay10",th:"Non Par · ออมระยะสั้น",
+ fit:"มีก้อนพร้อม ออมสั้น 10 ปี",
+ tl:{u:"ปีที่",from:0,to:10,pay:[0,5,"จ่าย 5 ปี"],get:[[1,9,"4% / ปี"]],end:"ปี 10 รับ 468%"},
+ stats:[["500%","รับรวม"],["5,000,000","รับรวม (ทุน 1 ล้าน)"],["16–60","อายุรับ"]],
+ good:["ทุนชีวิตเพิ่มถึง 500%","แถม ADB ฟรี"],watch:"ทุนสูงสุด 1 ล้าน",
+ prem:[["5 ปี · ทุน 1 ล้าน","870,000","AIA ONE"]],calc:"จ่ายรวม 4,350,000 → รับ 5,000,000",
+ more:["อัตราเบี้ย 870 / 880 / 900 ต่อทุน 1,000 ตามช่วงอายุ"],doc:"SU0215413 · 01/2019"},
+{id:"e1525",g:"save",pdf:"brochures/endowment-15-25.pdf",name:"AIA Endowment 15/25",th:"Non Par",
+ fit:"ออมยาว เบี้ยต่อปีไม่สูง",
+ tl:{u:"ปีที่",from:0,to:25,pay:[0,15,"จ่าย 15 ปี"],get:[[1,24,"1% / ปี"]],end:"ปี 25 รับ 121%"},
+ stats:[["144%","รับรวม"],["15 วัน–70","อายุรับ"],["100,000","ทุนขั้นต่ำ"]],
+ good:["ทุนชีวิตเพิ่มถึง 135%"],watch:"ส่วนต่างรับรวมกับเบี้ยรวมน้อย",
+ prem:[["15 ปี · ทุน 1 ล้าน","80,500","AIA ONE"]],calc:"จ่ายรวม 1,207,500 → รับ 1,440,000",more:[],doc:"SU0215426 · 01/2023"},
+{id:"exc",g:"save",pdf:"brochures/excellent.pdf",name:"AIA Excellent",th:"Non Par · ก้อนใหญ่ตอนครบ",
+ fit:"เงินก้อนตามเป้า เช่น ทุนการศึกษาลูก",
+ tl:{u:"ปีที่",from:0,to:20,pay:[0,20,"จ่าย 20 ปี"],dots:[4,8,12,16],dotLabel:"10% ทุก 4 ปี",end:"ปี 20 รับ 300%"},
+ stats:[["340%","รับรวม"],["1 ด.–75","อายุรับ"],["100,000","ทุนขั้นต่ำ"]],
+ good:["ทุนชีวิตเพิ่มถึง 300%"],watch:"จ่ายเบี้ยตลอด 20 ปี",
+ prem:[["20 ปี · ทุน 1 ล้าน","151,900","AIA ONE"]],calc:"จ่ายรวม 3,038,000 → รับ 3,400,000",
+ more:["ทุน 250,000 ขึ้นไป ลด 1 บาท ต่อทุน 1,000"],doc:"SU0215392 · 01/2021"},
+{id:"ssure",g:"save",pdf:"brochures/saving-sure.pdf",name:"AIA Saving Sure",th:"Non Par · รายได้หลัง 60",
+ fit:"อยากมีรายได้หลังเกษียณ แต่โควตาบำนาญเต็ม",
+ tl:{u:"อายุ",from:35,to:99,pay:[35,45,"จ่าย 10 ปี"],get:[[60,98,"รับทุกปี 12% → 26%"]],end:"+ ครบ 100%"},
+ stats:[["820%","รับรวมสูงสุด"],["15 วัน–50","อายุรับ"],["100,000","ทุนขั้นต่ำ"]],
+ good:["จ่ายแค่ 10 ปี","ใช้โควตาลดหย่อนประกันชีวิต"],watch:"ไม่มีเงินคืนก่อนอายุ 60",
+ prem:[["10 ปี · ทุน 1 ล้าน","158,690","AIA ONE"],["หญิง 35 ทุน 400,000","101,508","โบรชัวร์"]],calc:"จ่ายรวม 1,586,900 → รับสูงสุด 8,200,000",
+ more:["เสียชีวิต = ค่าสูงสุดของ 100% ทุน / มูลค่าเวนคืน / 105% ของเบี้ยหักเงินคืน","รับครบ 820% เฉพาะเมื่อมีชีวิตถึง 98"],doc:"SU0215450 · 09/2023"},
+{id:"lti",g:"save",pdf:"brochures/lifetime-income-9-99.pdf",name:"AIA Lifetime Income 9/99",th:"PAR · มีเงินปันผล",
+ fit:"จ่าย 9 ปี มีเงินคืนตลอดชีวิต",
+ tl:{u:"อายุ",from:35,to:99,pay:[35,44,"จ่าย 9 ปี"],get:[[36,98,"การันตี 1% → 2% → 3% / ปี + ปันผล"]],end:"อายุ 99 รับ 900%"},
+ stats:[["900%","ครบสัญญา (การันตี)"],["15 วัน–65","อายุรับ"],["3 ข้อ","คำถามสุขภาพ"]],
+ good:["มีเงินปันผลรายปี + Terminal Dividend"],watch:"ปันผลไม่การันตี แยกให้ลูกค้าเห็นเสมอ",
+ prem:[["9 ปี · ทุน 1 ล้าน","722,000","AIA ONE"],["หญิง 35 ทุน 119,190","100,000","โบรชัวร์"]],
+ more:["เงินคืนการันตี: ปีที่ 2–10 ปีละ 1% · 11–20 ปีละ 2% · 21 ถึงอายุ 98 ปีละ 3%","ตัวอย่างโบรชัวร์ หญิง 35 จ่ายรวม 900,000: การันตี 1,261,025 · ปันผลรวม (ไม่การันตี) 0 / 3,408,820 / 4,963,051 / 5,787,843 ตามสมมติฐาน 0% / 3.7% / 5.2% / 6.0%","แนบสัญญาเพิ่มเติม ต้องตอบคำถามสุขภาพแบบละเอียด"],doc:"SU0215472 · 06/2026"},
+/* ---- หัว บำนาญ ---- */
+{id:"ann",g:"ann",pdf:"brochures/annuity-sure.pdf",name:"AIA Annuity Sure",th:"บำนาญ ได้ชัวร์ · 9Pay / จ่ายถึง 60",
+ fit:"รายได้แน่นอนหลัง 60 + ลดหย่อนบำนาญ",
+ tl:{u:"อายุ",from:35,to:90,pay:[35,60,"จ่ายถึง 60 (หรือ 9 ปี)"],get:[[60,90,"รับบำนาญ 15% / ปี"]],end:"รวม 465%"},
+ stats:[["200,000","ลดหย่อนบำนาญสูงสุด"],["15 ปี","การันตีจ่ายบำนาญ"],["20–55","อายุรับ"]],
+ good:["ลดหย่อนแยกจากโควตาชีวิต 100,000"],watch:"แนบได้แค่ตู้ 6 อุบัติเหตุ (AI/ADD/ADB/RCC)",
+ prem:[["9Pay · หญิง 20","168,000","AIA ONE"],["จ่ายถึง 60 · หญิง 20","47,000","AIA ONE"]],calc:"9Pay จ่าย 1,512,000 · ถึง 60 จ่าย 1,880,000 → รับ 4,650,000",
+ more:["ลดหย่อน 15% ของเงินได้ ไม่เกิน 200,000 (รวม PVD/RMF/SSF ไม่เกิน 500,000)","อายุรับ 9Pay 20–50 · จ่ายถึง 60 รับ 20–55","เสียชีวิตก่อน 60 = ค่าสูงกว่าของ 110% เบี้ย หรือมูลค่าเวนคืน","เริ่มรับบำนาญแล้ว เวนคืนไม่ได้"],doc:"SU0215451 · 09/2025"},
+{id:"annfix",g:"ann",pdf:"brochures/annuity-fix.pdf",name:"AIA Annuity Fix",th:"บำนาญ มั่นคง · จ่ายถึง 60 · รับ 60–85",
+ fit:"เริ่มทำอายุน้อย จ่ายเบี้ยยาวถึง 60 เบี้ยต่อปีต่ำกว่า Annuity Sure",
+ tl:{u:"อายุ",from:35,to:85,pay:[35,60,"จ่ายเบี้ยถึงอายุ 60"],get:[[60,85,"รับบำนาญ 6.25% / ปี × 26 งวด"]],end:"รวม 162.5%"},
+ stats:[["20–55","อายุรับ"],["200,000","มูลค่าบำนาญตั้งต้นขั้นต่ำ"],["15 ปี","การันตีจ่ายบำนาญ"]],
+ good:["ลดหย่อนบำนาญสูงสุด 200,000","เริ่มก่อน 50 เลือกรับบำนาญตั้งแต่ 55–59 ได้ (อัตรา 5.95%)"],watch:"จ่ายเบี้ยนานถึง 60 · แนบได้แค่ตู้ 6 อุบัติเหตุ (RCC/AI/ADD/ADB)",
+ prem:[["ชาย 35 · ตั้งต้น 200,000","5,140","โบรชัวร์"],["หญิง 35 · ตั้งต้น 200,000","5,140","โบรชัวร์"],["ชาย 35 · ตั้งต้น 1,920,000","64,128","โบรชัวร์"]],calc:"ชาย 35: จ่ายรวม 1,603,200 → รับ 120,000 × 26 = 3,120,000",
+ more:["บำนาญ = 6.25% ของมูลค่าบำนาญตั้งต้น ทุกปีตั้งแต่ครบรอบปีที่อายุ 60 ถึง 85","เสียชีวิตก่อนรับบำนาญ = ค่าสูงกว่าของ 105% ของเบี้ยหลักที่จ่าย หรือมูลค่าเวนคืน","เสียชีวิตใน 15 ปีแรกที่รับบำนาญ (60–74) บริษัทจ่ายมูลค่าปัจจุบันของบำนาญที่เหลือก้อนเดียว","มูลค่าบำนาญตั้งต้น = จำนวนที่ใช้คิดบำนาญ ไม่ใช่ทุนเสียชีวิต"],doc:"SU0215425 · 01/2023"},
+/* ---- ตู้ 1 สุขภาพ ---- */
+{id:"hstarter",g:"health",pdf:"brochures/health-starter.pdf",name:"AIA Health Starter",th:"แยกค่าใช้จ่าย · มีร่วมจ่าย · Begin / Balanced",
+ fit:"เริ่มต้นประกันสุขภาพ งบจำกัด",
+ stats:[["1,500–4,500","ค่าห้อง/วัน"],["ต่อครั้ง","แยกตามหมวด"],["0–30%","ร่วมจ่าย"]],
+ good:["OPD ซื้อเพิ่มได้"],watch:"วงเงินแต่ละหมวดต่ำ รักษานอกเครือร่วมจ่าย",
+ prem:[["ชาย 35 · 3500 Balanced","12,900","โบรชัวร์"],["เด็กชาย 6 · 2500 Begin","28,900","โบรชัวร์"]],
+ more:["Begin: ในเครือ 10% นอกเครือ 30% · Balanced: ในเครือ 0% นอกเครือ 20%","อายุรับ 15 วัน–75 (Begin) · 11–75 (Balanced)","ICU 2 เท่าค่าห้อง สูงสุด 30 วัน","OPD อุบัติเหตุ 3,000–8,000 · OPD ทั่วไป 4,000–7,000/ปี (ยกเว้นแผน 1500)"],doc:"SU0215471 · 01/2026"},
+{id:"hsaver",g:"health",pdf:"brochures/health-saver.pdf",name:"AIA Health Saver",th:"เหมาจ่าย · วงเงินต่อครั้ง · ห้อง 1,500–4,000",
+ fit:"เหมาจ่ายเบี้ยไม่สูง เสริมสวัสดิการบริษัท",
+ stats:[["200k–500k","ต่อครั้ง"],["1,500–4,000","ค่าห้อง/วัน"],["11–75","อายุรับ"]],
+ good:["โรคร้าย 6 โรค วงเงิน ×2 นาน 4 ปี"],watch:"วงเงินนับต่อครั้ง · OPD เฉพาะแผน 400k / 500k",
+ prem:[["ชาย 35 · 200k","7,500","โบรชัวร์"],["หญิง 35 · 200k","9,200","โบรชัวร์"],["หญิง 32 · 500k","22,700","โบรชัวร์"]],
+ more:["OPD อุบัติเหตุ 24 ชม. 7,000–10,000","ไม่มีเวชศาสตร์ฟื้นฟู","ปีต่ออายุอาจร่วมจ่าย 30–50% ถ้าเคลมโรคเล็กน้อยบ่อย"],doc:"SU0215461 · 02/2026"},
+{id:"hhappy",g:"health",pdf:[["โบรชัวร์ Health Happy","brochures/health-happy.pdf"],["โบรชัวร์ Happy Kids","brochures/health-happy-kids.pdf"]],name:"AIA Health Happy / Happy Kids",th:"เหมาจ่าย · วงเงินต่อปี 1 / 5 / 15 / 25 ล้าน",
+ fit:"วงเงินต่อปีสูง · Kids สำหรับเด็ก 15 วัน–10 ปี (จัดขบวนเลือกให้อัตโนมัติ)",
+ stats:[["1–25 ล้าน","ต่อปี"],["1,500–9,000","ค่าห้อง/วัน"],["10k / 30k","ส่วนแรก Kids ถึงอายุ 11"]],
+ good:["ไม่จำกัดต่อครั้ง","โรคร้าย 6 โรค วงเงิน ×2 นาน 4 ปี"],watch:"OPD เฉพาะแผน 25 ล้าน",
+ prem:[["ชาย 35 · 5 ล้าน","18,900","โบรชัวร์"],["หญิง 33 · 25 ล้าน","42,300","โบรชัวร์"],["Kids 5 ปี · 25 ล้าน · ส่วนแรก 30k","103,000","โบรชัวร์"]],
+ more:["อายุรับ ผู้ใหญ่ 11–75","Kids ตัดส่วนแรกอัตโนมัติเมื่อครบรอบปีที่อายุ 11","Kids ก่อนอายุ 11 หมวด 2 จำกัด 20,000–40,000 ต่อครั้ง","แผน 15/25 ล้าน มีบริการดูแลรายบุคคล","ค่าห้องรวมทุกสัญญาไม่เกิน 12,000/วัน (Kids 9,000)"],doc:"SU0215462 / SU0215463 · 07/2025"},
+{id:"hplus",g:"health",pdf:"brochures/health-plus.pdf",name:"AIA Health Plus",th:"เหมาจ่าย · มีส่วนแรก 20,000 · แผน 1 / 5 / 10 ล้าน",
+ fit:"พนักงานที่มีประกันกลุ่ม AIA",
+ stats:[["1–10 ล้าน","ต่อปี"],["20,000","ส่วนแรก/ปี"],["50–65","เลือกอายุเกษียณ"]],
+ good:["ถึงอายุเกษียณ ส่วนแรก = 0 ไม่ต้องตรวจสุขภาพใหม่"],watch:"ขายเฉพาะสมาชิกประกันกลุ่ม AIA · ไม่มี OPD",
+ prem:[["อายุ 35 · 5 ล้าน","15,400","โบรชัวร์"],["ชาย 62 · 5 ล้าน · ส่วนแรก 0","51,400","โบรชัวร์"]],
+ more:["ใช้สวัสดิการกลุ่ม/ราชการ/ประกันสังคม จ่ายส่วนแรกแทนได้","ค่าห้อง 2,000 / 4,000 / 5,000","โบนัส Vitality สูงสุด 15%","อายุรับ 15 วัน–75 · จำกัด 1 สัญญาต่อคน"],doc:"03/2025"},
+{id:"cihero",g:"health",pdf:"brochures/health-ci-hero.pdf",name:"AIA Health CI Hero",th:"เหมาจ่าย เริ่มหลังเป็นโรคร้าย · Begin / Balanced 2 / 6 / 12 ล้าน",
+ fit:"มีสวัสดิการพื้นฐานแล้ว กลัวค่ารักษาโรคร้าย",
+ stats:[["2–12 ล้าน","ต่อปี"],["19 บาท/วัน","เริ่มต้น"],["15 วัน–65","อายุรับ"]],
+ good:["เจอโรคร้าย → คุ้มครองทุกการเจ็บป่วยหลังจากนั้น"],watch:"ก่อนอายุ 81 ถ้ายังไม่เป็นโรคร้าย ไม่คุ้มครองป่วยทั่วไป",
+ prem:[["ชาย 35 · Begin 2 ล้าน","6,900","โบรชัวร์"],["หญิง 31–35 · Begin 2 ล้าน","7,800","โบรชัวร์"],["ชาย 35 · Balanced 6 ล้าน","10,200","โบรชัวร์"]],
+ more:["เริ่มคุ้มครองเมื่อพบโรคร้าย 62 โรค หรือหลังอายุ 81","Balanced: ในเครือ 0% · นอกเครือ 20% สูงสุด 60,000","ไม่มี OPD · ระยะรอคอย 60 วัน"],doc:"SU0215473 · 07/2026"},
+{id:"infinite",g:"health",pdf:"brochures/infinite-care.pdf",name:"AIA Infinite Care",th:"เหมาจ่าย 120 ล้าน · ทั่วโลก / ยกเว้นสหรัฐฯ · ส่วนแรก 0 / 100K / 300K",
+ fit:"กำลังซื้อสูง อยากรักษาได้ทั่วโลก",
+ stats:[["120 ล้าน","ต่อปี"],["25,000","ค่าห้อง/วัน"],["ทั่วโลก","หรือยกเว้นสหรัฐฯ"]],
+ good:["มีตรวจสุขภาพ วัคซีน ทันตกรรม","เลือกส่วนแรกเพื่อลดเบี้ยได้"],watch:"แผนยกเว้นสหรัฐฯ: ในสหรัฐฯ เฉพาะฉุกเฉิน 90 วันแรก",
+ prem:[["ชาย 40 · ไม่มีส่วนแรก","201,000","โบรชัวร์"],["ชาย 40 · ส่วนแรก 100k","140,700","โบรชัวร์"],["ชาย 40 · ส่วนแรก 300k","100,500","โบรชัวร์"]],
+ more:["OPD + กายภาพ รวม 100,000/ปี · อุปกรณ์การแพทย์ 200,000/ปี","ตรวจสุขภาพ 10,000 · วัคซีน 6,000 · ทันตกรรม 15,000/ปี","อายุรับ 18–75 · ต่อถึง 98","รอคอย: ตรวจสุขภาพ 1 ปี · วัคซีน/ทันตกรรม 180 วัน"],doc:"04/2026"},
+/* ---- ตู้ 2 ชดเชย ---- */
+{id:"hbx",g:"hb",pdf:"brochures/hb-extra.pdf",name:"AIA HB Extra",th:"เงินชดเชยรายวันเมื่อนอน รพ. · จ่ายเป็นเท่า (X)",
+ fit:"เงินสดระหว่างนอน รพ. แยกจากค่ารักษา",
+ bar:[["นอน รพ. 1X/วัน",100,"var(--w2)"],["ICU 3X/วัน",300,"var(--w1)"],["ผ่าตัด 5X",500,"var(--w7)"],["โรคร้ายเฉียบพลัน 25X",2500,"var(--w3)"]],barScale:2500,barCap:"HB Extra จ่ายเป็นเท่าของค่าชดเชยรายวัน (X)",
+ stats:[["365 วัน","ต่อครั้ง"],["1,260 วัน","เพดานรวม"],["15 วัน–70","อายุรับ"]],
+ good:["ซื้อ 3,000/วัน: Stroke 30 วัน รับ 303,000"],watch:"คุ้มครองถึงอายุ 80",
+ prem:[["ดูในจัดขบวน / AIA ONE","–","–"]],
+ more:["เพิ่มจาก HB: ยากลับบ้าน 1X · เสียชีวิต 10X · Day Case 18 หัตถการ","รอคอย 30 วัน · 120 วัน 4 โรค · 60 วัน โรคร้ายเฉียบพลัน"],doc:"SU0215400 · 12/2023"},
+{id:"hb",g:"hb",pdf:"brochures/hb.pdf",name:"AIA HB",th:"เงินชดเชยรายวันแบบพื้นฐาน · หน่วยละ 100 บาท/วัน",
+ fit:"ต้องการแค่เงินรายวันตอนนอน รพ. เบี้ยถูกกว่า Extra",
+ stats:[["100/หน่วย","นอน รพ. ต่อวัน"],["365 วัน","สูงสุดต่อครั้ง"],["18 หัตถการ","Day Case ไม่นอนก็ได้"]],
+ good:["เจ็บป่วยหรืออุบัติเหตุก็ได้"],watch:"ไม่มี ICU/ผ่าตัดเพิ่มเท่าแบบ Extra · หน้าตัดจากเล่มรวม ไม่มีอายุรับ/เบี้ย",
+ prem:[["ดูในจัดขบวน / AIA ONE","–","–"]],more:["รอคอย 30 วัน · 120 วัน สำหรับ 4 โรค (ไส้เลื่อน ต่อมทอนซิล เนื้องอกมดลูก นิ่ว)","Day Case 18 หัตถการ เช่น สลายนิ่ว ต้อกระจก ส่องกล้อง ฉีดสีหัวใจ (สัญญา HB ตั้งแต่ 19 มิ.ย. 2557)","ไม่คุ้มครองโรคเรื้อรัง ตรวจสุขภาพ ศัลยกรรมเสริมสวย ตั้งครรภ์/คลอด"],doc:"หน้า 28–32 เล่ม AIA Rider"},
+/* ---- ตู้ 3 โรคร้าย ---- */
+{id:"ciplus",g:"ci",pdf:[["โบรชัวร์ CI Plus","brochures/ci-plus.pdf"],["โบรชัวร์ Top Up","brochures/ci-top-up.pdf"]],name:"AIA CI Plus (+ Top Up)",th:"เงินก้อนโรคร้าย ปีต่อปี",
+ fit:"เติมเงินก้อนโรคร้ายบนหัวที่มีอยู่",
+ bar:[["CI Plus รุนแรง 100%",100,"var(--w3)"],["Top Up ระยะต้น +40%",40,"var(--w4)"]],barCap:"รวมสูงสุด 140%",
+ stats:[["44 + 18","โรค รุนแรง + ระยะต้น"],["15 วัน–75","อายุรับ"],["25 ล้าน","ทุนสูงสุด"]],
+ good:["Top Up เบี้ยถูกมาก (ทุน 40,000 = 66 บาท)"],watch:"เบี้ยขึ้นตามอายุ เคลมแล้วจบ",
+ prem:[["Top Up · ชาย 35 · ทุน 40,000","66","โบรชัวร์"]],
+ more:["CI Plus จ่าย 100% เมื่อโรคร้ายรุนแรง หรือเสียชีวิต อย่างใดอย่างหนึ่ง","Top Up แนบกับ CI Plus เท่านั้น ทุน = 40% ของ CI Plus (สูงสุด 5 ล้าน)","ระยะรอคอย 60 วัน"],doc:"SU0215465 / 466 · 07/2025"},
+{id:"multipay",g:"ci",pdf:"brochures/multi-pay-ci-plus.pdf",name:"AIA Multi-Pay CI Plus",th:"เคลมได้หลายครั้ง ปีต่อปี",
+ fit:"กลัวป่วยซ้ำ อยากได้แบบตู้",
+ bar:[["ระยะต้น 40% × 5",200,"var(--w4)"],["รุนแรง 100% × 6",600,"var(--w3)"],["ICU (MIB)",100,"var(--w2)"],["ดูแลต่อเนื่อง (CCB)",100,"var(--w7)"]],barCap:"สูงสุด 1,000% เท่า ProCare",
+ stats:[["1,000%","เคลมสูงสุด"],["15 วัน–75","อายุรับ"],["50 ล้าน","วงเงินโรคร้ายรวม"]],
+ good:["ยกเว้นเบี้ยหลังเคลมรุนแรง"],watch:"เบี้ยขึ้นตามอายุ สูงมากหลัง 55 · ดูเส้นเบี้ยถึง 99 แล้วเลือกถือถึงอายุเท่าไร",
+ prem:[["ดูในจัดขบวน / AIA ONE","–","–"]],more:["เสียชีวิต 100% หักที่เคลมไปแล้ว","ดูแลต่อเนื่อง: 10% + เดือนละ 1.5% นาน 60 เดือน"],doc:"SU0215467 · 07/2025"},
+/* ---- ตู้ 4 มะเร็ง ---- */
+{id:"c4c",g:"cancer",pdf:"brochures/care-for-cancer.pdf",name:"AIA Care for Cancer",th:"ชดเชยรายวัน มะเร็งทุกระยะ",
+ fit:"กังวลรายได้หายระหว่างรักษามะเร็ง",
+ stats:[["2,000","IPD / วัน (ทุน 1 แสน)"],["500","OPD เคมี/ฉายแสง / วัน"],["1,000 วัน","สูงสุด"]],
+ good:["รักษาแบบ OPD ก็ได้เงิน"],watch:"ไม่มีเงินก้อนตอนตรวจพบ",
+ prem:[["ดูในจัดขบวน / AIA ONE","–","–"]],more:["ตรวจ MRI/CT/PET 500/วัน (2 ครั้ง/ปี)","เสียชีวิตจากมะเร็ง 100%","อายุรับ 15 วัน–70 · คุ้มครองถึง 80 · ทุนสูงสุด 10 ล้าน","ตัวอย่าง ทุน 3 ล้าน มะเร็งเต้านมระยะ 2 รับ 705,000"],doc:"SU0215468 · 07/2025"},
+{id:"hcancer",g:"cancer",pdf:"brochures/health-cancer.pdf",name:"AIA Health Cancer",th:"ชดเชยรายวัน 7 โรค",warnTag:"ข้อมูลไม่ครบ",
+ fit:"ชดเชยนอน รพ. จากโรคร้าย 7 โรค",
+ stats:[["1,000","IPD / วัน ต่อหน่วย"],["100,000","เสียชีวิต ต่อหน่วย"],["30 วัน","รอคอย"]],
+ good:[],watch:"ไม่มีอายุรับ/เบี้ย อาจเป็นแบบเก่า",
+ prem:[["ดูในจัดขบวน / AIA ONE","–","–"]],more:["มะเร็ง ตับแข็ง ถุงลมโป่งพอง โปลิโอ กล้ามเนื้อเสื่อม MS"],doc:"ไม่มีรหัส"},
+{id:"lady",g:"cancer",pdf:"brochures/lady-care-plus.pdf",name:"Lady Care / Lady Care Plus",th:"มะเร็งเฉพาะสตรี · เฉพาะผู้หญิง",warnTag:"โบรชัวร์ไม่ครบ",
+ fit:"ผู้หญิง · Plus สำหรับคนวางแผนมีบุตร",
+ stats:[["100%","มะเร็งสตรีลุกลาม"],["30%","ระยะไม่ลุกลาม"],["100%","SLE ไตอักเสบ"]],
+ good:["Plus: คุ้มครองภาวะแทรกซ้อนการตั้งครรภ์"],watch:"ไม่มีอายุรับ/เบี้ยในไฟล์",
+ prem:[["ดูในจัดขบวน / AIA ONE","–","–"]],
+ more:["ตัดเต้านมทั้งเต้า +20%","ปลูกถ่ายผิวหนังจากไฟไหม้ 20–60% · กระดูกใบหน้า 10%","Plus: เสียชีวิตจากการคลอด 100% · บุตรผิดปกติแต่กำเนิด 30% · ภาวะแทรกซ้อนตั้งครรภ์ 15%"],doc:"ไม่มีรหัส"},
+/* ---- ตู้ 5 ยกเว้นเบี้ย ---- */
+{id:"wpci",g:"wp",pdf:"brochures/wpci.pdf",name:"AIA WPCI",th:"ยกเว้นเบี้ยหัวเมื่อเป็นโรคร้าย 40 โรค · ทำให้ตัวเอง",warnTag:"เว็บรออัตราเบี้ย",
+ fit:"ผู้ใหญ่จ่ายเบี้ยเอง บนหัวที่ไม่ใช่ Plus · เป็นโรคร้ายแล้วบริษัทจ่ายเบี้ยหัวแทนจนครบกำหนด",
+ stats:[["16–75","อายุรับ"],["40 โรค","หรือการรักษา รวมทุพพลภาพ"],["เบี้ยคงที่","ตลอดระยะเวลาจ่ายเบี้ยหัว"]],
+ good:["เบี้ยคงที่ ไม่ขึ้นตามอายุ (ต่างจากตู้อื่น)","ตรวจพบโรคร้ายครั้งแรก ยกเว้นเบี้ยหัวตั้งแต่งวดถัดไปจนครบระยะจ่ายเบี้ยหัว"],watch:"ยกเว้นเฉพาะเบี้ยหัว ตู้อื่นต้องจ่ายต่อเอง · ลดหย่อนภาษีไม่ได้ · Pay Life Plus / Legacy Plus แถมฟีเจอร์นี้อยู่แล้ว",
+ prem:[["เว็บยังไม่มีตารางอัตรา · ดู AIA ONE","–","–"]],
+ more:["ทุน = เบี้ยหลักของหัว (ยูนิตลิงค์ = เบี้ยหลักเพื่อความคุ้มครอง) อยู่ใต้วงเงินโรคร้ายรวม","ระยะคุ้มครอง = ระยะจ่ายเบี้ยของหัว (เช่น 20 Pay Life = 20 ปี) · ยูนิตลิงค์รายงวด ≥ 30 ปี ไม่เกินอายุ 99","แนบได้กับหัวหลายแบบ เช่น Endowment 15/25, Excellent, 20 Pay Life, CI SuperCare, Issara Plus","40 โรค: มะเร็ง 2 · หัวใจ/หลอดเลือด 8 · สมอง/ประสาท/กล้ามเนื้อ 13 · อวัยวะสำคัญ 8 · ติดเชื้อ/บาดเจ็บ/ทุพพลภาพ 9","ตัวอย่างโบรชัวร์: อายุ 35 แนบ WPCI กับ Issara Plus ถึง 85 (50 ปี) เป็นเนื้องอกในสมองตอน 55 → ยกเว้นเบี้ยหัวถึง 85","เบี้ยคงที่ตลอดสัญญา — เมื่อใส่อัตราในจัดขบวน ต้องคิดแบบคงที่ ไม่ใช่ปรับตามอายุแบบตู้อื่น"],doc:"SU0215436 · 10/2021"},
+{id:"wpbci",g:"wp",pdf:"brochures/pbci.pdf",name:"AIA PBCI",th:"ผู้ชำระเบี้ย (พ่อแม่) · ทำให้ลูก",warnTag:"โบรชัวร์ไม่ครบ",
+ fit:"พ่อแม่ซื้อให้ลูก อยากให้กรมธรรม์ลูกเดินต่อ",
+ stats:[["เสียชีวิต","ทุพพลภาพ · โรคร้าย 40"],["ลูก 25","จ่ายแทนถึง"],["ผู้ชำระ 80","หรือถึง"]],
+ good:["บริษัทจ่ายเบี้ยสัญญาหลักของลูกแทน"],watch:"ยกเว้นเฉพาะเบี้ยสัญญาหลัก · ต้องกรอกอายุผู้จ่ายเบี้ยในจัดขบวน",
+ prem:[["ดูในจัดขบวน / AIA ONE","–","–"]],more:["ทุพพลภาพก่อน 60 · โรคร้ายก่อน 80","รอคอย 60 วัน (บางโรค 90)"],doc:"ไม่มีรหัส"},
+/* ---- ตู้ 6 อุบัติเหตุ ---- */
+{id:"ai",g:"acc",pdf:"brochures/ai-add-adb-rcc.pdf",name:"AI / ADD / ADB + RCC",th:"อุบัติเหตุแนบหัว (PPR) · ไม่จ่ายค่ารักษา",
+ fit:"เพิ่มทุนอุบัติเหตุบนหัว · ตู้เดียวที่บำนาญลากได้",
+ bar:[["ADB เสียชีวิต",100,"var(--w6)"],["ADD + สูญเสียอวัยวะ",100,"var(--w2)"],["AI + ทุพพลภาพ + ชดเชย รพ.",100,"var(--w7)"]],barScale:100,barStack:false,barCap:"AI ครบสุด → ADD → ADB",
+ stats:[["100%","เสียชีวิต (ทั้ง 3 แบบ)"],["×2","AI/ADD: รถสาธารณะ ลิฟต์ ไฟไหม้"],["RCC","ฆาตกรรม จลาจล"]],
+ good:["AI: ชดเชยรายสัปดาห์ระหว่างทำงานไม่ได้ 0.6%/สัปดาห์ นาน 52 สัปดาห์"],watch:"ไม่คุ้มครองเมาเกิน 150 มก.% · อยากได้ค่ารักษาอุบัติเหตุ ต้องซื้อ PA แยก",
+ prem:[["ดูในจัดขบวน / AIA ONE","–","–"]],more:["สูญเสียอวัยวะ (AI/ADD): มือ-เท้า-ตา 2 ส่วน 100% · 1 ส่วน 60% · นิ้วหัวแม่มือ+นิ้วชี้ 25%","AI เท่านั้น: ทุพพลภาพชั่วคราวสิ้นเชิง 0.6%/สัปดาห์ · บางส่วน 0.2% (สูงสุด 52 สัปดาห์) · ทุพพลภาพถาวร 10%/ปี นาน 10 ปี · นอน รพ. 0.3%/สัปดาห์ (สูงสุด 20) · ค่าผ่าตัดตามตาราง","ADB = เสียชีวิตอย่างเดียว · ADD = + สูญเสียอวัยวะ · AI = + ทุพพลภาพ/ชดเชย · RCC = ขยายคุ้มครองฆาตกรรมและจลาจล","ไม่คุ้มครอง: แข่งรถ/เรือ/สกี · เมาเกิน 150 มก.% · ทะเลาะวิวาท · ก่ออาชญากรรม · ปวดหลังจากหมอนรองกระดูกเสื่อม"],doc:"หน้า 55–57 เล่ม AIA Rider"},
+/* ---- ตู้ 7 ทุพพลภาพ ---- */
+{id:"tpd",g:"tpd",pdf:"brochures/tpd.pdf",name:"AIA TPD",th:"ทุพพลภาพถาวรสิ้นเชิง ทุกสาเหตุ",
+ fit:"คนหาเลี้ยงครอบครัว",
+ stats:[["100%","จ่ายก้อนเดียว"],["15 วัน–70","อายุรับ"],["100,000","ทุนขั้นต่ำ"]],
+ good:["ทั้งเจ็บป่วยและอุบัติเหตุ","เบี้ยต่ำมาก (ทุน 1 ล้าน หลักร้อยต่อปี)"],watch:"ต้องทุพพลภาพต่อเนื่อง 180 วัน",
+ prem:[["ดูในจัดขบวน / AIA ONE","–","–"]],more:["นิยาม: กิจวัตร 3 ใน 6 อย่าง / ทำงานใดไม่ได้ (17–70) / สูญเสียอวัยวะ 2 ส่วน","คุ้มครองถึง 80"],doc:"SU0215464 · 07/2025"},
+/* ---- PA ---- */
+{id:"pa",g:"pa",pdf:"brochures/pa.pdf",name:"AIA Personal Accident (PA)",th:"มีสัญญาหลักในตัว · ซื้อแยก · เน้นค่ารักษา",
+ fit:"ทุกคน · เดินทางบ่อย / ขี่มอเตอร์ไซค์ · จัดขบวนเลือกแผนให้จากค่ารักษาต่อครั้งที่ต้องการ",
+ stats:[["ไม่ต้องมีหัว","ใบคำขอแยก"],["ถึง 75","ต่ออายุ (เบี้ยขึ้นหลัง 60)"],["ขั้น 1–3","เลือกขั้นอาชีพ"]],
+ good:["มีแผนมอเตอร์ไซค์ (AIANPA2500/3000/3800) และแผนอาชีพขั้น 3","เว็บเลือกแผนให้จากค่ารักษาต่อครั้งที่ต้องการ"],watch:"ชื่อแผนใช้ตามโบรชัวร์ AIANPA · เบี้ยขึ้นตามช่วงอายุหลัง 60 และขั้นอาชีพ · ทุน 10 ล้านขึ้นไปต้องแนบเอกสารการเงิน",
+ prem:[["AIANPA3300 · ค่ารักษา 40,000 · ตาย 500,000 · เลี้ยงดูรายเดือน 3,000","3,300","โบรชัวร์"],["AIANPA3800 · ค่ารักษา 50,000 · ตาย 500,000 · มอเตอร์ไซค์","3,800","โบรชัวร์"],["AIANPA4600 · ค่ารักษา 100,000 · ตาย 600,000","4,600","โบรชัวร์"],["AIANPA5500 · ค่ารักษา 100,000 · ตาย 1.1 ล้าน","5,500","โบรชัวร์"],["AIANPA7900 · ค่ารักษา 100,000 · ตาย 2.2 ล้าน","7,900","โบรชัวร์"],["AIANPA32K · ค่ารักษา 300,000 · ตาย 10 ล้าน · ชดเชย 5,000/วัน","32,000","โบรชัวร์"]],
+ more:["เบี้ยข้างต้น = อาชีพขั้น 1 อายุถึง 60 · ขั้น 2 แพงขึ้น ~20% · หลัง 60 เบี้ยขึ้นเป็นขั้นทุก 5 ปีถึง 75","แผนอื่นในโบรชัวร์ที่เว็บยังไม่มี: AIANPA3900 (ค่าปลงศพ 50,000) · AIANPA2500/3000 (มอเตอร์ไซค์) · AIANPA2280/1600/2100 (ขั้นอาชีพ 3) · AIANPA3330 (อาชีพเสี่ยงพิเศษ MA10%)","อายุรับต่างกันตามแผน: 5500 ถึง 60 · 7900 ถึง 74 · 32K อายุ 25–60 · ทุกแผนต่ออายุได้ถึง 75","ทุน 10 ล้านขึ้นไป ต้องแนบสเตทเมนต์ 6 เดือน + แบบสอบถามวงเงินสูง","ไฟล์ PA Change 15 days (10/2022) เป็นรุ่นเก่า"],doc:"SU0215388 · 03/2026"}
+];
+
+const FILTERS=[["all","ทั้งหมด (หัว + ตู้)"],["loco","หัวรถจักรทั้งหมด"],["life","คุ้มครองชีวิต"],["cih","โรคร้ายแรง"],["save","สะสมทรัพย์"],["ann","บำนาญ"],["wagon","ตู้ทั้งหมด"],["health","1 สุขภาพ"],["hb","2 ชดเชย รพ."],["ci","3 โรคร้าย"],["cancer","4 มะเร็ง"],["wp","5 ยกเว้นเบี้ย"],["acc","6 อุบัติเหตุ"],["tpd","7 ทุพพลภาพ"],["pa","PA ซื้อแยก"]];
+const MAXCMP=5;
+let filter="all",query="",picked=[];const open=new Set();
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const LOCO=["life","cih","save","ann"];
+const isLoco=g=>LOCO.includes(g);
+try{const s=localStorage.getItem("aia-train-filter-v2");if(s&&FILTERS.some(f=>f[0]===s))filter=s}catch(e){}
+
+/* ---- line-art train, same order/colours as the builder ---- */
+function renderTrain(){
+  const W=1210,H=170,y=52,h=62;let o=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="font-family:var(--f)">`;
+  const st=`stroke:var(--ai);stroke-width:1.6;fill:var(--sheet)`;
+  /* track */
+  o+=`<line x1="8" y1="${y+h+14}" x2="${W-8}" y2="${y+h+14}" style="stroke:var(--ai);stroke-width:1.6"/>`;
+  o+=`<line x1="8" y1="${y+h+19}" x2="${W-8}" y2="${y+h+19}" style="stroke:var(--line2);stroke-width:1"/>`;
+  /* locomotive */
+  o+=`<path d="M14 ${y+h} V${y+10} q0 -8 8 -8 h44 v-14 h12 v14 h44 v-16 h26 v16 h8 q8 0 8 8 v${h-10} z" style="${st}"/>`;
+  o+=`<rect x="24" y="${y+16}" width="22" height="18" rx="2" style="fill:none;stroke:var(--ai);stroke-width:1.3"/>`;
+  o+=`<rect x="56" y="${y+16}" width="22" height="18" rx="2" style="fill:none;stroke:var(--ai);stroke-width:1.3"/>`;
+  o+=`<circle cx="36" cy="${y+h+6}" r="7" style="${st}"/><circle cx="92" cy="${y+h+6}" r="7" style="${st}"/><circle cx="142" cy="${y+h+6}" r="7" style="${st}"/>`;
+  o+=`<path d="M136 ${y-20} q-6 -8 0 -16 q6 -8 0 -16" style="fill:none;stroke:var(--kin);stroke-width:1.6"/>`;
+  o+=`<text x="90" y="${y+h+40}" text-anchor="middle" style="fill:var(--ai);font-weight:700;font-size:14px">หัวรถจักร</text>`;
+  o+=`<text x="90" y="${y+h+57}" text-anchor="middle" style="fill:var(--muted);font-size:11.5px">ชีวิต · โรคร้ายแรง · ออม · บำนาญ</text>`;
+  let x=178;
+  WAGONS.forEach(([k,n,name,sub])=>{
+    const c=G[k].c,w=116;
+    o+=`<line x1="${x-10}" y1="${y+h-14}" x2="${x}" y2="${y+h-14}" style="stroke:var(--ai);stroke-width:1.6"/>`;
+    o+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="7" style="${st}"/>`;
+    o+=`<rect x="${x+1}" y="${y+1}" width="${w-2}" height="${h-2}" rx="6" style="fill:${c};opacity:.32"/>`;
+    o+=`<circle cx="${x+w/2}" cy="${y+h/2}" r="6" style="fill:${c}"/>`;
+    o+=`<text x="${x+w/2}" y="${y+16}" text-anchor="middle" style="fill:var(--ink);font-weight:700;font-size:12px">ตู้ ${n}</text>`;
+    o+=`<circle cx="${x+22}" cy="${y+h+6}" r="6" style="${st}"/><circle cx="${x+w-22}" cy="${y+h+6}" r="6" style="${st}"/>`;
+    o+=`<text x="${x+w/2}" y="${y+h+40}" text-anchor="middle" style="fill:var(--ink);font-weight:600;font-size:13px">${esc(name)}</text>`;
+    o+=`<text x="${x+w/2}" y="${y+h+57}" text-anchor="middle" style="fill:var(--muted);font-size:10.5px">${esc(sub)}</text>`;
+    x+=w+10;
+  });
+  /* PA, detached */
+  x+=26;const w=108,c=G.pa.c;
+  o+=`<text x="${x-14}" y="${y+h/2+5}" text-anchor="middle" style="fill:var(--muted);font-size:16px">✕</text>`;
+  o+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="7" style="fill:var(--sheet);stroke:var(--ai);stroke-width:1.6;stroke-dasharray:5 4"/>`;
+  o+=`<rect x="${x+1}" y="${y+1}" width="${w-2}" height="${h-2}" rx="6" style="fill:${c};opacity:.32"/>`;
+  o+=`<circle cx="${x+w/2}" cy="${y+h/2}" r="6" style="fill:${c}"/>`;
+  o+=`<text x="${x+w/2}" y="${y+16}" text-anchor="middle" style="fill:var(--ink);font-weight:700;font-size:12px">PA</text>`;
+  o+=`<circle cx="${x+22}" cy="${y+h+6}" r="6" style="${st}"/><circle cx="${x+w-22}" cy="${y+h+6}" r="6" style="${st}"/>`;
+  o+=`<text x="${x+w/2}" y="${y+h+40}" text-anchor="middle" style="fill:var(--ink);font-weight:600;font-size:13px">อุบัติเหตุ PA</text>`;
+  o+=`<text x="${x+w/2}" y="${y+h+57}" text-anchor="middle" style="fill:var(--muted);font-size:10.5px">ซื้อแยก · รวมค่ารักษา</text>`;
+  $("#trainWrap").innerHTML=o+"</svg>";
+  $("#trainKey").innerHTML=`<span><i style="--c:var(--ai)"></i>หัวรถจักร = สัญญาหลัก 4 แบบ เลือก 1</span>`+WAGONS.map(([k,n,name])=>`<span><i style="--c:${G[k].c}"></i>${n} ${esc(name)}</span>`).join("")+`<span><i style="--c:var(--pa)"></i>PA ซื้อแยก มีสัญญาหลักในตัว</span>`;
+}
+
+function tlSVG(t,c){
+  const W=320,x0=6,x1=314,X=v=>x0+(v-t.from)/(t.to-t.from)*(x1-x0);
+  let o=`<svg viewBox="0 0 ${W} 100" role="img" aria-label="เส้นเวลา: ${esc(t.pay[2])}${t.get?" · "+esc(t.get.map(g=>g[2]).join(" · ")):""}${t.end?" · "+esc(t.end):""}">`;
+  const txt=(x,y,s,anchor="start",fill="var(--ink)",w=500)=>`<text x="${x}" y="${y}" text-anchor="${anchor}" style="fill:${fill};font:${w} 10.5px var(--f)">${esc(s)}</text>`;
+  o+=`<rect x="${x0}" y="2" width="${x1-x0}" height="6" rx="3" style="fill:${c};opacity:.22"/>`;
+  if(t.cover)o+=txt(x0,19,t.cover,"start","var(--muted)");
+  const pw=X(t.pay[1])-X(t.pay[0]);
+  o+=`<rect x="${X(t.pay[0])}" y="24" width="${pw}" height="16" rx="3" style="fill:${c}"/>`;
+  o+= pw>110?txt(X(t.pay[0])+5,35.5,t.pay[2],"start","var(--on-ai)",600):txt(X(t.pay[1])+4,35.5,t.pay[2],"start","var(--ink)",600);
+  (t.get||[]).forEach(g=>{const gw=Math.max(X(g[1])-X(g[0]),3);
+    o+=`<rect x="${X(g[0])}" y="58" width="${gw}" height="16" rx="3" style="fill:var(--kin)"/>`;
+    o+= gw>120?txt(X(g[0])+5,69.5,g[2],"start","#1C1C2E",600):txt(X(g[0])-4,69.5,g[2],"end","var(--ink)",600);});
+  if(t.dots){t.dots.forEach(d=>o+=`<circle cx="${X(d)}" cy="66" r="5" style="fill:var(--kin)"/>`);o+=txt(X(t.dots[0])-4,53,t.dotLabel,"start","var(--ink)",600)}
+  if(t.end){o+=`<path d="M${x1} 58 l7 8 l-7 8 l-7 -8z" style="fill:var(--kin);stroke:var(--ai);stroke-width:1"/>`;
+    o+=txt(x1+4,53,t.end,"end","var(--ink)",700);}
+  o+=`<line x1="${x0}" y1="82" x2="${x1}" y2="82" style="stroke:var(--line)"/>`;
+  const ticks=[...new Set([t.from,t.pay[1],...(t.get||[]).map(g=>g[0]),t.to])].sort((a,b)=>a-b);
+  let last=-99;ticks.forEach(v=>{const x=X(v);o+=`<line x1="${x}" y1="79" x2="${x}" y2="85" style="stroke:var(--muted)"/>`;
+    if(x-last>22){o+=txt(x,97,(v===t.from&&t.u==="ปีที่"?"เริ่ม":v),v===t.to?"end":(v===t.from?"start":"middle"),"var(--muted)",500);last=x}});
+  return o+`</svg><div class="cap">${t.u==="อายุ"?"ตัวอย่างเข้าอายุ 35 · แกน = อายุ":"แกน = ปีกรมธรรม์"} · <b style="color:${c}">■</b> จ่ายเบี้ย · <b style="color:var(--kin)">■</b> ได้รับเงิน</div>`;
+}
+function barHTML(p){
+  const scale=p.barScale||1000;
+  if(p.barStack===false){
+    return `<div class="vis"><div class="pleg">${p.bar.map(b=>`<span style="--sw:${b[2]}">${esc(b[0])}</span>`).join("")}</div><div class="cap">${esc(p.barCap||"")}</div></div>`;
+  }
+  const segs=p.bar.map(b=>`<i style="width:${b[1]/scale*100}%;background:${b[2]}" title="${esc(b[0])}"></i>`).join("");
+  return `<div class="vis"><div class="pbar">${segs}</div><div class="pscale"><span>0</span><span>${scale===1000?"1,000%":scale===2500?"25X":scale+"%"}</span></div>
+   <div class="pleg">${p.bar.map(b=>`<span style="--sw:${b[2]}">${esc(b[0])}</span>`).join("")}</div>${p.barCap?`<div class="cap">${esc(p.barCap)}</div>`:""}</div>`;
+}
+function renderChips(){
+  const btn=([k,l])=>{const c=G[k]?`style="--c:${G[k].c}"`:"";
+    return `<button type="button" class="chip" ${c} data-f="${k}" aria-pressed="${k===filter}">${G[k]?"<i></i>":""}${l}</button>`};
+  const pick=keys=>FILTERS.filter(f=>keys.includes(f[0])).map(btn).join("");
+  $("#chips").innerHTML=
+   `<div class="chip-row" role="group" aria-label="ทั้งหมด"><b>ทั้งหมด</b>${pick(["all"])}</div>`+
+   `<div class="chip-row" role="group" aria-label="หัวรถจักร"><b>หัวรถจักร</b>${pick(["loco","life","cih","save","ann"])}</div>`+
+   `<div class="chip-row" role="group" aria-label="ตู้"><b>ตู้</b>${pick(["wagon","health","hb","ci","cancer","wp","acc","tpd"])}</div>`+
+   `<div class="chip-row" role="group" aria-label="แยก"><b>แยก</b>${pick(["pa"])}</div>`;
+}
+function match(p){
+  if(filter==="loco"&&!isLoco(p.g))return false;
+  if(filter==="wagon"&&(isLoco(p.g)||p.g==="pa"))return false;
+  if(!["all","loco","wagon"].includes(filter)&&p.g!==filter)return false;
+  if(query){const hay=(p.name+" "+p.th+" "+p.fit+" "+p.good.join(" ")+" "+(p.more||[]).join(" ")+" "+p.stats.flat().join(" ")+" "+G[p.g].name).toLowerCase();if(!hay.includes(query))return false}
+  return true;
+}
+const label=g=>g.role==="ตู้"?g.name:g.role+" · "+g.name;
+function card(p){
+  const g=G[p.g];
+  const stats=p.stats.map(s=>`<div class="stat"><b>${esc(s[0])}</b><span>${esc(s[1])}</span></div>`).join("");
+  const prem=p.prem.map(r=>`<tr><td>${esc(r[0])}</td><td class="r num">${esc(r[1])}</td><td>${r[2]==="–"?"":`<span class="pill o">${esc(r[2])}</span>`}</td></tr>`).join("");
+  const on=picked.includes(p.id),isOpen=open.has(p.id);
+  return `<article class="card" style="--c:${g.c}">
+    <button type="button" class="card-head" data-open="${p.id}" aria-expanded="${isOpen}">
+      <div class="kind"><span class="pill k">${label(g)}</span>${p.nobro?'<span class="pill w">ยังไม่มีโบรชัวร์</span>':""}${p.warnTag?`<span class="pill w">${esc(p.warnTag)}</span>`:""}</div>
+      <h3>${esc(p.name)}</h3><p class="th">${esc(p.th)}</p>
+      <p class="fit"><b>เหมาะกับ</b> ${esc(p.fit)}</p>
+      <span class="toggle-ic">${isOpen?"▴ ย่อ":"▾ ดูรายละเอียด"}</span>
+    </button>${isOpen?`
+    ${p.tl?`<div class="vis">${tlSVG(p.tl,g.c)}</div>`:""}
+    ${p.bar?barHTML(p):""}
+    <div class="stats" style="margin-top:8px">${stats}</div>
+    <div class="body">
+      ${p.good.map(x=>`<div class="short"><span class="ic ok">✓</span><span>${esc(x)}</span></div>`).join("")}
+      <div class="short"><span class="ic no">!</span><span>${esc(p.watch)}</span></div>
+      <div><table class="prem"><thead><tr><th>เบี้ยตัวอย่างต่อปี (บาท)</th><th class="r">เบี้ย</th><th>แหล่ง</th></tr></thead><tbody>${prem}</tbody></table>
+      ${p.calc?`<p class="prem-note num" style="margin-top:6px">${esc(p.calc)} <span>(คำนวณ: เบี้ย × ปีที่จ่าย)</span></p>`:""}</div>
+      ${p.more&&p.more.length?`<details><summary>รายละเอียด</summary><div class="more"><ul style="margin:0;padding-left:18px">${p.more.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></details>`:""}
+    </div>
+`:""}
+    <div class="card-foot"><span>${esc(p.doc)}</span><span style="display:flex;gap:6px;flex-wrap:wrap">${(Array.isArray(p.pdf)?p.pdf:(p.pdf?[["โบรชัวร์ PDF",p.pdf]]:[])).map(f=>`<a class="btn" href="${f[1]}" target="_blank" rel="noopener">${esc(f[0])}</a>`).join("")}<a class="btn" href="${BUILDER}" target="_blank" rel="noopener">เบี้ยจริง ↗</a><button type="button" class="btn" data-pick="${p.id}" aria-pressed="${on}">${on?"✓ เลือกแล้ว":"เทียบ"}</button></span></div>
+  </article>`;
+}
+function renderGrid(){
+  const list=P.filter(match);
+  $("#count").textContent=`แสดง ${list.length} จาก ${P.length} รายการ`;
+  if(!list.length){$("#grid").innerHTML=`<div class="empty">ไม่พบแบบที่ตรงกับ "${esc(query)}" ลองค้นคำอื่น หรือกด "ทั้งหมด"</div>`;return}
+  let html="",last="";
+  for(const p of list){
+    const key=p.g+(p.line||"");
+    if(key!==last){const t=p.line?`${G[p.g].name} · ${LINES[p.line]}`:G[p.g].name;
+      html+=`<div class="group-title" style="--c:${G[p.g].c}"><h3><i></i>${esc(t)}</h3><span>${G[p.g].role}</span></div>`;last=key}
+    html+=card(p);
+  }
+  $("#grid").innerHTML=html;
+  $("#grid").classList.toggle("compact",!list.some(p=>open.has(p.id)));
+}
+function renderTray(){
+  $("#tray").hidden=picked.length===0;
+  $("#trayText").textContent=`เลือกแล้ว ${picked.length}/${MAXCMP}: `+picked.map(id=>P.find(p=>p.id===id).name).join(" · ");
+}
+function renderCmp(){
+  const items=picked.map(id=>P.find(p=>p.id===id));
+  $("#compare").hidden=items.length<2;
+  if(items.length<2)return;
+  $("#cmp").style.minWidth=(140+items.length*250)+"px";
+  const row=(h,f)=>`<tr><th>${h}</th>${items.map(p=>`<td>${f(p)}</td>`).join("")}</tr>`;
+  $("#cmp").innerHTML=`<thead><tr><th></th>${items.map(p=>`<th style="--c:${G[p.g].c}">${esc(p.name)}</th>`).join("")}</tr></thead><tbody>
+   ${row("ประเภท",p=>label(G[p.g]))}
+   ${row("เหมาะกับ",p=>esc(p.fit))}
+   ${row("ภาพ",p=>p.tl?tlSVG(p.tl,G[p.g].c):(p.bar?barHTML(p):"–"))}
+   ${row("ตัวเลขหลัก",p=>p.stats.map(s=>`<b class="num">${esc(s[0])}</b> ${esc(s[1])}`).join("<br>"))}
+   ${row("เด่น",p=>p.good.map(esc).join("<br>")||"–")}
+   ${row("ระวัง",p=>esc(p.watch))}
+   ${row("เบี้ยตัวอย่าง",p=>p.prem.map(r=>`${esc(r[0])}: <b class="num">${esc(r[1])}</b>${r[2]!=="–"?` <span class="pill o">${esc(r[2])}</span>`:""}`).join("<br>"))}
+   ${row("เอกสาร",p=>esc(p.doc))}</tbody>`;
+}
+document.addEventListener("click",e=>{
+  const f=e.target.closest("[data-f]");
+  if(f){filter=f.dataset.f;try{localStorage.setItem("aia-train-filter-v2",filter)}catch(_){};renderChips();renderGrid();return}
+  const o=e.target.closest("[data-open]");
+  if(o){const id=o.dataset.open;open.has(id)?open.delete(id):open.add(id);renderGrid();const el=document.querySelector(`[data-open="${id}"]`);el&&el.focus({preventScroll:true});return}
+  const b=e.target.closest("[data-pick]");
+  if(b){const id=b.dataset.pick;
+    if(picked.includes(id))picked=picked.filter(x=>x!==id);
+    else{if(picked.length>=MAXCMP)picked.shift();picked.push(id)}
+    renderGrid();renderTray();renderCmp();return}
+});
+$("#goCmp").addEventListener("click",()=>{if(picked.length<2){$("#trayText").textContent="เลือกอย่างน้อย 2 แบบเพื่อเทียบ";return}$("#compare").scrollIntoView({behavior:"smooth"})});
+$("#expandAll").addEventListener("click",()=>{P.filter(match).forEach(p=>open.add(p.id));renderGrid()});
+$("#collapseAll").addEventListener("click",()=>{open.clear();renderGrid()});
+$("#clearCmp").addEventListener("click",()=>{picked=[];renderGrid();renderTray();renderCmp()});
+$("#q").addEventListener("input",e=>{query=e.target.value.trim().toLowerCase();renderGrid()});
+renderTrain();renderChips();renderGrid();renderTray();renderCmp();
+/* deep link: #<card id> opens that card (e.g. #hhappy, #multipay) so the builder can link straight to a product */
+function openFromHash(){
+  const id=(location.hash||"").replace(/^#/,"");
+  if(!id||!P.some(p=>p.id===id))return;
+  filter="all";query="";$("#q").value="";open.add(id);renderChips();renderGrid();
+  const el=document.querySelector(`[data-open="${id}"]`);
+  if(el){const top=el.getBoundingClientRect().top+window.scrollY-($(".toolbar").offsetHeight+12);window.scrollTo({top,behavior:"smooth"});el.focus({preventScroll:true})}
+}
+openFromHash();window.addEventListener("hashchange",openFromHash);
+</script>
+
+</body>
+</html>
